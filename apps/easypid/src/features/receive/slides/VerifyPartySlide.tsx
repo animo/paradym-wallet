@@ -44,7 +44,7 @@ export const VerifyPartySlide = ({
   onContinue,
   onDecline,
   trustedEntities,
-  trustMechanism = 'x509',
+  trustMechanism = 'none',
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()

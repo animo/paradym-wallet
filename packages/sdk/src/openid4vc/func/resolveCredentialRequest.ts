@@ -6,7 +6,7 @@ import { formatDcqlCredentialsForRequest } from '../../format/dcqlRequest'
 import { formatDifPexCredentialsForRequest } from '../../format/presentationExchangeRequest'
 import type { FormattedSubmission } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
-import { getTrustedEntities } from '../../trust/trustMechanism'
+import { getTrustedEntitiesForOpenId4Vp } from '../../trust/trustMechanism'
 
 export type ResolveCredentialRequestOptions = {
   paradym: ParadymWalletSdk
@@ -45,7 +45,7 @@ export const resolveCredentialRequest = async ({
       allowUntrustedSigned: allowUntrusted,
     })
 
-    const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntities({
+    const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntitiesForOpenId4Vp({
       paradym,
       resolvedAuthorizationRequest: resolved,
       authorizationRequestVerificationResult,

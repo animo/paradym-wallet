@@ -1,4 +1,4 @@
-import type { TrustedDidEntity, TrustedOpenId4VciIssuerEntity, TrustedX509Entity, TrustList } from '@paradym/wallet-sdk'
+import type { TrustedDidEntity, TrustedOpenId4VciEntity, TrustedX509Entity, TrustList } from '@paradym/wallet-sdk'
 import ExpoConstants from 'expo-constants'
 import { isParadymWallet } from './hooks/useFeatureFlag'
 
@@ -232,7 +232,7 @@ export const trustedOpenId4VciIssuerEntities = [
     url: 'https://eduid.nl',
     demo: false,
   },
-] satisfies Array<TrustedOpenId4VciIssuerEntity>
+] satisfies Array<TrustedOpenId4VciEntity>
 
 // https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
 export const pidSchemes = {

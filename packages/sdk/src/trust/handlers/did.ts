@@ -1,5 +1,11 @@
-import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import type { DidTrustMechanismConfiguration, TrustedEntity } from '../trustMechanism'
+import type { JwsSignerDid } from '@credo-ts/core'
+import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type {
+  DidTrustMechanismConfiguration,
+  TrustedEntity,
+  TrustedIssuerEntity,
+  TrustedRelyingPartyEntity,
+} from '../trustMechanism'
 
 export type TrustedDidEntity = {
   did: string
@@ -10,13 +16,21 @@ export type TrustedDidEntity = {
   entityId: string
 }
 
-export type GetTrustedEntitiesForDidOptions = {
+export type GetTrustedEntitiesForDidForOpenId4VpOptions = {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   walletTrustedEntity?: TrustedEntity
   trustMechanismConfiguration: DidTrustMechanismConfiguration
 }
 
-export const getTrustedEntitiesForDid = async (options: GetTrustedEntitiesForDidOptions) => {
+export type GetTrustedEntitiesForDidForOpenId4VciOptions = {
+  trustMechanismConfiguration: DidTrustMechanismConfiguration
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  walletTrustedEntity?: TrustedEntity
+}
+
+export const getTrustedEntitiesForDidForOpenId4Vp = async (
+  options: GetTrustedEntitiesForDidForOpenId4VpOptions
+): Promise<TrustedRelyingPartyEntity> => {
   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
   const effectiveClientId = options.resolvedAuthorizationRequest.verifier.effectiveClientId
   const trustedEntities: TrustedEntity[] = []
@@ -51,5 +65,42 @@ export const getTrustedEntitiesForDid = async (options: GetTrustedEntitiesForDid
       entityId: effectiveClientId.replace('decentralized_identifier:', ''),
     },
     trustedEntities,
+  }
+}
+
+export const getTrustedEntitiesForDidForOpenId4Vci = (
+  options: GetTrustedEntitiesForDidForOpenId4VciOptions
+): TrustedIssuerEntity | undefined => {
+  // Checked in the caller
+  const signer = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.signer as JwsSignerDid
+  // Strip fragment to get base DID (e.g. did:web:example.com#key-1 -> did:web:example.com)
+  const baseDid = signer.didUrl.split('#')[0]
+  const trustedEntity = options.trustMechanismConfiguration.trustedDidEntities.find((e) => baseDid.startsWith(e.did))
+  if (trustedEntity) {
+    // Prefer display data from the signed metadata over the hardcoded entity
+    const metadataDisplay = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.jwt.payload.display?.[0]
+    const organizationName = metadataDisplay?.name ?? trustedEntity.name
+    const logoUri = metadataDisplay?.logo?.uri ?? trustedEntity.logoUri
+
+    const trustedEntities: TrustedEntity[] = [
+      {
+        entityId: trustedEntity.entityId,
+        organizationName,
+        logoUri,
+        uri: trustedEntity.url,
+        demo: trustedEntity.demo,
+      },
+    ]
+    if (options.walletTrustedEntity) trustedEntities.push(options.walletTrustedEntity)
+
+    return {
+      issuer: {
+        organizationName,
+        logoUri,
+        uri: trustedEntity.url,
+        entityId: trustedEntity.entityId,
+      },
+      trustedEntities,
+    }
   }
 }

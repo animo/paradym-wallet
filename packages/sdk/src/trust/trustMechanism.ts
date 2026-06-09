@@ -1,15 +1,30 @@
 import type { X509Certificate } from '@credo-ts/core'
-import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
-import { type GetTrustedEntitiesForDidOptions, getTrustedEntitiesForDid, type TrustedDidEntity } from './handlers/did'
+import type { Optionalize } from '../types'
 import {
-  type GetTrustedEntitiesForEudiRpAuthenticationOptions,
-  getTrustedEntitiesForEudiRpAuthentication,
+  type GetTrustedEntitiesForDidForOpenId4VpOptions,
+  getTrustedEntitiesForDidForOpenId4Vci,
+  getTrustedEntitiesForDidForOpenId4Vp,
+  type TrustedDidEntity,
+} from './handlers/did'
+import {
+  type GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions,
+  getTrustedEntitiesForEudiRpAuthenticationForOpenId4Vp,
   type TrustList,
 } from './handlers/eudiRpAuthentication'
 import {
-  type GetTrustedEntitiesForX509CertificateOptions,
-  getTrustedEntitiesForX509Certificate,
+  type GetTrustedEntitiesForFallbackForOpenId4VciOptions,
+  type GetTrustedEntitiesForFallbackForOpenId4VpOptions,
+  getTrustedEntitiesForFallbackForOpenId4Vci,
+  getTrustedEntitiesForFallbackForOpenId4Vp,
+  type TrustedOpenId4VciEntity,
+} from './handlers/fallback'
+import {
+  type GetTrustedEntitiesForX509CertificateForOpenId4VpOptions,
+  getTrustedEntitiesForX509CertificateForOpenId4Vci,
+  getTrustedEntitiesForX509CertificateForOpenId4Vp,
   type TrustedX509Entity,
 } from './handlers/x509'
 
@@ -21,7 +36,17 @@ export type TrustedEntity = {
   demo?: boolean
 }
 
-export type TrustMechanism = 'eudi_rp_authentication' | 'x509' | 'did'
+export type TrustedIssuerEntity = {
+  issuer: TrustedEntity
+  trustedEntities: TrustedEntity[]
+}
+
+export type TrustedRelyingPartyEntity = {
+  relyingParty: Optionalize<TrustedEntity, 'organizationName' | 'entityId'>
+  trustedEntities: TrustedEntity[]
+}
+
+export type TrustMechanism = 'eudi_rp_authentication' | 'x509' | 'did' | 'none'
 
 export type EudiRpAuthenticationTrustMechanismConfiguration = {
   trustMechanism: 'eudi_rp_authentication'
@@ -39,10 +64,16 @@ export type DidTrustMechanismConfiguration = {
   trustedDidEntities: TrustedDidEntity[]
 }
 
+export type FallbackMechanismConfiguration = {
+  trustMechanism: 'none'
+  trustedEntities: TrustedOpenId4VciEntity[]
+}
+
 export type TrustMechanismConfiguration =
   | EudiRpAuthenticationTrustMechanismConfiguration
   | X509TrustMechanismConfiguration
   | DidTrustMechanismConfiguration
+  | FallbackMechanismConfiguration
 
 export type AuthorizationRequestVerificationResult = {
   isValidButUntrusted: boolean
@@ -50,14 +81,22 @@ export type AuthorizationRequestVerificationResult = {
   x509RegistrationCertificate: X509Certificate
 }[]
 
-export type GetTrustedEntitiesOptions = Omit<
-  { paradym: ParadymWalletSdk } & GetTrustedEntitiesForEudiRpAuthenticationOptions &
-    GetTrustedEntitiesForDidOptions &
-    GetTrustedEntitiesForX509CertificateOptions,
+export type GetTrustedEntitiesForOpenId4VpOptions = Omit<
+  { paradym: ParadymWalletSdk } & GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions &
+    GetTrustedEntitiesForDidForOpenId4VpOptions &
+    GetTrustedEntitiesForX509CertificateForOpenId4VpOptions &
+    GetTrustedEntitiesForFallbackForOpenId4VpOptions,
   'trustMechanismConfiguration'
 >
 
-export const detectTrustMechanism = (options: {
+export type GetTrustedEntitiesForOpenId4VciOptions = Omit<
+  { paradym: ParadymWalletSdk } & GetTrustedEntitiesForDidForOpenId4VpOptions &
+    GetTrustedEntitiesForX509CertificateForOpenId4VpOptions &
+    GetTrustedEntitiesForFallbackForOpenId4VciOptions,
+  'trustMechanismConfiguration'
+>
+
+export const detectTrustMechanismForAuthorizationRequest = (options: {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
 }): TrustMechanism => {
@@ -73,18 +112,39 @@ export const detectTrustMechanism = (options: {
     return 'did'
   }
 
+  if (
+    options.resolvedAuthorizationRequest.verifier.clientIdPrefix === 'origin' ||
+    options.resolvedAuthorizationRequest.verifier.clientIdPrefix === 'redirect_uri'
+  ) {
+    return 'none'
+  }
+
   throw new Error('Could not infer trust mechanism for authorization request')
 }
 
-export const getTrustedEntities = async (
-  options: GetTrustedEntitiesOptions
+export const detectTrustMechanismForCredentialOffer = (options: {
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+}): TrustMechanism => {
+  const signer = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.signer
+  if (signer?.method === 'x5c' && signer.x5c) {
+    return 'x509'
+  }
+
+  if (signer?.method === 'did' && signer.didUrl) {
+    return 'did'
+  }
+
+  return 'none'
+}
+
+export const getTrustedEntitiesForOpenId4Vp = async (
+  options: GetTrustedEntitiesForOpenId4VpOptions
 ): Promise<{
   trustMechanism: TrustMechanism
-  relyingParty: { logoUri?: string; uri?: string; organizationName?: string; entityId: string }
+  relyingParty: TrustedRelyingPartyEntity['relyingParty']
   trustedEntities: Array<TrustedEntity>
 }> => {
-  const trustMechanism = detectTrustMechanism(options)
-
+  const trustMechanism = detectTrustMechanismForAuthorizationRequest(options)
   const trustMechanismConfiguration = options.paradym.trustMechanisms.find((tm) => tm.trustMechanism === trustMechanism)
 
   // TODO(sdk): what do we want to do when a trust mechanism is used, but not configured? Ignore or error?
@@ -92,42 +152,115 @@ export const getTrustedEntities = async (
     throw new Error(`Found '${trustMechanism}', but without any configuration`)
   }
 
-  // biome-ignore lint/suspicious/noImplicitAnyLet: No explanation
-  let trustedEntities
+  let trustedEntity: TrustedRelyingPartyEntity
   switch (trustMechanism) {
     case 'eudi_rp_authentication':
-      trustedEntities = await getTrustedEntitiesForEudiRpAuthentication({
+      trustedEntity = await getTrustedEntitiesForEudiRpAuthenticationForOpenId4Vp({
         ...options,
         trustMechanismConfiguration: trustMechanismConfiguration as EudiRpAuthenticationTrustMechanismConfiguration,
       })
       break
     case 'x509':
-      trustedEntities = await getTrustedEntitiesForX509Certificate({
+      trustedEntity = await getTrustedEntitiesForX509CertificateForOpenId4Vp({
         ...options,
         trustMechanismConfiguration: trustMechanismConfiguration as X509TrustMechanismConfiguration,
       })
       break
     case 'did':
-      trustedEntities = await getTrustedEntitiesForDid({
+      trustedEntity = await getTrustedEntitiesForDidForOpenId4Vp({
         ...options,
         trustMechanismConfiguration: trustMechanismConfiguration as DidTrustMechanismConfiguration,
+      })
+      break
+    case 'none':
+      trustedEntity = await getTrustedEntitiesForFallbackForOpenId4Vp(options)
+      break
+    default:
+      throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
+  }
+
+  const entityId = trustedEntity.relyingParty.entityId
+  if (!entityId) {
+    throw new Error('Missing required client_id in authorization request')
+  }
+
+  return {
+    ...trustedEntity,
+    trustMechanism,
+    relyingParty: {
+      ...trustedEntity.relyingParty,
+      entityId,
+    },
+  }
+}
+
+export const getTrustedEntitiesForOpenId4Vci = async (options: {
+  paradym: ParadymWalletSdk
+  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  walletTrustedEntity?: TrustedEntity
+}): Promise<{
+  trustMechanism: TrustMechanism
+  issuer: TrustedIssuerEntity['issuer']
+  trustedEntities: Array<TrustedEntity>
+}> => {
+  const trustMechanism = detectTrustMechanismForCredentialOffer({
+    resolvedCredentialOffer: options.resolvedCredentialOffer,
+  })
+  const trustMechanismConfiguration = options.paradym.trustMechanisms.find((tm) => tm.trustMechanism === trustMechanism)
+
+  // TODO(sdk): what do we want to do when a trust mechanism is used, but not configured? Ignore or error?
+  if (!trustMechanismConfiguration) {
+    throw new Error(`Found '${trustMechanism}', but without any configuration`)
+  }
+
+  let trustedEntity: TrustedIssuerEntity | undefined
+  switch (trustMechanism) {
+    case 'x509':
+      trustedEntity =
+        (await getTrustedEntitiesForX509CertificateForOpenId4Vci({
+          ...options,
+          trustMechanismConfiguration: trustMechanismConfiguration as X509TrustMechanismConfiguration,
+        })) ??
+        (await getTrustedEntitiesForFallbackForOpenId4Vci({
+          ...options,
+          trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
+        }))
+      break
+    case 'did':
+      trustedEntity =
+        getTrustedEntitiesForDidForOpenId4Vci({
+          ...options,
+          trustMechanismConfiguration: trustMechanismConfiguration as DidTrustMechanismConfiguration,
+        }) ??
+        (await getTrustedEntitiesForFallbackForOpenId4Vci({
+          ...options,
+          trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
+        }))
+      break
+    case 'none':
+      trustedEntity = await getTrustedEntitiesForFallbackForOpenId4Vci({
+        ...options,
+        trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
       })
       break
     default:
       throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
   }
 
-  const entityId = trustedEntities.relyingParty.entityId
-  if (!entityId) {
-    throw new Error('Missing required client_id in authorization request')
-  }
+  const entityId =
+    trustedEntity?.issuer.entityId ?? options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
+
+  const display = getCredentialDisplayForOffer(options.resolvedCredentialOffer)
 
   return {
-    ...trustedEntities,
+    trustedEntities: trustedEntity?.trustedEntities ?? [],
     trustMechanism,
-    relyingParty: {
-      ...trustedEntities.relyingParty,
-      entityId,
-    },
+    issuer: trustedEntity?.issuer
+      ? { ...trustedEntity.issuer, entityId }
+      : {
+          organizationName: display.name,
+          logoUri: display.issuer.logo?.url,
+          entityId,
+        },
   }
 }
