@@ -2,6 +2,7 @@ import { PinPad, PinValues, XStack, YStack } from '@package/ui'
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import Animated, {
   Easing,
+  useAnimatedStyle,
   useSharedValue,
   withDelay,
   withRepeat,
@@ -27,6 +28,50 @@ export interface PinDotsInputRef {
   shake: () => void
 }
 
+interface PinDotProps {
+  filled: boolean
+  index: number
+  totalDots: number
+  isLoading: boolean
+}
+
+const PinDot = ({ filled, index, totalDots, isLoading }: PinDotProps) => {
+  const animation = useSharedValue(0)
+  const style = useAnimatedStyle(() => ({ transform: [{ translateY: animation.value }] }))
+
+  useEffect(() => {
+    if (!isLoading) {
+      animation.value = withTiming(0, { duration: 75 })
+      return
+    }
+
+    const delay = index * (500 / totalDots)
+    animation.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(-10, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
+          withTiming(0, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
+          withDelay(500, withTiming(0, { duration: 0 }))
+        ),
+        -1,
+        false
+      )
+    )
+  }, [isLoading, index, totalDots])
+
+  return (
+    <Animated.View style={style}>
+      <Circle
+        size="$1.5"
+        backgroundColor={filled ? '$primary-500' : '$background'}
+        borderColor="$primary-500"
+        borderWidth="$1"
+      />
+    </Animated.View>
+  )
+}
+
 export const PinDotsInput = forwardRef(
   (
     {
@@ -45,12 +90,9 @@ export const PinDotsInput = forwardRef(
 
     const isInLoadingState = isLoading
 
-    const pinDots = new Array(pinLength).fill(0).map((_, i) => isInLoadingState || pin[i] !== undefined)
-
-    const translationAnimations = pinDots.map(() => useSharedValue(0))
     const shakeAnimation = useSharedValue(0)
+    const shakeStyle = useAnimatedStyle(() => ({ left: shakeAnimation.value }))
 
-    // Shake animation
     const startShakeAnimation = useCallback(() => {
       errorHaptic()
       shakeAnimation.value = withRepeat(
@@ -59,31 +101,6 @@ export const PinDotsInput = forwardRef(
         true
       )
     }, [shakeAnimation, errorHaptic])
-
-    useEffect(() => {
-      translationAnimations.forEach((animation, index) => {
-        // Go back down in 75 milliseconds
-        if (!isInLoadingState) {
-          animation.value = withTiming(0, { duration: 75 })
-          return
-        }
-
-        // Loading animation
-        const delay = index * (500 / translationAnimations.length)
-        animation.value = withDelay(
-          delay,
-          withRepeat(
-            withSequence(
-              withTiming(-10, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
-              withTiming(0, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
-              withDelay(500, withTiming(0, { duration: 0 }))
-            ),
-            -1,
-            false
-          )
-        )
-      })
-    }, [...translationAnimations, translationAnimations.forEach, translationAnimations.length, isInLoadingState])
 
     useImperativeHandle(
       ref,
@@ -135,18 +152,16 @@ export const PinDotsInput = forwardRef(
 
     return (
       <YStack flexGrow={1} gap="$8" jc="space-between" onPress={() => inputRef.current?.focus()}>
-        <Animated.View style={{ left: shakeAnimation }}>
+        <Animated.View style={shakeStyle}>
           <XStack justifyContent="center" gap="$2">
-            {pinDots.map((filled, i) => (
-              // NOTE: somehow this gives a warning, but we're not directly accessing the values?!?
-              <Animated.View key={i} style={{ transform: [{ translateY: translationAnimations[i] }] }}>
-                <Circle
-                  size="$1.5"
-                  backgroundColor={filled ? '$primary-500' : '$background'}
-                  borderColor="$primary-500"
-                  borderWidth="$1"
-                />
-              </Animated.View>
+            {Array.from({ length: pinLength }, (_, i) => (
+              <PinDot
+                key={i}
+                filled={!!isInLoadingState || pin[i] !== undefined}
+                index={i}
+                totalDots={pinLength}
+                isLoading={!!isInLoadingState}
+              />
             ))}
           </XStack>
         </Animated.View>
