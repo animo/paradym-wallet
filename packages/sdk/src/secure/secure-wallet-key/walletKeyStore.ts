@@ -55,7 +55,11 @@ async function canUseBiometryBackedWalletKey(): Promise<boolean> {
      * Android Only API. We only allow hardware secured key storage for unlocking with biometrics
      */
     const securityLevel = await Keychain.getSecurityLevel(walletKeyStoreBaseOptions)
-    if (!securityLevel || securityLevel !== Keychain.SECURITY_LEVEL.SECURE_HARDWARE) {
+    if (
+      !securityLevel ||
+      (securityLevel !== Keychain.SECURITY_LEVEL.SECURE_SOFTWARE &&
+        securityLevel !== Keychain.SECURITY_LEVEL.SECURE_HARDWARE)
+    ) {
       return false
     }
   }

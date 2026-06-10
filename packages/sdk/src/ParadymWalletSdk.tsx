@@ -48,7 +48,7 @@ import {
   type GetSubmissionForMdocDocumentRequestOptions,
   getSubmissionForMdocDocumentRequest,
 } from './proximity/getSubmissionForMdocDocumentRequest'
-import { secureWalletKey, setIsBiometricsEnabled } from './secure'
+import { getIsBiometricsEnabled, secureWalletKey, setIsBiometricsEnabled } from './secure'
 import { KeychainError } from './secure/error/KeychainError'
 import { deleteCredential } from './storage/credentials'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
@@ -272,7 +272,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): SecureUnlockReturn {
   const [state, setState] = useState<SecureUnlockState>('initializing')
   const [canTryUnlockingUsingBiometrics, setCanTryUnlockingUsingBiometrics] = useState<boolean>(true)
-  const [_canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
+  const [canUseBiometrics, setCanUseBiometrics] = useState<boolean>()
   const [biometricsUnlockAttempts, setBiometricsUnlockAttempts] = useState(0)
   const [unlockMethod, setUnlockMethod] = useState<UnlockMethod>()
   const [isUnlocking, setIsUnlocking] = useState(false)
@@ -287,9 +287,9 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       // We have two params. If e.g. unlocking using biometrics failed, we will
       // set setCanTryUnlockingUsingBiometrics to false, but `setCanUseBiometrics`
       // will still be true (so we can store it)
-      const cub = await secureWalletKey.canUseBiometryBackedWalletKey()
-      setCanUseBiometrics(cub)
-      setCanTryUnlockingUsingBiometrics(cub)
+      const canUseBiometrics = await secureWalletKey.canUseBiometryBackedWalletKey()
+      setCanUseBiometrics(canUseBiometrics)
+      setCanTryUnlockingUsingBiometrics(canUseBiometrics)
 
       setState(salt ? 'locked' : 'not-configured')
       return salt
@@ -303,6 +303,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
     setCanTryUnlockingUsingBiometrics(true)
     setBiometricsUnlockAttempts(0)
     setUnlockMethod(undefined)
+    setCanUseBiometrics(undefined)
     setCanUseBiometrics(undefined)
     setIsUnlocking(false)
   }
@@ -335,11 +336,21 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
         reinitialize()
         reset(paradym)
       },
-      unlock: async (_options) => {
+      unlock: async (options) => {
         try {
           const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
           const id = configuration.id ? `${configuration.id}-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
           const key = walletKey
+
+          const isBiometricsEnabled = options?.enableBiometrics ?? getIsBiometricsEnabled()
+          if (canUseBiometrics && isBiometricsEnabled) {
+            const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+            await secureWalletKey.storeWalletKey(walletKey, walletKeyVersion)
+            if (options?.enableBiometrics) {
+              await secureWalletKey.getWalletKeyUsingBiometrics(walletKeyVersion)
+              setIsBiometricsEnabled(true)
+            }
+          }
 
           const pws = new ParadymWalletSdk({
             ...configuration,
