@@ -12,6 +12,11 @@ import { credentialDataHandlerOptions } from './(app)/_layout'
 // deeplink from working on a cold startup. We updated the invitation handler to
 // be fully sync.
 export function redirectSystemPath({ path, initial }: { path: string; initial: boolean }) {
+  // short-circuit when we just want to enter the app without any link
+  if (path === 'id.animo.paradym:///') {
+    return '/'
+  }
+
   const logger = new ParadymWalletSdkConsoleLogger(LogLevel.trace)
 
   logger.debug(`Handling deeplink for path ${path}.`, {
@@ -97,14 +102,15 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       return '/'
     } catch (error) {
-      logger.info('Deeplink is not a valid invitation. Routing to home screen', {
+      logger.error('Deeplink is not a valid invitation. Routing to home screen', {
         error: error,
         message: (error as Error).message,
       })
 
       return '/'
     }
-  } catch (_error) {
+  } catch (error) {
+    logger.error('Error occurred during redirectSystemPath', { cause: error })
     return '/'
   }
 }
