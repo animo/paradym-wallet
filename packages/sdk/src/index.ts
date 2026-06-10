@@ -39,7 +39,7 @@ export type {
 } from './storage/activityStore'
 export { type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesWithRecordMetadata  } from './format/attributes'
 export type { TrustedDidEntity } from './trust/handlers/did'
-export type { TrustedOpenId4VciIssuerEntity } from './trust/handlers/openId4VciIssuer'
+export type { TrustedOpenId4VciEntity } from './trust/handlers/fallback'
 export type { TrustList } from './trust/handlers/eudiRpAuthentication'
 export type { TrustedX509Entity } from './trust/handlers/x509'
 export type { TrustedEntity, TrustMechanism } from './trust/trustMechanism'

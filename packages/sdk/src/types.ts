@@ -29,3 +29,5 @@ export type NonEmptyArray<T> = [T, ...T[]]
  *
  */
 export type DistributedOmit<T, K extends keyof T> = T extends Record<string, unknown> ? Omit<T, K> : never
+
+export type Optionalize<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>

@@ -44,7 +44,7 @@ export const VerifyPartySlide = ({
   onContinue,
   onDecline,
   trustedEntities,
-  trustMechanism = 'x509',
+  trustMechanism = 'none',
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
@@ -58,6 +58,7 @@ export const VerifyPartySlide = ({
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
+
   const trustedEntitiesWithoutSelf = trustedEntities
     ?.filter((entity) => entity.entityId !== entityId)
     .map((entity) => ({

@@ -47,6 +47,7 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import { type CredentialsForProofRequest, resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import { getTrustedEntitiesForOpenId4Vci, type TrustedEntity, type TrustMechanism } from '../trust/trustMechanism'
 import { resolveCredentialMetadataUri } from '../utils/resolveCredentialMetadataUri'
 
 export type AcceptOutOfBandInvitationResult<FlowType extends 'issue' | 'verify' | 'connect'> = Promise<
@@ -144,11 +145,12 @@ type ResolveCredentialOfferAuthPresentationDuringIssuanceReturn = {
   credentialsForProofRequest: CredentialsForProofRequest
 }
 
-export type ResolveCredentialOfferReturn =
+export type ResolveCredentialOfferReturn = (
   | ResolveCredentialOfferPreAuthReturn
   | ResolveCredentialOfferPreAuthWithTxCodeReturn
   | ResolveCredentialOfferAuthReturn
   | ResolveCredentialOfferAuthPresentationDuringIssuanceReturn
+) & { trustMechanism: TrustMechanism; trustedEntities: TrustedEntity[]; issuer: TrustedEntity }
 
 export async function resolveCredentialOffer({
   paradym,
@@ -169,6 +171,12 @@ export async function resolveCredentialOffer({
 
   const credentialDisplay = getCredentialDisplayForOffer(resolvedCredentialOffer)
 
+  const { trustMechanism, trustedEntities, issuer } = await getTrustedEntitiesForOpenId4Vci({
+    resolvedCredentialOffer,
+    paradym,
+    // TODO: add wallet trusted entity
+  })
+
   if (preAuthGrant) {
     if (txCodeInfo) {
       return {
@@ -176,12 +184,18 @@ export async function resolveCredentialOffer({
         credentialDisplay,
         resolvedCredentialOffer,
         txCodeInfo,
+        issuer,
+        trustedEntities,
+        trustMechanism,
       }
     }
     return {
       flow: 'pre-auth',
       credentialDisplay,
       resolvedCredentialOffer,
+      issuer,
+      trustedEntities,
+      trustMechanism,
     }
   }
 
@@ -216,6 +230,9 @@ export async function resolveCredentialOffer({
         resolvedCredentialOffer,
         resolvedAuthorizationRequest,
         credentialsForProofRequest,
+        issuer,
+        trustedEntities,
+        trustMechanism,
       }
     }
 
@@ -224,6 +241,9 @@ export async function resolveCredentialOffer({
       credentialDisplay,
       resolvedCredentialOffer,
       resolvedAuthorizationRequest,
+      issuer,
+      trustedEntities,
+      trustMechanism,
     }
   }
 

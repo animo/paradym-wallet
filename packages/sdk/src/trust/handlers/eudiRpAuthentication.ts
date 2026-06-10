@@ -5,23 +5,28 @@ import type {
   AuthorizationRequestVerificationResult,
   EudiRpAuthenticationTrustMechanismConfiguration,
   TrustedEntity,
+  TrustedRelyingPartyEntity,
 } from '../trustMechanism'
-import { type GetTrustedEntitiesForX509CertificateOptions, getTrustedEntitiesForX509Certificate } from './x509'
+import {
+  type GetTrustedEntitiesForX509CertificateForOpenId4VpOptions,
+  getTrustedEntitiesForX509CertificateForOpenId4Vp,
+} from './x509'
 
 export type TrustList = TrustedEntity & {
   trustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }>
 }
 
-export type GetTrustedEntitiesForEudiRpAuthenticationOptions = {
+export type GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions = {
   paradym: ParadymWalletSdk
   authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   trustMechanismConfiguration: EudiRpAuthenticationTrustMechanismConfiguration
+  walletTrustedEntity?: TrustedEntity
 }
 
-export const getTrustedEntitiesForEudiRpAuthentication = async (
-  options: GetTrustedEntitiesForEudiRpAuthenticationOptions
-) => {
+export const getTrustedEntitiesForEudiRpAuthenticationForOpenId4Vp = async (
+  options: GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions
+): Promise<TrustedRelyingPartyEntity> => {
   const trustedEntities: TrustedEntity[] = []
   let organizationName: string | undefined
   let logoUri: string | undefined
@@ -61,8 +66,8 @@ export const getTrustedEntitiesForEudiRpAuthentication = async (
 
   // Casting works here as eudi_rp_authentication trust mechanism configuration extends
   // x509 trust mechanism configuration
-  const { trustedEntities: x509TrustedEntities, relyingParty } = await getTrustedEntitiesForX509Certificate(
-    options as unknown as GetTrustedEntitiesForX509CertificateOptions
+  const { trustedEntities: x509TrustedEntities } = await getTrustedEntitiesForX509CertificateForOpenId4Vp(
+    options as unknown as GetTrustedEntitiesForX509CertificateForOpenId4VpOptions
   )
 
   return {
@@ -70,7 +75,7 @@ export const getTrustedEntitiesForEudiRpAuthentication = async (
       organizationName,
       logoUri,
       uri,
-      entityId: entityId ?? relyingParty.entityId,
+      entityId,
     },
     trustedEntities: [...x509TrustedEntities, ...trustedEntities],
   }

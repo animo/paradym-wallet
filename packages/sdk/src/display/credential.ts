@@ -36,7 +36,7 @@ export interface DisplayImage {
 }
 
 export interface CredentialDisplay {
-  name?: string
+  name: string
   locale?: string
   description?: string
   textColor?: string

@@ -308,14 +308,16 @@ export function FunkeCredentialNotificationScreen() {
             <VerifyPartySlide
               key="verify-issuer"
               type="offer"
-              name={resolvedCredentialOffer.credentialDisplay.issuer.name}
-              logo={resolvedCredentialOffer.credentialDisplay.issuer.logo}
-              entityId={resolvedCredentialOffer.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer}
+              name={resolvedCredentialOffer.issuer.organizationName}
+              logo={{ url: resolvedCredentialOffer.issuer.logoUri, altText: resolvedCredentialOffer.issuer.entityId }}
+              entityId={resolvedCredentialOffer.issuer.entityId}
               onContinue={
                 resolvedCredentialOffer.flow === 'pre-auth' || resolvedCredentialOffer.flow === 'pre-auth-with-tx-code'
                   ? acquireCredentialsPreAuth
                   : undefined
               }
+              trustMechanism={resolvedCredentialOffer.trustMechanism}
+              trustedEntities={resolvedCredentialOffer.trustedEntities}
             />
           ),
         },
