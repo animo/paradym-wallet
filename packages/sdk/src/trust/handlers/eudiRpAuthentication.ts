@@ -21,6 +21,7 @@ export type GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions = {
   authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   trustMechanismConfiguration: EudiRpAuthenticationTrustMechanismConfiguration
+  walletTrustedEntity?: TrustedEntity
 }
 
 export const getTrustedEntitiesForEudiRpAuthenticationForOpenId4Vp = async (

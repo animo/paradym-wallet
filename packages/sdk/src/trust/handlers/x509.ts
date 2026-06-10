@@ -67,10 +67,6 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
           )
         : null
       if (trustedEntity) {
-        organizationName = trustedEntity.name
-        logoUri = trustedEntity.logoUri
-        entityId = trustedEntity.entityId
-
         trustedEntities.push({
           entityId: trustedEntity.entityId,
           organizationName: trustedEntity.name,
@@ -78,12 +74,13 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
           uri: trustedEntity.url,
           demo: trustedEntity.demo,
         })
+        entityId = trustedEntity.entityId
 
         if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
-      } else {
-        organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
-        logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
       }
+
+      organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
+      logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
     }
   } catch (_error) {
     // no-op

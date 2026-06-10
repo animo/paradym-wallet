@@ -165,7 +165,16 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
     certificate:
       'MIIB2zCCAYCgAwIBAgIRALanVqNUK4dgPlUmlAasZ24wCgYIKoZIzj0EAwIwHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMB4XDTI0MTEyODE2MjgzMFoXDTI4MTEyODE2MjgzMFowHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwDpb2uNodErbJfEWteLF6pGiqaxNfF9rFyttjJy+No0gmzn4wkgYqvGtcX5W4blXT1PQubGml5QUmpm5d41zd6OBoDCBnTAdBgNVHQ4EFgQUVC5XW1PTYNo6yWnkJGgvBVCtWZUwDgYDVR0PAQH/BAQDAgEGMCYGA1UdEgQfMB2GG2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZDASBgNVHRMBAf8ECDAGAQH/AgEAMDAGA1UdHwQpMCcwJaAjoCGGH2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZC9jcmwwCgYIKoZIzj0EAwIDSQAwRgIhAJvXTWWteCIeZPbzn+Y++Lpf4eFTmxP2M5o4phGsLuZcAiEAuiL89d9a2CQbQo8dzNpnV+P9JrUnKRQuP5ZZ9VJcoJI=',
     logoUri: 'https://playground.animo.id/logo.svg',
-    entityId: 'Animo_Playground',
+    entityId: 'playground.animo.id',
+    demo: true,
+  },
+  {
+    name: 'Paradym Playground',
+    url: 'https://playground.paradym.id',
+    certificate:
+      'MIICMzCCAdmgAwIBAgIQUIrWwRRwpN1wZkJ3kddlkTAKBggqhkjOPQQDAjAqMRswGQYDVQQDExJQYXJhZHltIFBsYXlncm91bmQxCzAJBgNVBAYTAk5MMB4XDTI2MDYwMzEwMjMwNVoXDTMxMDYwMzEwMjMwNVowKjEbMBkGA1UEAxMSUGFyYWR5bSBQbGF5Z3JvdW5kMQswCQYDVQQGEwJOTDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABFLppN8WJtE5sYI8xjfV5y0wmPP+ZZANpbxsQIDjBm72/N2Z4XrzEesuR4mPqdJ/yzrPx3plR7jg1oUO8YGx3wOjgeAwgd0wHQYDVR0OBBYEFJGF8RBTTXxJM8R1X0MyDdmf0srGMA4GA1UdDwEB/wQEAwIBBjAoBgNVHRIEITAfhh1odHRwczovL3BsYXlncm91bmQucGFyYWR5bS5pZDASBgNVHRMBAf8ECDAGAQH/AgEAMG4GA1UdHwRnMGUwY6BhoF+GXWh0dHBzOi8vbWV0YWRhdGEucGFyYWR5bS5pZC9jZXJ0aWZpY2F0ZS1yZXZvY2F0aW9uLWxpc3RzL2ZlM2VlNzA0LTFmOTQtNDA4Yi1iMTMzLWYxZGRhNzI3N2E3ZTAKBggqhkjOPQQDAgNIADBFAiEA6D8eadYijkuOVFyxCfcoWFpLDtL6SrizvRC1qt+SjnYCICqjTVpmspHVTIhG6yDbEezgX5MGe+B+azfy5JFl5f+B',
+    logoUri: 'https://playground.paradym.id/logo.png',
+    entityId: 'playground.paradym.id',
     demo: true,
   },
 ] satisfies Array<TrustedX509Entity>
@@ -231,6 +240,14 @@ export const trustedOpenId4VciIssuerEntities = [
     name: 'eduID',
     url: 'https://eduid.nl',
     demo: false,
+  },
+  {
+    entityId: 'https://playground.paradym.id',
+    issuer: 'https://agent.paradym.id/oid4vci/63010627-501b-43ec-a250-9a968ecf48fe',
+    logoUri: 'https://playground.paradym.id/logo.png',
+    name: 'Paradym Playground',
+    url: 'https://playground.paradym.id',
+    demo: true,
   },
 ] satisfies Array<TrustedOpenId4VciEntity>
 

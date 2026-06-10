@@ -74,6 +74,7 @@ export type TrustMechanismConfiguration =
   | X509TrustMechanismConfiguration
   | DidTrustMechanismConfiguration
   | FallbackMechanismConfiguration
+  | { walletTrustedEntity?: TrustedEntity }
 
 export type AuthorizationRequestVerificationResult = {
   isValidButUntrusted: boolean
@@ -145,7 +146,12 @@ export const getTrustedEntitiesForOpenId4Vp = async (
   trustedEntities: Array<TrustedEntity>
 }> => {
   const trustMechanism = detectTrustMechanismForAuthorizationRequest(options)
-  const trustMechanismConfiguration = options.paradym.trustMechanisms.find((tm) => tm.trustMechanism === trustMechanism)
+  const walletTrustedEntity = options.paradym.trustMechanisms.find(
+    (tm): tm is { walletTrustedEntity?: TrustedEntity } => 'walletTrustedEntity' in tm
+  )?.walletTrustedEntity
+  const trustMechanismConfiguration = options.paradym.trustMechanisms.find(
+    (tm) => 'trustMechanism' in tm && tm.trustMechanism === trustMechanism
+  )
 
   // TODO(sdk): what do we want to do when a trust mechanism is used, but not configured? Ignore or error?
   if (!trustMechanismConfiguration) {
@@ -157,23 +163,26 @@ export const getTrustedEntitiesForOpenId4Vp = async (
     case 'eudi_rp_authentication':
       trustedEntity = await getTrustedEntitiesForEudiRpAuthenticationForOpenId4Vp({
         ...options,
+        walletTrustedEntity,
         trustMechanismConfiguration: trustMechanismConfiguration as EudiRpAuthenticationTrustMechanismConfiguration,
       })
       break
     case 'x509':
       trustedEntity = await getTrustedEntitiesForX509CertificateForOpenId4Vp({
         ...options,
+        walletTrustedEntity,
         trustMechanismConfiguration: trustMechanismConfiguration as X509TrustMechanismConfiguration,
       })
       break
     case 'did':
       trustedEntity = await getTrustedEntitiesForDidForOpenId4Vp({
         ...options,
+        walletTrustedEntity,
         trustMechanismConfiguration: trustMechanismConfiguration as DidTrustMechanismConfiguration,
       })
       break
     case 'none':
-      trustedEntity = await getTrustedEntitiesForFallbackForOpenId4Vp(options)
+      trustedEntity = await getTrustedEntitiesForFallbackForOpenId4Vp({ ...options, walletTrustedEntity })
       break
     default:
       throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
@@ -206,7 +215,12 @@ export const getTrustedEntitiesForOpenId4Vci = async (options: {
   const trustMechanism = detectTrustMechanismForCredentialOffer({
     resolvedCredentialOffer: options.resolvedCredentialOffer,
   })
-  const trustMechanismConfiguration = options.paradym.trustMechanisms.find((tm) => tm.trustMechanism === trustMechanism)
+  const walletTrustedEntity = options.paradym.trustMechanisms.find(
+    (tm): tm is { walletTrustedEntity?: TrustedEntity } => 'walletTrustedEntity' in tm
+  )?.walletTrustedEntity
+  const trustMechanismConfiguration = options.paradym.trustMechanisms.find(
+    (tm) => 'trustMechanism' in tm && tm.trustMechanism === trustMechanism
+  )
 
   // TODO(sdk): what do we want to do when a trust mechanism is used, but not configured? Ignore or error?
   if (!trustMechanismConfiguration) {
@@ -219,10 +233,12 @@ export const getTrustedEntitiesForOpenId4Vci = async (options: {
       trustedEntity =
         (await getTrustedEntitiesForX509CertificateForOpenId4Vci({
           ...options,
+          walletTrustedEntity,
           trustMechanismConfiguration: trustMechanismConfiguration as X509TrustMechanismConfiguration,
         })) ??
         (await getTrustedEntitiesForFallbackForOpenId4Vci({
           ...options,
+          walletTrustedEntity,
           trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
         }))
       break
@@ -230,16 +246,19 @@ export const getTrustedEntitiesForOpenId4Vci = async (options: {
       trustedEntity =
         getTrustedEntitiesForDidForOpenId4Vci({
           ...options,
+          walletTrustedEntity,
           trustMechanismConfiguration: trustMechanismConfiguration as DidTrustMechanismConfiguration,
         }) ??
         (await getTrustedEntitiesForFallbackForOpenId4Vci({
           ...options,
+          walletTrustedEntity,
           trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
         }))
       break
     case 'none':
       trustedEntity = await getTrustedEntitiesForFallbackForOpenId4Vci({
         ...options,
+        walletTrustedEntity,
         trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
       })
       break

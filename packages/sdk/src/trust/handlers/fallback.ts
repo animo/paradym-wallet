@@ -22,8 +22,8 @@ export type GetTrustedEntitiesForFallbackForOpenId4VpOptions = {
 
 export type GetTrustedEntitiesForFallbackForOpenId4VciOptions = {
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  walletTrustedEntity?: TrustedEntity
   trustMechanismConfiguration: FallbackMechanismConfiguration
+  walletTrustedEntity?: TrustedEntity
 }
 
 export const getTrustedEntitiesForFallbackForOpenId4Vp = async (

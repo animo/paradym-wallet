@@ -18,13 +18,13 @@ export type TrustedDidEntity = {
 
 export type GetTrustedEntitiesForDidForOpenId4VpOptions = {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
-  walletTrustedEntity?: TrustedEntity
   trustMechanismConfiguration: DidTrustMechanismConfiguration
+  walletTrustedEntity?: TrustedEntity
 }
 
 export type GetTrustedEntitiesForDidForOpenId4VciOptions = {
-  trustMechanismConfiguration: DidTrustMechanismConfiguration
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+  trustMechanismConfiguration: DidTrustMechanismConfiguration
   walletTrustedEntity?: TrustedEntity
 }
 

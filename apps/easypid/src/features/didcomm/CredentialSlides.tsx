@@ -97,7 +97,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
             <CredentialRetrievalSlide
               key="retrieve-credential"
               onGoToWallet={onComplete}
-              display={{...display,name: display.name ?? t(commonMessages.unknown)}}
+              display={{ ...display, name: display.name ?? t(commonMessages.unknown) }}
               attributes={attributes}
               isCompleted={acceptStatus === 'success'}
               onAccept={onCredentialAccept}
