@@ -30,13 +30,16 @@ export default function Authenticate() {
   const biometricsType = useBiometricsType()
   const pinInputRef = useRef<PinDotsInputRef>(null)
   const { additionalPadding, noBottomSafeArea } = useDeviceMedia()
-  const [isInitializingAgent, setIsInitializingAgent] = useState(false)
+  const [isInitializingParadym, setIsInitializingParadym] = useState(false)
   const [isAllowedToUnlockWithFaceId, setIsAllowedToUnlockWithFaceId] = useState(false)
   const [isBiometricsEnabled] = useIsBiometricsEnabled()
   const canUseBiometryBackedWalletKey = useCanUseBiometryBackedWalletKey()
   const [shouldPromptBiometrics, setShouldPromptBiometrics] = useState(true)
 
-  const isLoading = paradym.state === 'locked' && paradym.isUnlocking
+  const isLoading =
+    (paradym.state === 'locked' && paradym.isUnlocking) ||
+    paradym.state === 'acquired-wallet-key' ||
+    isInitializingParadym
 
   useEffect(() => {
     if (paradym.state === 'unlocked' && redirectAfterUnlock) {
@@ -64,9 +67,9 @@ export default function Authenticate() {
   }, [paradym.state, isAllowedToUnlockWithFaceId])
 
   useEffect(() => {
-    if (isInitializingAgent || paradym.state !== 'acquired-wallet-key') return
+    if (isInitializingParadym || paradym.state !== 'acquired-wallet-key') return
 
-    setIsInitializingAgent(true)
+    setIsInitializingParadym(true)
     paradym
       .unlock()
       .catch((error) => {
@@ -82,8 +85,8 @@ export default function Authenticate() {
           setShouldPromptBiometrics(false)
         }
       })
-      .finally(() => setIsInitializingAgent(false))
-  }, [paradym, isInitializingAgent])
+      .finally(() => setIsInitializingParadym(false))
+  }, [paradym, isInitializingParadym])
 
   if (paradym.state === 'unlocked') {
     // Expo and urls as query params don't go well together, so we encoded the url as base64

@@ -152,7 +152,6 @@ export default function AppLayout() {
         <Stack.Screen name="pinConfirmation" options={headerNormalOptions} />
         <Stack.Screen name="pinLocked" options={headerNormalOptions} />
         <Stack.Screen name="trust" options={headerNormalOptions} />
-        <Stack.Screen name="pidSetup" />
         <Stack.Screen name="inbox" options={headerNormalOptions} />
       </Stack>
     </ParadymWalletSdk.AppProvider>

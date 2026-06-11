@@ -1,4 +1,3 @@
-import { useFirstNameFromPidCredential } from '@easypid/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
 import {
@@ -28,7 +27,6 @@ import { LatestActivityCard } from './components/LatestActivityCard'
 export function FunkeWalletScreen() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
-  const { userName, isLoading } = useFirstNameFromPidCredential()
 
   const pushToMenu = withHaptics(() => push('/menu'))
   const pushToScanner = withHaptics(() => push('/scan'))
@@ -55,19 +53,8 @@ export function FunkeWalletScreen() {
           <ScrollView scrollEnabled={false} contentContainerStyle={{ fg: 1 }}>
             <YStack fg={1} f={1} gap="$4">
               <YStack ai="center" jc="center" gap="$2">
-                <Heading
-                  heading="h1"
-                  fontSize={!userName || userName.length < 14 ? 38 : 26}
-                  lineHeight={!userName || userName.length < 14 ? 40 : 32}
-                  opacity={isLoading ? 0 : 1}
-                  ta="center"
-                  numberOfLines={2}
-                >
-                  {userName ? (
-                    <Trans id="home.helloWithName">Hello, {userName}!</Trans>
-                  ) : (
-                    <Trans id="home.helloWithoutName">Hello!</Trans>
-                  )}
+                <Heading heading="h1" fontSize={38} lineHeight={40} ta="center" numberOfLines={2}>
+                  <Trans id="home.helloWithoutName">Hello!</Trans>
                 </Heading>
                 <Paragraph>
                   <Trans id="home.receiveOrShare">Receive or share from your wallet</Trans>{' '}
