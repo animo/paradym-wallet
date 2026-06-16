@@ -19,6 +19,7 @@ import {
 import { useRefreshedDeferredCredentials } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { FadeIn } from 'react-native-reanimated'
+import { useRefreshPaymentTransactionStatuses } from '../../hooks/useRefreshPaymentTransactionStatuses'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
 import { InboxIcon } from './components/InboxIcon'
@@ -36,6 +37,7 @@ export function FunkeWalletScreen() {
   const { t } = useLingui()
 
   useRefreshedDeferredCredentials()
+  useRefreshPaymentTransactionStatuses()
 
   return (
     <YStack pos="relative" fg={1} bg="$background">

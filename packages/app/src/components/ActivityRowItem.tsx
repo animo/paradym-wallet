@@ -107,7 +107,24 @@ export const activityInteractions: ActivityInteractions = {
   },
 }
 
+const paymentTransactionStatusInteractions: Record<'PDNG' | 'RJCT', ActivityInteraction> = {
+  PDNG: {
+    icon: HeroIcons.ClockFilled,
+    color: '$warning-500',
+    text: commonMessages.paymentPending,
+  },
+  RJCT: {
+    icon: CustomIcons.Exclamation,
+    color: '$danger-500',
+    text: commonMessages.paymentRejected,
+  },
+}
+
 export const getActivityInteraction = (activity: Activity) => {
+  if (activity.type === 'payment' && activity.transactionStatus && activity.transactionStatus !== 'ACSC') {
+    return paymentTransactionStatusInteractions[activity.transactionStatus]
+  }
+
   const byType = activityInteractions[activity.type] as {
     [status in (Activity & { type: (typeof activity)['type'] })['status']]: ActivityInteraction
   }

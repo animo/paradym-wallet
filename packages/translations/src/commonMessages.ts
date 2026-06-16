@@ -295,6 +295,16 @@ export const commonMessages = {
     message: 'Payment failed',
     comment: 'Shown when a payment is failed',
   }),
+  paymentPending: defineMessage({
+    id: 'common.paymentPending',
+    message: 'Payment is pending',
+    comment: 'Shown when a payment is pending settlement on the bank side',
+  }),
+  paymentRejected: defineMessage({
+    id: 'common.paymentRejected',
+    message: 'Payment is rejected',
+    comment: 'Shown when a payment was rejected by the bank',
+  }),
   informationShared: defineMessage({
     id: 'common.informationShared',
     message: 'Information shared',

@@ -82,6 +82,7 @@ export {
   getCredentialCategoryMetadata,
   getOpenId4VcCredentialMetadata,
   getRefreshCredentialMetadata,
+  getTransactionStatusMetadata,
   setCredentialCategoryMetadata,
   setOpenId4VcCredentialMetadata,
   setRefreshCredentialMetadata,
@@ -91,7 +92,8 @@ export { acquireAuthorizationCodeAccessToken } from './openid4vc/func/acquireAut
 export { acquireRefreshTokenAccessToken } from './openid4vc/func/acquireRefreshTokenAccessToken'
 export { secureWalletKey, useCanUseBiometryBackedWalletKey, useIsBiometricsEnabled } from './secure'
 export { kdf } from './secure/kdf'
-export { activityStorage, type ActivityStatus, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
+export { activityStorage, type ActivityStatus, type PaymentTransactionStatusCode, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
+export { fetchPaymentTransactionStatus } from './openid4vc/paymentTransactionStatus'
 export { storeCredential, updateCredential } from './storage/credentials'
 export { type DeferredCredentialBefore } from './storage/deferredCredentialStore'
 export { getHostNameFromUrl} from './utils/url'

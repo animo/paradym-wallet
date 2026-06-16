@@ -18,6 +18,7 @@ import { getWalletJsonStore } from './walletJsonStore'
 export type ActivityType = 'shared' | 'received' | 'signed' | 'payment'
 export type ActivityStatus = 'success' | 'failed' | 'stopped' | 'pending'
 export type SharingFailureReason = 'missing_credentials' | 'unknown'
+export type PaymentTransactionStatusCode = 'RJCT' | 'PDNG' | 'ACSC'
 
 interface BaseActivity {
   id: string
@@ -85,6 +86,7 @@ export interface PaymentActivity extends Omit<PresentationActivity, 'type'> {
   type: 'payment'
   status: Exclude<ActivityStatus, 'pending'>
   transaction: FormattedTransactionDataPaymentSingle
+  transactionStatus?: PaymentTransactionStatusCode
 }
 
 export type Activity = PresentationActivity | IssuanceActivity | SignedActivity | PaymentActivity
@@ -119,6 +121,15 @@ export const activityStorage = {
 
     record.activities = record.activities.filter((d) => d.id !== id)
     await internalActivityStorage.update(agent, record)
+  },
+  updateActivity: async (agent: Agent, id: string, update: Partial<Activity>) => {
+    const record = await internalActivityStorage.get(agent)
+    if (!record) throw new Error('No activity record found')
+    const index = record.activities.findIndex((a) => a.id === id)
+    if (index === -1) throw new Error(`Activity ${id} not found`)
+    record.activities[index] = { ...record.activities[index], ...update } as Activity
+    await internalActivityStorage.update(agent, record)
+    return record.activities[index]
   },
 }
 
@@ -175,37 +186,36 @@ export const storeSharedOrSignedActivity = async (
     | Omit<PresentationActivity, 'type' | 'date' | 'id'>
     | Omit<SignedActivity, 'type' | 'date' | 'id'>
     | Omit<PaymentActivity, 'type' | 'date' | 'id'>
-) => {
+): Promise<Activity> => {
   if ('transaction' in input && input.transaction) {
     const transaction =
       input.transaction.type === 'qes_authorization'
         ? (input.transaction as FormattedTransactionDataQesAuthorization)
         : (input.transaction as FormattedTransactionDataPaymentSingle)
     if (transaction.type === 'qes_authorization') {
-      await activityStorage.addActivity(paradym.agent, {
+      return activityStorage.addActivity(paradym.agent, {
         ...input,
         transaction,
         id: utils.uuid(),
         date: new Date().toISOString(),
         type: 'signed',
       })
-    } else {
-      await activityStorage.addActivity(paradym.agent, {
-        ...input,
-        transaction,
-        id: utils.uuid(),
-        date: new Date().toISOString(),
-        type: 'payment',
-      })
     }
-  } else {
-    await activityStorage.addActivity(paradym.agent, {
+    return activityStorage.addActivity(paradym.agent, {
+      transactionStatus: 'PDNG',
       ...input,
+      transaction,
       id: utils.uuid(),
       date: new Date().toISOString(),
-      type: 'shared',
+      type: 'payment',
     })
   }
+  return activityStorage.addActivity(paradym.agent, {
+    ...input,
+    id: utils.uuid(),
+    date: new Date().toISOString(),
+    type: 'shared',
+  })
 }
 
 export function storeSharedActivityForCredentialsForRequest(
