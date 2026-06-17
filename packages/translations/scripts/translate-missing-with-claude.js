@@ -65,6 +65,9 @@ for (const locale of locales) {
 
   console.log(`Translating ${locale}...`)
 
+  const aiInstructionsPath = path.join(resolvedLocalesDir, locale, 'AI_INSTRUCTIONS.MD')
+  const aiInstructions = existsSync(aiInstructionsPath) ? readFileSync(aiInstructionsPath, { encoding: 'utf-8' }) : ''
+
   const prompt = `You are translating Lingui catalog entries for the Paradym wallet.
 
 Below is the translations package README for context on how translations are defined and used:
@@ -72,7 +75,17 @@ Below is the translations package README for context on how translations are def
 <readme>
 ${readme}
 </readme>
+${
+  aiInstructions
+    ? `
+Below are locale-specific instructions for "${locale}" with consistency rules and terminology guidance. Follow these instructions when producing translations for this locale:
 
+<locale-instructions>
+${aiInstructions}
+</locale-instructions>
+`
+    : ''
+}
 Translate every entry in the JSON below into the language with ISO code "${locale}". For each entry, fill in the empty "translation" field with the localized string. Keep all keys, ICU placeholders (e.g. {name}), and JSX/component placeholders (e.g. <0/>, <1>...</1>) exactly as in the source "message". Preserve the original JSON structure and key order.
 
 Your entire response MUST be a single JSON object and nothing else: no markdown fences, no prose before or after, no commentary. The first character of your response must be "{" and the last must be "}".

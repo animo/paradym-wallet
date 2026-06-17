@@ -83,7 +83,7 @@ export interface CredentialCategoryMetadata {
 
 export type PaymentsCredentialMetadata = CredentialMetadata
 
-export type TransactionStatusMetdata = {
+export type TransactionStatusMetadata = {
   'urn:eudi:sca:eu.europa.ec:payment': {
     transaction_status_token: string
     transaction_status_url: string
@@ -150,11 +150,11 @@ export function setPaymentsMetadata(credentialRecord: CredentialRecord, metadata
   credentialRecord.metadata.set(paymentsMetadataKey, metadata)
 }
 
-export function getTransactionStatusMetadata(credentialRecord: CredentialRecord): TransactionStatusMetdata | null {
+export function getTransactionStatusMetadata(credentialRecord: CredentialRecord): TransactionStatusMetadata | null {
   return credentialRecord.metadata.get(transactionStatusMetadataKey)
 }
 
-export function setTransactionStatusMetadata(credentialRecord: CredentialRecord, metadata: TransactionStatusMetdata) {
+export function setTransactionStatusMetadata(credentialRecord: CredentialRecord, metadata: TransactionStatusMetadata) {
   credentialRecord.metadata.set(transactionStatusMetadataKey, metadata)
 }
 

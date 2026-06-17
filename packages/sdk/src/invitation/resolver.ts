@@ -43,7 +43,7 @@ import {
   setOpenId4VcCredentialMetadata,
   setPaymentsMetadata,
   setTransactionStatusMetadata,
-  type TransactionStatusMetdata,
+  type TransactionStatusMetadata,
 } from '../metadata/credentials'
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
@@ -342,7 +342,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           credentialResponse.credentialMetadata &&
           'urn:eudi:sca:eu.europa.ec:payment' in credentialResponse.credentialMetadata
         ) {
-          setTransactionStatusMetadata(record, credentialResponse.credentialMetadata as TransactionStatusMetdata)
+          setTransactionStatusMetadata(record, credentialResponse.credentialMetadata as TransactionStatusMetadata)
         }
       }
 

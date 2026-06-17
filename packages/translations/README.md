@@ -110,7 +110,7 @@ To add more locales, update `apps/easypid/lingui.config.js`.
 
 You need to add the language in several places:
 - In `apps/easypid/index.ts`
-- Add the locale in the `commonMesa
+- Add the locale in the `commonMessages.ts`
 - Update the `lingui.config.js`
 - Update the `i18n.ts` file
 
