@@ -485,7 +485,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 160]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 163]
 		],
 		"translation": "Valtuutus peruttu"
 	},
@@ -1130,7 +1130,7 @@
 		"message": "Enter transaction code",
 		"placeholders": {},
 		"comments": ["Title prompting the user to enter a transaction code"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 39]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 49]],
 		"translation": "Syötä tapahtumakoodi"
 	},
 	"common.enterPin": {
@@ -1493,8 +1493,8 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 291],
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 440]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 309],
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 460]
 		],
 		"translation": "Jos lopetat, korttitarjous peruutetaan."
 	},
@@ -1513,6 +1513,17 @@
 		],
 		"origin": [["src/features/receive/slides/InvalidTxCodeSlide.tsx", 20]],
 		"translation": "Virheellinen tapahtumakoodi"
+	},
+	"invalidTxCode.toast": {
+		"translation": "Virheellinen tapahtumakoodi. Yritä uudelleen.",
+		"message": "Incorrect transaction code. Please try again.",
+		"placeholders": {},
+		"comments": [
+			"Toast shown when a wrong transaction code was entered and the user can still retry"
+		],
+		"origin": [
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 231]
+		]
 	},
 	"submission.offlineRequestDescription": {
 		"message": "Information about the verifier could not be shown. Carefully consider if you trust this organization.",
@@ -2817,8 +2828,8 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 287],
-			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 436]
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 305],
+			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 456]
 		],
 		"translation": "Lopeta korttitarjous?"
 	},
@@ -3047,7 +3058,7 @@
 		"message": "The issuer provided the following:",
 		"placeholders": {},
 		"comments": ["Label shown above optional extra description"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 56]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 66]],
 		"translation": "Myöntäjä antoi seuraavat tiedot:"
 	},
 	"activity.paymentMade": {
@@ -3318,7 +3329,7 @@
 		"comments": [
 			"Instructions explaining why the user must enter a transaction code"
 		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 46]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 56]],
 		"translation": "Vastaanottaaksesi tämän kortin sinun tulee syöttää tapahtumakoodi. Myöntäjä on antanut sinulle tämän koodin."
 	},
 	"authCodeFlowSlide.description": {
@@ -3359,7 +3370,7 @@
 		"comments": [
 			"Label for the input field where the user types the transaction code"
 		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 68]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 78]],
 		"translation": "Tapahtumakoodi"
 	},
 	"trust.trustedBy": {

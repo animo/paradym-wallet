@@ -41,7 +41,10 @@ export function FunkeCredentialNotificationScreen() {
 
   const [errorReason, setErrorReason] = useState<string>()
   const [isInvalidTxCode, setIsInvalidTxCode] = useState(false)
+  const [txCodeAttempts, setTxCodeAttempts] = useState(0)
   const [isCompleted, setIsCompleted] = useState(false)
+
+  const maxTxCodeAttempts = 3
 
   const [resolvedCredentialOffer, setResolvedCredentialOffer] = useState<ResolveCredentialOfferReturn>()
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
@@ -196,14 +199,14 @@ export function FunkeCredentialNotificationScreen() {
   )
 
   const acquireCredentialsPreAuth = useCallback(
-    async (txCode?: string) => {
+    async (txCode?: string): Promise<boolean> => {
       if (resolvedCredentialOffer?.flow !== 'pre-auth-with-tx-code' && resolvedCredentialOffer?.flow !== 'pre-auth') {
         setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
-        return
+        return true
       }
 
       // Credentials will be acquired when the txCode is entered on the next screen
-      if (resolvedCredentialOffer.flow === 'pre-auth-with-tx-code' && !txCode) return
+      if (resolvedCredentialOffer.flow === 'pre-auth-with-tx-code' && !txCode) return true
 
       try {
         const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
@@ -212,18 +215,33 @@ export function FunkeCredentialNotificationScreen() {
         })
 
         updateCredentials(acquiredCredentials)
+        return true
       } catch (error) {
         paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
         if (error instanceof ParadymWalletInvalidTransactionCodeError) {
-          setIsInvalidTxCode(true)
-          return
+          const nextAttempts = txCodeAttempts + 1
+          setTxCodeAttempts(nextAttempts)
+          if (nextAttempts >= maxTxCodeAttempts) {
+            setIsInvalidTxCode(true)
+            return true
+          }
+          toast.show(
+            t({
+              id: 'invalidTxCode.toast',
+              message: 'Incorrect transaction code. Please try again.',
+              comment: 'Toast shown when a wrong transaction code was entered and the user can still retry',
+            }),
+            { customData: { preset: 'warning' } }
+          )
+          return false
         }
         setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
+        return true
       }
     },
-    [paradym, setErrorReasonWithError, t, resolvedCredentialOffer]
+    [paradym, setErrorReasonWithError, t, resolvedCredentialOffer, txCodeAttempts, toast.show]
   )
 
   const onCompleteCredentialRetrieval = async () => {
@@ -320,7 +338,9 @@ export function FunkeCredentialNotificationScreen() {
               entityId={resolvedCredentialOffer.issuer.entityId}
               onContinue={
                 resolvedCredentialOffer.flow === 'pre-auth' || resolvedCredentialOffer.flow === 'pre-auth-with-tx-code'
-                  ? acquireCredentialsPreAuth
+                  ? async () => {
+                      await acquireCredentialsPreAuth()
+                    }
                   : undefined
               }
               trustMechanism={resolvedCredentialOffer.trustMechanism}
