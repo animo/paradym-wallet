@@ -81,6 +81,7 @@ catalog:
   expo-constants: ^18.0.11
   expo-dev-client: ^6.0.20
   expo-device: ^8.0.10
+  expo-file-system: ^19.0.20
   expo-font: ^14.0.10
   expo-haptics: ^15.0.8
   expo-image: ^3.0.11

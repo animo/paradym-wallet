@@ -26,6 +26,7 @@
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
+		"@animo-id/expo-secure-environment": "catalog:",
 		"@astronautlabs/jsonpath": "catalog:",
 		"@credo-ts/anoncreds": "catalog:",
 		"@credo-ts/askar": "catalog:",
@@ -39,26 +40,23 @@
 		"@openid4vc/openid4vp": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@owf/eudi-sca": "0.2.0-alpha-20260506130404",
+		"@shopify/react-native-skia": "catalog:",
 		"@tanstack/react-query": "catalog:",
 		"credo-ts-didweb-anoncreds": "catalog:",
+		"expo-crypto": "catalog:",
+		"expo-file-system": "catalog:",
+		"expo-image": "catalog:",
+		"expo-image-manipulator": "catalog:",
+		"expo-secure-store": "catalog:",
+		"react-native-fs": "catalog:",
+		"react-native-get-random-values": "catalog:",
 		"react-native-keychain": "catalog:",
 		"react-native-mmkv": "catalog:"
 	},
 	"peerDependencies": {
-		"@animo-id/expo-digital-credentials-api": "catalog:",
-		"@hyperledger/anoncreds-react-native": "catalog:",
-		"@openwallet-foundation/askar-react-native": "catalog:",
-		"@shopify/react-native-skia": "catalog:",
 		"@tanstack/react-query": ">=5 <=6",
-		"expo-file-system": "*",
-		"expo-image": "*",
-		"expo-image-manipulator": "*",
-		"expo-secure-store": "*",
 		"react": ">= 18",
-		"react-native": ">= 0.76",
-		"react-native-fs": "*",
-		"react-native-get-random-values": ">=1 <=2",
-		"react-native-keychain": "catalog:"
+		"react-native": ">= 0.76"
 	},
 	"devDependencies": {
 		"tsdown": "catalog:"
