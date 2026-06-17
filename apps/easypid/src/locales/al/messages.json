@@ -34,7 +34,7 @@
 			"amountShared": ["amountShared"]
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 236]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 228]],
 		"translation": "{amountShared} kredenciale u ndanë."
 	},
 	"inbox.notificationType.fromLabel": {
@@ -126,7 +126,7 @@
 		"message": "1 credential was shared.",
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 241]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 233]],
 		"translation": "1 kredencial u nda."
 	},
 	"dateFormatting.oneDay": {
@@ -206,7 +206,7 @@
 		"message": "Activate Biometrics",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 238]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 255]],
 		"translation": "Aktivizo biometrikën"
 	},
 	"onboarding.biometrics.subtitle": {
@@ -261,21 +261,21 @@
 			"name": ["name"]
 		},
 		"comments": ["Shown when a new card has been added"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 114]],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 153]],
 		"translation": "Shtoi {name}"
 	},
 	"common.fields.address": {
 		"message": "Address",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 396]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 406]],
 		"translation": "Adresa"
 	},
 	"common.fields.age": {
 		"message": "Age",
 		"placeholders": {},
 		"comments": ["The age of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 428]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 438]],
 		"translation": "Mosha"
 	},
 	"common.fields.ageOver": {
@@ -284,14 +284,14 @@
 		"comments": [
 			"Used as prefix to indicate the age of a person is over a certain age."
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 438]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 448]],
 		"translation": "Mbi moshën"
 	},
 	"language.al": {
 		"message": "Albanian",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 591]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 601]],
 		"translation": "Shqip"
 	},
 	"credentials.allCardsTitle": {
@@ -422,7 +422,7 @@
 		"message": "Archive card?",
 		"placeholders": {},
 		"comments": ["Title for confirmation dialog to archive a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 313]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 323]],
 		"translation": "Arkivo kartën?"
 	},
 	"onboarding.resetAlert.message": {
@@ -493,14 +493,14 @@
 		"message": "Authorization cancelled",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 379]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 389]],
 		"translation": "Autorizimi u anulua"
 	},
 	"common.authorizationFailed": {
 		"message": "Authorization failed",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 375]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 385]],
 		"translation": "Autorizimi dështoi"
 	},
 	"common.backButton": {
@@ -594,14 +594,14 @@
 		"message": "Birth year",
 		"placeholders": {},
 		"comments": ["The birth year of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 433]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 443]],
 		"translation": "Viti i lindjes"
 	},
 	"common.fields.born": {
 		"message": "Born",
 		"placeholders": {},
 		"comments": ["Used a prefix for when a person is born"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 508]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 518]],
 		"translation": "I lindur"
 	},
 	"common.deleteDeferredCredentialDescription": {
@@ -612,7 +612,7 @@
 		"comments": [
 			"Description in confirmation dialog explaining pending card deletion"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 345]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 355]],
 		"translation": "Duke fshirë {name}, nuk do të mund ta marrësh më kartën nga lëshuesi."
 	},
 	"common.cancel": {
@@ -760,7 +760,7 @@
 		"message": "Card successfully archived",
 		"placeholders": {},
 		"comments": ["Toast message shown after successfully archiving a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 329]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 339]],
 		"translation": "Karta u arkivua me sukses"
 	},
 	"cardLifecycle.limitedByDate.willExpire.title": {
@@ -792,7 +792,7 @@
 		"comments": [
 			"Section heading for list of received cards in the activity detail screen"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 177]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 169]],
 		"translation": "Kartat"
 	},
 	"onboarding.pin.title": {
@@ -815,7 +815,7 @@
 		"message": "City",
 		"placeholders": {},
 		"comments": ["The city where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 413]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 423]],
 		"translation": "Qyteti"
 	},
 	"common.close": {
@@ -829,14 +829,14 @@
 		"message": "Code",
 		"placeholders": {},
 		"comments": ["The code of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 531]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 541]],
 		"translation": "Kodi"
 	},
 	"common.credentials.mdl.codes": {
 		"message": "Codes",
 		"placeholders": {},
 		"comments": ["The codes of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 546]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 556]],
 		"translation": "Kodet"
 	},
 	"pidSetup.idCardVerify.title": {
@@ -873,7 +873,7 @@
 		"message": "Country",
 		"placeholders": {},
 		"comments": ["The country where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 418]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 428]],
 		"translation": "Shteti"
 	},
 	"requestedAttributes.fallbackCardLabel": {
@@ -930,7 +930,7 @@
 		"message": "Credential type",
 		"placeholders": {},
 		"comments": ["The type of credential, usually a complex url structure"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 483]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 493]],
 		"translation": "Lloji i kredencialit"
 	},
 	"credentials.emptyDescription": {
@@ -958,7 +958,7 @@
 		"message": "Date of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 392]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 402]],
 		"translation": "Data e lindjes"
 	},
 	"common.declineButton": {
@@ -981,14 +981,14 @@
 		"message": "Delete pending card?",
 		"placeholders": {},
 		"comments": ["Title for confirmation dialog to delete a pending card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 339]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 349]],
 		"translation": "Fshi kartën në pritje?"
 	},
 	"activity.deletedCredential": {
 		"message": "Deleted credential",
 		"placeholders": {},
 		"comments": ["Shown when a credential no longer exists in the wallet"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 82]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 84]],
 		"translation": "Kredencial i fshirë"
 	},
 	"trust.demoOrg": {
@@ -1061,14 +1061,14 @@
 		"comments": [
 			"Section heading shown when a document was signed or attempted to be signed"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 263]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 255]],
 		"translation": "Dokument"
 	},
 	"common.credentials.mdl.documentNumber": {
 		"message": "Document number",
 		"placeholders": {},
 		"comments": ["The document number of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 526]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 536]],
 		"translation": "Numri i dokumentit"
 	},
 	"common.documentSigned": {
@@ -1082,21 +1082,21 @@
 		"message": "Driving License",
 		"placeholders": {},
 		"comments": ["The title of a driving license"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 516]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 526]],
 		"translation": "Leja e drejtimit"
 	},
 	"common.credentials.mdl.drivingPrivileges": {
 		"message": "Driving privileges",
 		"placeholders": {},
 		"comments": ["The title of driving privileges"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 521]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 531]],
 		"translation": "Privilegjet e drejtimit"
 	},
 	"language.nl": {
 		"message": "Dutch",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 571]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 581]],
 		"translation": "Holandisht"
 	},
 	"eidCard.requestAttributesTitle": {
@@ -1114,7 +1114,7 @@
 		"message": "English",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 583]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 593]],
 		"translation": "Anglisht"
 	},
 	"common.enterPinToShareData": {
@@ -1130,7 +1130,7 @@
 		"message": "Enter transaction code",
 		"placeholders": {},
 		"comments": ["Title prompting the user to enter a transaction code"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 49]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 51]],
 		"translation": "Fut kodin e transaksionit"
 	},
 	"common.enterPin": {
@@ -1151,14 +1151,14 @@
 		"message": "Error deleting card",
 		"placeholders": {},
 		"comments": ["Toast message shown when card deletion failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 334]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 344]],
 		"translation": "Gabim në fshirjen e kartës"
 	},
 	"common.toastDeferredCredentialDeleteError": {
 		"message": "Error deleting pending card",
 		"placeholders": {},
 		"comments": ["Toast message shown when pending card deletion failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 360]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 370]],
 		"translation": "Gabim gjatë fshirjes së kartës në pritje"
 	},
 	"aiOverAking.errorReasonFallback": {
@@ -1181,7 +1181,7 @@
 		"message": "Error occurred during onboarding",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 210]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 227]],
 		"translation": "Ndodhi gabim gjatë regjistrimit"
 	},
 	"notification.errorParsingInvitation": {
@@ -1206,14 +1206,14 @@
 		"message": "Expired",
 		"placeholders": {},
 		"comments": ["Label shown on a credential card when it is expired"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 365]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 375]],
 		"translation": "E skaduar"
 	},
 	"common.fields.expiresAt": {
 		"message": "Expires at",
 		"placeholders": {},
 		"comments": ["The time at which a credential expires"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 478]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 488]],
 		"translation": "Skadon më"
 	},
 	"cardLifecycle.limitedByDate.willExpire.description": {
@@ -1247,7 +1247,7 @@
 			"name": ["name"]
 		},
 		"comments": ["Shown when it has failed to add a new card"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 102]],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 141]],
 		"translation": "Dështoi shtimi i {name}"
 	},
 	"common.invitationParsingFailed": {
@@ -1270,7 +1270,7 @@
 		"message": "Family name",
 		"placeholders": {},
 		"comments": ["The family name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 443]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 453]],
 		"translation": "Mbiemri"
 	},
 	"menu.item.feedback": {
@@ -1291,7 +1291,7 @@
 		"message": "Finnish",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 575]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 585]],
 		"translation": "Finlandisht"
 	},
 	"verifyPartySlide.hasNoPreviousInteractionsTitle": {
@@ -1312,7 +1312,7 @@
 		"message": "German",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 587]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 597]],
 		"translation": "Gjermanisht"
 	},
 	"onboardingWelcome.getStarted": {
@@ -1347,7 +1347,7 @@
 		"message": "Given name",
 		"placeholders": {},
 		"comments": ["The given name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 448]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 458]],
 		"translation": "Emri"
 	},
 	"noContentInbox.goBack": {
@@ -1408,7 +1408,7 @@
 		"message": "Hello!",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 57]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 59]],
 		"translation": "Përshëndetje!"
 	},
 	"credentials.hideMetadata": {
@@ -1446,7 +1446,7 @@
 		"comments": [
 			"The holder identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 493]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 503]],
 		"translation": "Mbajtësi"
 	},
 	"onboardingWalletExplanation.slide3.title": {
@@ -1515,7 +1515,6 @@
 		"translation": "Kod transaksioni i pasaktë"
 	},
 	"invalidTxCode.toast": {
-		"translation": "Kod transaksioni i pasaktë. Provo përsëri.",
 		"message": "Incorrect transaction code. Please try again.",
 		"placeholders": {},
 		"comments": [
@@ -1523,7 +1522,8 @@
 		],
 		"origin": [
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 231]
-		]
+		],
+		"translation": "Kod transaksioni i pasaktë. Provo përsëri."
 	},
 	"submission.offlineRequestDescription": {
 		"message": "Information about the verifier could not be shown. Carefully consider if you trust this organization.",
@@ -1554,7 +1554,7 @@
 		"message": "Information shared",
 		"placeholders": {},
 		"comments": ["Shown when data was successfully shared"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 298]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 308]],
 		"translation": "Informacioni u nda"
 	},
 	"common.invalidInvitation": {
@@ -1614,7 +1614,7 @@
 		"message": "Issued at",
 		"placeholders": {},
 		"comments": ["The time at which a credential is issued"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 468]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 478]],
 		"translation": "Lëshuar më"
 	},
 	"common.issuedBy": {
@@ -1655,7 +1655,7 @@
 		"comments": [
 			"The issuer identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 488]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 498]],
 		"translation": "Lëshuesi"
 	},
 	"credentialCard.issuerLabel": {
@@ -1669,14 +1669,14 @@
 		"message": "Issuing authority",
 		"placeholders": {},
 		"comments": ["The issuing authority of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 458]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 468]],
 		"translation": "Autoriteti lëshues"
 	},
 	"common.fields.issuingCountry": {
 		"message": "Issuing country",
 		"placeholders": {},
 		"comments": ["The issuing country of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 463]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 473]],
 		"translation": "Shteti lëshues"
 	},
 	"selectLanguage.label": {
@@ -1729,7 +1729,7 @@
 		"message": "Locality",
 		"placeholders": {},
 		"comments": ["The locality of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 498]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 508]],
 		"translation": "Lokaliteti"
 	},
 	"inbox.menuLabel": {
@@ -1768,21 +1768,21 @@
 		"message": "Nationalities",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 400]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 410]],
 		"translation": "Kombësitë"
 	},
 	"common.fields.nationality": {
 		"message": "Nationality",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 404]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 414]],
 		"translation": "Kombësia"
 	},
 	"activity.latest.newCardFallback": {
 		"message": "new card",
 		"placeholders": {},
 		"comments": ["Fallback name if a received credential has no display name"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 52]],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 76]],
 		"translation": "kartë e re"
 	},
 	"common.no": {
@@ -1857,7 +1857,7 @@
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 246]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 238]],
 		"translation": "Nuk u ndanë kredenciale."
 	},
 	"submission.fallbackPurpose": {
@@ -1873,7 +1873,7 @@
 		"comments": [
 			"Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish."
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 87]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 89]],
 		"translation": "Nuk u dha informacion rreth qëllimit të kërkesës së të dhënave. Ji i kujdesshëm"
 	},
 	"network.noInternet": {
@@ -1941,7 +1941,7 @@
 		"message": "Open settings",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 383]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 393]],
 		"translation": "Hap cilësimet"
 	},
 	"funkeAboutScreen.privacyPolicyDescription": {
@@ -2020,8 +2020,8 @@
 		"comments": [
 			"Section heading shown when a payment was paid or attempted to be paid"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 298]],
-		"translation": ""
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 290]],
+		"translation": "Pagesa"
 	},
 	"payShare.cardHeading": {
 		"message": "Payment card",
@@ -2030,6 +2030,13 @@
 		"origin": [["src/features/share/slides/PaymentSlide.tsx", 134]],
 		"translation": "Kartë pagesë"
 	},
+	"activity.latest.paymentFailed": {
+		"message": "Payment failed",
+		"placeholders": {},
+		"comments": ["Shown if a payment failed or was cancelled"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 52]],
+		"translation": "Pagesa dështoi"
+	},
 	"common.paymentFailed": {
 		"message": "Payment failed",
 		"placeholders": {},
@@ -2037,12 +2044,40 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 293]],
 		"translation": "Pagesa dështoi"
 	},
-	"common.paid": {
-		"message": "Payment is made",
+	"common.paymentPending": {
+		"message": "Payment is pending",
 		"placeholders": {},
-		"comments": ["Shown when a payment is made"],
+		"comments": ["Shown when a payment is pending settlement on the bank side"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 298]],
+		"translation": "Pagesa është në pritje"
+	},
+	"common.paymentRejected": {
+		"message": "Payment is rejected",
+		"placeholders": {},
+		"comments": ["Shown when a payment was rejected by the bank"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 303]],
+		"translation": "Pagesa u refuzua"
+	},
+	"common.paid": {
+		"message": "Payment is successful",
+		"placeholders": {},
+		"comments": ["Shown when a payment is successful"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 283]],
 		"translation": "Pagesa u krye"
+	},
+	"activity.latest.paymentPending": {
+		"message": "Payment pending",
+		"placeholders": {},
+		"comments": ["Shown when a payment is pending settlement on the bank side"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 64]],
+		"translation": "Pagesa në pritje"
+	},
+	"activity.latest.paymentRejected": {
+		"message": "Payment rejected",
+		"placeholders": {},
+		"comments": ["Shown when a payment was rejected by the bank"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 70]],
+		"translation": "Pagesa e refuzuar"
 	},
 	"common.paymentStopped": {
 		"message": "Payment stopped",
@@ -2050,6 +2085,13 @@
 		"comments": ["Shown when a payment is stopped"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 288]],
 		"translation": "Pagesa u ndalua"
+	},
+	"activity.latest.paymentMade": {
+		"message": "Payment successful",
+		"placeholders": {},
+		"comments": ["Shown if a payment was made successfully"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 58]],
+		"translation": "Pagesa e suksesshme"
 	},
 	"inbox.notificationType.pending": {
 		"message": "Pending",
@@ -2064,7 +2106,7 @@
 			"name": ["name"]
 		},
 		"comments": ["Shown when a new card is pending"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 125]],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 164]],
 		"translation": "{name} në pritje"
 	},
 	"deferredCredentials.title": {
@@ -2082,7 +2124,7 @@
 		"comments": [
 			"Toast message shown after successfully deleting a pending card"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 355]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 365]],
 		"translation": "Karta në pritje u fshi"
 	},
 	"presentation.pinAuthFailed": {
@@ -2098,7 +2140,7 @@
 		"message": "Pin entries do not match",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 106]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 118]],
 		"translation": "Hyrjet e PIN-it nuk përputhen"
 	},
 	"common.pinRequiredToAcceptPresentation": {
@@ -2112,7 +2154,7 @@
 		"message": "Place of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 388]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 398]],
 		"translation": "Vendi i lindjes"
 	},
 	"pidSetup.idCardScan.subtitle": {
@@ -2177,28 +2219,28 @@
 		"message": "Portrait",
 		"placeholders": {},
 		"comments": ["The portrait of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 453]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 463]],
 		"translation": "Fotografia"
 	},
 	"language.pt": {
 		"message": "Portuguese",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 595]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 605]],
 		"translation": "Portugeze"
 	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
 		"placeholders": {},
 		"comments": ["The postal code where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 423]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 433]],
 		"translation": "Kodi postar"
 	},
 	"home.presentInPersonButton": {
 		"message": "Present In-person",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 73]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 75]],
 		"translation": "Paraqit personalisht"
 	},
 	"common.presentationCouldNotBeShared": {
@@ -2295,7 +2337,7 @@
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 60]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 62]],
 		"translation": "Merr ose nda nga portofoli yt"
 	},
 	"activity.receivedFailed": {
@@ -2304,7 +2346,7 @@
 			"0": ["activity.entity.name"]
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 135]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 127]],
 		"translation": "Marrja e kartave nga {0} dështoi."
 	},
 	"activity.receivedStopped": {
@@ -2315,7 +2357,7 @@
 		"comments": [
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 142]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 134]],
 		"translation": "Marrja e kartave nga {0} u anulua."
 	},
 	"activity.latest.title": {
@@ -2343,7 +2385,7 @@
 		"message": "Region",
 		"placeholders": {},
 		"comments": ["The region of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 503]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 513]],
 		"translation": "Rajoni"
 	},
 	"onboarding.pinReenter.title": {
@@ -2384,7 +2426,7 @@
 		"comments": [
 			"Heading shown when the request did not result in attributes being shared"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 118]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 110]],
 		"translation": "Informacion i kërkuar"
 	},
 	"onboarding.resetAlert.title": {
@@ -2415,13 +2457,6 @@
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 61]],
 		"translation": "Shiko kërkesën"
 	},
-	"signShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the sign & share screen"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Shiko kërkesën"
-	},
 	"payShare.title": {
 		"message": "Review the request",
 		"placeholders": {},
@@ -2429,11 +2464,18 @@
 		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 53]],
 		"translation": "Rishiko kërkesën"
 	},
+	"signShare.title": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the sign & share screen"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
+		"translation": "Shiko kërkesën"
+	},
 	"common.revoked": {
 		"message": "Revoked",
 		"placeholders": {},
 		"comments": ["Label shown on a credential card when it is revoked"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 370]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 380]],
 		"translation": "E anuluar"
 	},
 	"noContentWallet.scanButton": {
@@ -2463,7 +2505,7 @@
 		"message": "Scan QR-code",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 67]],
+		"origin": [["src/features/wallet/FunkeWalletScreen.tsx", 69]],
 		"translation": "Skano kodin QR"
 	},
 	"nfcScanner.complete.title": {
@@ -2592,7 +2634,7 @@
 		"comments": [
 			"Heading shown when attributes were successfully shared in an activity"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 113]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 105]],
 		"translation": "Atribute të ndara"
 	},
 	"activity.latest.sharedCard": {
@@ -2620,14 +2662,14 @@
 		"message": "Sharing failed",
 		"placeholders": {},
 		"comments": ["Shown when data sharing failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 308]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 318]],
 		"translation": "Ndarja dështoi"
 	},
 	"common.sharingStopped": {
 		"message": "Sharing stopped",
 		"placeholders": {},
 		"comments": ["Shown when the user stopped the data sharing process"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 303]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 313]],
 		"translation": "Ndarja u ndal"
 	},
 	"common.showLess": {
@@ -2677,7 +2719,7 @@
 		"message": "Sign",
 		"placeholders": {},
 		"comments": ["The sign of a driving privilege in an mDL (e.g. >=)"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 541]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 551]],
 		"translation": "Shenja"
 	},
 	"signShare.accept": {
@@ -2691,7 +2733,7 @@
 		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 561]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 571]],
 		"translation": "Nënshkrimi"
 	},
 	"activity.latest.signedDocument": {
@@ -2755,7 +2797,7 @@
 		"comments": [
 			"Shown below a document name to indicate the user signed it with a specific QTSP"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 282]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 274]],
 		"translation": "Duke nënshkruar me {0}"
 	},
 	"common.simulatorEidCardActivated": {
@@ -2860,7 +2902,7 @@
 		"message": "Street",
 		"placeholders": {},
 		"comments": ["The street where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 408]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 418]],
 		"translation": "Rruga"
 	},
 	"pidSetup.idCardComplete.title": {
@@ -2890,7 +2932,7 @@
 		"message": "Swedish",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 579]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 589]],
 		"translation": "Suedisht"
 	},
 	"common.tapToView": {
@@ -2921,7 +2963,7 @@
 		"comments": [
 			"Shown in activity detail when the received credentials are pending"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 149]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 141]],
 		"translation": "Kartat nga {0} ende nuk janë gati dhe do të merren më vonë."
 	},
 	"onboardingWalletExplanation.slide2.subtitle": {
@@ -2935,14 +2977,14 @@
 		"message": "The document was not signed.",
 		"placeholders": {},
 		"comments": ["Shown after a failed digital signature"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 98]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 100]],
 		"translation": "Dokumenti nuk u nënshkrua."
 	},
 	"activity.documentSigned": {
 		"message": "The document was signed.",
 		"placeholders": {},
 		"comments": ["Shown after a successful digital signature"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 93]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 95]],
 		"translation": "Dokumenti u nënshkrua."
 	},
 	"cardLifecycle.limitedByDate.expired.description": {
@@ -3058,22 +3100,8 @@
 		"message": "The issuer provided the following:",
 		"placeholders": {},
 		"comments": ["Label shown above optional extra description"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 66]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 68]],
 		"translation": "Lëshuesi ka dhënë këtë:"
-	},
-	"activity.paymentMade": {
-		"message": "The payment was made.",
-		"placeholders": {},
-		"comments": ["Shown after a successful payment"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 103]],
-		"translation": ""
-	},
-	"activity.paymentNotMade": {
-		"message": "The payment was not made.",
-		"placeholders": {},
-		"comments": ["Shown after a failed payment"],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 108]],
-		"translation": ""
 	},
 	"requestPurpose.overaskingWarning": {
 		"message": "The purpose given does not match the data requested.",
@@ -3282,7 +3310,7 @@
 		"comments": [
 			"Description in confirmation dialog explaining card archiving"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 319]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 329]],
 		"translation": "Kjo do ta bëjë {name} të papërdorshme dhe do ta fshijë nga portofoli yt."
 	},
 	"TSg3cu": {
@@ -3291,8 +3319,8 @@
 			"0": ["activity.transaction.payee.name"]
 		},
 		"comments": [],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 315]],
-		"translation": ""
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 304]],
+		"translation": "Për {0}"
 	},
 	"pidSetup.enableBiometrics.subtitle": {
 		"message": "To continue, make sure your device has biometric protection enabled, and that Paradym Wallet is allowed to use biometrics.",
@@ -3329,7 +3357,7 @@
 		"comments": [
 			"Instructions explaining why the user must enter a transaction code"
 		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 56]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 58]],
 		"translation": "Për të marrë këtë kartë duhet të futësh një kod transaksioni. Ky kod të është dhënë nga lëshuesi."
 	},
 	"authCodeFlowSlide.description": {
@@ -3370,7 +3398,7 @@
 		"comments": [
 			"Label for the input field where the user types the transaction code"
 		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 78]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 80]],
 		"translation": "Kodi i transaksionit"
 	},
 	"trust.trustedBy": {
@@ -3386,7 +3414,7 @@
 		"message": "UN sign",
 		"placeholders": {},
 		"comments": ["The United Nations distinguishing sign of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 556]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 566]],
 		"translation": "Shenja e UN-së"
 	},
 	"common.unableToRetrieveInvitation": {
@@ -3472,21 +3500,21 @@
 		"message": "Valid from",
 		"placeholders": {},
 		"comments": ["The time ƒrom which a credential is valid"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 473]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 483]],
 		"translation": "I vlefshëm nga"
 	},
 	"common.credentials.mdl.value": {
 		"message": "Value",
 		"placeholders": {},
 		"comments": ["The value of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 536]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 546]],
 		"translation": "Vlera"
 	},
 	"common.credentials.mdl.vehicleCategoryCode": {
 		"message": "Vehicle category code",
 		"placeholders": {},
 		"comments": ["The vehicle category code of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 551]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 561]],
 		"translation": "Kodi i kategorisë së automjetit"
 	},
 	"cardLifecycle.batch.description": {
@@ -3567,7 +3595,7 @@
 		"message": "Yes, archive",
 		"placeholders": {},
 		"comments": ["Confirm button text for archiving a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 324]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 334]],
 		"translation": "Po, arkivo"
 	},
 	"common.confirmContinue": {
@@ -3588,7 +3616,7 @@
 		"message": "Yes, delete",
 		"placeholders": {},
 		"comments": ["Confirm button text for deleting a pending card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 350]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 360]],
 		"translation": "Po, fshije"
 	},
 	"common.confirmStop": {
@@ -3702,19 +3730,19 @@
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 130]],
 		"translation": "Nuk i ke kartat e nevojshme"
 	},
-	"signShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 183]],
-		"translation": "Nuk i ke kartat e nevojshme"
-	},
 	"payShare.missingCards": {
 		"message": "You don't have the required cards",
 		"placeholders": {},
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 122]],
 		"translation": "Nuk keni kartat e nevojshme"
+	},
+	"signShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 183]],
+		"translation": "Nuk i ke kartat e nevojshme"
 	},
 	"pinLocked.description": {
 		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
@@ -3733,7 +3761,7 @@
 		"comments": [
 			"Shown in activity detail when one credential has been received"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 163]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 155]],
 		"translation": "Ke marrë kartën e mëposhtme nga {0}."
 	},
 	"activity.receivedMultiple": {
@@ -3744,7 +3772,7 @@
 		"comments": [
 			"Shown in activity detail when multiple credentials have been received"
 		],
-		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 157]],
+		"origin": [["src/features/activity/FunkeActivityDetailScreen.tsx", 149]],
 		"translation": "Ke marrë kartat e mëposhtme nga {0}."
 	},
 	"pidSetup.enableBiometrics.title": {

@@ -282,8 +282,8 @@ export const commonMessages = {
   }),
   paid: defineMessage({
     id: 'common.paid',
-    message: 'Payment is made',
-    comment: 'Shown when a payment is made',
+    message: 'Payment is successful',
+    comment: 'Shown when a payment is successful',
   }),
   paymentStopped: defineMessage({
     id: 'common.paymentStopped',

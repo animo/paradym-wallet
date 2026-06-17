@@ -20,6 +20,7 @@ export const fetchPaymentTransactionStatus = async (
       },
       body: `transaction=${transactionHash}`,
     })
+    if (!response.ok) return undefined
     const body = (await response.json()) as { status_code?: PaymentTransactionStatusCode }
     return body.status_code
   } catch {

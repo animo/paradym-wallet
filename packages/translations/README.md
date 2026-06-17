@@ -110,13 +110,34 @@ To add more locales, update `apps/easypid/lingui.config.js`.
 
 You need to add the language in several places:
 - In `apps/easypid/index.ts`
-- Add the locale in the `commonMessages.ts`
+- Add the locale in the `commonMesa
 - Update the `lingui.config.js`
 - Update the `i18n.ts` file
 
 Then run `pnpm translations:extract` in the `apps/easypid` directory. After that you can follow the steps from "Translating with AI". Make sure to do this for all existing languages, since we have translations for the language identifier as well.
 
 ## Translating with AI
+
+### Automated (all languages at once)
+
+From the workspace root, run:
+
+```sh
+pnpm translations:ai
+```
+
+This runs the full pipeline for every locale under `apps/easypid/src/locales` (except the source `en`):
+
+1. `translations:extract` in `apps/easypid` — refresh catalogs from source.
+2. `extract-all-missing-translations` — write a `missing.json` next to each locale's `messages.json`.
+3. `translate-missing-with-claude` — invoke the `claude` CLI per locale, passing this README and the `missing.json`, and write the translated JSON back.
+4. `merge-all-missing-translations` — merge each `missing.json` into its `messages.json` and delete `missing.json`.
+5. `translations:extract` + `translations:compile` in `apps/easypid`.
+6. `style:fix` at the workspace root.
+
+The locales directory defaults to `apps/easypid/src/locales`; pass a different path as a positional arg to override.
+
+### Manual (single language)
 
 In the `packages/translations` directory run the following command. Make sure to change the language identifier for the language you want to add messages to.
 

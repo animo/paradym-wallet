@@ -55,9 +55,9 @@ const paymentFailed = defineMessage({
   comment: 'Shown if a payment failed or was cancelled',
 })
 
-const paymentMade = defineMessage({
+const paymentSuccessful = defineMessage({
   id: 'activity.latest.paymentMade',
-  message: 'Payment made',
+  message: 'Payment successful',
   comment: 'Shown if a payment was made successfully',
 })
 
@@ -123,7 +123,7 @@ export function LatestActivityCard() {
       } else if (latestActivity.transactionStatus === 'RJCT') {
         description = t(paymentRejected)
       } else if (latestActivity.transactionStatus === 'ACSC') {
-        description = t(paymentMade)
+        description = t(paymentSuccessful)
       } else {
         description = t(paymentPending)
       }

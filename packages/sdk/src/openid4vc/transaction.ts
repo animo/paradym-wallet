@@ -16,7 +16,7 @@ export type FormattedTransactionDataPaymentSingle = {
     website: string
   }
   cardForTransactionId?: string
-  // hex encoded hash used for fetching the status
+  // base64url encoded hash used for fetching the status
   hash: string
 }
 
