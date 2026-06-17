@@ -38,6 +38,8 @@ export class ParadymWalletInvalidTrustMechnismError extends ParadymWalletSdkErro
 
 export class ParadymWalletAuthenticationInvalidPinError extends ParadymWalletSdkError {}
 
+export class ParadymWalletInvalidTransactionCodeError extends ParadymWalletSdkError {}
+
 export class ParadymWalletBiometricAuthenticationError extends ParadymWalletSdkError {
   public static tryParseFromError(error: unknown): ParadymWalletBiometricAuthenticationError | null {
     if (ParadymWalletBiometricAuthenticationCancelledError.isBiometricAuthenticationCancelledError(error)) {

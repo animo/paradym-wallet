@@ -3,31 +3,43 @@ import { useWizard } from '@package/app'
 import { Heading, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
 import type { OpenId4VciTxCode } from '@paradym/wallet-sdk'
 import { useState } from 'react'
-import type { NativeSyntheticEvent, TextInputSubmitEditingEventData } from 'react-native'
+import { Keyboard, type NativeSyntheticEvent, type TextInputSubmitEditingEventData } from 'react-native'
 import { Input } from 'tamagui'
 
 interface TxCodeSlideProps {
   txCode: OpenId4VciTxCode
-  onTxCode: (txCode: string) => void
+  onTxCode: (txCode: string) => Promise<boolean>
 }
 
 export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
   const { t } = useLingui()
   const [txCodeEntry, setTxCodeEntry] = useState<string>('')
+  const [isVerifying, setIsVerifying] = useState(false)
   const { onNext } = useWizard()
 
-  const onSubmit = (event: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-    if (txCode.length === undefined) {
-      onTxCode(event.nativeEvent.text)
+  const submitTxCode = async (code: string) => {
+    setIsVerifying(true)
+    Keyboard.dismiss()
+    const success = await onTxCode(code)
+    if (success) {
       onNext()
+      return
+    }
+    setTxCodeEntry('')
+    setIsVerifying(false)
+  }
+
+  const onSubmit = (event: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+    if (txCode.length === undefined && !isVerifying) {
+      void submitTxCode(event.nativeEvent.text)
     }
   }
 
   const onChangeTxCodeEntry = (newTxCodeEntry: string) => {
+    if (isVerifying) return
     setTxCodeEntry(newTxCodeEntry)
     if (txCode.length && newTxCodeEntry.length === txCode.length) {
-      onTxCode(newTxCodeEntry)
-      onNext()
+      void submitTxCode(newTxCodeEntry)
     }
   }
 
@@ -74,7 +86,10 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
           <Input
             secureTextEntry
             autoFocus
-            disabled={txCode.length === undefined ? false : txCode.length === txCodeEntry.length}
+            value={txCodeEntry}
+            editable={!isVerifying}
+            focusable={!isVerifying}
+            disabled={isVerifying}
             onSubmitEditing={onSubmit}
             // Only render 'done' if length is unknown
             returnKeyType={txCode.length === undefined ? 'done' : 'none'}
