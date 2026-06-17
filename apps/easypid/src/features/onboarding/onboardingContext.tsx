@@ -13,7 +13,7 @@ import { useToastController } from '@package/ui'
 import { sleep } from '@package/utils'
 import { useRouter } from 'expo-router'
 import type React from 'react'
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Linking } from 'react-native'
 import { useHasFinishedOnboarding } from './hasFinishedOnboarding'
 import { onboardingSteps } from './steps'
@@ -35,9 +35,21 @@ export function OnboardingContextProvider({
   initialStep?: OnboardingStep['step']
 }>) {
   const paradym = useParadym()
+  const hasResetStaleWallet = useRef(false)
 
   useEffect(() => {
-    if (paradym.state === 'locked') paradym.reinitialize()
+    // Onboarding requires a fresh, unconfigured wallet. If we mount with stale
+    // wallet state (e.g. user restarted onboarding after a previous attempt),
+    // wipe it so the SDK transitions to 'not-configured' before PIN entry. This
+    // must run only once on initial mount — `paradym` re-identifies on every
+    // state change, and re-resetting after `setPin` would wipe the wallet key.
+    if (hasResetStaleWallet.current) return
+    if (paradym.state === 'initializing') return
+    hasResetStaleWallet.current = true
+    if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
+      paradym.reset()
+      resetAppState()
+    }
   }, [paradym])
 
   const { successHaptic, lightHaptic } = useHaptics()
@@ -117,8 +129,13 @@ export function OnboardingContextProvider({
     }
 
     if (paradym.state !== 'not-configured') {
+      // Wallet has stale state (e.g. previous onboarding) — clean it up and
+      // keep the user on the re-enter screen rather than bouncing them back
+      // to welcome with a toast.
+      if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
+        await paradym.reset()
+      }
       resetAppState()
-      await reset({ resetToStep: 'welcome' })
       return
     }
 
