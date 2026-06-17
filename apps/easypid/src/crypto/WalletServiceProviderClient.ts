@@ -15,6 +15,7 @@ import {
 } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/react-native'
 import { CURRENT_APP_TYPE } from '@easypid/config/appType'
+import { paradymWalletSdkOptions } from '@easypid/config/paradym'
 import { getShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseCloudHsm'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import type { ParadymWalletSdk } from '@paradym/wallet-sdk'
@@ -24,6 +25,32 @@ import { deriveKeypairFromPin } from './pin'
 
 // TODO: should auto reset after X seconds
 let __pin: Array<number> | undefined
+
+// Validation askar store id. Sits next to the main wallet
+// (`${paradymWalletSdkOptions.id}-${walletKeyVersion}`) on disk and must use a
+// different id so the two stores never conflict.
+const getValidationStoreId = (walletKeyVersion: number) =>
+  `${paradymWalletSdkOptions.id}-pin-validation-${walletKeyVersion}`
+
+// The validation store created by `setWalletServiceProviderPin` lives in its own
+// askar wallet directory. It must be wiped alongside the main wallet during a
+// reset, otherwise a new PIN would derive a wallet key that can't open the old
+// validation store, producing a spurious "invalid PIN" error on the next proof.
+export const resetWalletServiceProviderState = async () => {
+  __pin = undefined
+  const fs = new agentDependencies.FileSystem()
+  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+  const paths = [
+    `${fs.dataPath}/wallet/${getValidationStoreId(walletKeyVersion)}`,
+    // Legacy store id used before the rename — keep cleaning up so existing
+    // installs don't leave an orphan directory behind on reset.
+    `${fs.dataPath}/wallet/paradym-wallet-${walletKeyVersion}`,
+  ]
+  for (const p of paths) {
+    if (await fs.exists(p)) await fs.delete(p)
+  }
+}
+
 export const setWalletServiceProviderPin = async (pin: Array<number>, validatePin = true) => {
   const pinString = pin.join('')
   if (validatePin) {
@@ -36,7 +63,7 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
         askar: new AskarModule({
           askar: NativeAskar.instance,
           store: {
-            id: `paradym-wallet-${walletKeyVersion}`,
+            id: getValidationStoreId(walletKeyVersion),
             key: walletKey,
             keyDerivationMethod: 'raw',
           },

@@ -1,3 +1,4 @@
+import { resetWalletServiceProviderState } from '@easypid/crypto/WalletServiceProviderClient'
 import { resetAppState } from '@easypid/utils/resetAppState'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
@@ -24,10 +25,13 @@ export const FunkePinLockedScreen = () => {
           style: 'cancel',
           text: t(commonMessages.yes),
           onPress: () => {
-            paradym.reset().then(() => {
-              resetAppState()
-              router.replace('onboarding')
-            })
+            paradym
+              .reset()
+              .then(() => resetWalletServiceProviderState())
+              .then(() => {
+                resetAppState()
+                router.replace('onboarding')
+              })
           },
         },
       ]

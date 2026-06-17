@@ -1,4 +1,8 @@
-import { setupWalletServiceProvider, setWalletServiceProviderPin } from '@easypid/crypto/WalletServiceProviderClient'
+import {
+  resetWalletServiceProviderState,
+  setupWalletServiceProvider,
+  setWalletServiceProviderPin,
+} from '@easypid/crypto/WalletServiceProviderClient'
 import { resetAppState } from '@easypid/utils/resetAppState'
 import type { OnboardingPage, OnboardingStep } from '@easypid/utils/sharedPidSetup'
 import { useLingui } from '@lingui/react/macro'
@@ -48,6 +52,7 @@ export function OnboardingContextProvider({
     hasResetStaleWallet.current = true
     if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
       paradym.reset()
+      resetWalletServiceProviderState()
       resetAppState()
     }
   }, [paradym])
@@ -135,6 +140,7 @@ export function OnboardingContextProvider({
       if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
         await paradym.reset()
       }
+      await resetWalletServiceProviderState()
       resetAppState()
       return
     }
