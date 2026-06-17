@@ -9,6 +9,7 @@ import type { CredentialForDisplay, DeferredCredentialBefore, ResolveCredentialO
 import {
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletInvalidTransactionCodeError,
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
@@ -21,6 +22,7 @@ import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
 import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
 import { InteractionErrorSlide } from './slides/InteractionErrorSlide'
+import { InvalidTxCodeSlide } from './slides/InvalidTxCodeSlide'
 import { LoadingRequestSlide } from './slides/LoadingRequestSlide'
 import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
@@ -38,6 +40,7 @@ export function FunkeCredentialNotificationScreen() {
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [errorReason, setErrorReason] = useState<string>()
+  const [isInvalidTxCode, setIsInvalidTxCode] = useState(false)
   const [isCompleted, setIsCompleted] = useState(false)
 
   const [resolvedCredentialOffer, setResolvedCredentialOffer] = useState<ResolveCredentialOfferReturn>()
@@ -213,6 +216,10 @@ export function FunkeCredentialNotificationScreen() {
         paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
+        if (error instanceof ParadymWalletInvalidTransactionCodeError) {
+          setIsInvalidTxCode(true)
+          return
+        }
         setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
       }
     },
@@ -416,10 +423,14 @@ export function FunkeCredentialNotificationScreen() {
           ),
         },
       ].filter((v): v is Exclude<typeof v, undefined> => v !== undefined)}
-      errorScreen={() => (
-        <InteractionErrorSlide key="credential-error" flowType="issue" reason={errorReason} onCancel={onCancel} />
-      )}
-      isError={errorReason !== undefined}
+      errorScreen={() =>
+        isInvalidTxCode ? (
+          <InvalidTxCodeSlide key="invalid-tx-code" onCancel={onCancel} />
+        ) : (
+          <InteractionErrorSlide key="credential-error" flowType="issue" reason={errorReason} onCancel={onCancel} />
+        )
+      }
+      isError={errorReason !== undefined || isInvalidTxCode}
       onCancel={onProofDecline}
       confirmation={{
         title: t({
