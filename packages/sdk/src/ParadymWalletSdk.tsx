@@ -1,5 +1,5 @@
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
-import { CredoError } from '@credo-ts/core'
+import { CredoError, type X509ModuleConfigOptions } from '@credo-ts/core'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { createContext, type PropsWithChildren, useContext, useState } from 'react'
 import {
@@ -59,7 +59,21 @@ export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<st
   | ({ success: true } & T)
   | { success: false; message: string; cause?: string }
 
-export type ParadymWalletSdkOptions = SetupAgentOptions & {
+export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfiguration'> & {
+  /**
+   *
+   * Configuration for when OpenId4Vc is used
+   *
+   * @note by default, openid4vc is configured on the agent
+   *
+   * @note to disable openid4vc, pass in `false`
+   *
+   * @note the trusted x509 certificates are derived from the `trustMechanisms` entry where
+   *       `trustMechanism === 'x509'`, so they don't have to be specified here
+   *
+   */
+  openId4VcConfiguration?: Omit<X509ModuleConfigOptions, 'trustedCertificates'> | false
+
   /**
    *
    * Trust mechanisms supported by the wallet
@@ -69,7 +83,6 @@ export type ParadymWalletSdkOptions = SetupAgentOptions & {
    * When one is found that works, it will be used
    *
    */
-  // TODO(sdk): this will get more complex, as eudi_rp_auth needs more configuration
   trustMechanisms?: TrustMechanismConfiguration[]
 }
 
@@ -88,8 +101,22 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public readonly agent: AgentForAgentType<T>
 
   public constructor(options: ParadymWalletSdkOptions) {
-    this.agent = setupAgent(options) as unknown as AgentForAgentType<T>
-    this.trustMechanisms = options.trustMechanisms ?? []
+    const trustMechanisms = options.trustMechanisms ?? []
+
+    const x509TrustedCertificates = trustMechanisms
+      .filter(
+        (tm): tm is Extract<TrustMechanismConfiguration, { trustMechanism: 'x509' }> =>
+          'trustMechanism' in tm && tm.trustMechanism === 'x509'
+      )
+      .flatMap((tm) => tm.trustedX509Entities.map((e) => e.certificate))
+
+    const openId4VcConfiguration =
+      options.openId4VcConfiguration === false
+        ? (false as const)
+        : { ...options.openId4VcConfiguration, trustedCertificates: x509TrustedCertificates }
+
+    this.agent = setupAgent({ ...options, openId4VcConfiguration }) as unknown as AgentForAgentType<T>
+    this.trustMechanisms = trustMechanisms
   }
 
   public get isDidCommEnabled() {
