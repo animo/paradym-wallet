@@ -179,8 +179,6 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
   },
 ] satisfies Array<TrustedX509Entity>
 
-export const trustedX509Certificates = trustedX509Entities.map((e) => e.certificate)
-
 export const trustedDidEntities = [
   {
     entityId: 'did:web:metadata.dev.paradym.id:41708c95-743b-48d1-b4d5-23547f67e192',

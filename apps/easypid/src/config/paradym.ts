@@ -2,7 +2,6 @@ import {
   eudiTrustList,
   trustedDidEntities,
   trustedOpenId4VciIssuerEntities,
-  trustedX509Certificates,
   trustedX509Entities,
 } from '@easypid/constants'
 import { isParadymWallet } from '@easypid/hooks/useFeatureFlag'
@@ -17,7 +16,6 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
     traceLimit: 1000,
   },
   openId4VcConfiguration: {
-    trustedCertificates: trustedX509Certificates as [string, ...string[]],
     getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {
       if (verification.type === 'credential') {
         return [certificateChain[certificateChain.length - 1].toString('pem')]
