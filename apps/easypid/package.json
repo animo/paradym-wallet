@@ -31,7 +31,6 @@
 		"@react-native-community/blur": "catalog:",
 		"@react-native-masked-view/masked-view": "catalog:",
 		"@react-native-picker/picker": "^2.11.4",
-		"@react-navigation/native": "catalog:",
 		"babel-plugin-module-resolver": "catalog:",
 		"buffer": "catalog:",
 		"burnt": "catalog:",
@@ -75,5 +74,20 @@
 		"babel-plugin-syntax-hermes-parser": "catalog:",
 		"expo-build-properties": "catalog:",
 		"typescript": "catalog:"
+	},
+	"expo": {
+		"doctor": {
+			"reactNativeDirectoryCheck": {
+				"listUnknownPackages": false,
+				"exclude": [
+					"react-native-fs",
+					"@animo-id/expo-mdoc-data-transfer",
+					"@animo-id/expo-digital-credentials-api",
+					"@animo-id/expo-secure-environment",
+					"@hyperledger/anoncreds-react-native",
+					"@openwallet-foundation/askar-react-native"
+				]
+			}
+		}
 	}
 }

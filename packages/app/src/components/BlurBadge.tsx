@@ -12,7 +12,7 @@ interface BlurBadgeProps {
 export function BlurBadge({ label, color, tint = 'light' }: BlurBadgeProps) {
   return (
     <Stack overflow="hidden" bg="#0000001A" br="$12" ai="center" gap="$2">
-      <BlurView intensity={20} tint={tint} style={StyleSheet.absoluteFillObject} />
+      <BlurView intensity={20} tint={tint} style={StyleSheet.absoluteFill} />
       <Paragraph variant="caption" opacity={0.8} px="$2.5" py="$0.5" color={color ? color : 'white'}>
         {label}
       </Paragraph>
