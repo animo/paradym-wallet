@@ -158,44 +158,46 @@ export const CredentialRetrievalSlide = ({
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-title' : 'info-title'}
             entering={FadeIn.duration(300)}
-            style={animatedTextStyle}
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
-            {isCompleted ? (
-              <Heading ta="center">
-                <Trans id="receiveCredential.successHeader">Success!</Trans>
-              </Heading>
-            ) : isStoring ? (
-              <Heading></Heading>
-            ) : deferred ? (
-              <Heading>
-                <Trans id="receiveCredential.deferredCredentialHeader">Card is not ready yet</Trans>
-              </Heading>
-            ) : (
-              <Heading>
-                <Trans id="receiveCredential.checkInformationHeader">Do you want to store this card?</Trans>
-              </Heading>
-            )}
+            <AnimatedStack style={animatedTextStyle}>
+              {isCompleted ? (
+                <Heading ta="center">
+                  <Trans id="receiveCredential.successHeader">Success!</Trans>
+                </Heading>
+              ) : isStoring ? (
+                <Heading></Heading>
+              ) : deferred ? (
+                <Heading>
+                  <Trans id="receiveCredential.deferredCredentialHeader">Card is not ready yet</Trans>
+                </Heading>
+              ) : (
+                <Heading>
+                  <Trans id="receiveCredential.checkInformationHeader">Do you want to store this card?</Trans>
+                </Heading>
+              )}
+            </AnimatedStack>
           </AnimatedStack>
         </AnimatedStack>
         <AnimatedStack layout={useSpringify(LinearTransition)}>
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-text' : 'info-text'}
             entering={FadeIn.duration(300)}
-            style={animatedTextStyle}
             exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
           >
-            {isCompleted ? (
-              <Paragraph ta="center" mt="$-2" mb="$6">
-                <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
-              </Paragraph>
-            ) : isStoring ? (
-              <Paragraph ta="center" mt="$-2" mb="$6"></Paragraph>
-            ) : deferred ? (
-              <Paragraph ta="center" mt="$-2" mb="$6">
-                <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
-              </Paragraph>
-            ) : null}
+            <AnimatedStack style={animatedTextStyle}>
+              {isCompleted ? (
+                <Paragraph ta="center" mt="$-2" mb="$6">
+                  <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
+                </Paragraph>
+              ) : isStoring ? (
+                <Paragraph ta="center" mt="$-2" mb="$6"></Paragraph>
+              ) : deferred ? (
+                <Paragraph ta="center" mt="$-2" mb="$6">
+                  <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
+                </Paragraph>
+              ) : null}
+            </AnimatedStack>
           </AnimatedStack>
         </AnimatedStack>
         <AnimatedStack layout={useSpringify(LinearTransition)} fg={1}>
@@ -263,29 +265,30 @@ export const CredentialRetrievalSlide = ({
           </AnimatedStack>
         </AnimatedStack>
       </AnimatedStack>
-      <AnimatedStack
-        key={isCompleteAndAllowed ? 'success' : 'error'}
-        layout={LinearTransition}
-        entering={isCompleteAndAllowed ? FadeIn.duration(300).delay(500) : undefined}
-        exiting={FadeOut.duration(100)}
-        btw="$0.5"
-        borderColor={isStoringOrCompleted ? '$background' : '$grey-200'}
-        p="$4"
-        mx="$-4"
-        bg="$background"
-      >
-        {isStoringOrCompleted ? (
-          <Button.Solid opacity={isCompleteAndAllowed ? 1 : 0} onPress={onGoToWallet}>
-            {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
-          </Button.Solid>
-        ) : (
-          <DualResponseButtons
-            align="horizontal"
-            isLoading={!isAllowedToAccept}
-            onAccept={handleAccept}
-            onDecline={handleDecline}
-          />
-        )}
+      <AnimatedStack layout={LinearTransition}>
+        <AnimatedStack
+          key={isCompleteAndAllowed ? 'success' : 'error'}
+          entering={isCompleteAndAllowed ? FadeIn.duration(300).delay(500) : undefined}
+          exiting={FadeOut.duration(100)}
+          btw="$0.5"
+          borderColor={isStoringOrCompleted ? '$background' : '$grey-200'}
+          p="$4"
+          mx="$-4"
+          bg="$background"
+        >
+          {isStoringOrCompleted ? (
+            <Button.Solid opacity={isCompleteAndAllowed ? 1 : 0} onPress={onGoToWallet}>
+              {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
+            </Button.Solid>
+          ) : (
+            <DualResponseButtons
+              align="horizontal"
+              isLoading={!isAllowedToAccept}
+              onAccept={handleAccept}
+              onDecline={handleDecline}
+            />
+          )}
+        </AnimatedStack>
       </AnimatedStack>
     </YStack>
   )
