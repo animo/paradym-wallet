@@ -2,6 +2,24 @@ packages:
   - 'packages/*'
   - 'apps/*'
 
+nodeLinker: hoisted
+
+overrides:
+  react-native-fs: 'catalog:'
+
+patchedDependencies:
+  '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs.patch
+
+allowBuilds:
+  '@hyperledger/anoncreds-react-native': true
+  '@openwallet-foundation/askar-react-native': true
+  '@shopify/react-native-skia': true
+  cbor-extract: false
+  esbuild: false
+  protobufjs: false
+  react-native-nitro-modules: true
+  secp256k1: false
+
 catalog:
   expo: ^54.0.27
   react-native: ^0.81.5
@@ -45,7 +63,7 @@ catalog:
   "@openwallet-foundation/askar-shared": 0.6.0
   buffer: 6.0.3
   "@astronautlabs/jsonpath": ^1.1.2
-  
+
   # React Native
   react-native-heroicons: ^4.0.0
   "@react-native-masked-view/masked-view": 0.3.2
