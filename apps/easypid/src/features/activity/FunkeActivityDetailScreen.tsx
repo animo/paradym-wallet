@@ -17,7 +17,7 @@ import {
   useActivities,
   useCredentials,
 } from '@paradym/wallet-sdk'
-import type { PaymentActivity } from '@paradym/wallet-sdk/storage/activityStore'
+import type { PaymentActivity } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { usePaymentTransactionStatus } from '../../hooks/usePaymentTransactionStatus'

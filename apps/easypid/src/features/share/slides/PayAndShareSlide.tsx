@@ -3,7 +3,7 @@ import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import type { FormattedSubmission } from '@paradym/wallet-sdk'
-import type { FormattedTransactionDataPaymentSingle } from '@paradym/wallet-sdk/openid4vc/transaction'
+import type { FormattedTransactionDataPaymentSingle } from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 

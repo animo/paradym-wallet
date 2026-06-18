@@ -57,7 +57,7 @@
 		"react-native": "catalog:",
 		"react-native-edge-to-edge": "catalog:",
 		"react-native-gesture-handler": "catalog:",
-		"react-native-nitro-modules": "^0.31.10",
+		"react-native-nitro-modules": "^0.35.9",
 		"react-native-qrcode-svg": "catalog:",
 		"react-native-reanimated": "catalog:",
 		"react-native-reanimated-carousel": "catalog:",

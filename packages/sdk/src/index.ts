@@ -1,7 +1,8 @@
 import type { OpenId4VciAuthorizationFlow, OpenId4VciResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 
 export type { CredentialForDisplayId} from './display/credential' 
-export type { BaseAgent, DidCommAgent, OpenId4VcAgent } from './agent'
+export type { BaseAgent, DidCommAgent, OpenId4VcAgent, AnyAgent } from './agent'
+export { assertAgentType } from './agent'
 export { DigitalCredentialsRequest } from './dcApi'
 export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
 export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay } from './display/credential'
@@ -18,7 +19,7 @@ export type { ResolveOutOfBandInvitationResult } from './invitation/resolver'
 export { LogLevel, ParadymWalletSdkConsoleLogger, ParadymWalletSdkLogger } from './logging'
 export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
-export type { FormattedTransactionData, QtspInfo } from './openid4vc/transaction'
+export type { FormattedTransactionData, FormattedTransactionDataPaymentSingle, QtspInfo } from './openid4vc/transaction'
 export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
 export type {
   CredentialRecord,
@@ -36,6 +37,7 @@ export type {
   PresentationActivityCredentialNotFound,
   SignedActivity,
   SharingFailureReason,
+  PaymentActivity,
 } from './storage/activityStore'
 export { type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesWithRecordMetadata  } from './format/attributes'
 export type { TrustedDidEntity } from './trust/handlers/did'

@@ -20,7 +20,7 @@ import { getShouldUseCloudHsm } from '@easypid/features/onboarding/useShouldUseC
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import type { ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { ParadymWalletAuthenticationInvalidPinError, secureWalletKey } from '@paradym/wallet-sdk'
-import type { AnyAgent } from '@paradym/wallet-sdk/agent'
+import type { AnyAgent } from '@paradym/wallet-sdk'
 import { deriveKeypairFromPin } from './pin'
 
 // TODO: should auto reset after X seconds

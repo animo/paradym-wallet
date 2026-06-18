@@ -1,5 +1,5 @@
 import { t } from '@lingui/core/macro'
-import type { ParadymWalletSdk } from '@package/sdk'
+import type { ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { commonMessages } from '@package/translations'
 import type { DcApiRegisterCredentialsOptions } from '@paradym/wallet-sdk'
 

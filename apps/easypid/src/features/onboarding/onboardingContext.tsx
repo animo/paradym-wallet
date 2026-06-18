@@ -11,7 +11,7 @@ import {
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
   useParadym,
-} from '@package/sdk'
+} from '@paradym/wallet-sdk'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import { sleep } from '@package/utils'
