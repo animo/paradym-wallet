@@ -16,10 +16,12 @@ export function OnboardingIdCardFetch({ goToNextStep, userName }: OnboardingIdCa
       <IdCard icon={userName ? 'complete' : 'loading'} hideUserName={!userName} userName={userName} />
       <Stack>
         {userName && (
-          <Animated.View entering={FadeIn} layout={LinearTransition}>
-            <Button.Solid scaleOnPress onPress={goToNextStep}>
-              {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
-            </Button.Solid>
+          <Animated.View layout={LinearTransition}>
+            <Animated.View entering={FadeIn}>
+              <Button.Solid scaleOnPress onPress={goToNextStep}>
+                {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
+              </Button.Solid>
+            </Animated.View>
           </Animated.View>
         )}
       </Stack>
