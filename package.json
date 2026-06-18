@@ -18,7 +18,7 @@
 		"node": ">=22.21.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.10",
+		"@biomejs/biome": "2.3.10",
 		"@changesets/cli": "^2.29.4",
 		"check-dependency-version-consistency": "^5.0.1",
 		"typescript": "catalog:"

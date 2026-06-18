@@ -7,6 +7,7 @@ node_modules
 !.yarn/versions
 
 # expo
+**/.expo/
 **/.expo/*
 
 # tamagui

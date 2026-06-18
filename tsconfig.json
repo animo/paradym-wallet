@@ -4,6 +4,7 @@
 		"strict": true,
 		"noEmitOnError": true,
 		"baseUrl": ".",
+		"ignoreDeprecations": "6.0",
 		"types": ["png"],
 		"skipLibCheck": true,
 		"typeRoots": ["./types"],
