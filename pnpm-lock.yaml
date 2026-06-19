@@ -266,6 +266,7 @@ overrides:
   react-native-fs: npm:@dr.pogodin/react-native-fs@^2.36.1
 
 patchedDependencies:
+  '@credo-ts/openid4vc': 544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a
   '@dr.pogodin/react-native-fs': 2fc948de763b2a9a7a90f6a87d3a1d367e2c37c986092e61afe15f45930216d5
 
 importers:
@@ -289,7 +290,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@5.9.3))(@credo-ts/openid4vc@0.6.3(typescript@5.9.3))
+        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@5.9.3))(@credo-ts/openid4vc@0.6.3(patch_hash=544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a)(typescript@5.9.3))
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
         version: 0.2.0-alpha.4(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -565,7 +566,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@5.9.3))(@credo-ts/openid4vc@0.6.3(typescript@5.9.3))
+        version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@5.9.3))(@credo-ts/openid4vc@0.6.3(patch_hash=544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a)(typescript@5.9.3))
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
         version: 0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -592,7 +593,7 @@ importers:
         version: 0.6.3(typescript@5.9.3)
       '@credo-ts/openid4vc':
         specifier: 'catalog:'
-        version: 0.6.3(typescript@5.9.3)
+        version: 0.6.3(patch_hash=544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a)(typescript@5.9.3)
       '@credo-ts/react-native':
         specifier: 'catalog:'
         version: 0.6.3(@animo-id/expo-secure-environment@0.1.5(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(@dr.pogodin/react-native-fs@2.36.1(patch_hash=2fc948de763b2a9a7a90f6a87d3a1d367e2c37c986092e61afe15f45930216d5)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(expo-crypto@15.0.8(expo@54.0.27))(react-native-get-random-values@2.0.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(typescript@5.9.3)
@@ -7112,10 +7113,10 @@ snapshots:
 
   '@0no-co/graphql.web@1.2.0': {}
 
-  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@5.9.3))(@credo-ts/openid4vc@0.6.3(typescript@5.9.3))':
+  '@animo-id/eudi-wallet-functionality@0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@5.9.3))(@credo-ts/openid4vc@0.6.3(patch_hash=544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a)(typescript@5.9.3))':
     dependencies:
       '@credo-ts/core': 0.6.3(typescript@5.9.3)
-      '@credo-ts/openid4vc': 0.6.3(typescript@5.9.3)
+      '@credo-ts/openid4vc': 0.6.3(patch_hash=544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a)(typescript@5.9.3)
       zod: 3.25.76
 
   '@animo-id/expo-digital-credentials-api@0.4.0(expo@54.0.27)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)':
@@ -8264,7 +8265,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/openid4vc@0.6.3(typescript@5.9.3)':
+  '@credo-ts/openid4vc@0.6.3(patch_hash=544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a)(typescript@5.9.3)':
     dependencies:
       '@credo-ts/core': 0.6.3(typescript@5.9.3)
       '@openid4vc/oauth2': 0.4.6

@@ -9,6 +9,7 @@ overrides:
 
 patchedDependencies:
   '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs.patch
+  '@credo-ts/openid4vc': patches/@credo-ts__openid4vc@0.6.3.patch
 
 allowBuilds:
   '@hyperledger/anoncreds-react-native': true

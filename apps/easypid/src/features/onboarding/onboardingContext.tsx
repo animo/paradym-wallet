@@ -147,7 +147,7 @@ export function OnboardingContextProvider({
 
     try {
       await paradym.setPin(walletPin as string)
-      await setWalletServiceProviderPin((walletPin as string).split('').map(Number), false)
+      await setWalletServiceProviderPin((walletPin as string).split('').map(Number))
       goToNextStep()
     } catch (e) {
       reset({ error: e, resetToStep: 'welcome' })
