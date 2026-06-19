@@ -5,9 +5,7 @@
 	"type": "module",
 	"main": "src/index.ts",
 	"scripts": {
-		"merge-missing-translations": "node ./scripts/merge-missing-translations.js",
 		"merge-all-missing-translations": "node ./scripts/merge-all-missing-translations.js",
-		"extract-missing-translations": "node ./scripts/extract-missing-translations.js",
 		"extract-all-missing-translations": "node ./scripts/extract-all-missing-translations.js",
 		"translate-missing-with-claude": "node ./scripts/translate-missing-with-claude.js",
 		"translate-all": "node ./scripts/translate-all.js"

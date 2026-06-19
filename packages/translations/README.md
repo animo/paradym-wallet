@@ -118,8 +118,6 @@ Then run `pnpm translations:extract` in the `apps/easypid` directory. After that
 
 ## Translating with AI
 
-### Automated (all languages at once)
-
 From the workspace root, run:
 
 ```sh
@@ -136,30 +134,3 @@ This runs the full pipeline for every locale under `apps/easypid/src/locales` (e
 6. `style:fix` at the workspace root.
 
 The locales directory defaults to `apps/easypid/src/locales`; pass a different path as a positional arg to override.
-
-### Manual (single language)
-
-In the `packages/translations` directory run the following command. Make sure to change the language identifier for the language you want to add messages to.
-
-```sh
-pnpm extract-missing-translations ../../apps/easypid/src/locales/<lang>/messages.json
-```
-
-This will generate a new `missing.json` file at `../../apps/easypid/src/locales/<language>/missing.json`. Copy the contents of this file to Claude/ChatGPT with the following message, make sure to change the `<Language>` into the full language name.
-
-After you got the translations, place them in the same `missing.json` file, and then run:
-
-```sh
-pnpm merge-missing-translations ../../apps/easypid/src/locales/<lang>/messages.json
-```
-
-Once this is done you can extract and compile the new messages. From the `apps/easypid` directory run the following commands.
-
-```sh
-pnpm translations:extract
-pnpm translations:compile
-
-# before committing make sure to also run formatting
-cd ../..
-pnpm style:fix
-```
