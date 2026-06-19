@@ -576,6 +576,10 @@ export const supportedLanguageMessages: Record<SupportedLocale, MessageDescripto
     id: 'language.fi',
     message: 'Finnish',
   }),
+  fr: defineMessage({
+    id: 'language.fr',
+    message: 'French',
+  }),
   sw: defineMessage({
     id: 'language.sw',
     message: 'Swedish',

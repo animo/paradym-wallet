@@ -8,6 +8,7 @@ import { messages as al } from './src/locales/al/messages'
 import { messages as de } from './src/locales/de/messages'
 import { messages as en } from './src/locales/en/messages'
 import { messages as fi } from './src/locales/fi/messages'
+import { messages as fr } from './src/locales/fr/messages'
 import { messages as nl } from './src/locales/nl/messages'
 import { messages as pt } from './src/locales/pt/messages'
 import { messages as sw } from './src/locales/sw/messages'
@@ -17,6 +18,7 @@ registerLocales({
   en,
   nl,
   fi,
+  fr,
   sw,
   de,
   al,
