@@ -8,6 +8,7 @@ import { formatRelativeDate } from '@package/utils'
 import type {
   FormattedAttributeObject,
   IssuanceActivity,
+  PaymentActivity,
   PresentationActivity,
   SignedActivity,
 } from '@paradym/wallet-sdk'
@@ -17,7 +18,6 @@ import {
   useActivities,
   useCredentials,
 } from '@paradym/wallet-sdk'
-import type { PaymentActivity } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { usePaymentTransactionStatus } from '../../hooks/usePaymentTransactionStatus'

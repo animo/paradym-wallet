@@ -38,6 +38,7 @@
 		"expo-application": "catalog:",
 		"expo-asset": "catalog:",
 		"expo-blur": "catalog:",
+		"expo-camera": "catalog:",
 		"expo-constants": "catalog:",
 		"expo-dev-client": "catalog:",
 		"expo-device": "catalog:",
@@ -63,8 +64,7 @@
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
 		"react-native-screens": "catalog:",
-		"react-native-svg": "catalog:",
-		"expo-camera": "catalog:"
+		"react-native-svg": "catalog:"
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",

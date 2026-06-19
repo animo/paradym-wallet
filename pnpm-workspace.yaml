@@ -22,10 +22,12 @@ patchedDependencies:
 
 allowBuilds:
   '@hyperledger/anoncreds-react-native': true
+  '@openwallet-foundation/askar-nodejs': true
   '@openwallet-foundation/askar-react-native': true
   '@shopify/react-native-skia': true
   cbor-extract: false
   esbuild: false
+  koffi: true
   protobufjs: false
   react-native-nitro-modules: true
   secp256k1: false
@@ -67,10 +69,10 @@ catalog:
   "@credo-ts/question-answer": 0.6.3
   "@credo-ts/react-native": 0.6.3
   "@credo-ts/didcomm": 0.6.3
-  "@hyperledger/anoncreds-react-native": 0.3.4
-  "@hyperledger/anoncreds-shared": 0.3.4
-  "@openwallet-foundation/askar-react-native": 0.6.0
-  "@openwallet-foundation/askar-shared": 0.6.0
+  "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
+  "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
+  "@openwallet-foundation/askar-react-native": 0.6.1-alpha-20260609123727
+  "@openwallet-foundation/askar-shared": 0.6.1-alpha-20260609123727
   buffer: 6.0.3
   "@astronautlabs/jsonpath": ^1.1.2
 

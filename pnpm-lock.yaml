@@ -58,8 +58,8 @@ catalogs:
       specifier: ^5.2.8
       version: 5.2.14
     '@hyperledger/anoncreds-react-native':
-      specifier: 0.3.4
-      version: 0.3.4
+      specifier: 0.4.1-alpha-20260609124337
+      version: 0.4.1-alpha-20260609124337
     '@openid4vc/oauth2':
       specifier: ^0.4.0
       version: 0.4.6
@@ -67,8 +67,8 @@ catalogs:
       specifier: ^0.4.0
       version: 0.4.6
     '@openwallet-foundation/askar-react-native':
-      specifier: 0.6.0
-      version: 0.6.0
+      specifier: 0.6.1-alpha-20260609123727
+      version: 0.6.1-alpha-20260609123727
     '@react-native-community/blur':
       specifier: ^4.3.2
       version: 4.4.1
@@ -569,13 +569,13 @@ importers:
         version: 1.1.2
       '@credo-ts/anoncreds':
         specifier: 'catalog:'
-        version: 0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3)
+        version: 0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)
       '@credo-ts/askar':
         specifier: 'catalog:'
-        version: 0.6.3(@openwallet-foundation/askar-shared@0.6.0)(typescript@6.0.3)
+        version: 0.6.3(@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727)(typescript@6.0.3)
       '@credo-ts/cheqd':
         specifier: 'catalog:'
-        version: 0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3)
+        version: 0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)
       '@credo-ts/core':
         specifier: 'catalog:'
         version: 0.6.3(typescript@6.0.3)
@@ -590,7 +590,7 @@ importers:
         version: 0.6.3(@animo-id/expo-secure-environment@0.1.5(expo@56.0.12)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(@dr.pogodin/react-native-fs@2.39.0(patch_hash=269b0f78f92528892d71ccd81c8eb877b24c6bc790ad3a302c46031345c8cf9b)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(expo-crypto@56.0.4(expo@56.0.12))(react-native-get-random-values@2.0.0(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)))(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(typescript@6.0.3)
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
-        version: 0.3.4(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
+        version: 0.4.1-alpha-20260609124337(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       '@openid4vc/oauth2':
         specifier: 'catalog:'
         version: 0.4.6
@@ -599,7 +599,7 @@ importers:
         version: 0.4.6
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.6.0(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
+        version: 0.6.1-alpha-20260609123727(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       '@owf/eudi-sca':
         specifier: 0.2.0-alpha-20260506130404
         version: 0.2.0-alpha-20260506130404
@@ -611,7 +611,7 @@ importers:
         version: 5.101.0(react@19.2.3)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
-        version: 0.0.2-alpha.2(@credo-ts/anoncreds@0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3))(@credo-ts/core@0.6.3(typescript@6.0.3))
+        version: 0.0.2-alpha.2(@credo-ts/anoncreds@0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3))(@credo-ts/core@0.6.3(typescript@6.0.3))
       expo-crypto:
         specifier: 'catalog:'
         version: 56.0.4(expo@56.0.12)
@@ -1833,14 +1833,14 @@ packages:
       react: 19.2.3
       react-native: 0.85.3
 
-  '@hyperledger/anoncreds-react-native@0.3.4':
-    resolution: {integrity: sha512-GF6vpV8UZk4FTPSuQeE8chW7yBnCZlBUO7mtWqG/DiQlDsP3iSSnE5tYOp51iwA10r9tN6qD24WVkIe4xMd1sw==}
+  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260609124337':
+    resolution: {integrity: sha512-UPsALka90L9nonaAs19qfFek3di8rAx6AG9ILSV8cVG2fa31VfXZ6pm66eNcVMuVRyTlupHfQy1irpGf8ysq9g==}
     peerDependencies:
       react: 19.2.3
       react-native: 0.85.3
 
-  '@hyperledger/anoncreds-shared@0.3.4':
-    resolution: {integrity: sha512-XRyX39yWjn+ymUxy+4BvE0gdRIkfTmHtj1A19aOE8gALaDIAMiBbe0HxO8dkM+iAUXntBtqRJEL87Kwcx6xd8g==}
+  '@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337':
+    resolution: {integrity: sha512-JDKtSwReqEP6qOz85M7Wsj5HraM3G5DlBOJCxKRMYxR/nvPDnvEzusZXwHovvsNl6GyYRCoItINk7EJfqfKplg==}
 
   '@inquirer/external-editor@1.0.3':
     resolution: {integrity: sha512-RWbSrDiYmO4LbejWY7ttpxczuwQyZLBUyygsA9Nsv95hpzUWwnNTVQmAq3xuh7vNwCp07UTmE5i11XAEExx4RA==}
@@ -2032,14 +2032,14 @@ packages:
   '@openid4vc/utils@0.5.0-alpha-20260415063740':
     resolution: {integrity: sha512-r778UVTwdYy+IAUH1ktx126ZiSEHRqSNzg0FjssD+4w5O/Rr7prLHkAQTnPpGz8FXMinLivmn3I+SYohngElnA==}
 
-  '@openwallet-foundation/askar-react-native@0.6.0':
-    resolution: {integrity: sha512-cXyRuWKtslUEPx3LCUYTWox7xs8eomhLTkuvq4TAPXxxXzoZHZWuljXfMCKKCbmiaGEuxOeyYiNuDkIsFzGFOg==}
+  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727':
+    resolution: {integrity: sha512-LQMyP95RQN2MBm4Ok9PQtI7gpFa8IhxmuQahs4jwzUjk4rd8d/kwtnR6qID5vT5PhXZGhsbJBduhpRFrCkWTWw==}
     peerDependencies:
       react: 19.2.3
       react-native: 0.85.3
 
-  '@openwallet-foundation/askar-shared@0.6.0':
-    resolution: {integrity: sha512-O9aaQCZ2BkQ5Z8jqshhqhxbS/rT2nTfN90iW32WKQEh9YUwWERFQcnqKR+XszGhV95jqwZagcwhDb72hFH3VaQ==}
+  '@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727':
+    resolution: {integrity: sha512-tbbf2rMHf2pKfFgoHYUf8cZ5XNCigLxiT6o6vFA8cG8Xkbc1hFE30zamLOGOOJ5Oh94JXzjViTlIzpTB7cjoTg==}
 
   '@owf/crypto@0.2.0-alpha-20260506130404':
     resolution: {integrity: sha512-qSCarBCg0mTYFRzTCCsVTqAvfiOsm84En1Jmt10j6X9aRHCUJhPz5rY+wxgmL08fPEJWC1wLMvsskBUZQ9gedg==}
@@ -7585,12 +7585,12 @@ snapshots:
 
   '@cosmjs/utils@0.38.1': {}
 
-  '@credo-ts/anoncreds@0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3)':
+  '@credo-ts/anoncreds@0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
       '@credo-ts/core': 0.6.3(typescript@6.0.3)
       '@credo-ts/didcomm': 0.6.3(typescript@6.0.3)
-      '@hyperledger/anoncreds-shared': 0.3.4
+      '@hyperledger/anoncreds-shared': 0.4.1-alpha-20260609124337
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
       class-validator: 0.14.4
@@ -7600,10 +7600,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/askar@0.6.3(@openwallet-foundation/askar-shared@0.6.0)(typescript@6.0.3)':
+  '@credo-ts/askar@0.6.3(@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727)(typescript@6.0.3)':
     dependencies:
       '@credo-ts/core': 0.6.3(typescript@6.0.3)
-      '@openwallet-foundation/askar-shared': 0.6.0
+      '@openwallet-foundation/askar-shared': 0.6.1-alpha-20260609123727
       class-transformer: 0.5.1
       class-validator: 0.14.4
       rxjs: 7.8.2
@@ -7613,14 +7613,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/cheqd@0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3)':
+  '@credo-ts/cheqd@0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)':
     dependencies:
       '@cheqd/sdk': '@cheqd/sdk-esm@5.5.0'
       '@cheqd/ts-proto': 4.2.1
       '@cosmjs/crypto': 0.38.1
       '@cosmjs/proto-signing': 0.36.2
       '@cosmjs/stargate': 0.36.2
-      '@credo-ts/anoncreds': 0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3)
+      '@credo-ts/anoncreds': 0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)
       '@credo-ts/core': 0.6.3(typescript@6.0.3)
       '@stablelib/ed25519': 2.1.0
       class-transformer: 0.5.1
@@ -8466,13 +8466,13 @@ snapshots:
       react: 19.2.3
       react-native: 0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
 
-  '@hyperledger/anoncreds-react-native@0.3.4(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)':
+  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260609124337(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)':
     dependencies:
-      '@hyperledger/anoncreds-shared': 0.3.4
+      '@hyperledger/anoncreds-shared': 0.4.1-alpha-20260609124337
       react: 19.2.3
       react-native: 0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
 
-  '@hyperledger/anoncreds-shared@0.3.4':
+  '@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337':
     dependencies:
       tar: 7.5.16
 
@@ -8724,13 +8724,13 @@ snapshots:
       zod: 4.4.3
       zod-validation-error: 5.0.0(zod@4.4.3)
 
-  '@openwallet-foundation/askar-react-native@0.6.0(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)':
+  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)':
     dependencies:
-      '@openwallet-foundation/askar-shared': 0.6.0
+      '@openwallet-foundation/askar-shared': 0.6.1-alpha-20260609123727
       react: 19.2.3
       react-native: 0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
 
-  '@openwallet-foundation/askar-shared@0.6.0':
+  '@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727':
     dependencies:
       buffer: 6.0.3
       tar: 7.5.16
@@ -11519,9 +11519,9 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.2-alpha.2(@credo-ts/anoncreds@0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3))(@credo-ts/core@0.6.3(typescript@6.0.3)):
+  credo-ts-didweb-anoncreds@0.0.2-alpha.2(@credo-ts/anoncreds@0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3))(@credo-ts/core@0.6.3(typescript@6.0.3)):
     dependencies:
-      '@credo-ts/anoncreds': 0.6.3(@hyperledger/anoncreds-shared@0.3.4)(typescript@6.0.3)
+      '@credo-ts/anoncreds': 0.6.3(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)
       '@credo-ts/core': 0.6.3(typescript@6.0.3)
       canonicalize: 2.1.0
       query-string: 9.4.0

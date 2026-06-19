@@ -6,11 +6,11 @@ import {
   type JsonObject,
   type MdocNameSpaces,
 } from '@credo-ts/core'
-import { activityStorage, storeSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
+import { activityStorage, storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
 import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
 import { fetchPaymentTransactionStatus } from '../paymentTransactionStatus'
