@@ -14,6 +14,7 @@ export default {
           '@package/scanner': path.resolve(import.meta.dirname, '../../packages/scanner/src'),
           '@package/translations': path.resolve(import.meta.dirname, '../../packages/translations/src'),
           '@package/utils': path.resolve(import.meta.dirname, '../../packages/utils/src'),
+          '@easypid': path.resolve(import.meta.dirname, 'src'),
         },
       },
     ],

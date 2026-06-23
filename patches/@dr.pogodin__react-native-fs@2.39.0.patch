@@ -1,5 +1,5 @@
 diff --git a/ReactNativeFs.podspec b/ReactNativeFs.podspec
-index f091da7fd95d8f76c25e7f12b8b9ba69105fa335..e30b037a5ee48c749a8c7220caf4ec659e2cfc0d 100644
+index f9deeda044ff83da5291d3eb32539aa321f145a0..d08e887d75ef25875c4b970ca17afe305d0a48f1 100644
 --- a/ReactNativeFs.podspec
 +++ b/ReactNativeFs.podspec
 @@ -14,7 +14,8 @@ Pod::Spec.new do |s|
@@ -9,6 +9,6 @@ index f091da7fd95d8f76c25e7f12b8b9ba69105fa335..e30b037a5ee48c749a8c7220caf4ec65
 -  s.frameworks = "AVFoundation", "Photos"
 +  # NOTE: see https://github.com/birdofpreyru/react-native-fs/issues/130
 +  s.frameworks = "AVFoundation", "Photos", "UniformTypeIdentifiers"
-   s.source_files = "ios/**/*.{h,m,mm,cpp}"
+   s.source_files = "ios/**/*.{h,m,mm,swift,cpp}"
  
    # Necessary for background downloads to work,

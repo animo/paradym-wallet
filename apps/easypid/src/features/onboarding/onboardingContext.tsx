@@ -7,14 +7,14 @@ import { resetAppState } from '@easypid/utils/resetAppState'
 import type { OnboardingPage, OnboardingStep } from '@easypid/utils/sharedPidSetup'
 import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
+import { commonMessages } from '@package/translations'
+import { useToastController } from '@package/ui'
+import { sleep } from '@package/utils'
 import {
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
   useParadym,
-} from '@package/sdk'
-import { commonMessages } from '@package/translations'
-import { useToastController } from '@package/ui'
-import { sleep } from '@package/utils'
+} from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import type React from 'react'
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react'
