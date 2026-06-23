@@ -6,13 +6,14 @@ import {
   type JsonObject,
   type MdocNameSpaces,
 } from '@credo-ts/core'
-import { storeSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activityStore'
+import { activityStorage, storeSharedActivityForCredentialsForRequest } from '@paradym/wallet-sdk/storage/activityStore'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
+import { fetchPaymentTransactionStatus } from '../paymentTransactionStatus'
 import { getFormattedTransactionData } from '../transaction'
 
 export type ShareCredentialsOptions = {
@@ -116,7 +117,34 @@ export const shareCredentials = async ({
       )
     }
 
-    await storeSharedActivityForCredentialsForRequest(paradym, resolvedRequest, 'success', transactionData)
+    const storedActivity = await storeSharedActivityForCredentialsForRequest(
+      paradym,
+      resolvedRequest,
+      'success',
+      transactionData
+    )
+
+    if (
+      storedActivity.type === 'payment' &&
+      transactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1' &&
+      transactionData.cardForTransactionId
+    ) {
+      const credentialEntry = resolvedRequest.formattedSubmission.entries.find(
+        (entry) => entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
+      )
+      const credentialRecord = credentialEntry?.isSatisfied
+        ? credentialEntry.credentials[0]?.credential.record
+        : undefined
+      if (credentialRecord) {
+        fetchPaymentTransactionStatus(credentialRecord, transactionData.hash)
+          .then((transactionStatus) => {
+            if (transactionStatus) {
+              return activityStorage.updateActivity(paradym.agent, storedActivity.id, { transactionStatus })
+            }
+          })
+          .catch((error) => paradym.logger.error('Failed to fetch initial payment transaction status', { error }))
+      }
+    }
 
     return result
   } catch (error) {

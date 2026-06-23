@@ -49,6 +49,30 @@ const signedDocument = defineMessage({
   comment: 'Shown if a document was signed successfully',
 })
 
+const paymentFailed = defineMessage({
+  id: 'activity.latest.paymentFailed',
+  message: 'Payment failed',
+  comment: 'Shown if a payment failed or was cancelled',
+})
+
+const paymentSuccessful = defineMessage({
+  id: 'activity.latest.paymentMade',
+  message: 'Payment successful',
+  comment: 'Shown if a payment was made successfully',
+})
+
+const paymentPending = defineMessage({
+  id: 'activity.latest.paymentPending',
+  message: 'Payment pending',
+  comment: 'Shown when a payment is pending settlement on the bank side',
+})
+
+const paymentRejected = defineMessage({
+  id: 'activity.latest.paymentRejected',
+  message: 'Payment rejected',
+  comment: 'Shown when a payment was rejected by the bank',
+})
+
 const fallbackCardName = defineMessage({
   id: 'activity.latest.newCardFallback',
   message: 'new card',
@@ -88,6 +112,21 @@ export function LatestActivityCard() {
 
     if (latestActivity.type === 'signed') {
       const description = ['failed', 'stopped'].includes(latestActivity.status) ? t(signingFailed) : t(signedDocument)
+
+      return { title: date, description }
+    }
+
+    if (latestActivity.type === 'payment') {
+      let description: string
+      if (['failed', 'stopped'].includes(latestActivity.status)) {
+        description = t(paymentFailed)
+      } else if (latestActivity.transactionStatus === 'RJCT') {
+        description = t(paymentRejected)
+      } else if (latestActivity.transactionStatus === 'ACSC') {
+        description = t(paymentSuccessful)
+      } else {
+        description = t(paymentPending)
+      }
 
       return { title: date, description }
     }

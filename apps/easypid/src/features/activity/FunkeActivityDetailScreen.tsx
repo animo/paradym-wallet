@@ -20,6 +20,7 @@ import {
 import type { PaymentActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { usePaymentTransactionStatus } from '../../hooks/usePaymentTransactionStatus'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { FunkeCredentialRowCard } from '../wallet/FunkeCredentialsScreen'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
@@ -32,6 +33,7 @@ export function FunkeActivityDetailScreen() {
 
   const { activities } = useActivities()
   const activity = activities.find((activity) => activity.id === id)
+  usePaymentTransactionStatus(activity?.type === 'payment' ? activity : undefined)
 
   if (!activity) {
     router.back()
@@ -99,16 +101,6 @@ const activityMessages = {
     id: 'activity.documentNotSigned',
     message: 'The document was not signed.',
     comment: 'Shown after a failed digital signature',
-  }),
-  paymentMade: defineMessage({
-    id: 'activity.paymentMade',
-    message: 'The payment was made.',
-    comment: 'Shown after a successful payment',
-  }),
-  paymentNotMade: defineMessage({
-    id: 'activity.paymentNotMade',
-    message: 'The payment was not made.',
-    comment: 'Shown after a failed payment',
   }),
   sharedAttributes: defineMessage({
     id: 'activity.sharedAttributesHeading',
@@ -302,9 +294,6 @@ export function SharedActivityDetailSection({
                   Payment
                 </Trans>
               </Heading>
-              <Paragraph>
-                {activity.status === 'success' ? t(activityMessages.paymentMade) : t(activityMessages.paymentNotMade)}
-              </Paragraph>
             </YStack>
             <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
               <YStack f={1} gap="$2" ai="center">

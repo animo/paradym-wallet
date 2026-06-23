@@ -1,4 +1,6 @@
 export * from './useDevelopmentMode'
 export * from './useFirstNameFromPid'
 export * from './useOverAskingAi'
+export * from './usePaymentTransactionStatus'
+export * from './useRefreshPaymentTransactionStatuses'
 export * from './useWalletReset'

@@ -83,8 +83,16 @@ export interface CredentialCategoryMetadata {
 
 export type PaymentsCredentialMetadata = CredentialMetadata
 
+export type TransactionStatusMetadata = {
+  'urn:eudi:sca:eu.europa.ec:payment': {
+    transaction_status_token: string
+    transaction_status_url: string
+  }
+}
+
 const openId4VcCredentialMetadataKey = '_paradym/openId4VcCredentialMetadata'
 const paymentsMetadataKey = '_paradym/paymentsMetadata'
+const transactionStatusMetadataKey = '_paradym/transactionStatusMetadata'
 const batchCredentialMetadataKey = '_paradym/batchCredentialMetadata'
 const credentialCategoryMetadataKey = '_paradym/credentialCategoryMetadata'
 const refreshCredentialMetadataKey = '_paradym/refreshCredentialMetadata'
@@ -140,6 +148,14 @@ export function getPaymentsMetadata(credentialRecord: CredentialRecord): Payment
 
 export function setPaymentsMetadata(credentialRecord: CredentialRecord, metadata: PaymentsCredentialMetadata) {
   credentialRecord.metadata.set(paymentsMetadataKey, metadata)
+}
+
+export function getTransactionStatusMetadata(credentialRecord: CredentialRecord): TransactionStatusMetadata | null {
+  return credentialRecord.metadata.get(transactionStatusMetadataKey)
+}
+
+export function setTransactionStatusMetadata(credentialRecord: CredentialRecord, metadata: TransactionStatusMetadata) {
+  credentialRecord.metadata.set(transactionStatusMetadataKey, metadata)
 }
 
 export function getOpenId4VcCredentialMetadata(credentialRecord: CredentialRecord): OpenId4VcCredentialMetadata | null {

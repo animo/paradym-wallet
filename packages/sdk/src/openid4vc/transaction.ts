@@ -1,3 +1,4 @@
+import { Hasher, TypedArrayEncoder } from '@credo-ts/core'
 import type { FormattedSubmissionEntrySatisfied } from '../format/submission'
 import { getPaymentsMetadata } from '../metadata/credentials'
 import type { CredentialsForProofRequest } from './func/resolveCredentialRequest'
@@ -15,6 +16,8 @@ export type FormattedTransactionDataPaymentSingle = {
     website: string
   }
   cardForTransactionId?: string
+  // base64url encoded hash used for fetching the status
+  hash: string
 }
 
 export type FormattedTransactionDataQesAuthorization = {
@@ -87,6 +90,9 @@ export const getFormattedTransactionData = (
         website: string
       },
       cardForTransactionId,
+      hash: TypedArrayEncoder.toBase64URL(
+        Hasher.hash(TypedArrayEncoder.fromBase64(transactionDataEntry.entry.encoded), 'sha-256')
+      ),
     }
   }
 
