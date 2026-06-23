@@ -2,7 +2,7 @@
 import '@formatjs/intl-locale/polyfill-force'
 import '@formatjs/intl-pluralrules/polyfill-force'
 
-export { commonMessages, supportedLanguageMessages } from './commonMessages'
+export { commonMessages, supportedLanguageNames } from './commonMessages'
 export {
   activateLocale,
   i18n,

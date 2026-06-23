@@ -94,10 +94,14 @@ Your entire response MUST be a single JSON object and nothing else: no markdown 
 ${missing}
 </missing-json>`
 
-  const output = execFileSync('claude', ['-p', prompt], {
+  // Pass the prompt over stdin rather than as an argv argument: large catalogs
+  // (e.g. a full locale with hundreds of entries) exceed the OS ARG_MAX limit
+  // and fail with spawnSync E2BIG.
+  const output = execFileSync('claude', ['-p'], {
+    input: prompt,
     encoding: 'utf-8',
     maxBuffer: 50 * 1024 * 1024,
-    stdio: ['ignore', 'pipe', 'inherit'],
+    stdio: ['pipe', 'pipe', 'inherit'],
   })
 
   const parsed = JSON.parse(extractJsonObject(output))

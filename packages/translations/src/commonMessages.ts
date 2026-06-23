@@ -1,4 +1,3 @@
-import type { MessageDescriptor } from '@lingui/core'
 // src/i18n/messages.ts
 import { defineMessage } from '@lingui/core/macro'
 import type { SupportedLocale } from './i18n'
@@ -577,33 +576,15 @@ export const commonMessages = {
   },
 }
 
-export const supportedLanguageMessages: Record<SupportedLocale, MessageDescriptor> = {
-  nl: defineMessage({
-    id: 'language.nl',
-    message: 'Dutch',
-  }),
-  fi: defineMessage({
-    id: 'language.fi',
-    message: 'Finnish',
-  }),
-  sw: defineMessage({
-    id: 'language.sw',
-    message: 'Swedish',
-  }),
-  en: defineMessage({
-    id: 'language.en',
-    message: 'English',
-  }),
-  de: defineMessage({
-    id: 'language.de',
-    message: 'German',
-  }),
-  al: defineMessage({
-    id: 'language.al',
-    message: 'Albanian',
-  }),
-  pt: defineMessage({
-    id: 'language.pt',
-    message: 'Portuguese',
-  }),
+// We always display each language by its own native name (e.g. "Nederlands" in
+// every locale) so it's recognizable regardless of the active language. This
+// also means the language names don't need to be translated.
+export const supportedLanguageNames: Record<SupportedLocale, string> = {
+  nl: 'Nederlands',
+  fi: 'Suomi',
+  sw: 'Svenska',
+  en: 'English',
+  de: 'Deutsch',
+  al: 'Shqip',
+  pt: 'Português',
 }
