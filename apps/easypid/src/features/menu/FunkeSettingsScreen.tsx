@@ -3,7 +3,7 @@ import { TextBackButton, useScrollViewPosition } from '@package/app'
 import {
   commonMessages,
   type SupportedLocale,
-  supportedLanguageMessages,
+  supportedLanguageNames,
   supportedLocales,
   useLocale,
 } from '@package/translations'
@@ -40,7 +40,6 @@ export function LocaleSelect() {
   const locale = useLocale()
   const [localeValue, setLocaleValue] = useState<SupportedLocale>(locale)
   const [, setStoredLocale] = useStoredLocale()
-  const { t } = useLingui()
 
   const updateLocale = (newLocale: SupportedLocale) => {
     setLocaleValue(newLocale)
@@ -72,11 +71,7 @@ export function LocaleSelect() {
       </XStack>
       <Picker selectedValue={localeValue} onValueChange={updateLocale}>
         {supportedLocales.map((supportedLocale) => (
-          <Picker.Item
-            key={supportedLocale}
-            label={t(supportedLanguageMessages[supportedLocale])}
-            value={supportedLocale}
-          />
+          <Picker.Item key={supportedLocale} label={supportedLanguageNames[supportedLocale]} value={supportedLocale} />
         ))}
       </Picker>
     </YStack>
