@@ -1,1 +1,30 @@
-{}
+{
+  "verifyPartySlide.interactWithHeading": {
+    "message": "Do you trust {name}?",
+    "placeholders": {
+      "name": [
+        "name"
+      ]
+    },
+    "comments": [],
+    "origin": [
+      [
+        "src/features/receive/slides/VerifyPartySlide.tsx",
+        125
+      ]
+    ],
+    "translation": "A i beson {name}?"
+  },
+  "receiveCredential.checkInformationHeader": {
+    "message": "Do you want to store this card?",
+    "placeholders": {},
+    "comments": [],
+    "origin": [
+      [
+        "src/features/receive/slides/CredentialRetrievalSlide.tsx",
+        176
+      ]
+    ],
+    "translation": "Dëshiron ta ruash këtë kartë?"
+  }
+}
