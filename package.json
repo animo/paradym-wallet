@@ -12,7 +12,8 @@
 		"style:fix": "biome check --write --unsafe",
 		"release:sdk": "pnpm build && pnpm changeset publish --no-git-tag",
 		"changeset-version:sdk": "pnpm changeset version && pnpm style:fix",
-		"translations:ai": "node packages/translations/scripts/translate-all.js"
+		"translations:ai:prepare": "node packages/translations/scripts/translate-prepare.js",
+		"translations:ai:finalize": "node packages/translations/scripts/translate-finalize.js"
 	},
 	"engines": {
 		"node": ">=22.21.1"
