@@ -5,7 +5,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "APP_VARIANT=development expo start -c --dev-client",
+		"start": "APP_VARIANT=development TAMAGUI_IGNORE_BUNDLE_ERRORS=expo-modules-core,expo-updates,expo-asset,expo-image,expo expo start -c --dev-client",
 		"android": "APP_VARIANT=development expo run:android",
 		"ios": "APP_VARIANT=development expo run:ios",
 		"prebuild": "APP_VARIANT=development expo prebuild --no-install",
@@ -20,7 +20,6 @@
 		"@credo-ts/core": "catalog:",
 		"@expo-google-fonts/open-sans": "catalog:",
 		"@expo-google-fonts/raleway": "catalog:",
-		"@gorhom/bottom-sheet": "catalog:",
 		"@lingui/babel-plugin-lingui-macro": "^5.7.0",
 		"@package/app": "workspace:*",
 		"@package/scanner": "workspace:*",

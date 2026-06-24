@@ -1,5 +1,5 @@
 import { cloneElement } from 'react'
-import type { StackProps } from 'tamagui'
+import type { ViewProps } from 'tamagui'
 import { AnimatedStack } from '../base'
 import { useScaleAnimation } from '../hooks'
 
@@ -22,7 +22,7 @@ const variantStyles = {
   },
 }
 
-export interface IconContainerProps extends StackProps {
+export interface IconContainerProps extends ViewProps {
   icon: React.ReactElement<{ strokeWidth?: number; size?: number; color?: string }>
   scaleOnPress?: boolean
   radius?: 'full' | 'normal'

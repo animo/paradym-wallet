@@ -9,7 +9,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated'
-import { Circle, Input } from 'tamagui'
+import { Circle, Input, type InputRef } from 'tamagui'
 import { useHaptics } from '../hooks'
 
 interface PinDotsInputProps {
@@ -86,7 +86,7 @@ export const PinDotsInput = forwardRef(
   ) => {
     const { withHaptics, errorHaptic } = useHaptics()
     const [pin, setPin] = useState('')
-    const inputRef = useRef<HTMLInputElement>(null)
+    const inputRef = useRef<InputRef>(null)
 
     const isInLoadingState = isLoading
 
@@ -177,7 +177,7 @@ export const PinDotsInput = forwardRef(
             position="absolute"
             onBlur={() => inputRef.current?.focus()}
             maxLength={pinLength}
-            onChangeText={(e) => onChangePin(typeof e === 'string' ? e : e.nativeEvent.text)}
+            onChangeText={onChangePin}
             autoFocus
             flex={1}
             height={0}

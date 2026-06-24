@@ -4,7 +4,6 @@ import { SizableText, styled } from 'tamagui'
 
 export const Paragraph = styled(SizableText, {
   name: 'Paragraph',
-  tag: 'p',
   accessibilityRole: 'text',
   userSelect: 'auto',
   color: '$grey-700',

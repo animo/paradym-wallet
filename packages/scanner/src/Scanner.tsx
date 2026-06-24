@@ -85,7 +85,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 y={0}
                 opacity={1}
                 scale={1}
-                animation="quick"
+                transition="quick"
                 bg="$warning-500"
                 br="$12"
                 px="$3"

@@ -51,10 +51,8 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
           </XStack>
         </XStack>
         <AnimatedSwitch
-          bw="$1"
           onCheckedChange={onChange}
           bg={value ? '$primary-500' : '$grey-300'}
-          bc={value ? '$primary-500' : '$grey-300'}
           id={id}
           w={56}
           checked={value}
@@ -63,7 +61,7 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
           onPressOut={handlePressOut}
           style={pressStyle}
         >
-          <TamaguiSwitch.Thumb bw={1} scale={0.9} borderColor="$grey-200" bg="white" animation="quick" />
+          <TamaguiSwitch.Thumb bw={1} scale={0.9} borderColor="$grey-200" bg="white" transition="quick" />
         </AnimatedSwitch>
       </XStack>
       {description && <Paragraph variant="annotation">{description}</Paragraph>}

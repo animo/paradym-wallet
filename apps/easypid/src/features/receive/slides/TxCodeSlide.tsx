@@ -3,7 +3,7 @@ import { useWizard } from '@package/app'
 import { Heading, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
 import type { OpenId4VciTxCode } from '@paradym/wallet-sdk'
 import { useState } from 'react'
-import { Keyboard, type NativeSyntheticEvent, type TextInputSubmitEditingEventData } from 'react-native'
+import { Keyboard } from 'react-native'
 import { Input } from 'tamagui'
 
 interface TxCodeSlideProps {
@@ -29,7 +29,7 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
     setIsVerifying(false)
   }
 
-  const onSubmit = (event: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+  const onSubmit = (event: { nativeEvent: { text: string } }) => {
     if (txCode.length === undefined && !isVerifying) {
       void submitTxCode(event.nativeEvent.text)
     }
@@ -87,15 +87,13 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
             secureTextEntry
             autoFocus
             value={txCodeEntry}
-            editable={!isVerifying}
-            focusable={!isVerifying}
             disabled={isVerifying}
             onSubmitEditing={onSubmit}
             // Only render 'done' if length is unknown
             returnKeyType={txCode.length === undefined ? 'done' : 'none'}
             keyboardType={txCode.input_mode === 'text' ? 'ascii-capable' : 'numeric'}
             maxLength={txCode.length}
-            onChangeText={(e) => onChangeTxCodeEntry(typeof e === 'string' ? e : e.nativeEvent.text)}
+            onChangeText={onChangeTxCodeEntry}
             placeholderTextColor="$grey-500"
             borderColor="$grey-300"
             size="$4"

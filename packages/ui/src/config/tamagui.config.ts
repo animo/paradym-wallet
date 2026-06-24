@@ -82,10 +82,14 @@ export const tokens = createTokens(tokensInput)
 export const configInput = {
   settings: {
     styleCompat: 'react-native',
+    shouldAddPrefersColorThemes: true,
+    addThemeClassName: 'body',
+    // v2 defaults to 'static'; v1 effectively used 'relative'. Keeping 'relative'
+    // preserves layout semantics for absolutely-positioned children (e.g. sheets,
+    // sticky overlays) that assumed v1 behavior.
+    defaultPosition: 'relative',
   },
   animations,
-  shouldAddPrefersColorThemes: true,
-  themeClassNameOnRoot: true,
   shorthands,
   fonts: {
     // By default we use the same font for headings and body

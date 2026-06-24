@@ -1,6 +1,6 @@
-import { configInput, fontOpenSans, fontRaleway, hexColors } from '@package/ui/config/tamagui.config'
 import { radius, size, space, zIndex } from '@tamagui/themes'
 import { createTamagui, createTokens } from 'tamagui'
+import { configInput, fontOpenSans, fontRaleway, hexColors } from '../../packages/ui/src/config/tamagui.config'
 import { APP_THEME } from './src/config/themes'
 
 const appType = (process.env.EXPO_PUBLIC_APP_TYPE ?? 'PARADYM_WALLET') as keyof typeof APP_THEME

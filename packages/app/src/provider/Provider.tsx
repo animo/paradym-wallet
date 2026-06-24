@@ -1,4 +1,3 @@
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { type SupportedLocale, TranslationProvider } from '@package/translations'
 import type { TamaguiProviderProps } from '@package/ui'
 import { TamaguiProvider, ToastProvider } from '@package/ui'
@@ -11,19 +10,23 @@ import { ToastViewport } from './ToastViewport'
 export function Provider({
   children,
   customLocale,
+  defaultTheme = 'light',
   ...rest
-}: PropsWithChildren<TamaguiProviderProps & { customLocale?: SupportedLocale }>) {
+}: PropsWithChildren<
+  Omit<TamaguiProviderProps, 'defaultTheme'> & {
+    customLocale?: SupportedLocale
+    defaultTheme?: TamaguiProviderProps['defaultTheme']
+  }
+>) {
   return (
     <TranslationProvider customLocale={customLocale}>
-      <TamaguiProvider disableInjectCSS defaultTheme="light" {...rest}>
+      <TamaguiProvider disableInjectCSS defaultTheme={defaultTheme} {...rest}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <BottomSheetModalProvider>
-            <ToastProvider swipeDirection="up" duration={6000}>
-              <SafeAreaProvider style={{ backgroundColor: 'white' }}>{children}</SafeAreaProvider>
-              <CustomToast />
-              <ToastViewport />
-            </ToastProvider>
-          </BottomSheetModalProvider>
+          <ToastProvider swipeDirection="up" duration={6000}>
+            <SafeAreaProvider style={{ backgroundColor: 'white' }}>{children}</SafeAreaProvider>
+            <CustomToast />
+            <ToastViewport />
+          </ToastProvider>
         </GestureHandlerRootView>
       </TamaguiProvider>
     </TranslationProvider>

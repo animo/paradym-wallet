@@ -63,7 +63,7 @@ export function CredentialCard({
       position="relative"
     >
       <Card
-        padded
+        padding="$true"
         width="100%"
         br="$8"
         backgroundColor="transparent"
