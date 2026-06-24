@@ -13,14 +13,13 @@ const localesDir = process.argv[2] ? path.resolve(process.argv[2]) : defaultLoca
 const steps = [
   { cwd: easypidDir, args: ['translations:extract'] },
   { cwd: translationsDir, args: ['extract-all-missing-translations', localesDir] },
-  { cwd: translationsDir, args: ['translate-missing-with-claude', localesDir] },
-  { cwd: translationsDir, args: ['merge-all-missing-translations', localesDir] },
-  { cwd: easypidDir, args: ['translations:extract'] },
-  { cwd: easypidDir, args: ['translations:compile'] },
-  { cwd: workspaceRoot, args: ['style:fix'] },
 ]
 
 for (const { cwd, args } of steps) {
   console.log(`\n> pnpm ${args.join(' ')}  (in ${path.relative(workspaceRoot, cwd) || '.'})`)
   execFileSync('pnpm', args, { cwd, stdio: 'inherit' })
 }
+
+const relLocales = path.relative(workspaceRoot, localesDir)
+console.log(`\nMissing translations written to ${relLocales}/<locale>/missing.json.`)
+console.log('Fill in the empty "translation" fields for each locale, then run: pnpm translations:ai:finalize')

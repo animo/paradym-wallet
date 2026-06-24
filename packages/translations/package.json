@@ -7,8 +7,8 @@
 	"scripts": {
 		"merge-all-missing-translations": "node ./scripts/merge-all-missing-translations.js",
 		"extract-all-missing-translations": "node ./scripts/extract-all-missing-translations.js",
-		"translate-missing-with-claude": "node ./scripts/translate-missing-with-claude.js",
-		"translate-all": "node ./scripts/translate-all.js"
+		"translate-prepare": "node ./scripts/translate-prepare.js",
+		"translate-finalize": "node ./scripts/translate-finalize.js"
 	},
 	"dependencies": {
 		"@formatjs/intl-locale": "^4.2.13",
