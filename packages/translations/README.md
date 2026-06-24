@@ -128,9 +128,11 @@ This runs the full pipeline for every locale under `apps/easypid/src/locales` (e
 
 1. `translations:extract` in `apps/easypid` — refresh catalogs from source.
 2. `extract-all-missing-translations` — write a `missing.json` next to each locale's `messages.json`.
-3. `translate-missing-with-claude` — invoke the `claude` CLI per locale, passing this README and the `missing.json`, and write the translated JSON back.
+3. `translate-missing-with-claude` — invoke the `claude` CLI per locale. The prompt points Claude at the `translations` skill (`.claude/skills/translations/SKILL.md`), passes the locale's `AI_INSTRUCTIONS.MD`, and the `missing.json`, then writes the translated JSON back.
 4. `merge-all-missing-translations` — merge each `missing.json` into its `messages.json` and delete `missing.json`.
 5. `translations:extract` + `translations:compile` in `apps/easypid`.
 6. `style:fix` at the workspace root.
 
 The locales directory defaults to `apps/easypid/src/locales`; pass a different path as a positional arg to override.
+
+The translation rules (placeholder handling, output contract, locale-specific instructions, etc.) live in the `translations` skill. Update that skill — not this README — when changing how Claude produces translations.

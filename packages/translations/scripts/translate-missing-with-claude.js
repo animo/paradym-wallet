@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const localesDir = process.argv[2]
+const skillPath = path.resolve(__dirname, '..', '..', '..', '.claude', 'skills', 'translations', 'SKILL.md')
 
 function extractJsonObject(text) {
   const start = text.indexOf('{')
@@ -42,8 +43,10 @@ if (!localesDir) {
   process.exit(1)
 }
 
-const readmePath = path.resolve(__dirname, '..', 'README.md')
-const readme = readFileSync(readmePath, { encoding: 'utf-8' })
+if (!existsSync(skillPath)) {
+  console.error(`Translations skill not found at ${skillPath}`)
+  process.exit(1)
+}
 
 const resolvedLocalesDir = path.resolve(localesDir)
 const locales = readdirSync(resolvedLocalesDir, { withFileTypes: true })
@@ -68,17 +71,13 @@ for (const locale of locales) {
   const aiInstructionsPath = path.join(resolvedLocalesDir, locale, 'AI_INSTRUCTIONS.MD')
   const aiInstructions = existsSync(aiInstructionsPath) ? readFileSync(aiInstructionsPath, { encoding: 'utf-8' }) : ''
 
-  const prompt = `You are translating Lingui catalog entries for the Paradym wallet.
+  const prompt = `Use the "translations" skill at ${skillPath} to translate the Lingui catalog entries below. Follow every rule in that skill — especially the output contract (a single JSON object, no prose, no markdown fences).
 
-Below is the translations package README for context on how translations are defined and used:
-
-<readme>
-${readme}
-</readme>
+Target locale ISO code: "${locale}"
 ${
   aiInstructions
     ? `
-Below are locale-specific instructions for "${locale}" with consistency rules and terminology guidance. Follow these instructions when producing translations for this locale:
+Locale-specific instructions for "${locale}" (apply these on top of the skill's general rules):
 
 <locale-instructions>
 ${aiInstructions}
@@ -86,10 +85,6 @@ ${aiInstructions}
 `
     : ''
 }
-Translate every entry in the JSON below into the language with ISO code "${locale}". For each entry, fill in the empty "translation" field with the localized string. Keep all keys, ICU placeholders (e.g. {name}), and JSX/component placeholders (e.g. <0/>, <1>...</1>) exactly as in the source "message". Preserve the original JSON structure and key order.
-
-Your entire response MUST be a single JSON object and nothing else: no markdown fences, no prose before or after, no commentary. The first character of your response must be "{" and the last must be "}".
-
 <missing-json>
 ${missing}
 </missing-json>`
