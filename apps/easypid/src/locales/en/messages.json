@@ -3400,16 +3400,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 195]],
 		"translation": "Unknown Organization"
 	},
-	"activity.unknownVerifier": {
-		"message": "Unknown verifier",
-		"placeholders": {},
-		"comments": [
-			"Fallback name shown when the verifier/issuer name is missing"
-		],
-		"origin": [["../../packages/agent/src/storage/activityStore.ts", 231]],
-		"translation": "Unknown verifier",
-		"obsolete": true
-	},
 	"onboardingIdCardVerify.unlock": {
 		"message": "Unlock with biometrics",
 		"placeholders": {},
