@@ -28,6 +28,10 @@ After making any code changes, always run from the repo root:
 
 Fix any errors these surface before reporting the task as done. There is no ESLint/Prettier — Biome is the only linter/formatter (config in `biome.json`).
 
+## Commits
+
+Use scoped Conventional Commits for every commit (e.g. `feat(easypid): ...`, `fix(app): ...`, `chore(translations): ...`). The scope should be the affected package or area (`easypid`, `app`, `ui`, `translations`, `utils`, `sdk`, `scanner`, `ai`, etc.).
+
 ## Repo layout
 
 pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pnpm `11.7.0`.
