@@ -4,7 +4,6 @@ import { styled, Heading as THeading } from 'tamagui'
 
 export const Heading = styled(THeading, {
   name: 'Heading',
-  tag: 'span',
   fontFamily: '$heading',
   fontWeight: '$semiBold',
   userSelect: 'auto',
@@ -37,7 +36,6 @@ export const Heading = styled(THeading, {
     heading: {
       h1: {
         name: 'H1',
-        tag: 'h1',
         size: '$7',
         fontWeight: '$semiBold',
         lineHeight: '$6',
@@ -46,7 +44,6 @@ export const Heading = styled(THeading, {
       },
       h2: {
         name: 'H2',
-        tag: 'h2',
         size: '$5',
         fontWeight: '$semiBold',
         letterSpacing: '$6',
@@ -55,7 +52,6 @@ export const Heading = styled(THeading, {
       },
       h3: {
         name: 'H3',
-        tag: 'h3',
         size: '$4',
         fontWeight: '$semiBold',
         letterSpacing: '$6',
@@ -63,7 +59,6 @@ export const Heading = styled(THeading, {
       },
       h4: {
         name: 'H4',
-        tag: 'h4',
         size: '$3',
         fontWeight: '$semiBold',
         letterSpacing: '$6',

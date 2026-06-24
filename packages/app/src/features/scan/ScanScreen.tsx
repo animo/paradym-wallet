@@ -76,7 +76,7 @@ export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScree
           y={0}
           bg="$black"
           opacity={0.7}
-          animation="lazy"
+          transition="lazy"
         >
           <Spinner variant="dark" />
           <Paragraph variant="sub" color="$white" textAlign="center">

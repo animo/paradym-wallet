@@ -27,7 +27,7 @@ export function InboxNotificationRowCard({
       style={pressStyle}
       onPress={onPress}
     >
-      <Stack border bg={backgroundColor ?? '$grey-900'} h="$4.5" w="24%" br="$2" overflow="hidden" pos="relative">
+      <Stack bordered bg={backgroundColor ?? '$grey-900'} h="$4.5" w="24%" br="$2" overflow="hidden" pos="relative">
         {backgroundImageUrl && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image src={backgroundImageUrl} alt="Card" contentFit="cover" height="100%" width="100%" />

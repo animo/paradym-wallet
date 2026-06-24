@@ -21,7 +21,7 @@ export function NoContentInbox() {
             </Trans>
           </Paragraph>
         </YStack>
-        <Button.Text fontWeight="$medium" onPress={() => back()} icon={<LucideIcons.ArrowLeft size={20} m={-4} />}>
+        <Button.Text fontWeight="$medium" onPress={() => back()} icon={<LucideIcons.ArrowLeft size={20} margin={-4} />}>
           <Trans id="noContentInbox.goBack" comment="Label for the go back button">
             Go back
           </Trans>

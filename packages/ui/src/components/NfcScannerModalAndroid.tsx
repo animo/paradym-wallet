@@ -79,13 +79,7 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
   const { title, description } = text[scanningState]
 
   return (
-    <FloatingSheet
-      isOpen={open}
-      onDismiss={onCancel}
-      setIsOpen={() => {}}
-      enableDismissOnClose={false}
-      enablePanDownToClose={false}
-    >
+    <FloatingSheet isOpen={open} onDismiss={onCancel} setIsOpen={() => {}} enableDismissOnClose={false}>
       <XStack backgroundColor="$primary-100" height={175} justifyContent="center" alignItems="center">
         <AnimatedNfcScanIcon
           icon={scanningState === 'readyToScan' || scanningState === 'scanning' ? 'scan' : scanningState}

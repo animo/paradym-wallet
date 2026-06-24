@@ -26,7 +26,7 @@ export function CredentialRowCard({
         pressStyle={{ backgroundColor: onPress && '$grey-100' }}
         overflow="hidden"
       >
-        <XStack border bg={bgColor ?? '$grey-700'} h="$4.5" w="24%" br="$2" />
+        <XStack bordered bg={bgColor ?? '$grey-700'} h="$4.5" w="24%" br="$2" />
         <YStack flex={1} jc={issuer ? 'space-between' : 'center'}>
           <Heading heading="h3" fontWeight="$medium" numberOfLines={showFullText ? 2 : 1}>
             {name}

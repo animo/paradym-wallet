@@ -1,13 +1,8 @@
-import {
-  BottomSheetBackdrop,
-  type BottomSheetBackdropProps,
-  BottomSheetModal,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet'
-import { type PropsWithChildren, useCallback, useEffect, useRef } from 'react'
+import { type PropsWithChildren, useEffect, useState } from 'react'
+import { Modal, Pressable, StyleSheet } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-import { Stack } from '../base'
+import { scheduleOnRN } from 'react-native-worklets'
 
 export interface FloatingSheetProps {
   isOpen: boolean
@@ -18,12 +13,10 @@ export interface FloatingSheetProps {
    * @default true
    */
   enableDismissOnClose?: boolean
-
-  /**
-   * @default true
-   */
-  enablePanDownToClose?: boolean
 }
+
+const BACKDROP_DURATION = 200
+const SHEET_DURATION = 250
 
 export function FloatingSheet({
   children,
@@ -31,40 +24,68 @@ export function FloatingSheet({
   setIsOpen,
   onDismiss,
   enableDismissOnClose = true,
-  enablePanDownToClose = true,
 }: PropsWithChildren<FloatingSheetProps>) {
-  const bottomSheetRef = useRef<BottomSheetModal>(null)
   const { bottom } = useSafeAreaInsets()
+  const [isMounted, setIsMounted] = useState(isOpen)
 
-  const renderBackdrop = useCallback(
-    (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.2} />
-    ),
-    []
-  )
+  const backdropOpacity = useSharedValue(0)
+  const sheetTranslateY = useSharedValue(1)
 
   useEffect(() => {
-    if (isOpen) bottomSheetRef.current?.present()
-    else bottomSheetRef.current?.dismiss()
+    if (isOpen) {
+      setIsMounted(true)
+      backdropOpacity.value = withTiming(1, { duration: BACKDROP_DURATION })
+      sheetTranslateY.value = withTiming(0, { duration: SHEET_DURATION })
+    } else if (isMounted) {
+      backdropOpacity.value = withTiming(0, { duration: BACKDROP_DURATION })
+      sheetTranslateY.value = withTiming(1, { duration: SHEET_DURATION }, (finished) => {
+        if (finished) {
+          scheduleOnRN(setIsMounted, false)
+          if (onDismiss) scheduleOnRN(onDismiss)
+        }
+      })
+    }
   }, [isOpen])
 
+  const backdropStyle = useAnimatedStyle(() => ({
+    opacity: backdropOpacity.value,
+  }))
+
+  const sheetStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: `${sheetTranslateY.value * 100}%` }],
+  }))
+
+  const handleBackdropPress = () => {
+    if (enableDismissOnClose) setIsOpen(false)
+  }
+
   return (
-    <BottomSheetModal
-      ref={bottomSheetRef}
-      enablePanDownToClose={enablePanDownToClose}
-      enableDismissOnClose={enableDismissOnClose}
-      enableDynamicSizing
-      onDismiss={onDismiss}
-      onChange={(index) => setIsOpen(index !== -1)}
-      handleComponent={null}
-      backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: 'transparent' }}
+    <Modal
+      visible={isMounted}
+      transparent
+      animationType="none"
+      onRequestClose={() => setIsOpen(false)}
+      statusBarTranslucent
     >
-      <BottomSheetView style={{ backgroundColor: 'transparent' }}>
-        <Stack bg="white" borderRadius="$button" overflow="hidden" mx="$4" mb={bottom || '$4'}>
-          {children}
-        </Stack>
-      </BottomSheetView>
-    </BottomSheetModal>
+      <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.4)' }, backdropStyle]}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={handleBackdropPress} />
+      </Animated.View>
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            left: 16,
+            right: 16,
+            bottom: bottom || 16,
+            backgroundColor: 'white',
+            borderRadius: 16,
+            overflow: 'hidden',
+          },
+          sheetStyle,
+        ]}
+      >
+        {children}
+      </Animated.View>
+    </Modal>
   )
 }

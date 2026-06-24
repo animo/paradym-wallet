@@ -96,7 +96,6 @@ catalog:
   react-native-reanimated-carousel: ^4.0.3
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.3.2
-  "@gorhom/bottom-sheet": ^5.2.8
   react-native-edge-to-edge: ^1.7.0
   '@shopify/react-native-skia': 2.6.5
 
@@ -129,13 +128,13 @@ catalog:
   "@expo-google-fonts/raleway": ^0.4.2
 
   # Tamagui
-  "@tamagui/animations-react-native": 1.142.0
-  "@tamagui/font-inter": 1.142.0
-  "@tamagui/shorthands": 1.142.0
-  "@tamagui/themes": 1.142.0
-  "@tamagui/toast": 1.142.0
-  "@tamagui/react-native-media-driver": 1.142.0
-  "@tamagui/colors": 1.142.0
-  "@tamagui/lucide-icons": 1.142.0
-  "@tamagui/babel-plugin": 1.142.0
-  tamagui: 1.142.0
+  "@tamagui/animations-react-native": 2.3.3
+  "@tamagui/font-inter": 2.3.3
+  "@tamagui/shorthands": 2.3.3
+  "@tamagui/themes": 2.3.3
+  "@tamagui/toast": 2.3.3
+  "@tamagui/react-native-media-driver": 2.3.3
+  "@tamagui/colors": 2.3.3
+  "@tamagui/lucide-icons": 2.0.0-rc.26
+  "@tamagui/babel-plugin": 2.3.3
+  tamagui: 2.3.3

@@ -21,8 +21,12 @@ export default {
     [
       '@tamagui/babel-plugin',
       {
-        // No idea why, but tamagui can't find the packages... :(
-        components: ['@package/ui', '@package/app', 'tamagui'],
+        // The static loader's esbuild-register/tsconfig-paths shim can't
+        // resolve workspace package names. Pass an absolute file path for
+        // @package/ui so it's treated as a local file and require()d directly.
+        // @package/app is omitted because it only re-exports/composes from
+        // @package/ui and contributes no styled() components of its own.
+        components: [path.resolve(import.meta.dirname, '../../packages/ui/src/index.ts'), 'tamagui'],
         config: './tamagui.config.ts',
         disableExtraction: process.env.NODE_ENV === 'development',
       },
