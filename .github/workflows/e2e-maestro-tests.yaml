@@ -44,7 +44,7 @@ jobs:
       - uses: pnpm/action-setup@v5
 
       - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@v9
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_PUBLISHER_ACCESS_TOKEN }}
