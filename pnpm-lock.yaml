@@ -257,6 +257,7 @@ overrides:
   react-native: 0.85.3
 
 patchedDependencies:
+  '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4': d04fe6e5d3d4e104af84866a480ddddc257fa8b881da53a70123b5494b5c938c
   '@credo-ts/openid4vc': 544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a
   '@dr.pogodin/react-native-fs': 269b0f78f92528892d71ccd81c8eb877b24c6bc790ad3a302c46031345c8cf9b
 
@@ -284,7 +285,7 @@ importers:
         version: 0.0.0-alpha-20250917090914(@credo-ts/core@0.6.3(typescript@6.0.3))(@credo-ts/openid4vc@0.6.3(patch_hash=544f4064c1b5da8c86887c309db2b584235523758a797a7ccbde1afebce1a22a)(typescript@6.0.3))
       '@animo-id/expo-mdoc-data-transfer':
         specifier: 'catalog:'
-        version: 0.2.0-alpha.4(expo@56.0.12)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
+        version: 0.2.0-alpha.4(patch_hash=d04fe6e5d3d4e104af84866a480ddddc257fa8b881da53a70123b5494b5c938c)(expo@56.0.12)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       '@animo-id/mdoc':
         specifier: 'catalog:'
         version: 0.5.2
@@ -7006,7 +7007,7 @@ snapshots:
       react: 19.2.3
       react-native: 0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
 
-  '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4(expo@56.0.12)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)':
+  '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4(patch_hash=d04fe6e5d3d4e104af84866a480ddddc257fa8b881da53a70123b5494b5c938c)(expo@56.0.12)(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)':
     dependencies:
       buffer: 6.0.3
       expo: 56.0.12(@babel/core@7.29.7)(@expo/dom-webview@56.0.5)(@expo/metro-runtime@56.0.15)(expo-router@56.2.11)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)

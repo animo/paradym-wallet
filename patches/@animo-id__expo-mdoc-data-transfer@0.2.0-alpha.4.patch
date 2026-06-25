@@ -1,0 +1,24 @@
+diff --git a/plugin/build/withAndroid.js b/plugin/build/withAndroid.js
+index 3324401799c38fd7732eb90ef27f7eb77c8ee2c6..f0fc37b47f3e46550543aaf5b42c6aa118ab3db4 100644
+--- a/plugin/build/withAndroid.js
++++ b/plugin/build/withAndroid.js
+@@ -151,7 +151,6 @@ const withAndroid = (config) => (0, config_plugins_1.withPlugins)(config, [
+     (c) => config_plugins_1.AndroidConfig.Permissions.withPermissions(c, ['android.permission.BLUETOOTH_CONNECT']),
+     withBleAndroidManifest,
+     withAndroidBouncyCastleResolution,
+-    withAndroidExcludeBcProv,
+     withAndroidNfcProperties,
+     withAndroidFixMetaInfConflict,
+ ]);
+diff --git a/plugin/src/withAndroid.ts b/plugin/src/withAndroid.ts
+index 5c0d2c46593ac1ca805ca889ddfe239b3e08fb07..b514840ba4d6e7d70fe202e536377c89846ad273 100644
+--- a/plugin/src/withAndroid.ts
++++ b/plugin/src/withAndroid.ts
+@@ -216,7 +216,6 @@ export const withAndroid: ConfigPlugin = (config) =>
+     (c) => AndroidConfig.Permissions.withPermissions(c, ['android.permission.BLUETOOTH_CONNECT']),
+     withBleAndroidManifest,
+     withAndroidBouncyCastleResolution,
+-    withAndroidExcludeBcProv,
+     withAndroidNfcProperties,
+     withAndroidFixMetaInfConflict,
+   ])

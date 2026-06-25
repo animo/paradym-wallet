@@ -3,7 +3,7 @@
 		"base": {
 			"node": "22.21.1",
 			"ios": {
-				"image": "macos-sequoia-15.6-xcode-26.0"
+				"image": "macos-tahoe-26.4-xcode-26.4"
 			}
 		},
 		"development": {
