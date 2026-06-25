@@ -3400,16 +3400,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 195]],
 		"translation": "Organizatë e Panjohur"
 	},
-	"activity.unknownVerifier": {
-		"message": "Unknown verifier",
-		"placeholders": {},
-		"comments": [
-			"Fallback name shown when the verifier/issuer name is missing"
-		],
-		"origin": [["../../packages/agent/src/storage/activityStore.ts", 231]],
-		"translation": "Verifikues i panjohur",
-		"obsolete": true
-	},
 	"onboardingIdCardVerify.unlock": {
 		"message": "Unlock with biometrics",
 		"placeholders": {},

@@ -345,7 +345,7 @@ The agent contains the digital identity related wallet functionality. It uses a 
 [Expo Secure Environment](https://github.com/animo/expo-secure-environment) is used to provide support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication.
 
 Some relevant links:
-- [Handling invitations](../../packages/agent/src/invitation/handler.ts) - this is the entry point for most interactions in the app that need to use the agent. E.g receiving and sharing credentials
+- [Handling invitations](../../packages/sdk/src/invitation/resolver.ts) - this is the entry point for most interactions in the app that need to use the agent. E.g receiving and sharing credentials
 
 ### Secure Unlock
 
