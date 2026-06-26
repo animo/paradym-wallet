@@ -59,7 +59,7 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
         throw new Error(`Credential '${credentialId}' not found in dcql query`)
       }
 
-      if (!match || !match.success) {
+      if (!match?.success) {
         const placeholderCredential = extractCredentialPlaceholderFromQueryCredential(queryCredential)
         entries.push({
           isSatisfied: false,

@@ -201,7 +201,7 @@ export type OnboardingPage =
 
 export const getPidSetupSlideContent = (stepId: string, t: typeof _t) => {
   const step = pidSetupSteps.find((s) => s.step === stepId)
-  if (!step || step.page.type !== 'content') {
+  if (step?.page.type !== 'content') {
     return { title: '', subtitle: undefined }
   }
 

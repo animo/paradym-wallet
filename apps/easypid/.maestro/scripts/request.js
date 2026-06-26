@@ -238,7 +238,7 @@ function request() {
     throw new Error(`Unknown ISSUER_BACKEND: ${scriptPath}`)
   }
 
-  if (!result || !result.deeplink) {
+  if (!result?.deeplink) {
     throw new Error('Backend script did not return deeplink')
   }
 
@@ -372,7 +372,7 @@ function parseParadymOpenid4vcOfferResponse(data) {
   try {
     const match = offerUri.match(/[?&]credential_offer_uri=([^&]+)/)
 
-    if (!match || !match[1]) {
+    if (!match?.[1]) {
       throw new Error('credential_offer_uri missing in offerUri')
     }
 
@@ -393,7 +393,7 @@ function parseParadymOpenid4vcOfferResponse(data) {
 }
 
 function parseParadymDidcommOfferResponse(data) {
-  if (!data || !data.didcommInvitation) {
+  if (!data?.didcommInvitation) {
     throw new Error('didcommInvitation missing in Paradym didcomm response')
   }
 
@@ -413,7 +413,7 @@ function parseParadymDidcommOfferResponse(data) {
 }
 
 function parseParadymDidcommVerificationResponse(data) {
-  if (!data || !data.didcommInvitation) {
+  if (!data?.didcommInvitation) {
     throw new Error('didcommInvitation missing in Paradym didcomm verification response')
   }
 

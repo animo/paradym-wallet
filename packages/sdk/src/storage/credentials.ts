@@ -12,7 +12,7 @@ import type { DcApiRegisterCredentialsOptions } from '../dcApi/registerCredentia
 import type { CredentialForDisplayId } from '../display/credential'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
-export type { W3cCredentialRecord, W3cV2CredentialRecord, SdJwtVcRecord, MdocRecord }
+export type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord }
 export type CredentialRecord = W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
 
 export async function getCredential(
