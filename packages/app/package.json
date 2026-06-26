@@ -13,7 +13,6 @@
 		"@tamagui/animations-react-native": "catalog:",
 		"@tamagui/colors": "catalog:",
 		"@tamagui/font-inter": "catalog:",
-		"@tamagui/lucide-icons": "catalog:",
 		"@tamagui/shorthands": "catalog:",
 		"@tamagui/themes": "catalog:",
 		"@tanstack/react-query": "catalog:",
@@ -22,13 +21,9 @@
 		"expo-haptics": "catalog:",
 		"expo-linking": "catalog:",
 		"expo-router": "catalog:",
-		"fast-text-encoding": "catalog:",
 		"react": "catalog:",
 		"react-native-reanimated": "catalog:",
 		"react-native-safe-area-context": "catalog:"
-	},
-	"devDependencies": {
-		"@types/fast-text-encoding": "catalog:"
 	},
 	"peerDependencies": {
 		"expo": "catalog:"

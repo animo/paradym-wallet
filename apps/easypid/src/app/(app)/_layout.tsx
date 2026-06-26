@@ -49,8 +49,10 @@ export default function AppLayout() {
   // to the auth screen
   if ((paradym.state === 'initializing' || isWalletLocked) && pathname && pathname !== '/' && !redirectAfterUnlocked) {
     // Expo and urls as query params don't go well together, so we encoded the url as base64
-    const encodedRedirect = TypedArrayEncoder.toBase64URL(
-      TypedArrayEncoder.fromString(`${pathname}?${new URLSearchParams(params as Record<string, string>).toString()}`)
+    const encodedRedirect = TypedArrayEncoder.toBase64Url(
+      TypedArrayEncoder.fromUtf8String(
+        `${pathname}?${new URLSearchParams(params as Record<string, string>).toString()}`
+      )
     )
     setRedirectAfterUnlocked(encodedRedirect)
   }

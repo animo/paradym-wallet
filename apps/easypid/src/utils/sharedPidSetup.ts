@@ -7,7 +7,7 @@ import { OnboardingIdCardScan } from '@easypid/features/onboarding/screens/id-ca
 import { OnboardingIdCardVerify } from '@easypid/features/onboarding/screens/id-card-verify'
 import type { MessageDescriptor } from '@lingui/core'
 import { defineMessage } from '@lingui/core/macro'
-import type { _t } from '@lingui/react/macro'
+import type { useLingui } from '@lingui/react/macro'
 
 export const SIMULATOR_PIN = '276536'
 
@@ -199,7 +199,7 @@ export type OnboardingPage =
       animationKey?: string
     }
 
-export const getPidSetupSlideContent = (stepId: string, t: typeof _t) => {
+export const getPidSetupSlideContent = (stepId: string, t: ReturnType<typeof useLingui>['t']) => {
   const step = pidSetupSteps.find((s) => s.step === stepId)
   if (step?.page.type !== 'content') {
     return { title: '', subtitle: undefined }

@@ -1,5 +1,3 @@
-import 'fast-text-encoding'
-
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { allowedRedirectBaseUrls, appScheme } from '@easypid/constants'
 import { deeplinkSchemes } from '@package/app'
@@ -17,7 +15,7 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
     return '/'
   }
 
-  const logger = new ParadymWalletSdkConsoleLogger(LogLevel.trace)
+  const logger = new ParadymWalletSdkConsoleLogger(LogLevel.Trace)
 
   logger.debug(`Handling deeplink for path ${path}.`, {
     initial,
@@ -91,7 +89,7 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
         // Always make the user authenticate first when opening with a deeplink
         // On initial load this is already the case so we skip it
         if (!initial) {
-          const encodedRedirect = TypedArrayEncoder.toBase64URL(TypedArrayEncoder.fromString(redirectPath))
+          const encodedRedirect = TypedArrayEncoder.toBase64Url(TypedArrayEncoder.fromUtf8String(redirectPath))
           redirectPath = `/authenticate?redirectAfterUnlock=${encodedRedirect}`
         }
 

@@ -42,11 +42,11 @@ export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
   }
 
   public fatal(message: string, data?: LogData): void {
-    this.addToLoggedMessages(LogLevel.fatal, message, data)
+    this.addToLoggedMessages(LogLevel.Fatal, message, data)
     super.fatal(message, data)
   }
   public error(message: string, data?: LogData): void {
-    this.addToLoggedMessages(LogLevel.error, message, data)
+    this.addToLoggedMessages(LogLevel.Error, message, data)
 
     // FIXME: the error logger in React Native 0.81 changed, and it does not log the error correctly anymore
     // We print the data as trace, and the message as error (to get nice stack)
@@ -55,19 +55,19 @@ export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
   }
   public warn(message: string, data?: LogData): void {
     if (message.includes('module is experimental')) return
-    this.addToLoggedMessages(LogLevel.warn, message, data)
+    this.addToLoggedMessages(LogLevel.Warn, message, data)
     super.warn(message, data)
   }
   public info(message: string, data?: LogData): void {
-    this.addToLoggedMessages(LogLevel.info, message, data)
+    this.addToLoggedMessages(LogLevel.Info, message, data)
     super.info(message, data)
   }
   public debug(message: string, data?: LogData): void {
-    this.addToLoggedMessages(LogLevel.debug, message, data)
+    this.addToLoggedMessages(LogLevel.Debug, message, data)
     super.debug(message)
   }
   public trace(message: string, data?: LogData): void {
-    this.addToLoggedMessages(LogLevel.trace, message, data)
+    this.addToLoggedMessages(LogLevel.Trace, message, data)
     super.trace(message, data)
   }
 }

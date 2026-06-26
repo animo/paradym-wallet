@@ -1,4 +1,4 @@
-import { type _t, Trans, useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import {
   FloatingSheet,
@@ -34,7 +34,7 @@ export type CredentialAttributesProps = {
   scrollRef?: React.RefObject<ScrollViewRefType | null>
 }
 
-const valueToPrimitive = (t: typeof _t, value: string | number | boolean) =>
+const valueToPrimitive = (t: ReturnType<typeof useLingui>['t'], value: string | number | boolean) =>
   typeof value === 'boolean'
     ? value
       ? t(commonMessages.yes)

@@ -25,7 +25,7 @@
 		"comments": [
 			"Explanation that the user is about to pay an amount to the payee"
 		],
-		"origin": [["src/features/share/slides/PaymentSlide.tsx", 72]],
+		"origin": [["src/features/share/slides/PaymentSlide.tsx", 71]],
 		"translation": "{0} vill att du auktoriserar en betalning."
 	},
 	"activity.sharedSummaryPlural": {
@@ -425,6 +425,13 @@
 		"origin": [["src/app/onboarding/index.tsx", 51]],
 		"translation": "Är du säker på att du vill återställa inställningsprocessen?"
 	},
+	"common.confirmResetWallet": {
+		"message": "Are you sure you want to reset the wallet?",
+		"placeholders": {},
+		"comments": ["Confirmation prompt before wallet reset"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 99]],
+		"translation": "Är du säker på att du vill återställa plånboken?"
+	},
 	"pinLocked.alertMessage": {
 		"message": "Are you sure you want to reset the wallet?",
 		"placeholders": {},
@@ -432,13 +439,6 @@
 			"Message body of the confirmation dialog (action button) for wallet reset"
 		],
 		"origin": [["src/features/wallet/FunkePinLockedScreen.tsx", 18]],
-		"translation": "Är du säker på att du vill återställa plånboken?"
-	},
-	"common.confirmResetWallet": {
-		"message": "Are you sure you want to reset the wallet?",
-		"placeholders": {},
-		"comments": ["Confirmation prompt before wallet reset"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 99]],
 		"translation": "Är du säker på att du vill återställa plånboken?"
 	},
 	"confirmationSheet.title": {
@@ -473,6 +473,13 @@
 		],
 		"translation": "Autentisering misslyckades"
 	},
+	"common.authorizationCancelled": {
+		"message": "Authorization cancelled",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 388]],
+		"translation": "Auktorisering avbruten"
+	},
 	"browserAuthFlow.authorizationCancelled": {
 		"message": "Authorization cancelled",
 		"placeholders": {},
@@ -481,13 +488,6 @@
 			["src/features/receive/FunkeOpenIdCredentialNotificationScreen.tsx", 163]
 		],
 		"translation": "Auktoriseringen avbröts"
-	},
-	"common.authorizationCancelled": {
-		"message": "Authorization cancelled",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 388]],
-		"translation": "Auktorisering avbruten"
 	},
 	"common.authorizationFailed": {
 		"message": "Authorization failed",
@@ -700,8 +700,8 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 132],
-			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 149],
-			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 170]
+			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 152],
+			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 176]
 		],
 		"translation": "Kortet är ännu inte tillgängligt"
 	},
@@ -869,6 +869,13 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 427]],
 		"translation": "Land"
 	},
+	"common.credential": {
+		"message": "Credential",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 199]],
+		"translation": "Kort"
+	},
 	"requestedAttributes.fallbackCardLabel": {
 		"message": "Credential",
 		"placeholders": {},
@@ -880,18 +887,11 @@
 		],
 		"translation": "Kort"
 	},
-	"common.credential": {
-		"message": "Credential",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 199]],
-		"translation": "Kort"
-	},
 	"credential.declined": {
 		"message": "Credential has been declined.",
 		"placeholders": {},
 		"comments": ["Shown in a toast when user declines the credential"],
-		"origin": [["src/features/didcomm/CredentialSlides.tsx", 79]],
+		"origin": [["src/features/didcomm/CredentialSlides.tsx", 78]],
 		"translation": "Kortet har avvisats."
 	},
 	"common.credentialInformationCouldNotBeExtracted": {
@@ -1280,18 +1280,18 @@
 		"origin": [["src/features/menu/FunkeAboutScreen.tsx", 33]],
 		"translation": "För mer information, kontakta"
 	},
-	"onboardingWelcome.getStarted": {
-		"message": "Get Started",
-		"placeholders": {},
-		"comments": ["Button label to begin onboarding from the welcome screen"],
-		"origin": [["src/features/onboarding/screens/welcome.tsx", 18]],
-		"translation": "Kom igång"
-	},
 	"onboardingWalletExplanation.getStarted": {
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to finish onboarding explanation"],
 		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 71]],
+		"translation": "Kom igång"
+	},
+	"onboardingWelcome.getStarted": {
+		"message": "Get Started",
+		"placeholders": {},
+		"comments": ["Button label to begin onboarding from the welcome screen"],
+		"origin": [["src/features/onboarding/screens/welcome.tsx", 18]],
 		"translation": "Kom igång"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
@@ -1428,13 +1428,6 @@
 		"origin": [["src/features/didcomm/utils.ts", 11]],
 		"translation": "Om du avvisar får du inte kortet."
 	},
-	"didcommCancelFlow.verification.description": {
-		"message": "If you stop, no data will be shared.",
-		"placeholders": {},
-		"comments": ["Confirmation description when cancelling a proof request"],
-		"origin": [["src/features/didcomm/utils.ts", 21]],
-		"translation": "Om du stoppar delas ingen data."
-	},
 	"slideWizard.confirmation.stopSharingDescription": {
 		"message": "If you stop, no data will be shared.",
 		"placeholders": {},
@@ -1442,6 +1435,13 @@
 			"Description in confirmation dialog about stopping data sharing"
 		],
 		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 55]],
+		"translation": "Om du stoppar delas ingen data."
+	},
+	"didcommCancelFlow.verification.description": {
+		"message": "If you stop, no data will be shared.",
+		"placeholders": {},
+		"comments": ["Confirmation description when cancelling a proof request"],
+		"origin": [["src/features/didcomm/utils.ts", 21]],
 		"translation": "Om du stoppar delas ingen data."
 	},
 	"didcommCancelFlow.connect.description": {
@@ -1943,7 +1943,7 @@
 		"message": "Pay & share",
 		"placeholders": {},
 		"comments": ["Button label for accepting a pay-and-share request"],
-		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 43]],
+		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 42]],
 		"translation": "Betal & dela"
 	},
 	"paying.to": {
@@ -1961,8 +1961,8 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/share/slides/PayAndShareSlide.tsx", 98],
-			["src/features/share/slides/PaymentSlide.tsx", 99]
+			["src/features/share/slides/PayAndShareSlide.tsx", 97],
+			["src/features/share/slides/PaymentSlide.tsx", 98]
 		],
 		"translation": "Betalar med iDeal | Wero"
 	},
@@ -1974,8 +1974,8 @@
 			"Heading above the document name"
 		],
 		"origin": [
-			["src/features/share/slides/PayAndShareSlide.tsx", 81],
-			["src/features/share/slides/PaymentSlide.tsx", 82]
+			["src/features/share/slides/PayAndShareSlide.tsx", 80],
+			["src/features/share/slides/PaymentSlide.tsx", 81]
 		],
 		"translation": "Betalning"
 	},
@@ -1992,15 +1992,8 @@
 		"message": "Payment card",
 		"placeholders": {},
 		"comments": ["Heading above the card to be used for authorization"],
-		"origin": [["src/features/share/slides/PaymentSlide.tsx", 134]],
+		"origin": [["src/features/share/slides/PaymentSlide.tsx", 133]],
 		"translation": "Betalningkort"
-	},
-	"activity.latest.paymentFailed": {
-		"message": "Payment failed",
-		"placeholders": {},
-		"comments": ["Shown if a payment failed or was cancelled"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 52]],
-		"translation": "Malipo yameshindikana"
 	},
 	"common.paymentFailed": {
 		"message": "Payment failed",
@@ -2008,6 +2001,13 @@
 		"comments": ["Shown when a payment is failed"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 292]],
 		"translation": "Betalningen misslyckades"
+	},
+	"activity.latest.paymentFailed": {
+		"message": "Payment failed",
+		"placeholders": {},
+		"comments": ["Shown if a payment failed or was cancelled"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 52]],
+		"translation": "Malipo yameshindikana"
 	},
 	"common.paymentPending": {
 		"message": "Payment is pending",
@@ -2122,6 +2122,15 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 397]],
 		"translation": "Födelseort"
 	},
+	"nfcScanner.readyToScan.description": {
+		"message": "Place your device on top of your eID card to scan it.",
+		"placeholders": {},
+		"comments": ["Description when the NFC scanner is ready"],
+		"origin": [
+			["../../packages/ui/src/components/NfcScannerModalAndroid.tsx", 21]
+		],
+		"translation": "Placera din enhet ovanpå ditt eID-kort för att skanna det."
+	},
 	"pidSetup.idCardScan.subtitle": {
 		"message": "Place your device on top of your eID card to scan it.",
 		"placeholders": {},
@@ -2129,15 +2138,6 @@
 		"origin": [
 			["src/utils/sharedPidSetup.ts", 46],
 			["src/utils/sharedPidSetup.ts", 53]
-		],
-		"translation": "Placera din enhet ovanpå ditt eID-kort för att skanna det."
-	},
-	"nfcScanner.readyToScan.description": {
-		"message": "Place your device on top of your eID card to scan it.",
-		"placeholders": {},
-		"comments": ["Description when the NFC scanner is ready"],
-		"origin": [
-			["../../packages/ui/src/components/NfcScannerModalAndroid.tsx", 21]
 		],
 		"translation": "Placera din enhet ovanpå ditt eID-kort för att skanna det."
 	},
@@ -2408,6 +2408,13 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 223]],
 		"translation": "En obligatorisk parameter saknas för att kunna acceptera inbjudan."
 	},
+	"payShare.title": {
+		"message": "Review the request",
+		"placeholders": {},
+		"comments": ["Main heading in the pay & share screen"],
+		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 52]],
+		"translation": "Granska förfrågan"
+	},
 	"submission.reviewTitle": {
 		"message": "Review the request",
 		"placeholders": {},
@@ -2420,13 +2427,6 @@
 		"placeholders": {},
 		"comments": ["Main heading in the sign & share screen"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 73]],
-		"translation": "Granska förfrågan"
-	},
-	"payShare.title": {
-		"message": "Review the request",
-		"placeholders": {},
-		"comments": ["Main heading in the pay & share screen"],
-		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 53]],
 		"translation": "Granska förfrågan"
 	},
 	"common.revoked": {
@@ -2523,7 +2523,7 @@
 		"message": "Seller",
 		"placeholders": {},
 		"comments": ["Heading above the seller section"],
-		"origin": [["src/features/share/slides/PaymentSlide.tsx", 105]],
+		"origin": [["src/features/share/slides/PaymentSlide.tsx", 104]],
 		"translation": "Säljare"
 	},
 	"pinSlide.title": {
@@ -2549,18 +2549,18 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 24]],
 		"translation": "Ställ in senare"
 	},
-	"settings.title": {
-		"message": "Settings",
-		"placeholders": {},
-		"comments": ["Header title for the settings screen"],
-		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 148]],
-		"translation": "Inställningar"
-	},
 	"menu.item.settings": {
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Label for settings menu item"],
 		"origin": [["src/features/menu/FunkeMenuScreen.tsx", 124]],
+		"translation": "Inställningar"
+	},
+	"settings.title": {
+		"message": "Settings",
+		"placeholders": {},
+		"comments": ["Header title for the settings screen"],
+		"origin": [["src/features/menu/FunkeSettingsScreen.tsx", 148]],
 		"translation": "Inställningar"
 	},
 	"submission.share": {
@@ -2609,18 +2609,18 @@
 		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 34]],
 		"translation": "Delade kort"
 	},
-	"activity.latest.sharingFailed": {
-		"message": "Sharing failed",
-		"placeholders": {},
-		"comments": ["Shown if the last sharing activity failed or was stopped"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 22]],
-		"translation": "Delning misslyckades"
-	},
 	"common.sharingFailed": {
 		"message": "Sharing failed",
 		"placeholders": {},
 		"comments": ["Shown when data sharing failed"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 317]],
+		"translation": "Delning misslyckades"
+	},
+	"activity.latest.sharingFailed": {
+		"message": "Sharing failed",
+		"placeholders": {},
+		"comments": ["Shown if the last sharing activity failed or was stopped"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 22]],
 		"translation": "Delning misslyckades"
 	},
 	"common.sharingStopped": {
@@ -2715,18 +2715,18 @@
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 126]],
 		"translation": "Signeringskort"
 	},
-	"activity.latest.signingFailed": {
-		"message": "Signing failed",
-		"placeholders": {},
-		"comments": ["Shown if signing a document failed or was cancelled"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 40]],
-		"translation": "Signering misslyckades"
-	},
 	"common.signingFailed": {
 		"message": "Signing failed",
 		"placeholders": {},
 		"comments": ["Shown when the signing process failed"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 277]],
+		"translation": "Signering misslyckades"
+	},
+	"activity.latest.signingFailed": {
+		"message": "Signing failed",
+		"placeholders": {},
+		"comments": ["Shown if signing a document failed or was cancelled"],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 40]],
 		"translation": "Signering misslyckades"
 	},
 	"common.signingStopped": {
@@ -2840,13 +2840,6 @@
 		"origin": [["src/features/didcomm/utils.ts", 26]],
 		"translation": "Stoppa interaktion?"
 	},
-	"didcommCancelFlow.verification.title": {
-		"message": "Stop sharing?",
-		"placeholders": {},
-		"comments": ["Confirmation title when cancelling a data sharing request"],
-		"origin": [["src/features/didcomm/utils.ts", 16]],
-		"translation": "Stoppa delning?"
-	},
 	"slideWizard.confirmation.stopSharingTitle": {
 		"message": "Stop sharing?",
 		"placeholders": {},
@@ -2856,12 +2849,26 @@
 		"origin": [["../../packages/app/src/components/SlideWizard.tsx", 50]],
 		"translation": "Stoppa delning?"
 	},
+	"didcommCancelFlow.verification.title": {
+		"message": "Stop sharing?",
+		"placeholders": {},
+		"comments": ["Confirmation title when cancelling a data sharing request"],
+		"origin": [["src/features/didcomm/utils.ts", 16]],
+		"translation": "Stoppa delning?"
+	},
 	"common.fields.street": {
 		"message": "Street",
 		"placeholders": {},
 		"comments": ["The street where someone lives"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 417]],
 		"translation": "Gata"
+	},
+	"common.success": {
+		"message": "Success!",
+		"placeholders": {},
+		"comments": ["Title shown when an action completes successfully"],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 43]],
+		"translation": "Klart!"
 	},
 	"pidSetup.idCardComplete.title": {
 		"message": "Success!",
@@ -2877,13 +2884,6 @@
 		"origin": [
 			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 166]
 		],
-		"translation": "Klart!"
-	},
-	"common.success": {
-		"message": "Success!",
-		"placeholders": {},
-		"comments": ["Title shown when an action completes successfully"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 43]],
 		"translation": "Klart!"
 	},
 	"common.tapToView": {
@@ -2962,7 +2962,7 @@
 		"message": "The following card will be used to authorize the payment.",
 		"placeholders": {},
 		"comments": ["Text above card to be used for payment authorization"],
-		"origin": [["src/features/share/slides/PaymentSlide.tsx", 139]],
+		"origin": [["src/features/share/slides/PaymentSlide.tsx", 138]],
 		"translation": "Följande kort kommer att användas för att auktorisera betalningen."
 	},
 	"requestedAttributes.onlySatisfiedDescription": {
@@ -2989,8 +2989,8 @@
 			"Text above the payment to be paid"
 		],
 		"origin": [
-			["src/features/share/slides/PayAndShareSlide.tsx", 86],
-			["src/features/share/slides/PaymentSlide.tsx", 87]
+			["src/features/share/slides/PayAndShareSlide.tsx", 85],
+			["src/features/share/slides/PaymentSlide.tsx", 86]
 		],
 		"translation": "Följande betalning kommer att auktoriseras:"
 	},
@@ -3006,7 +3006,7 @@
 		"placeholders": {},
 		"comments": ["Description of the info box explaining the card is pending"],
 		"origin": [
-			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 175]
+			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 181]
 		],
 		"translation": "Utfärdaren har ännu inte gjort kortet tillgängligt. Försök igen senare."
 	},
@@ -3021,7 +3021,7 @@
 		"message": "The issuer of the card indicated you should check again at {0}.",
 		"placeholders": {
 			"0": [
-				"i18n.date(nextCheck, {\n                        hour: 'numeric',\n                        minute: 'numeric',\n                      })"
+				"new Intl.DateTimeFormat(\n                        i18n.locale,\n                        {\n                          hour: 'numeric',\n                          minute: 'numeric',\n                        }\n                      ).format(nextCheck)"
 			]
 		},
 		"comments": [
@@ -3036,14 +3036,14 @@
 		"message": "The issuer of the card indicated you should check again on {0}.",
 		"placeholders": {
 			"0": [
-				"i18n.date(nextCheck, {\n                        year: 'numeric',\n                        month: 'long',\n                        day: 'numeric',\n                        hour: 'numeric',\n                        minute: 'numeric',\n                      })"
+				"new Intl.DateTimeFormat(\n                        i18n.locale,\n                        {\n                          year: 'numeric',\n                          month: 'long',\n                          day: 'numeric',\n                          hour: 'numeric',\n                          minute: 'numeric',\n                        }\n                      ).format(nextCheck)"
 			]
 		},
 		"comments": [
 			"Description of the info box explaining the card is pending with expected date"
 		],
 		"origin": [
-			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 154]
+			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 157]
 		],
 		"translation": "Utfärdaren av kortet har sagt att du kan kolla igen den {0}."
 	},
@@ -3225,18 +3225,18 @@
 		"origin": [["src/features/onboarding/screens/welcome.tsx", 12]],
 		"translation": "Det här är din digitala plånbok. Med den kan du lagra och dela information om dig själv."
 	},
-	"onboardingWalletExplanation.slide1.title": {
-		"message": "This is your wallet",
-		"placeholders": {},
-		"comments": ["Title for first slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 29]],
-		"translation": "Det här är din plånbok"
-	},
 	"noContentWallet.heading": {
 		"message": "This is your wallet",
 		"placeholders": {},
 		"comments": ["Heading shown on empty wallet screen"],
 		"origin": [["../../packages/app/src/components/NoContentWallet.tsx", 14]],
+		"translation": "Det här är din plånbok"
+	},
+	"onboardingWalletExplanation.slide1.title": {
+		"message": "This is your wallet",
+		"placeholders": {},
+		"comments": ["Title for first slide of wallet onboarding"],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 29]],
 		"translation": "Det här är din plånbok"
 	},
 	"requestPurpose.infoSheet.description": {
@@ -3497,7 +3497,7 @@
 		"message": "Website <0/>",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/share/slides/PaymentSlide.tsx", 121]],
+		"origin": [["src/features/share/slides/PaymentSlide.tsx", 120]],
 		"translation": "Webbplats <0/>"
 	},
 	"welcome.titleToYourWallet": {
@@ -3641,18 +3641,18 @@
 		],
 		"translation": "Du har inte alla begärda kort."
 	},
-	"inbox.emptyMessage": {
-		"message": "You don't have any notifications at the moment.",
-		"placeholders": {},
-		"comments": ["Paragraph shown when the inbox is empty"],
-		"origin": [["src/features/didcomm/InboxScreen.tsx", 62]],
-		"translation": "Du har inga aviseringar just nu."
-	},
 	"noContentInbox.message": {
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
 		"comments": ["Message shown when user has no notifications"],
 		"origin": [["../../packages/app/src/components/NoContentInbox.tsx", 19]],
+		"translation": "Du har inga aviseringar just nu."
+	},
+	"inbox.emptyMessage": {
+		"message": "You don't have any notifications at the moment.",
+		"placeholders": {},
+		"comments": ["Paragraph shown when the inbox is empty"],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 62]],
 		"translation": "Du har inga aviseringar just nu."
 	},
 	"requestedAttributes.onlyUnsatisfiedDescription": {
@@ -3663,6 +3663,13 @@
 			["src/features/share/components/RequestedAttributesSection.tsx", 43]
 		],
 		"translation": "Du har inte de begärda korten."
+	},
+	"payShare.missingCards": {
+		"message": "You don't have the required cards",
+		"placeholders": {},
+		"comments": ["Shown when the user lacks the required credentials"],
+		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 121]],
+		"translation": "Du har inte de nödvändiga korten."
 	},
 	"submission.missingCardsWarning": {
 		"message": "You don't have the required cards",
@@ -3677,13 +3684,6 @@
 		"comments": ["Shown when the user lacks the required credentials"],
 		"origin": [["src/features/share/slides/SignAndShareSlide.tsx", 183]],
 		"translation": "Du har inte de kort som krävs"
-	},
-	"payShare.missingCards": {
-		"message": "You don't have the required cards",
-		"placeholders": {},
-		"comments": ["Shown when the user lacks the required credentials"],
-		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 122]],
-		"translation": "Du har inte de nödvändiga korten."
 	},
 	"pinLocked.description": {
 		"message": "You have entered an incorrect PIN. The wallet was locked, please reset it to set a new PIN and continue.",
@@ -3730,18 +3730,18 @@
 		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 48]],
 		"translation": "Du behöver ditt eID-kort för att ställa in plånboken"
 	},
-	"inbox.emptyTitle": {
-		"message": "You're all caught up",
-		"placeholders": {},
-		"comments": ["Heading shown when the inbox is empty"],
-		"origin": [["src/features/didcomm/InboxScreen.tsx", 57]],
-		"translation": "Du är ikapp med allt"
-	},
 	"noContentInbox.heading": {
 		"message": "You're all caught up",
 		"placeholders": {},
 		"comments": ["Heading shown when user has no notifications"],
 		"origin": [["../../packages/app/src/components/NoContentInbox.tsx", 14]],
+		"translation": "Du är ikapp med allt"
+	},
+	"inbox.emptyTitle": {
+		"message": "You're all caught up",
+		"placeholders": {},
+		"comments": ["Heading shown when the inbox is empty"],
+		"origin": [["src/features/didcomm/InboxScreen.tsx", 57]],
 		"translation": "Du är ikapp med allt"
 	},
 	"receiveCredential.deferredCredentialParagraph": {

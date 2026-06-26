@@ -15,10 +15,13 @@ overrides:
   # Pin exactly: react-native 0.86 exists and open-ended peer ranges (tamagui, askar,
   # masked-view, wallet-sdk) would otherwise hoist it over the SDK 56 version.
   react-native: 0.85.3
+  # @owf/mdoc registers a cbor-x extension for tag 24 with its own DataItem class.
+  # Two copies would clobber each other's extension and break IssuerNamespaces parsing
+  # with "Expected DataItem, received object". Force a single copy across the tree.
+  '@owf/mdoc': 'catalog:'
 
 patchedDependencies:
   '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
-  '@credo-ts/openid4vc': patches/@credo-ts__openid4vc@0.6.3.patch
   '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4': patches/@animo-id__expo-mdoc-data-transfer@0.2.0-alpha.4.patch
 
 allowBuilds:
@@ -39,37 +42,36 @@ catalog:
   react: 19.2.3
   "@types/react": ~19.2.17
   typescript: ~6.0.3
-  "@tanstack/react-query": ^5.90.14
-  tsdown: ^0.15.6
+  "@tanstack/react-query": ^5.101.1
+  tsdown: ^0.22.3
 
   # Babel
   "@babel/core": ^7.29.0
-  babel-plugin-syntax-hermes-parser: ^0.32.1
+  babel-plugin-syntax-hermes-parser: ^0.36.1
   babel-plugin-module-resolver: ^5.0.3
 
   # Credo / Agent / SSI
-  credo-ts-didweb-anoncreds: 0.0.2-alpha.2
-  rxjs: ^7.8.1
-  query-string: ^9.3.1
-  "@animo-id/eudi-wallet-functionality": 0.0.0-alpha-20250917090914
+  credo-ts-didweb-anoncreds: 0.0.2-alpha.6
+  rxjs: ^7.8.2
+  query-string: ^9.4.0
+  "@animo-id/eudi-wallet-functionality": 0.1.0
   "@animo-id/expo-secure-environment": 0.1.5
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.2.0-alpha.4
-  "@animo-id/mdoc": 0.5.2
-  "@openid4vc/oauth2": ^0.4.0
-  "@openid4vc/openid4vp": ^0.4.0
-  "@openid4vc/openid4vci": ^0.4.0
-  "@openid4vc/utils": ^0.4.0
-  fast-text-encoding: ^1.0.6
-  "@types/fast-text-encoding": ^1.0.3
-  "@credo-ts/anoncreds": 0.6.3
-  "@credo-ts/askar": 0.6.3
-  "@credo-ts/cheqd": 0.6.3
-  "@credo-ts/core": 0.6.3
-  "@credo-ts/openid4vc": 0.6.3
-  "@credo-ts/question-answer": 0.6.3
-  "@credo-ts/react-native": 0.6.3
-  "@credo-ts/didcomm": 0.6.3
+  "@owf/mdoc": 0.7.0-alpha-20260605164430
+  "@owf/cose": 0.3.0-alpha-20260605053037
+  "@openid4vc/oauth2": ^0.4.6
+  "@openid4vc/openid4vp": ^0.4.6
+  "@openid4vc/openid4vci": ^0.4.6
+  "@openid4vc/utils": ^0.4.6
+  "@credo-ts/anoncreds": 0.7.1-alpha-20260610194159
+  "@credo-ts/askar": 0.7.1-alpha-20260610194159
+  "@credo-ts/cheqd": 0.7.1-alpha-20260610194159
+  "@credo-ts/core": 0.7.1-alpha-20260610194159
+  "@credo-ts/openid4vc": 0.7.1-alpha-20260610194159
+  "@credo-ts/question-answer": 0.7.1-alpha-20260610194159
+  "@credo-ts/react-native": 0.7.1-alpha-20260610194159
+  "@credo-ts/didcomm": 0.7.1-alpha-20260610194159
   "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
   "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
   "@openwallet-foundation/askar-react-native": 0.6.1-alpha-20260609123727
@@ -80,7 +82,7 @@ catalog:
   # React Native
   react-native-heroicons: ^4.0.0
   "@react-native-masked-view/masked-view": 0.3.2
-  "@react-native-picker/picker": ^2.11.1
+  "@react-native-picker/picker": 2.11.4
   react-native-keychain: ^10.0.0
   react-native-get-random-values: ^2.0.0
   react-native-gesture-handler: ~2.31.1
@@ -92,39 +94,46 @@ catalog:
   # this seems to be the best maintained fork. We might want to switch
   # to Expo FileSystem, but Credo depends on react-native-fs
   "react-native-fs": "npm:@dr.pogodin/react-native-fs@^2.36.1"
-  react-native-mmkv: ^4.3.1
+  react-native-mmkv: ^4.3.2
   react-native-qrcode-svg: ^6.3.21
   react-native-reanimated-carousel: ^4.0.3
+  react-native-nitro-modules: ^0.35.10
   burnt: ^0.13.0
-  "@react-native-community/blur": ^4.3.2
-  react-native-edge-to-edge: ^1.7.0
-  '@shopify/react-native-skia': 2.6.5
+  "@react-native-community/blur": ^4.4.1
+  react-native-edge-to-edge: ^1.8.1
+  '@shopify/react-native-skia': 2.6.9
+
+  # Lingui (i18n)
+  "@lingui/babel-plugin-lingui-macro": ^6.4.0
+  "@lingui/cli": ^6.4.0
+  "@lingui/format-json": ^6.4.0
 
   # Expo (SDK 56 uses unified 56.x versioning across expo-* packages)
-  expo-crypto: ~56.0.3
-  expo-camera: ~56.0.5
-  expo-network: ~56.0.4
+  # Versions aligned with Expo SDK 56 bundledNativeModules.
+  expo-crypto: ~56.0.4
+  expo-camera: ~56.0.8
+  expo-network: ~56.0.5
   expo-application: ~56.0.3
-  expo-asset: ~56.0.12
+  expo-asset: ~56.0.17
   expo-blur: ~56.0.3
-  expo-constants: ~56.0.13
-  expo-dev-client: ~56.0.13
+  expo-constants: ~56.0.18
+  expo-dev-client: ~56.0.20
   expo-device: ~56.0.4
-  expo-file-system: ~56.0.7
-  expo-font: ~56.0.5
+  expo-file-system: ~56.0.8
+  expo-font: ~56.0.7
   expo-haptics: ~56.0.3
-  expo-image: ~56.0.6
-  expo-image-manipulator: ~56.0.11
+  expo-image: ~56.0.11
+  expo-image-manipulator: ~56.0.19
   expo-linear-gradient: ~56.0.4
-  expo-linking: ~56.0.10
-  expo-router: ~56.2.3
-  expo-secure-store: ~56.0.3
-  expo-splash-screen: ~56.0.9
-  expo-system-ui: ~56.0.4
-  expo-updates: ~56.0.14
-  expo-web-browser: ~56.0.4
-  expo-build-properties: ~56.0.12
-  expo-localization: ~56.0.5
+  expo-linking: ~56.0.14
+  expo-router: ~56.2.11
+  expo-secure-store: ~56.0.4
+  expo-splash-screen: ~56.0.10
+  expo-system-ui: ~56.0.5
+  expo-updates: ~56.0.19
+  expo-web-browser: ~56.0.5
+  expo-build-properties: ~56.0.19
+  expo-localization: ~56.0.6
   "@expo-google-fonts/open-sans": ^0.4.2
   "@expo-google-fonts/raleway": ^0.4.2
 
@@ -136,6 +145,6 @@ catalog:
   "@tamagui/toast": 2.3.3
   "@tamagui/react-native-media-driver": 2.3.3
   "@tamagui/colors": 2.3.3
-  "@tamagui/lucide-icons": 2.0.0-rc.26
+  "@tamagui/lucide-icons-2": 2.3.3
   "@tamagui/babel-plugin": 2.3.3
   tamagui: 2.3.3

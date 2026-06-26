@@ -136,10 +136,13 @@ export function DeferredCredentialNotificationScreen() {
                     })}
                     description={t({
                       id: 'deferredCredentials.cardNotAvailableYetWithTimeDescription',
-                      message: `The issuer of the card indicated you should check again at ${i18n.date(nextCheck, {
-                        hour: 'numeric',
-                        minute: 'numeric',
-                      })}.`,
+                      message: `The issuer of the card indicated you should check again at ${new Intl.DateTimeFormat(
+                        i18n.locale,
+                        {
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        }
+                      ).format(nextCheck)}.`,
                       comment: 'Description of the info box explaining the card is pending with expected time',
                     })}
                   />
@@ -153,13 +156,16 @@ export function DeferredCredentialNotificationScreen() {
                     })}
                     description={t({
                       id: 'deferredCredentials.cardNotAvailableYetWithDateDescription',
-                      message: `The issuer of the card indicated you should check again on ${i18n.date(nextCheck, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                      })}.`,
+                      message: `The issuer of the card indicated you should check again on ${new Intl.DateTimeFormat(
+                        i18n.locale,
+                        {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        }
+                      ).format(nextCheck)}.`,
                       comment: 'Description of the info box explaining the card is pending with expected date',
                     })}
                   />

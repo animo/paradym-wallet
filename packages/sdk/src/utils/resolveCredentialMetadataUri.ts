@@ -18,7 +18,7 @@ export const jwtSignatureVerifier = (sdk: ParadymWalletSdk) => {
     const verifyResult = await sdk.agent.kms.verify({
       signature,
       key: { publicJwk: publicJwk.toJson() },
-      data: TypedArrayEncoder.fromString(toBeVerified),
+      data: TypedArrayEncoder.fromUtf8String(toBeVerified),
       algorithm: publicJwk.signatureAlgorithm,
     })
 

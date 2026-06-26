@@ -1,5 +1,4 @@
 import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
-import { cborDecode, cborEncode, DataItem, DeviceRequest } from '@animo-id/mdoc'
 import {
   CredentialMultiInstanceUseMode,
   type Mdoc,
@@ -7,6 +6,8 @@ import {
   MdocService,
   useInstanceFromCredentialRecord,
 } from '@credo-ts/core'
+import { cborDecode, cborEncode, DataItem } from '@owf/cose'
+import { DeviceRequest } from '@owf/mdoc'
 import type { FormattedSubmission, ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { PermissionsAndroid, Platform } from 'react-native'
 
@@ -98,10 +99,10 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
   const mdocService = options.paradym.agent.dependencyManager.resolve(MdocService)
 
   const deviceResponse = await mdocService.createDeviceResponse(options.paradym.agent.context, {
-    documentRequests: DeviceRequest.parse(options.deviceRequest).docRequests.map((d) => ({
-      docType: d.itemsRequest.data.docType,
+    documentRequests: DeviceRequest.decode(options.deviceRequest).docRequests.map((d) => ({
+      docType: d.itemsRequest.docType,
       nameSpaces: Object.fromEntries(
-        Array.from(d.itemsRequest.data.nameSpaces.entries()).map(([namespace, entry]) => [
+        Array.from(d.itemsRequest.namespaces.entries()).map(([namespace, entry]) => [
           namespace,
           Object.fromEntries(Array.from(entry.entries())),
         ])
@@ -109,13 +110,13 @@ export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) =
     })),
     mdocs: mdocs as [Mdoc, ...Mdoc[]],
     sessionTranscriptOptions: {
-      type: 'sesionTranscriptBytes',
+      type: 'sessionTranscriptBytes',
       sessionTranscriptBytes: options.sessionTranscript,
     },
   })
 
   const mdt = mdocDataTransfer.instance()
-  await mdt.sendDeviceResponse(deviceResponse)
+  await mdt.sendDeviceResponse(deviceResponse.deviceResponse.encode())
 }
 
 export const shutdownDataTransfer = () => {

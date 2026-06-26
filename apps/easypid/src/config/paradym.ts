@@ -11,7 +11,7 @@ import { LogLevel } from '@paradym/wallet-sdk'
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   id: 'easypid-wallet',
   logging: {
-    level: LogLevel.trace,
+    level: LogLevel.Trace,
     trace: true,
     traceLimit: 1000,
   },

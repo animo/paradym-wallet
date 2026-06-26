@@ -1,5 +1,3 @@
-import 'fast-text-encoding'
-
 import { isGetCredentialActivity } from '@animo-id/expo-digital-credentials-api'
 import { paradymWalletSdkOptions } from '@easypid/config/paradym'
 import { BackgroundLockProvider, NoInternetToastProvider, Provider } from '@package/app'

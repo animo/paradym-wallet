@@ -8,6 +8,7 @@
 	"dependencies": {
 		"@tamagui/animations-react-native": "catalog:",
 		"@tamagui/font-inter": "catalog:",
+		"@tamagui/lucide-icons-2": "catalog:",
 		"@tamagui/react-native-media-driver": "catalog:",
 		"@tamagui/shorthands": "catalog:",
 		"@tamagui/themes": "catalog:",
