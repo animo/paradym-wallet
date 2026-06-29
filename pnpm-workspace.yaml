@@ -98,7 +98,7 @@ catalog:
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.3.2
   react-native-edge-to-edge: ^1.7.0
-  '@shopify/react-native-skia': 2.6.5
+  '@shopify/react-native-skia': 2.6.9
 
   # Expo (SDK 56 uses unified 56.x versioning across expo-* packages)
   expo-crypto: ~56.0.3
