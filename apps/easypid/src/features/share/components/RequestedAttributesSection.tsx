@@ -94,6 +94,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
             textColor={credential.credential.display.textColor}
             formattedDisclosedAttributes={formatDisclosedAttributes(credential)}
             disclosedPayload={credential.disclosed.attributes}
+            disclosedMetadata={credential.disclosed.metadata}
             isExpired={
               credential.credential.metadata?.validUntil
                 ? new Date(credential.credential.metadata.validUntil) < new Date()

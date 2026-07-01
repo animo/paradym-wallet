@@ -18,6 +18,7 @@ import {
 } from '@package/ui'
 import {
   type CredentialForDisplayId,
+  type CredentialMetadata,
   type FormattedAttribute,
   metadataForDisplay,
   useCredentialById,
@@ -30,12 +31,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 type FunkeRequestedAttributesDetailScreenProps = {
   id: CredentialForDisplayId
   disclosedPayload: FormattedAttribute[]
+  disclosedMetadata?: CredentialMetadata
   disclosedAttributeLength: number
 }
 
 export function FunkeRequestedAttributesDetailScreen({
   id,
   disclosedPayload,
+  disclosedMetadata,
   disclosedAttributeLength,
 }: FunkeRequestedAttributesDetailScreenProps) {
   const toast = useToastController()
@@ -159,7 +162,7 @@ export function FunkeRequestedAttributesDetailScreen({
                         message: 'Metadata',
                         comment: 'Section header title for metadata attributes',
                       })}
-                      attributes={metadataForDisplay(activeCredential.metadata)}
+                      attributes={metadataForDisplay(disclosedMetadata ?? activeCredential.metadata)}
                     />
                   )}
                 </AnimatedStack>

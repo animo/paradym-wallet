@@ -14,7 +14,7 @@ import {
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { FunkePresentationNotificationScreen } from './FunkePresentationNotificationScreen'
@@ -62,8 +62,12 @@ export function FunkeOpenIdPresentationNotificationScreen() {
     comment: 'Shown when authentication with PIN fails for other reasons',
   })
 
+  // request_uri in OpenID4VP is one-shot on the verifier side, so we must guarantee a single
+  // resolve per uri across re-renders and React's dev-mode double-invoked effects.
+  const resolvingUriRef = useRef<string | undefined>(undefined)
   useEffect(() => {
-    if (resolvedRequest) return
+    if (resolvedRequest || resolvingUriRef.current === params.uri) return
+    resolvingUriRef.current = params.uri
 
     paradym.openid4vc
       .resolveCredentialRequest({

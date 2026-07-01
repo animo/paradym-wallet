@@ -11,7 +11,7 @@ import {
   YStack,
 } from '@package/ui'
 import { sanitizeString } from '@package/utils'
-import type { DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@paradym/wallet-sdk'
+import type { CredentialMetadata, DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'
@@ -25,6 +25,7 @@ interface CardWithAttributesProps {
   backgroundImage?: DisplayImage
   formattedDisclosedAttributes: string[]
   disclosedPayload?: FormattedAttribute[]
+  disclosedMetadata?: CredentialMetadata
   isExpired?: boolean
   isRevoked?: boolean
   isNotYetActive?: boolean
@@ -39,6 +40,7 @@ export function CardWithAttributes({
   backgroundImage,
   formattedDisclosedAttributes,
   disclosedPayload,
+  disclosedMetadata,
   isNotYetActive = false,
   isExpired = false,
   isRevoked = false,
@@ -59,6 +61,8 @@ export function CardWithAttributes({
       router.push(
         `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
           JSON.stringify(disclosedPayload ?? [])
+        )}&disclosedMetadata=${encodeURIComponent(
+          JSON.stringify(disclosedMetadata ?? {})
         )}&disclosedAttributeLength=${formattedDisclosedAttributes?.length}`
       )
     } else {
