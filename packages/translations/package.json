@@ -11,10 +11,10 @@
 		"translate-finalize": "node ./scripts/translate-finalize.js"
 	},
 	"dependencies": {
-		"@formatjs/intl-locale": "^4.2.13",
-		"@formatjs/intl-pluralrules": "^5.4.6",
-		"@lingui/core": "^5.7.0",
-		"@lingui/react": "^5.7.0",
+		"@formatjs/intl-locale": "^5.3.9",
+		"@formatjs/intl-pluralrules": "^6.3.10",
+		"@lingui/core": "^6.4.0",
+		"@lingui/react": "^6.4.0",
 		"expo-localization": "catalog:"
 	}
 }

@@ -98,7 +98,7 @@ export function FunkeOpenIdPresentationNotificationScreen() {
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
   useEffect(() => {
-    if (!resolvedRequest?.formattedSubmission || !resolvedRequest?.formattedSubmission.areAllSatisfied) {
+    if (!resolvedRequest?.formattedSubmission?.areAllSatisfied) {
       return
     }
 

@@ -199,7 +199,7 @@ export class WalletServiceProviderClient implements SecureEnvironment {
     const crypto = new CredoWebCrypto(this.agent.context)
 
     const saltBytes = crypto.getRandomValues(new Uint8Array(12))
-    const saltString = TypedArrayEncoder.toBase64URL(saltBytes)
+    const saltString = TypedArrayEncoder.toBase64Url(saltBytes)
     await this.agent.genericRecords.save({
       content: { salt: saltString },
       id: GENERIC_RECORD_WALLET_SERVICE_PROVIDER_SALT_ID,

@@ -1,5 +1,5 @@
 import { BaseLogger, LogLevel } from '@credo-ts/core'
 
-export { LogLevel, BaseLogger as ParadymWalletSdkLogger }
+export { BaseLogger as ParadymWalletSdkLogger, LogLevel }
 export type LogData = Record<string, unknown>
 export type LogMessage = { level: LogLevel; message: string; data?: LogData }

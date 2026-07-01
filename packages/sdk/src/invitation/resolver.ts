@@ -338,11 +338,10 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           configuration.credential_metadata_uri as string
         )
         setPaymentsMetadata(record, credentialMetadata)
-        if (
-          credentialResponse.credentialMetadata &&
-          'urn:eudi:sca:eu.europa.ec:payment' in credentialResponse.credentialMetadata
-        ) {
-          setTransactionStatusMetadata(record, credentialResponse.credentialMetadata as TransactionStatusMetadata)
+        const responseCredentialMetadata = (credentialResponse as { credentialMetadata?: Record<string, unknown> })
+          .credentialMetadata
+        if (responseCredentialMetadata && 'urn:eudi:sca:eu.europa.ec:payment' in responseCredentialMetadata) {
+          setTransactionStatusMetadata(record, responseCredentialMetadata as TransactionStatusMetadata)
         }
       }
 

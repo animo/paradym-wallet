@@ -10,7 +10,7 @@ import {
   Scan,
   Trash2,
   X,
-} from '@tamagui/lucide-icons'
+} from '@tamagui/lucide-icons-2'
 import { forwardRef } from 'react'
 import {
   ArrowLeftIcon,

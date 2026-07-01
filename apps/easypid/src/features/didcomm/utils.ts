@@ -1,5 +1,5 @@
 import { defineMessage } from '@lingui/core/macro'
-import type { _t } from '@lingui/react/macro'
+import type { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 
 const messages = {
@@ -35,7 +35,10 @@ const messages = {
   }),
 }
 
-export const getFlowConfirmationText = (t: typeof _t, type?: 'issue' | 'verify' | 'connect') => {
+export const getFlowConfirmationText = (
+  t: ReturnType<typeof useLingui>['t'],
+  type?: 'issue' | 'verify' | 'connect'
+) => {
   if (!type) return undefined
 
   if (type === 'issue') {

@@ -5,6 +5,7 @@ import { type CreateTamaguiProps, createTamagui, createTokens } from 'tamagui'
 import { animations } from '../animations'
 
 import { fontInter, fontOpenSans, fontRaleway } from './font'
+
 export { fontInter, fontOpenSans, fontRaleway }
 
 export const absoluteFill = {

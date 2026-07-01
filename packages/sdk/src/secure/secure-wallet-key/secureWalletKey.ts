@@ -20,7 +20,7 @@ async function getWalletKeyUsingPin(pin: string, version: number) {
   // The wallet key needs to be a xchaca key, so we use the derived key based on pin and salt as
   // the seed for the actual key
   const walletKey = NativeAskar.instance.storeGenerateRawKey({
-    seed: TypedArrayEncoder.fromString(walletKeySeed),
+    seed: TypedArrayEncoder.fromUtf8String(walletKeySeed),
   })
 
   return walletKey

@@ -143,7 +143,7 @@ export async function parseInvitationUrl(invitationUrl: string): Promise<Invitat
     // Transform to url to make it easier to pass around in naviagation
     if (invitation.format === 'parsed') {
       return {
-        data: `didcomm://?oob=${JsonEncoder.toBase64URL(invitation.data)}`,
+        data: `didcomm://?oob=${JsonEncoder.toBase64Url(invitation.data)}`,
         format: 'url',
         type: 'didcomm',
       }

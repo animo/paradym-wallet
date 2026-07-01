@@ -82,7 +82,7 @@ export function getW3cIssuerDisplay(
     | undefined
 
   // Issuer Display from JFF
-  if (!issuerDisplay.logo || !issuerDisplay.logo.url) {
+  if (!issuerDisplay.logo?.url) {
     if (typeof issuerJson?.logoUrl === 'string' && issuerJson.logoUrl) {
       issuerDisplay.logo = {
         url: issuerJson?.logoUrl,

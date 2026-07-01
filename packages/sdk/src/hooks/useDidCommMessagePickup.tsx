@@ -17,7 +17,7 @@ export function useDidCommMessagePickup({
 }) {
   useEffect(() => {
     // Do not pickup messages if not enabled
-    if (!isEnabled || !paradym || !paradym.isDidCommEnabled) return
+    if (!isEnabled || !paradym?.isDidCommEnabled) return
 
     paradym.logger.debug('Initiating message pickup.')
 
