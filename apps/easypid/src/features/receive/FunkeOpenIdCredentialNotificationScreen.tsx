@@ -13,7 +13,7 @@ import {
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { type OnPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
@@ -71,7 +71,13 @@ export function FunkeCredentialNotificationScreen() {
     [isDevelopmentModeEnabled]
   )
 
+  // The authorization challenge / presentation request_uri the issuer hands us during
+  // resolve is one-shot on the server side, so re-firing this effect would 404 the second call.
+  const resolvingOfferUriRef = useRef<string | undefined>(undefined)
   useEffect(() => {
+    if (resolvingOfferUriRef.current === params.uri) return
+    resolvingOfferUriRef.current = params.uri
+
     paradym.openid4vc
       .resolveCredentialOffer({
         offerUri: params.uri,

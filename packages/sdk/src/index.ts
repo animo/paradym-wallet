@@ -5,7 +5,7 @@ export type { BaseAgent, DidCommAgent, OpenId4VcAgent, AnyAgent } from './agent'
 export { assertAgentType } from './agent'
 export { DigitalCredentialsRequest } from './dcApi'
 export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
-export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay } from './display/credential'
+export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay, CredentialMetadata } from './display/credential'
 export * from './error'
 export type {
   FormattedSubmission,
