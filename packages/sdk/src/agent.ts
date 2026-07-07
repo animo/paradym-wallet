@@ -9,7 +9,18 @@ import {
 } from '@credo-ts/anoncreds'
 import { AskarKeyManagementService, AskarModule } from '@credo-ts/askar'
 import { CheqdAnonCredsRegistry, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
-import { Agent, DidsModule, Kms, PeerDidNumAlgo, X509Module, type X509ModuleConfigOptions } from '@credo-ts/core'
+import {
+  Agent,
+  DidsModule,
+  JwkDidResolver,
+  KeyDidResolver,
+  Kms,
+  PeerDidNumAlgo,
+  PeerDidResolver,
+  WebDidResolver,
+  X509Module,
+  type X509ModuleConfigOptions,
+} from '@credo-ts/core'
 import {
   DidCommAutoAcceptCredential,
   DidCommAutoAcceptProof,
@@ -22,6 +33,7 @@ import {
 } from '@credo-ts/didcomm'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
+import { WebVhAnonCredsRegistry, WebVhDidResolver, WebVhModule } from '@credo-ts/webvh'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
@@ -181,7 +193,16 @@ const getBaseModules = (options: Pick<SetupAgentOptions, 'id' | 'key'>) => {
       backends: [new AskarKeyManagementService(), new SecureEnvironmentKeyManagementService()],
       defaultBackend: 'askar',
     }),
-    dids: new DidsModule(),
+    dids: new DidsModule({
+      resolvers: [
+        new WebDidResolver(),
+        new KeyDidResolver(),
+        new PeerDidResolver(),
+        new JwkDidResolver(),
+        new WebVhDidResolver(),
+      ],
+    }),
+    webvh: new WebVhModule(),
   }
 }
 
@@ -240,7 +261,7 @@ const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['did
     // mediator: false,
   }),
   anoncreds: new AnonCredsModule({
-    registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry()],
+    registries: [new CheqdAnonCredsRegistry(), new DidWebAnonCredsRegistry(), new WebVhAnonCredsRegistry()],
     anoncreds,
   }),
   cheqd: new CheqdModule(

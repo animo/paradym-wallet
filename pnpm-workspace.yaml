@@ -72,6 +72,7 @@ catalog:
   "@credo-ts/question-answer": 0.7.1-alpha-20260610194159
   "@credo-ts/react-native": 0.7.1-alpha-20260610194159
   "@credo-ts/didcomm": 0.7.1-alpha-20260610194159
+  "@credo-ts/webvh": 0.7.1-alpha-20260610194159
   "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
   "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
   "@openwallet-foundation/askar-react-native": 0.6.1-alpha-20260609123727
