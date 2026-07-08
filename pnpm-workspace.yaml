@@ -64,14 +64,15 @@ catalog:
   "@openid4vc/openid4vp": ^0.4.6
   "@openid4vc/openid4vci": ^0.4.6
   "@openid4vc/utils": ^0.4.6
-  "@credo-ts/anoncreds": 0.7.1-alpha-20260610194159
-  "@credo-ts/askar": 0.7.1-alpha-20260610194159
-  "@credo-ts/cheqd": 0.7.1-alpha-20260610194159
-  "@credo-ts/core": 0.7.1-alpha-20260610194159
-  "@credo-ts/openid4vc": 0.7.1-alpha-20260610194159
-  "@credo-ts/question-answer": 0.7.1-alpha-20260610194159
-  "@credo-ts/react-native": 0.7.1-alpha-20260610194159
-  "@credo-ts/didcomm": 0.7.1-alpha-20260610194159
+  "@credo-ts/anoncreds": 0.7.1-alpha-20260707121432
+  "@credo-ts/askar": 0.7.1-alpha-20260707121432
+  "@credo-ts/cheqd": 0.7.1-alpha-20260707121432
+  "@credo-ts/core": 0.7.1-alpha-20260707121432
+  "@credo-ts/openid4vc": 0.7.1-alpha-20260707121432
+  "@credo-ts/question-answer": 0.7.1-alpha-20260707121432
+  "@credo-ts/react-native": 0.7.1-alpha-20260707121432
+  "@credo-ts/didcomm": 0.7.1-alpha-20260707121432
+  "@credo-ts/webvh": 0.7.1-alpha-20260707121432
   "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
   "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
   "@openwallet-foundation/askar-react-native": 0.6.1-alpha-20260609123727
@@ -148,3 +149,13 @@ catalog:
   "@tamagui/lucide-icons-2": 2.3.3
   "@tamagui/babel-plugin": 2.3.3
   tamagui: 2.3.3
+
+minimumReleaseAgeExclude:
+  - '@credo-ts/anoncreds@0.7.1-alpha-20260707121432'
+  - '@credo-ts/askar@0.7.1-alpha-20260707121432'
+  - '@credo-ts/cheqd@0.7.1-alpha-20260707121432'
+  - '@credo-ts/core@0.7.1-alpha-20260707121432'
+  - '@credo-ts/didcomm@0.7.1-alpha-20260707121432'
+  - '@credo-ts/openid4vc@0.7.1-alpha-20260707121432'
+  - '@credo-ts/react-native@0.7.1-alpha-20260707121432'
+  - '@credo-ts/webvh@0.7.1-alpha-20260707121432'

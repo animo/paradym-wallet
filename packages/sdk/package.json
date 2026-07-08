@@ -35,6 +35,7 @@
 		"@credo-ts/didcomm": "catalog:",
 		"@credo-ts/openid4vc": "catalog:",
 		"@credo-ts/react-native": "catalog:",
+		"@credo-ts/webvh": "catalog:",
 		"@hyperledger/anoncreds-react-native": "catalog:",
 		"@openid4vc/oauth2": "catalog:",
 		"@openid4vc/openid4vp": "catalog:",
