@@ -71,8 +71,8 @@ export function CustomCredentialAttributes({ credential, scrollRef }: CustomCred
 export function FunkeArfPidCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
   const { t } = useLingui()
 
-  const isPidSdJwtVc = credential?.claimFormat === ClaimFormat.SdJwtDc
-  const isPidMdoc = credential?.claimFormat === ClaimFormat.MsoMdoc
+  const isPidSdJwtVc = credential && credential.claimFormat === ClaimFormat.SdJwtDc
+  const isPidMdoc = credential && credential.claimFormat === ClaimFormat.MsoMdoc
 
   const personalInfoCard: {
     name: string | null
@@ -132,7 +132,7 @@ export function FunkeArfPidCredentialAttributes({ credential }: CustomCredential
     headerImage = raw.picture ?? headerImage
   } else if (isPidMdoc) {
     const raw = (
-      credential?.rawAttributes as {
+      credential.rawAttributes as {
         'eu.europa.ec.eudi.pid.1': PidMdocAttributes
       }
     )['eu.europa.ec.eudi.pid.1']
