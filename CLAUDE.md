@@ -1,6 +1,6 @@
 ## What this is
 
-Paradym Wallet is a mobile SSI (Self-Sovereign Identity) wallet that holds and presents digital credentials. The same Expo app ships as two variants, selected at build time via the `APP_VARIANT` env var read in `apps/easypid/base.app.config.js`:
+Paradym Wallet is a mobile SSI (Self-Sovereign Identity) wallet that holds and presents digital credentials. The same Expo app ships as two variants, selected at build time via the `EXPO_PUBLIC_APP_TYPE` env var (`PARADYM_WALLET`, the default, or `FUNKE_WALLET`) read in `apps/easypid/app.config.js`. A separate `APP_VARIANT` env var (`development`/`preview`/`production`) selects the build profile, not the wallet variant:
 
 - **Paradym** — the general-purpose Animo/Paradym wallet for issuing and verifying W3C/AnonCreds/SD-JWT VCs over DIDComm and OID4VC.
 - **Funke / EUDI** — a prototype built for the SPRIND Funke EUDI Wallet Challenge, targeting the EU Digital Identity Wallet (EUDI) flows (PID issuance, OID4VP presentations to relying parties, etc.).
@@ -36,11 +36,11 @@ Use scoped Conventional Commits for every commit (e.g. `feat(easypid): ...`, `fi
 
 pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pnpm `11.7.0`.
 
-- `apps/easypid` — the Expo React Native app shell. Hosts both wallet variants (Paradym and Funke/EUDI), selected via `APP_VARIANT` in `apps/easypid/base.app.config.js`. Native config, app entry, and variant-specific wiring live here.
+- `apps/easypid` — the Expo React Native app shell. Hosts both wallet variants (Paradym and Funke/EUDI), selected via `EXPO_PUBLIC_APP_TYPE` in `apps/easypid/app.config.js`. Native config, app entry, and variant-specific wiring live here.
 - `packages/app` — shared screens, features, providers, hooks. Most feature code lives here, not in `apps/easypid`. Feature code goes in `packages/app/src/features/<feature-name>/` — don't add a `screens/` folder.
 - `packages/ui` — Tamagui-based UI kit.
 - `packages/scanner` — QR scanning utils.
-- `packages/translations` — Lingui setup and the `translate-all.js` script.
+- `packages/translations` — Lingui setup and the `translate-prepare.js` / `translate-finalize.js` scripts.
 - `packages/utils`, `packages/sdk` — shared helpers / SDK surface.
 
 ## Dependency rules (important, easy to get wrong)
@@ -55,8 +55,8 @@ pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pn
 
 - **Expo SDK 56**, React Native 0.85.3, React 19.2.3. Expo Router for navigation.
 - **Tamagui** for UI — has a Babel plugin; use Tamagui primitives over raw RN components where possible.
-- **Credo (`@credo-ts/*` 0.6.3)** is the SSI/agent framework. `@openid4vc/*` handles OID4VCI/VP. Askar (`@openwallet-foundation/askar-*`) is the secure storage / crypto backend.
-- **Lingui** for i18n — see the Translations section below. Do not edit non-English `.po` catalogs by hand.
+- **Credo (`@credo-ts/*` 0.7.x)** is the SSI/agent framework. `@openid4vc/*` handles OID4VCI/VP. Askar (`@openwallet-foundation/askar-*`) is the secure storage / crypto backend.
+- **Lingui** for i18n — see the Translations section below. Do not edit non-English catalogs (`apps/easypid/src/locales/*/messages.json`) by hand.
 - **Biome** with single quotes, no semicolons, 120-col, ES5 trailing commas, 2-space indent. `noUnusedImports` is an error.
 - Native development build is required when native deps change: `cd apps/easypid && pnpm prebuild && pnpm ios` (or `android`). JS-only changes only need `pnpm start` from the repo root.
 

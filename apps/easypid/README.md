@@ -2,434 +2,122 @@
    <img src="assets/icon.png" alt="Paradym Logo" height="176px" style="border-radius: 15%;" />
 </div>
 
-<h1 align="center"><b>Animo EasyPID</b></h1>
+<h1 align="center"><b>Paradym & Funke Wallet</b></h1>
 
 <p align="center">
-  <a href="#install">Install</a> 
+  <a href="#getting-started">Getting Started</a>
   &nbsp;|&nbsp;
-  <a href="#features">Features</a> 
-  &nbsp;|&nbsp;
-  <a href="#test">Test</a>
+  <a href="#app-types-and-build-variants">App Types & Variants</a>
   &nbsp;|&nbsp;
   <a href="#project-structure">Project Structure</a>
   &nbsp;|&nbsp;
-  <a href="#tech-stack">Tech Stack</a>
+  <a href="#adding-dependencies">Dependencies</a>
   &nbsp;|&nbsp;
-  <a href="#known-bugs">Known Bugs</a>
-  &nbsp;|&nbsp;
-  <a href="#changelog">Changelog</a>
+  <a href="#releasing">Releasing</a>
 </p>
 
 ---
 
-This app was created by [Animo Solutions](https://animo.id/) in the context of the [SPRIN-D Funke ‘EUDI Wallet Prototypes’](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It serves as a prototype for future wallet providers and can be tested/used with our [Funke playground environment](https://funke.animo.id/). For more information on the project reach out to <ana@animo.id>. 
-
-<div align="center">
-  <img src="assets/screen1.png" width="30%" />
-  <img src="assets/screen2.png" width="30%" /> 
-  <img src="assets/screen3.png" width="30%" />
-</div>
-
- <p align="center"><i>Impression of the EasyPID Wallet</i></p> 
-
-## Install
-
-The prototype app is currently published privately to select parties. If you're a tester for the SPRIN-D Funke project, you should have received the details on installing the app (either directly or via the guidebook). If not, please reach out to us at ana@animo.id.
-
-## Features
-The identity wallet contains the following features, you can see the full flow without running the app in the [video walkthrough](https://www.youtube.com/watch?v=Hk1A95-4DYw).
-
-**General App**
-- 🟢 Onboard user
-  - 🟢 Set up PIN
-  - 🟢 Set up biometrics
-  - 🟢 Accept privacy policy
-  - 🟢 Onboarding instruction
-  - 🟢 Skippable identity instruction
-- 🟢 Home screen
-- 🟢 Activity
-- 🟢 About the app
-- 🟢 Credential overview
-- 🔴 Support for translation files
-
-**Credential Management**
-- 🟢 Credential detail
-- 🟢 Delete QEAA
-- 🟠 SD-JWT VC Type Metadata
-   - Resolved and base is used, but not claim metadata or SVG template yet
-- 🟠 Revocation SD-JWT VC
-- 🔴 Revocation Mdoc
-
-**Obtain PID from PID provider**
-- 🟢 SD JWT VC using OpenID4VCI 
-- 🟢 Mdoc using OpenID4VCI 
-- 🟢 [C option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
-- 🟢 [C' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options)
-- 🟢 [B' option](https://gitlab.opencode.de/bmi/eudi-wallet/eidas-2.0-architekturkonzept/-/blob/main/architecture-proposal.md#preliminary-assessment-and-comparison-of-pid-design-options) *temporarily disabled*
-- 🟢 Receive the PID from inside of the wallet
-- 🟠 PID refresh (can refresh PID as long as refresh token is valid)
-   - Missing re-receive the PID based on eID card
-
-
-**Obtain (Q)EAAs from issuer**
-- 🟢 SD-JWT VC using OpenID4VCI (Draft 11, 13, 14, 15, pre-auth, auth)
-- 🟢 mDOC using OpenID4VCI
-- 🟢 PID presentation during (Q)EAA issuance
-- 🟠 Batch issuance and single-use credentials
-   - Implemented fully for PID. For non-PID: when the batch is gone the same credential is continually used
-- 🟢 Authorization code flow
-- 🚧  Wallet attestations
-- 🚧  Key attestations
-
-**Present attestations remotely** 
-- 🟢 PID SD-JWT VC using OpenID4VP (Draft 18, 21, 24, DIF Presentation Exchange, DCQL)
-- 🟢 PID mDOC using OpenID4VP (Draft 18, 21, 24, DCQL, ISO 18013-7)
-- 🟢 QEAA SD JWT VC using OpenID4VP
-- 🟢 QEAA Mdoc using OpenID4VP
-- 🟢 Combined presentations
-- 🟢 Cross-device QR flow
-- 🟢 Same-device flow
-- 🟢 SD-JWT OID4VC conformance test suite
-- 🟢 mDOC OID4VC conformance test suite 
-- 🟢 New VP query language
-
-**Present attestations in-person**
-- Android
-  - 🟢 QR for device engagement
-  - 🟢 Android-Android NFC for device engagement
-  - 🔴 SD-JWT VC using OpenID4VP over BLE
-  - 🟢 mDOC over BLE
-- iOS
-  - 🟢 QR for device engagement
-  - 🔴 SD-JWT VC using OpenID4VP over BLE
-  - 🟢 mDOC over BLE
-
-**HSM**
-  - 🟢 On device HSM
-  - 🟢 Cloud-backed HSM
-
-**Trust Establishment using X.509 Certificates**
-- 🟢 Verifier e2e flow 
-- 🟢 Issuer e2e flow 
-Email [ana@animo.id](mailto:ana@animo.id) to get your solution added to our trusted list.
-
-**Trust Establishment using OpenID Federation Draft 40**
-- 🟢 Issuer and verifier entity configuration
-- 🟢 Verifier e2e flow 
-- 🔴 Issuer e2e flow 
-- 🔴 Wallet in the OpenID Federation
-
-**Other**
-- 🟠 HAIP compliance
-  - Missing `verifier_attestation` and wallet attestations
-- 🟠 WCAG 2.2 compliance
-    - Missing keyboard accessibility for Android
-- 🟠 AI-based oversharing detection
-  - Using cloud based AI model
+This is the Expo React Native app that ships both wallet variants:
 
-**[Test issuer/verifier](https://funke.animo.id/)** 
+- **Paradym Wallet** — the main (stable) wallet published in the app stores.
+- **Funke Wallet** — the experimental EUDI Wallet prototype, created by [Animo Solutions](https://animo.id/) in the context of the [SPRIND Funke ‘EUDI Wallet Prototypes’ challenge](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/). It can be tested with our [EUDI playground environment](https://funke.animo.id/), which functions as a test relying party and (Q)EAA issuer. See the [video walkthrough](https://www.youtube.com/watch?v=Hk1A95-4DYw) for an impression, or reach out to <ana@animo.id> for more information.
 
-- 🟢 Issue QEAAs
-- 🟢 Verify PID
-- 🟢 Verify mixed PID-QEAA requests
+For a general project overview and the supported standards and protocols, see the [main README](../../README.md).
 
-## Tech stack
+## Getting Started
 
-The following section lists the software components used to create the EasyPID wallet. The heavy lifting is done by [Credo](https://github.com/openwallet-foundation/credo-ts). The most notable dependencies consumed by Credo are the [OpenID4VCI](https://github.com/animo/oid4vc-ts), [OpenID4VP](https://github.com/Sphereon-Opensource/OID4VC), [OpenID Federation](https://github.com/animo/openid-federation-ts), [Mdoc](https://github.com/animo/mdoc) and [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js) libraries. Other notable dependencies include the Animo [Expo Secure Environment](https://github.com/animo/expo-secure-environment), which provides support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication, and Animo [Ausweis Sdk](https://github.com/animo/expo-ausweis-sdk) for automatic setup and configuration of the Ausweis SDK for iOS and Android in Expo apps.
+Requirements: Node.js `>=22.21.1`, pnpm `11.7.0`, and Xcode (iOS) and/or Android Studio (Android) for the native builds.
 
-- [Credo](https://github.com/openwallet-foundation/credo-ts)
-  - [OpenID4VCI](https://github.com/openwallet-foundation-labs/oid4vc-ts)
-  - [OpenID4VP](https://github.com/openwallet-foundation-labs/oid4vc-ts)
-  - [Mdoc](https://github.com/animo/mdoc)
-  - [SdJwt](https://github.com/openwallet-foundation-labs/sd-jwt-js)
-  - [DCQL](https://github.com/openwallet-foundation-labs/dcql-ts)
-  - [OpenID Federation](https://github.com/openwallet-foundation-labs/openid-federation-ts)
-- [Expo Secure Environment](https://github.com/animo/expo-secure-environment)
-- [Expo Mdoc Data Transfer](https://github.com/animo/expo-mdoc-data-transfer)
-  - Based on EUDI Reference Implementation
-- [Wallet Service Provider Implementation](https://github.com/animo/funke-wallet-provider)
-- [Expo Digital Credentials API](https://github.com/animo/expo-digital-credentials-api)
+First install all dependencies from the repo root:
 
-The following standards and specifications were implemented.
+```sh
+pnpm install
+```
 
-- 🟢 [OpenID for Verifiable Credential Issuance - Draft 11, Draft 13, Draft 14, Draft 15](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html)
-- 🟢[OpenID for Verifiable Presentations - Draft 18, Draft 21, Draft 24](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)
-   - Supports DCQL from draft 22
-- 🟢 [SD-JWT VC - Draft 3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-03.html)
-- 🟢 [ISO 18013-5](https://www.iso.org/standard/69084.html)
-- 🟢 [ISO/IEC TS 18013-7](https://www.iso.org/standard/82772.html)
-- 🟡 [High Assurance Interop Profile - Draft 2](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-sd-jwt-vc-1_0-02.html)
-  - Missing `verifier_attestation` and wallet attestation
-- 🟠 [OpenID Federation - Draft 40](https://openid.net/specs/openid-federation-1_0-40.html)
+Then make sure you have a development build of the app on your mobile device:
 
-## Test
+```sh
+cd apps/easypid
+pnpm prebuild
+pnpm ios # or android
+```
 
-Here are some resources and tips that might be helpful while testing the app.
+You only need to install the development build when **native** dependencies change. If you're only working on JS, you can skip this step if you already have the development build installed.
 
-### Development Features
+Once installed, run `pnpm start` from the repo root to start the development server.
 
-The identity wallet contains the following temporary features for development and testing:
+### Required checks
 
-- Use a simulated eID test card. 
-  - During onboarding: 
-    - First PIN: enter your desired PIN
-    - Pin re-enter: enter PIN 276536 (BROKEN). You will be notified the eID simulator card is activated
-  - Setup later:
-    - First PIN: enter PIN 276536 (BROKEN). You will be notified the eID simulator card is activated, and prompted to enter your real PIN now.
-- Reset the wallet
-  - Go to the menu and choose 'reset wallet'
-- Toggle Cloud HSM / Secure Enclave
-  - During PID retrieval (either during onboarding or setup later) there is a icon of a cloud. You can press this to toggle between Cloud HSM (default), and on-device Secure element (indicated by phone icon).
+After making changes, run from the repo root:
 
-### Test flows
+- `pnpm style:fix` — Biome formatting + lint (the only linter/formatter, config in `biome.json`)
+- `pnpm types:check` — repo-wide TypeScript check
 
-The [playground](https://funke.animo.id/) functions as a test relying party and/or test (Q)EAA issuer. The playground enables you to select different flows for issuing and verifying credentials. It will display a QR code and relevant information for testing and debugging.
+## App Types and Build Variants
 
-To make sure you test all the flows, please reference the overview below.
+Two environment variables control what is built:
 
-- Overasking warnings (AI/LLM) - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account)
-- Mixed Credential request - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account)
-- Multiple Credential request - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account)
-- Only PID verification - [UC-3](#uc-3---government-identification)
-- Only QEAA verification - [UC-4](#uc-4---get-an-e-prescription)
-- DIF PEX - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account), [UC-3](#uc-3---government-identification)
-- DCQL - [UC-1](#uc-1---rent-a-car), [UC-2](#uc-2---open-a-bank-account), [UC-4](#uc-4---get-an-e-prescription)
-- OpenID Federation - All
-- Android In person / Proximity flow, [UC-5](#uc-5---proximity-flow)
-- Presentation during issuance [C-1](#c-1---mdl--führerschein)
-- Authorization code flow [C-4](#c-4---health-id--gesundheitskarte), [C-1](#c-1---mdl--führerschein)
-- Pre authorized code flow, [C-2](#c-2---residence--meldebestätigung), [C-3](#c-3---tax-id--steuer-id)
+- **`EXPO_PUBLIC_APP_TYPE`** selects the wallet variant: `PARADYM_WALLET` (default) or `FUNKE_WALLET`. This switches branding, bundle identifier, invitation schemes and feature flags (see `app.config.js` and `src/config/features.ts`).
+- **`APP_VARIANT`** selects the build profile: `development`, `preview` or `production` (default). Development and preview builds get a suffixed bundle id (`.dev` / `.preview`) so they can be installed alongside the production app. The `pnpm start` / `pnpm ios` / `pnpm android` scripts already set `APP_VARIANT=development`.
 
-#### Issuer
+Feature flags per app type (`src/config/features.ts`):
 
-##### C-1 - mDL / Führerschein
-
-Showcases:
-- SD-JWT and mDOC
-- Presenting PID during issuance
-
-##### C-2 - Residence / Meldebestätigung
-
-- SD-JWT and mDOC
-- Pre-authorized code flow with transaction code (PIN)
-
-##### C-3 - Tax ID / Steuer-ID
-
-- SD-JWT and mDOC
-- Pre-authorized code flow without transaction code
-
-##### C-4 - Health ID / Gesundheitskarte
-
-- SD-JWT and mDOC
-- Authorization code flow with external browser sign-in
-
-#### Verifier
-
-All verifier flows can work with either OpenID Federation or X.509 certificates. You can choose this in the selection menu. 
-
-##### UC 1 - Rent a car
-
-Rent a car through TurboKeys or CheapCars.
-
-> This use case requires you to have the PID and a Führerschein (drivers licence) in your wallet. 
-
-It showcases:
-- Requesting multiple credentials in one request
-- Requesting mixed credentials (SD-JWT / MDOC) in one request
-- The two different supported Query languages: DIF PEX and DCQL 
-- Support for trust federations - CheapCars does not have any trusting entities, while TurboKeys does
-- Smart AI warnings - CheapCars shows an over-asking warning to the user, while Turbokeys shows that it passes the overasking detection with a green mark.
-- Single use credentials (every time a new credential will be presented as long as the batch lasts).
-
-##### UC 2 - Open a bank account
-
-Open a bank account at Open Horizon Bank
-
-> This use case requres you to have the PID, Steur-ID, meltebestatigung and Gezundheidskarte
-
-It showcases:
-- Requesting multiple credentials in one request
-- The DIF PEX query language
-- Support for trust federations - several entities trust Open Horizon Bank. Because Europe trusts Open Horizon, it is also trusted by die Bundesregierung. 
-- Smart AI warnings - Open Horizon Bank shows an over-asking warning to the user.
-- Single use credentials (every time a new credential will be presented as long as the batch lasts).
-
-#####  UC 3 - Government identification
-
-> This use case requires you to have the PID.
-
-It showcases:
-- Requesting only the PID
-- The two different supported Query languages: DIF PEX and DCQL 
-- Support for trust federations - Die Bundesregierung is trusted by Europe
-- Single use credentials and backgroud PID referesh (every time a new credential will be presented, which can be seen in the playground).
-
-
-##### UC 4 - Get an e-prescription
-
-Get an e-prescription from Redcare Pharmacy
-
-> This use case requires you to have the Gezundheidskarte (health card)
-
-It showcases:
-- Requesting only a QEAA
-- The DCQL query language
-- Support for trust federations - Redcare Pharmacy is trusted by several entities. Both Redcare and TurboKeys are trusted by the KvK entity.
-- Single use credentials (every time a new credential will be presented as long as the batch lasts).
-
-##### UC 5 - Proximity Flow
-
-Present mDOC credential in person.
-
-> This use case requires you to have:
->  - Two android devices (one with wallet, one with verifier)
->  - Führerschein mDL (drivers licence) in your wallet
->  - Android verifier application (download `appverifier-debug.apk` from this [Github release](https://github.com/animo/paradym-wallet/releases/tag/v1.6.0) on android device, and install the APK).
-
-It showcases:
-- Requesting mDOC in person
-- Requesting only a QEAA
-- Single use credentials (every time a new credential will be presented as long as the batch lasts). 
-
-How to:
-- Verifier:
-  - Open the verifier application and select either **older than 18**, or **older than 21**, or make a custom request (but make sure to only request from the base mDL propertiess, as the mDL issued currently does not include AAMVA related attributes).
-- Wallet
-  - Press "Scan QR-Code", then "Show my QR Code", enable permissions (Bluetooth and location, some devices require you to do this in the app settings, after which you may have to restart the app).
-- Connect:
-  - NFC: Tap the two devices against each other (make sure the NFC chips on the devices align)
-  - QR: Scan the wallet QR code with the verifier application
-  - Both: Select in the verifier app whether it should use Peripheral or Central mode (both work)
-- Wallet
-  - It should now redirect to the proof sharing screen alowing you to share the requested attributes
-- Verifier
-  - Once the wallet has shared the attributes it will show the attributes in the verifier app.
-
-### Device Compatibility
-
-#### Android
-
-This app requires devices with:
-
-- Android 8+
-- Hardware Security Module (HSM)
-- Biometric support (e.g., fingerprint sensor, face recognition)
-
-Android devices without these features will not be able to run the app.
-
-#### iOS
-
-Compatible with iPhone 5s and later models. This app requires devices with:
-- iOS 14+
+| Feature | Paradym | Funke |
+| --- | --- | --- |
+| DIDComm | ✅ | ❌ |
+| AI-based oversharing analysis | ❌ | ✅ |
+| Cloud HSM (Wallet Service Provider) | ❌ | ✅ |
 
 ## Project Structure
 
-The EasyPID wallet is part of a larger monorepo. The EasyPID app is located in the [apps/easypid](apps/easypid) directory.
+The app uses Expo Router file-based routing starting in [`src/app`](src/app) — each file in this directory is a route. When the app is opened, [`src/app/(app)/_layout.tsx`](<src/app/(app)/_layout.tsx>) is rendered as the main layout. If the wallet is not unlocked, the user is redirected to onboarding (on first launch) or the authentication screen (on return).
 
-### EasyPID App
+Most code lives outside this app shell:
 
-This is the actual EasyPID application. It is built using Expo and React Native.
+- App-specific features (onboarding, receiving, sharing, proximity, menu, activity) live in [`src/features`](src/features).
+- Shared screens, providers and hooks live in [`packages/app`](../../packages/app). Feature code is organized by feature in `packages/app/src/features` — this is the default place to make changes unless the behavior is app-specific.
+- UI components live in the Tamagui-based [`packages/ui`](../../packages/ui).
 
-The app uses file-based routing starting in the [`src/app`](src/app) directory. Each file in this directory is a route within the app. 
+### Agent / SDK
 
-E.g. ['src/app/authenticate.tsx'](src/app/authenticate.tsx) is the entry point for the authentication screen.
+The digital identity functionality is provided by the [`@paradym/wallet-sdk`](../../packages/sdk) package in this repo, which wraps a [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance. It handles wallet unlock (PIN-derived key via KDF, optional biometric unlock), encrypted storage using [Askar](https://github.com/openwallet-foundation/askar-wrapper-javascript), and hardware-backed keys using [Expo Secure Environment](https://github.com/animo/expo-secure-environment).
 
-Initially when the app is opened, the [`src/app/(app)/_layout.tsx`](src/app/(app)/_layout.tsx) is rendered. This is the main layout for the app. If the wallet is not unlocked, the user is redirected to the onboarding (on first launch) or authentication screen (on return).
-
-### Agent
-
-The agent contains the digital identity related wallet functionality. It uses a [Credo](https://github.com/openwallet-foundation/credo-ts) agent instance to manage the wallet.
-
-[Askar](https://github.com/openwallet-foundation/askar-wrapper-javascript) is used for cryptographic operations and encrypted storage of the wallet data. 
-
-[Expo Secure Environment](https://github.com/animo/expo-secure-environment) is used to provide support for cryptographic operations using the device's secure environment (HSM, SE, etc.) hidden behind biometric authentication.
-
-Some relevant links:
-- [Handling invitations](../../packages/sdk/src/invitation/resolver.ts) - this is the entry point for most interactions in the app that need to use the agent. E.g receiving and sharing credentials
-
-### Secure Unlock
-
-The secure store package located in [`packages/secure-store`](packages/secure-store) contains logic for secure unlocking and initializing of the wallet. It uses [React Native Keychain](https://github.com/oblador/react-native-keychain) under the hood, which integrates with the device's secure APIs for storing sensitive data.
-
-It also contains the logic for deriving the wallet's master key from the user PIN (using KDF). Whenver the wallet is opened, the PIN is required to unlock the wallet.
-
-Alternatively, the derive PIN can be stored in the device's keychcain, allowing the user to retrieve the master key from the keychain and unlock the wallet directly.
-
-Relevant links:
-- [Secure Unlock Provider](../../packages/secure-store/secure-wallet-key/SecureUnlockProvider.tsx) - the main entry point for secure unlocking and initialization of the wallet
-
-### App / UI Package
-
-The [app package](packages/app) and [ui package](packages/ui) contain the underlying app UI and screens logic. This code is shared between our existing [Paradym Wallet](apps/easypid) also located in this repository. This allows us to reuse base elements, while still providing custom screens and UI elements in each of the applications.
+A good entry point is [invitation resolution](../../packages/sdk/src/invitation/resolver.ts) — most interactions in the app that use the agent (receiving and sharing credentials) start there. See the [SDK README](../../packages/sdk/README.md) for full API documentation.
 
 ### Wallet Service Provider
 
-The Wallet Service Provider (WSP) is a separate service that allows creating and signing with hardware based keys. The Wallet Service Provider currently uses Google Cloud HSM, and creates a separate key ring for each wallet. A wallet communicates to the Wallet Service Provider based on a key dervied from a salt and PIN.
+For the Funke variant, a separate [Wallet Service Provider](https://github.com/animo/funke-wallet-provider) allows creating and signing with keys in a Cloud HSM. A separate key ring is created for each wallet, and the wallet communicates with the service based on a key derived from a salt and PIN. The client for this lives in [`src/crypto/WalletServiceProviderClient.ts`](src/crypto/WalletServiceProviderClient.ts).
 
-In the future this will be updated to also include a key attested by Google Play Integrity or Apple App Attest Service, ensuring the WSP is actually interacting with an instance of the EasyPID wallet, and keys are generated in the wallet. The service also allows issuance of Wallet Attestations, but these are not leveraged in the EasyPID yet, and the keys are also not verified by the Google Play Integrity or Apple App Attest Service.
+## Adding Dependencies
 
-Wallet Service Provider Implementation: https://github.com/animo/funke-wallet-provider
+Versions are pinned via the pnpm catalog in [`pnpm-workspace.yaml`](../../pnpm-workspace.yaml). When adding a dependency that already exists in the catalog, reference it as `"catalog:"` in the package's `package.json`. When bumping a version, update the catalog entry.
 
-### Documentation
+- **Pure JS dependencies** → install them in the package that actually uses them (usually `packages/app` for shared feature code).
+- **Native dependencies** (anything with native code) → install them in `apps/easypid`. If you also want autoimport from another package (e.g. `packages/app`), install it there as well with the _exact_ same version — mismatched versions of native modules cause hard-to-debug runtime issues.
+- React, react-dom and react-native are pinned via `overrides` in `pnpm-workspace.yaml` to keep a single copy across all native modules.
 
-The [documentation](./documentation/) folder currently contains only the overview of the WCAG 2.2 accessibility compliance status with the accompanying todo's for next steps on accessibility. 
+After any dependency change, run `pnpm install` from the repo root. If native dependencies changed, rebuild the development build (`pnpm prebuild && pnpm ios` / `pnpm android`).
 
-### PID Options
+## Translations
 
-The C/C' flow supported in the Paradym Wallet is mostly implemented in [Credo](https://github.com/openwallet-foundation/credo-ts).
+The app uses [Lingui](https://lingui.dev) for i18n, with catalogs in [`src/locales`](src/locales). See the [translations README](../../packages/translations/README.md) for how to define translatable text and run the translation workflow.
 
+## Releasing
 
+Uploading builds to App Store Connect and the Google Play Console is automated using GitHub Actions and Expo Build.
 
-## Known Bugs
+Before making a release, update the `version` in `apps/easypid/package.json`. We generally follow semver: patch for fixes, minor for new features, major for large refactorings. User-facing changes are often pushed as minor rather than major, as the wallet is not interacted with by a machine, so "breaking change" is hard to define.
 
-- You have to force close the app when you use BLE for the first time after enabling location permission because the permission popup does not go away.
-- Installing the latest version of the app if you had a previous version of the application can cause you to get stuck in a broken state, even if the application is removed and reinstalled.
+To trigger a release, run the [Continuous Deployment](https://github.com/animo/paradym-wallet/actions/workflows/continuous-deployment.yaml) workflow with:
 
-## Changelog
+- Channel set to `production`
+- Platform set to `all` (unless you only want to release for iOS OR Android)
+- App set to `paradym` (or `funke` for the EUDI Wallet prototype)
 
-### Phase 2
+This triggers builds in Expo and automatically uploads them to App Store Connect and Google Play. Build numbers are incremented automatically by Expo. Releases are published as internal releases on TestFlight and Google Play for testing, from where you can manually promote them to a public release.
 
-#### 10-12-2024
+## Device Compatibility
 
-**Wallet**
-- Fixed an issue where access token was retrieved twice for authorization code flow, resulting in an error during issuance  [commit](https://github.com/animo/paradym-wallet/commit/3eda4ec1fc09107b0ea2682f8f863f4e2ff38c3a)
-
-#### 07-12-2024
-
-**Wallet**
-- Fixed an issue where each credential in a requested batch would use the same key in the `cnf` claim [commit](https://github.com/animo/paradym-wallet/commit/040ac73d7eb461be53b460b8f77661d533ddd72c)
-
-#### 04-12-2024
-
-**Wallet**
-- Added a development mode that shows internal error messages for easier debugging by LSPs [commit](https://github.com/animo/paradym-wallet/commit/a1aaf26655456082d15863d6f88edecfecaca598)
-- Fixed an issue where the PIN screen would get stuck in a loading state when an incorrect PIN was entered  [commit](https://github.com/animo/paradym-wallet/commit/0f65ef98f5f26c3afc0968e4f848bf538a86cfd7)
-- Fixed an issue with redirect based auth flow if the authorization flow left the in-app browser (e.g. when requiring authentication using the native AusweisApp with the eID card) [commit](https://github.com/animo/paradym-wallet/commit/eb333b81fe5662cc2f010e1ee9bbdc83a7e19aa3)
-- Fixed an issue where the PID setup would get stuck if you skipped it during onboarding [commit](https://github.com/animo/paradym-wallet/commit/65178e776bc421b9ca413542ea0e86db4ad1ead4)
-- Added support for on-device local AI model for oversharing detection on higher-end devices (can be enabled in the settings) [commit](https://github.com/animo/paradym-wallet/commit/25aff70f3c154e2cf0f358bba8bd1fec86474851)
-
-
-
-#### 28-11-2024
-
-**Playground**
-- Changed text "Requires PIN" to "Requires transaction code"
-- Allow additional options for requesting mixed sd-jwt vc and mso_mdoc requests using DCQL [commit](https://github.com/animo/openid4vc-playground-funke/commit/2c2089f5e77227f592116e6af397b063acda67af)
-
-#### 27-11-2024
-
-**Readme**
-- Extended this README document with additional testing information.
-- Added [Known Bugs](#known-bugs) section.
-- Replaced screenshot in readme
-- Added a section about the Wallet Service Provider
-
-**Wallet**
-- Fixed an issue with the app locking in the background [commit](https://github.com/animo/paradym-wallet/commit/6d5e2f176d32328e834b293c3389780fd9ca3d91)
-- Fixed an issue where deeplinking didn't work on iOS if the wallet is already unlocked [commit](https://github.com/animo/paradym-wallet/commit/db12085d4c67e6688aa2f975d05783253eb06b5d)
-
-### Phase 1
-
-#### 02-09-2024
-
-- Redeployed test relying party to add a "Open in Wallet" button for same device flow ([commit](https://github.com/animo/openid4vc-playground-funke/commit/9a839521e8d70aaf92b7fa03fa037fc866644ad0))
+- **Android**: Android 8+ (minSdk 26), with a Hardware Security Module (HSM) and biometric support (e.g. fingerprint sensor, face recognition). Devices without these features will not be able to run the app.
+- **iOS**: iOS 16.4+.
