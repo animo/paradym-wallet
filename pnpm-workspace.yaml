@@ -19,6 +19,9 @@ overrides:
   # Two copies would clobber each other's extension and break IssuerNamespaces parsing
   # with "Expected DataItem, received object". Force a single copy across the tree.
   '@owf/mdoc': 'catalog:'
+  # xcode pins uuid ^7, which has a buffer bounds-check vulnerability (GHSA dependabot
+  # alert #150). xcode only calls uuid.v4() via CJS, which is unchanged in v11.
+  'xcode>uuid': ^11.1.1
 
 patchedDependencies:
   '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
