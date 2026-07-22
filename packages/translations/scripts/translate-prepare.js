@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const workspaceRoot = path.resolve(__dirname, '..', '..', '..')
-const appDir = path.join(workspaceRoot, 'apps', 'app')
+const appDir = path.join(workspaceRoot, 'apps', 'wallet')
 const translationsDir = path.join(workspaceRoot, 'packages', 'translations')
 const defaultLocalesDir = path.join(appDir, 'src', 'locales')
 

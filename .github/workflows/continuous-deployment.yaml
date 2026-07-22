@@ -50,15 +50,15 @@ jobs:
 
       - name: 🚀 Build internal preview
         if: ${{ github.event.inputs.channel == 'preview' }}
-        working-directory: apps/app
+        working-directory: apps/wallet
         run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait
 
       - name: 🚀 Build internal preview for simulator
         if: ${{ github.event.inputs.channel == 'preview-simulator' }}
-        working-directory: apps/app
+        working-directory: apps/wallet
         run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview-simulator --no-wait
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
         if: ${{ github.event.inputs.channel == 'production' }}
-        working-directory: apps/app
+        working-directory: apps/wallet
         run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit

@@ -29,7 +29,7 @@ brew install maestro
 
 ### Maestro CLI
 
-After installation, you can use the Maestro CLI to automatically run tests from the command line. For example, when you are inside the `/apps/app/.maestro` directory:
+After installation, you can use the Maestro CLI to automatically run tests from the command line. For example, when you are inside the `/apps/wallet/.maestro` directory:
 
 **Playground**
 
