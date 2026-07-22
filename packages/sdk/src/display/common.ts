@@ -1,6 +1,6 @@
+import { formatPredicate } from '@app/utils/formatePredicate'
 import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
 import { ClaimFormat } from '@credo-ts/core'
-import { formatPredicate } from '@easypid/utils/formatePredicate'
 import { t } from '@lingui/core/macro'
 import { commonMessages } from '@package/translations'
 import type { FormattedAttribute } from '../format/attributes'

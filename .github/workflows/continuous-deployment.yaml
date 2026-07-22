@@ -21,20 +21,10 @@ on:
           - 'ios'
           - 'all'
         default: 'all'
-      app:
-        type: choice
-        description: 'App to deploy'
-        required: true
-        options:
-          - 'funke'
-          - 'paradym'
-        default: 'paradym'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      APP_PROFILE: ${{ github.event.inputs.app }}
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v7
@@ -60,15 +50,15 @@ jobs:
 
       - name: 🚀 Build internal preview
         if: ${{ github.event.inputs.channel == 'preview' }}
-        working-directory: apps/easypid
-        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-preview --no-wait
+        working-directory: apps/wallet
+        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview --no-wait
 
       - name: 🚀 Build internal preview for simulator
         if: ${{ github.event.inputs.channel == 'preview-simulator' }}
-        working-directory: apps/easypid
-        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-preview-simulator --no-wait
+        working-directory: apps/wallet
+        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile preview-simulator --no-wait
 
       - name: 🚀 Build and Submission to TestFlight / Alpha Track
         if: ${{ github.event.inputs.channel == 'production' }}
-        working-directory: apps/easypid
-        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile ${{ env.APP_PROFILE }}-production --no-wait --auto-submit
+        working-directory: apps/wallet
+        run: eas build --non-interactive --platform ${{ github.event.inputs.platform }} --profile production --no-wait --auto-submit

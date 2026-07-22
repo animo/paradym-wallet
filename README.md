@@ -18,18 +18,13 @@ The Paradym Mobile Wallet is a digital identity wallet developed as a companion 
 
 <p align="center"><i>Impression of Paradym Wallet</i></p>
 
-This repository contains two wallet variants, built from the same codebase:
-
-- **Paradym Wallet** — the main (stable) wallet, published in the app stores.
-- **Funke / EUDI Wallet** — a more experimental EUDI Wallet prototype, originally built for the [SPRIND Funke ‘EUDI Wallet Prototypes’ challenge](https://www.sprind.org/en/challenges/eudi-wallet-prototypes/).
-
-Both variants live in the same Expo app in [`apps/easypid`](apps/easypid) — see its [README](apps/easypid/README.md) for development documentation.
+The wallet app lives in [`apps/wallet`](apps/wallet) — see its [README](apps/wallet/README.md) for development documentation.
 
 ## Try it out
 
 You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
 
-You can test out the wallets in these environments (as well as any solution that issues and/or verifies credentials according to the supported standards):
+You can test out the wallet in these environments (as well as any solution that issues and/or verifies credentials according to the supported standards):
 
 - [Paradym Issuer/Verifier platform](https://paradym.id/sign-up). Test out how the Paradym wallet looks and feels using the Paradym free tier.
 - [EUDI Playground](https://funke.animo.id/). Test out several pre-configured flows based on the main EUDI use cases.
@@ -66,7 +61,7 @@ The SSI capabilities of the wallet are powered by [Credo](https://github.com/ope
 
 ### DIDComm
 
-The Paradym Wallet variant supports [DIDComm v1](https://hyperledger.github.io/aries-rfcs/latest/concepts/0005-didcomm/) messaging, including [Out of Band invitations](https://hyperledger.github.io/aries-rfcs/latest/features/0434-outofband/), [DID Exchange](https://hyperledger.github.io/aries-rfcs/latest/features/0023-did-exchange/), and mediation via a Paradym mediator.
+Paradym Wallet supports [DIDComm v1](https://hyperledger.github.io/aries-rfcs/latest/concepts/0005-didcomm/) messaging, including [Out of Band invitations](https://hyperledger.github.io/aries-rfcs/latest/features/0434-outofband/), [DID Exchange](https://hyperledger.github.io/aries-rfcs/latest/features/0023-did-exchange/), and mediation via a Paradym mediator.
 
 ### Trust mechanisms
 
@@ -78,13 +73,13 @@ The Paradym Wallet variant supports [DIDComm v1](https://hyperledger.github.io/a
 
 - [Askar](https://github.com/openwallet-foundation/askar-wrapper-javascript) for encrypted storage of wallet data, unlocked with a PIN-derived key or biometrics
 - [Expo Secure Environment](https://github.com/animo/expo-secure-environment) for hardware-backed keys (Secure Enclave / StrongBox HSM) gated behind biometric authentication
-- Cloud HSM backed by a [Wallet Service Provider](https://github.com/animo/funke-wallet-provider) (Funke/EUDI variant)
+- Cloud HSM backed by a [Wallet Service Provider](https://github.com/animo/funke-wallet-provider) (disabled by default)
 
 ## Project structure
 
 The project is a monorepo managed using **pnpm**, containing an **Expo React Native** application and its supporting packages. The UI is built using **Tamagui**, navigation is handled by **Expo Router**, and the agent and SSI capabilities are provided by **Credo**.
 
-- [`apps/easypid`](apps/easypid) — the wallet app for iOS & Android, shipping both the Paradym and Funke/EUDI variants. See its [README](apps/easypid/README.md) for how to run, build and release the app.
+- [`apps/wallet`](apps/wallet) — the Paradym Wallet app for iOS & Android. See its [README](apps/wallet/README.md) for how to run, build and release the app.
 - [`packages/sdk`](packages/sdk) — the [`@paradym/wallet-sdk`](https://www.npmjs.com/package/@paradym/wallet-sdk), a React Native library enabling any wallet to receive, store, and prove digital credentials. Published to npm — see its [README](packages/sdk/README.md) for full API documentation.
 - [`packages/app`](packages/app) — shared screens, features, providers and hooks. Most feature code lives here, organized by feature.
 - [`packages/ui`](packages/ui) — custom UI kit built on Tamagui.
@@ -96,7 +91,7 @@ The project is a monorepo managed using **pnpm**, containing an **Expo React Nat
 
 Requirements: Node.js `>=22.21.1` and pnpm `11.7.0`.
 
-Install dependencies from the repo root with `pnpm install`, then follow the [app README](apps/easypid/README.md) to build and run a wallet on your device.
+Install dependencies from the repo root with `pnpm install`, then follow the [app README](apps/wallet/README.md) to build and run the wallet on your device.
 
 ## License
 
