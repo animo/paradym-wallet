@@ -1,4 +1,4 @@
-import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
+import { dcApiRegisterOptions } from '@app/utils/dcApiRegisterOptions'
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'

@@ -1,118 +1,127 @@
-import { Trans } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import {
+  AnimatedStack,
   Card,
-  darken,
   getTextColorBasedOnBg,
-  Heading,
+  HeroIcons,
+  IconContainer,
   Image,
+  Loader,
   LucideIcons,
   Paragraph,
+  Spacer,
+  Stack,
+  useScaleAnimation,
   XStack,
   YStack,
 } from '@package/ui'
 import type { DisplayImage } from '@paradym/wallet-sdk'
+import { BlurView } from 'expo-blur'
+import { StyleSheet } from 'react-native'
+import { BlurBadge } from './BlurBadge'
 
 type CredentialCardProps = {
   onPress?(): void
-  name: string
-  issuerName: string
-  subtitle?: string
+  name?: string
   bgColor?: string
   textColor?: string
   issuerImage?: DisplayImage
   backgroundImage?: DisplayImage
   shadow?: boolean
+  isLoading?: boolean
+  isExpired?: boolean
+  isRevoked?: boolean
 }
 
 export function CredentialCard({
   onPress,
   issuerImage,
   name,
-  subtitle,
-  issuerName,
   bgColor,
   textColor,
   backgroundImage,
   shadow = true,
+  isLoading,
+  isExpired,
+  isRevoked,
 }: CredentialCardProps) {
-  textColor = textColor ? textColor : getTextColorBasedOnBg(bgColor ?? '#000')
+  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
+
+  textColor = textColor ? textColor : bgColor ? getTextColorBasedOnBg(bgColor) : '$grey-100'
 
   const icon = issuerImage?.url ? (
-    <Image src={issuerImage.url} alt={issuerImage.altText} width={64} height={48} />
+    <Image src={issuerImage.url} width={36} height={36} />
   ) : (
-    <XStack width={48} height={48} bg="$lightTranslucent" ai="center" br="$12" pad="md">
-      <LucideIcons.FileBadge color="$grey-100" />
+    <XStack width={36} height={36} bg="$lightTranslucent" ai="center" jc="center" br="$12">
+      <LucideIcons.FileBadge size={20} strokeWidth={2.5} color="$grey-100" />
     </XStack>
   )
 
-  const getPressStyle = () => {
-    if (!onPress) return {}
-    if (backgroundImage?.url) return { opacity: 0.9 }
-    return { backgroundColor: darken(bgColor ?? '$grey-900', 0.1) }
-  }
-
-  const bgColorValue = backgroundImage?.url ? '$transparent' : (bgColor ?? '$grey-900')
-
+  const bgColorValue = bgColor ?? '$grey-900'
+  const { t } = useLingui()
   return (
-    <XStack
+    <AnimatedStack
       shadow={shadow}
       br="$8"
-      bg={bgColorValue}
-      borderWidth={0.5}
+      bg={backgroundImage?.url ? 'transparent' : bgColorValue} // Only set bg color if no background image
+      borderWidth="$0.5"
       borderColor="$borderTranslucent"
       position="relative"
+      f={1}
+      style={pressStyle}
     >
       <Card
-        padding="$true"
-        width="100%"
+        f={1}
         br="$8"
+        p="$5"
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         backgroundColor="transparent"
-        pressStyle={getPressStyle()}
-        h="$16"
         onPress={onPress}
         overflow="hidden"
+        accessible={true}
+        accessibilityRole={onPress ? 'button' : undefined}
+        aria-label="Credential"
       >
-        <Card.Header padding={0}>
+        <Card.Header p={0}>
           <XStack jc="space-between">
-            <XStack pr="$4">{icon}</XStack>
             <YStack f={1}>
-              <Heading heading="h3" size="$4" textAlign="right" color={textColor} numberOfLines={2}>
-                {name}
-              </Heading>
-              <Paragraph variant="annotation" textAlign="right" color={textColor} numberOfLines={1} opacity={0.8}>
-                {subtitle}
+              <Paragraph fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
+                {(name ?? 'TODO name').toLocaleUpperCase()}
               </Paragraph>
             </YStack>
+            <XStack>{icon}</XStack>
           </XStack>
         </Card.Header>
-        <Card.Footer>
-          <XStack>
-            <YStack>
-              <Paragraph variant="annotation" opacity={0.8} color={textColor}>
-                <Trans id="credentialCard.issuerLabel" comment="Label for the issuer name on a credential card">
-                  Issuer
-                </Trans>
-              </Paragraph>
-              <Paragraph variant="sub" color={textColor} numberOfLines={2}>
-                {issuerName}
-              </Paragraph>
-            </YStack>
-          </XStack>
+        <Spacer size="$11" />
+        <Card.Footer h="$3" jc="flex-end" ai="flex-end">
+          {onPress && <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight color={textColor} />} />}
         </Card.Footer>
         {backgroundImage?.url && (
-          <Card.Background>
-            <YStack width="100%" height="100%" bg={bgColor ?? '$grey-900'}>
-              <Image
-                src={backgroundImage.url}
-                alt={backgroundImage.altText}
-                width="100%"
-                height="100%"
-                contentFit="cover"
-              />
-            </YStack>
+          <Card.Background accessible={false}>
+            <Image
+              backgroundColor={bgColor ?? '$grey-900'}
+              src={backgroundImage.url}
+              alt={backgroundImage.altText}
+              width="100%"
+              height="100%"
+              contentFit="cover"
+            />
           </Card.Background>
         )}
+        {isLoading && (
+          <XStack overflow="hidden" bg="#0000001A" br="$12" ai="center" gap="$2" bottom="$5" left="$5" pos="absolute">
+            <BlurView intensity={20} tint="light" style={StyleSheet.absoluteFill} />
+            <Loader variant="dark" />
+          </XStack>
+        )}
+        {(isExpired || isRevoked) && (
+          <Stack pos="absolute" bottom="$5" left="$5">
+            <BlurBadge color={textColor} label={isExpired ? t(commonMessages.expired) : t(commonMessages.revoked)} />
+          </Stack>
+        )}
       </Card>
-    </XStack>
+    </AnimatedStack>
   )
 }

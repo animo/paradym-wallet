@@ -20,9 +20,6 @@ The Paradym Mobile Wallet is a digital identity wallet developed as a companion 
 
 With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
 
-> **Note:** 
-> This repository contains both the main (stable) Paradym wallet, and a more experimental EUDI Prototype app. To read more about the Animo EUDI wallet prototype, look in the [EasyPID app directory](apps/easypid).
-
 ## Try it out
 
 You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
@@ -40,7 +37,7 @@ The project is a monorepo managed using **pnpm**, which contains an **Expo React
 The folder structure is as follows
 
 - `apps` top level applications
-  - `easypid` Paradym and Funke Wallet - react native app for iOS & Android
+  - `app` Paradym Wallet - react native app for iOS & Android
 - `packages` shared packages
   - `ui` includes our custom UI kit that will be optimized by Tamagui
   - `agent` includes the Credo agent and SSI capabilities
@@ -62,7 +59,7 @@ First, start by installing all dependencies by running `pnpm install`.
 Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device. You can install this using the following commands:
 
 ```sh
-cd apps/easypid
+cd apps/app
 pnpm prebuild
 pnpm ios # or android
 ```
@@ -75,11 +72,10 @@ Once installed you can run `pnpm start` from the root of the project to start yo
 
 Uploading builds to Appstore Connect and the Google Play Console are automated using Github Actions and Expo Build. 
 
-Before making a release, make sure to update the `version` in the `apps/easypid/package.json`. We generally follow semver, and so for fixes we update the patch version, for new features we update the minor version, and for large refactorings we can use the major version. However we often push user-facing changes as minor and not major, as the wallet is not interacted with by a machine, so "breaking change" is hard to define.
+Before making a release, make sure to update the `version` in the `apps/app/package.json`. We generally follow semver, and so for fixes we update the patch version, for new features we update the minor version, and for large refactorings we can use the major version. However we often push user-facing changes as minor and not major, as the wallet is not interacted with by a machine, so "breaking change" is hard to define.
 To trigger a release of the Paradym Wallet, run the [Continuous Deployment](https://github.com/animo/paradym-wallet/actions/workflows/continuous-deployment.yaml) workflow. Make sure to:
 - Set the channel to `production`
 - The platform to `all` (unless you only want to release for iOS OR Android)
-- App to `paradym` (or to `funke` in case you want to deploy our EUDI Wallet Prototype).
 
 This will trigger builds in Expo, and will then automatically upload the builds to Appstore Connect and Google Play. Build numbers are automatically incremented by Expo.
 
@@ -105,7 +101,7 @@ pnpm
 If you're installing a library with any native code, you must install it in `expo`:
 
 ```sh
-cd apps/easypid
+cd apps/app
 pnpm add react-native-reanimated
 cd ..
 pnpm

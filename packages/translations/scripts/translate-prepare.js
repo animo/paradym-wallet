@@ -4,14 +4,14 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const workspaceRoot = path.resolve(__dirname, '..', '..', '..')
-const easypidDir = path.join(workspaceRoot, 'apps', 'easypid')
+const appDir = path.join(workspaceRoot, 'apps', 'app')
 const translationsDir = path.join(workspaceRoot, 'packages', 'translations')
-const defaultLocalesDir = path.join(easypidDir, 'src', 'locales')
+const defaultLocalesDir = path.join(appDir, 'src', 'locales')
 
 const localesDir = process.argv[2] ? path.resolve(process.argv[2]) : defaultLocalesDir
 
 const steps = [
-  { cwd: easypidDir, args: ['translations:extract'] },
+  { cwd: appDir, args: ['translations:extract'] },
   { cwd: translationsDir, args: ['extract-all-missing-translations', localesDir] },
 ]
 

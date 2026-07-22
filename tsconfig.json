@@ -12,7 +12,7 @@
 			"@package/app/*": ["./packages/app/src/*"],
 			"@package/scanner/*": ["./packages/scanner/src/*"],
 			"@package/utils/*": ["./packages/utils/src/*"],
-			"@easypid/*": ["./apps/easypid/src/*"],
+			"@app/*": ["./apps/app/src/*"],
 			"@paradym/wallet-sdk/*": ["./packages/sdk/src/*"],
 			"@paradym/wallet-sdk": ["./packages/sdk/src/index.ts"]
 		}
