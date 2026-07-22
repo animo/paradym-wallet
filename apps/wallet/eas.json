@@ -1,0 +1,75 @@
+{
+	"build": {
+		"base": {
+			"node": "22.21.1",
+			"ios": {
+				"image": "macos-tahoe-26.4-xcode-26.4"
+			}
+		},
+		"development": {
+			"extends": "base",
+			"developmentClient": true,
+			"distribution": "internal",
+			"android": {
+				"buildType": "apk"
+			},
+			"ios": {
+				"simulator": true
+			},
+			"env": {
+				"APP_VARIANT": "development"
+			}
+		},
+		"preview": {
+			"extends": "base",
+			"distribution": "internal",
+			"android": {
+				"buildType": "apk",
+				"resourceClass": "large"
+			},
+			"env": {
+				"APP_VARIANT": "preview"
+			}
+		},
+		"preview-simulator": {
+			"extends": "preview",
+			"ios": {
+				"simulator": true
+			}
+		},
+		"production": {
+			"extends": "base",
+			"autoIncrement": true,
+			"distribution": "store",
+			"android": {
+				"buildType": "app-bundle",
+				"resourceClass": "large"
+			}
+		},
+		"e2e-test": {
+			"extends": "preview",
+			"withoutCredentials": true,
+			"ios": {
+				"simulator": true
+			},
+			"android": {
+				"image": "latest",
+				"buildType": "apk"
+			}
+		}
+	},
+	"cli": {
+		"appVersionSource": "remote"
+	},
+	"submit": {
+		"production": {
+			"ios": {
+				"companyName": "Animo Solutions",
+				"ascAppId": "6449846111"
+			},
+			"android": {
+				"track": "alpha"
+			}
+		}
+	}
+}

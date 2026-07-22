@@ -1,5 +1,5 @@
+import { dcApiRegisterOptions } from '@app/utils/dcApiRegisterOptions'
 import type { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
-import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import type { DcApiRegisterCredentialsOptions } from '@paradym/wallet-sdk'
 import { getCredentialDisplayWithDefaults } from '../../display/common'
 import { getCredentialForDisplayId } from '../../display/credential'

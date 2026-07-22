@@ -1,6 +1,6 @@
+import { dcApiRegisterOptions } from '@app/utils/dcApiRegisterOptions'
 import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
-import { dcApiRegisterOptions } from '@easypid/utils/dcApiRegisterOptions'
 import { assertAgentType } from '../agent'
 import { getCredentialDisplayWithDefaults } from '../display/common'
 import { getCredentialForDisplayId } from '../display/credential'

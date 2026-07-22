@@ -102,19 +102,19 @@ defineMessage({
 
 ## Extracting translations
 
-Make sure dependencies are installed, then from the `apps/easypid` directory run `pnpm translations:extract` and it will generate the translation files in `apps/easypid/src/locales`.
+Make sure dependencies are installed, then from the `apps/wallet` directory run `pnpm translations:extract` and it will generate the translation files in `apps/wallet/src/locales`.
 
-To add more locales, update `apps/easypid/lingui.config.js`.
+To add more locales, update `apps/wallet/lingui.config.js`.
 
 ## Adding a new language
 
 You need to add the language in several places:
-- In `apps/easypid/index.ts`
+- In `apps/wallet/index.ts`
 - Add the locale in the `commonMessages.ts`
 - Update the `lingui.config.js`
 - Update the `i18n.ts` file
 
-Then run `pnpm translations:extract` in the `apps/easypid` directory. After that you can follow the steps from "Translating with AI". Make sure to do this for all existing languages, since we have translations for the language identifier as well.
+Then run `pnpm translations:extract` in the `apps/wallet` directory. After that you can follow the steps from "Translating with AI". Make sure to do this for all existing languages, since we have translations for the language identifier as well.
 
 ## Translating with AI
 
@@ -134,10 +134,10 @@ If you'd rather translate manually (or hand the middle step to a teammate), you 
 
 Translations are produced by Claude (via Claude Code) directly — no nested `claude` subprocesses are spawned. The workflow has two scriptable halves and one manual middle step:
 
-1. From the workspace root, run `pnpm translations:ai:prepare`. This refreshes the catalogs via `translations:extract` in `apps/easypid`, then writes a `missing.json` next to each non-`en` locale's `messages.json` containing entries that need translating.
+1. From the workspace root, run `pnpm translations:ai:prepare`. This refreshes the catalogs via `translations:extract` in `apps/wallet`, then writes a `missing.json` next to each non-`en` locale's `messages.json` containing entries that need translating.
 2. Fill in the empty `translation` field in every locale's `missing.json`. When running inside a Claude Code session, this is what Claude does directly using the `translations` skill (`.claude/skills/translations/SKILL.md`), reading each locale's `AI_INSTRUCTIONS.MD` for terminology and tone.
-3. From the workspace root, run `pnpm translations:ai:finalize`. This merges each `missing.json` back into `messages.json`, deletes the `missing.json` files, re-runs `translations:extract` + `translations:compile` in `apps/easypid`, and runs `style:fix` at the workspace root.
+3. From the workspace root, run `pnpm translations:ai:finalize`. This merges each `missing.json` back into `messages.json`, deletes the `missing.json` files, re-runs `translations:extract` + `translations:compile` in `apps/wallet`, and runs `style:fix` at the workspace root.
 
-Both scripts take an optional positional arg to override the locales directory (default: `apps/easypid/src/locales`).
+Both scripts take an optional positional arg to override the locales directory (default: `apps/wallet/src/locales`).
 
 The translation rules (placeholder handling, JSON structure preservation, locale-specific instructions, etc.) live in the `translations` skill. Update that skill — not this README — when changing how Claude produces translations.

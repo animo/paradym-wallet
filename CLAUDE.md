@@ -1,11 +1,6 @@
 ## What this is
 
-Paradym Wallet is a mobile SSI (Self-Sovereign Identity) wallet that holds and presents digital credentials. The same Expo app ships as two variants, selected at build time via the `APP_VARIANT` env var read in `apps/easypid/base.app.config.js`:
-
-- **Paradym** — the general-purpose Animo/Paradym wallet for issuing and verifying W3C/AnonCreds/SD-JWT VCs over DIDComm and OID4VC.
-- **Funke / EUDI** — a prototype built for the SPRIND Funke EUDI Wallet Challenge, targeting the EU Digital Identity Wallet (EUDI) flows (PID issuance, OID4VP presentations to relying parties, etc.).
-
-The variants share almost all code; the difference is branding, bundle id, and which issuers/verifiers/protocol profiles are wired up. Treat shared code in `packages/app` as the default place to make changes unless the behavior is variant-specific.
+Paradym Wallet is a mobile SSI (Self-Sovereign Identity) wallet that holds and presents digital credentials: the general-purpose Animo/Paradym wallet for issuing and verifying W3C/AnonCreds/SD-JWT VCs over DIDComm and OID4VC, including EUDI flows (PID issuance, OID4VP presentations to relying parties, etc.). The `APP_VARIANT` env var read in `apps/wallet/base.app.config.js` selects the development/preview/production build variant. Treat shared code in `packages/app` as the default place to make changes unless the behavior is specific to the app shell.
 
 ## Working principles
 
@@ -30,14 +25,14 @@ Fix any errors these surface before reporting the task as done. There is no ESLi
 
 ## Commits
 
-Use scoped Conventional Commits for every commit (e.g. `feat(easypid): ...`, `fix(app): ...`, `chore(translations): ...`). The scope should be the affected package or area (`easypid`, `app`, `ui`, `translations`, `utils`, `sdk`, `scanner`, `ai`, etc.).
+Use scoped Conventional Commits for every commit (e.g. `feat(app): ...`, `chore(translations): ...`). The scope should be the affected package or area (`app`, `ui`, `translations`, `utils`, `sdk`, `scanner`, `ai`, etc.).
 
 ## Repo layout
 
 pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pnpm `11.7.0`.
 
-- `apps/easypid` — the Expo React Native app shell. Hosts both wallet variants (Paradym and Funke/EUDI), selected via `APP_VARIANT` in `apps/easypid/base.app.config.js`. Native config, app entry, and variant-specific wiring live here.
-- `packages/app` — shared screens, features, providers, hooks. Most feature code lives here, not in `apps/easypid`. Feature code goes in `packages/app/src/features/<feature-name>/` — don't add a `screens/` folder.
+- `apps/wallet` — the Expo React Native app shell for the Paradym Wallet. Native config, app entry, and app-specific wiring live here.
+- `packages/app` — shared screens, features, providers, hooks. Most feature code lives here, not in `apps/wallet`. Feature code goes in `packages/app/src/features/<feature-name>/` — don't add a `screens/` folder.
 - `packages/ui` — Tamagui-based UI kit.
 - `packages/scanner` — QR scanning utils.
 - `packages/translations` — Lingui setup and the `translate-all.js` script.
@@ -47,7 +42,7 @@ pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pn
 
 - **Versions are pinned via the pnpm `catalog:`** in `pnpm-workspace.yaml`. When adding a dep that already exists in the catalog, reference it as `"catalog:"` in the package's `package.json` instead of hardcoding a version. When bumping, update the catalog entry, not individual packages.
 - **Pure JS deps** → install in the package that actually uses them. If a dep is consumed from shared feature code, that's usually `packages/app`; a UI-only dep belongs in `packages/ui`; a util-only dep in `packages/utils`. Don't blanket-install in `packages/app` if nothing there imports it.
-- **Native deps (any native code)** → install in `apps/easypid`. If you also need autoimport from `packages/app` (or another package), install in both with the *exact* same version, otherwise the duplicate copies cause hard-to-debug runtime issues.
+- **Native deps (any native code)** → install in `apps/wallet`. If you also need autoimport from `packages/app` (or another package), install in both with the *exact* same version, otherwise the duplicate copies cause hard-to-debug runtime issues.
 - React, react-dom, and react-native are pinned via `overrides` in `pnpm-workspace.yaml` to keep a single copy across all native modules. Don't loosen these.
 - After any dependency change, run `pnpm install` from the repo root.
 
@@ -58,7 +53,7 @@ pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pn
 - **Credo (`@credo-ts/*` 0.6.3)** is the SSI/agent framework. `@openid4vc/*` handles OID4VCI/VP. Askar (`@openwallet-foundation/askar-*`) is the secure storage / crypto backend.
 - **Lingui** for i18n — see the Translations section below. Do not edit non-English `.po` catalogs by hand.
 - **Biome** with single quotes, no semicolons, 120-col, ES5 trailing commas, 2-space indent. `noUnusedImports` is an error.
-- Native development build is required when native deps change: `cd apps/easypid && pnpm prebuild && pnpm ios` (or `android`). JS-only changes only need `pnpm start` from the repo root.
+- Native development build is required when native deps change: `cd apps/wallet && pnpm prebuild && pnpm ios` (or `android`). JS-only changes only need `pnpm start` from the repo root.
 
 ## Translations
 
