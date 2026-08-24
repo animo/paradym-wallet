@@ -42,8 +42,8 @@ catalog:
   react: 19.2.3
   "@types/react": ~19.2.17
   typescript: ~6.0.3
-  "@tanstack/react-query": ^5.101.1
-  tsdown: ^0.22.3
+  "@tanstack/react-query": ^5.101.4
+  tsdown: ^0.22.14
 
   # Babel
   "@babel/core": ^7.29.0
@@ -59,10 +59,10 @@ catalog:
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.2.0-alpha.4
   "@owf/mdoc": 0.7.0-alpha-20260605164430
-  "@owf/cose": 0.3.0-alpha-20260605053037
+  "@owf/cose": 0.3.2
   "@openid4vc/oauth2": ^0.4.6
   "@openid4vc/openid4vp": ^0.4.6
-  "@openid4vc/openid4vci": ^0.4.6
+  "@openid4vc/openid4vci": ^0.5.5
   "@openid4vc/utils": ^0.4.6
   "@credo-ts/anoncreds": 0.7.1-alpha-20260707121432
   "@credo-ts/askar": 0.7.1-alpha-20260707121432
