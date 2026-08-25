@@ -1,7 +1,9 @@
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
 import { CredoError, type X509ModuleConfigOptions } from '@credo-ts/core'
+import { agentDependencies } from '@credo-ts/react-native'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { createContext, type PropsWithChildren, useContext, useState } from 'react'
+import { moveFile } from 'react-native-fs'
 import {
   type AgentForAgentType,
   type AgentType,
@@ -366,7 +368,6 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       unlock: async (options) => {
         try {
           const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-          const id = configuration.id ? `${configuration.id}-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
           const key = walletKey
 
           const isBiometricsEnabled = options?.enableBiometrics ?? getIsBiometricsEnabled()
@@ -381,9 +382,19 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
 
           const pws = new ParadymWalletSdk({
             ...configuration,
-            id,
             key,
           })
+
+          // Dev-only migration from the double-versioned store id (e.g. paradym-wallet-1-1).
+          // No production installs have the old id. Remove after a few releases.
+          const fs = new agentDependencies.FileSystem()
+          const walletDirectory = `${fs.dataPath}/wallet/${pws.walletId}`
+          const legacyWalletDirectory = `${walletDirectory}-${walletKeyVersion}`
+
+          if (!(await fs.exists(walletDirectory)) && (await fs.exists(legacyWalletDirectory))) {
+            await moveFile(legacyWalletDirectory, walletDirectory).catch(() => {})
+          }
+
           await pws.agent.initialize()
           setState('unlocked')
           setParadym(pws)
