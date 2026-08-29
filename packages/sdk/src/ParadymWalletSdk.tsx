@@ -1,5 +1,5 @@
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
-import { CredoError, type X509ModuleConfigOptions } from '@credo-ts/core'
+import { CredoError } from '@credo-ts/core'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { createContext, type PropsWithChildren, useContext, useState } from 'react'
 import {
@@ -10,10 +10,8 @@ import {
   type SetupAgentOptions,
   setupAgent,
 } from './agent'
+import { defaultWalletId, getTrustedX509Certificates, type ParadymWalletSdkSharedOptions } from './config'
 import { type DcApiRegisterCredentialsOptions, dcApiRegisterCredentials } from './dcApi/registerCredentials'
-import { type DcApiResolveRequestOptions, dcApiResolveRequest } from './dcApi/resolveRequest'
-import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
-import { type DcApiSendResponseOptions, dcApiSendResponse } from './dcApi/sendResponse'
 import type { CredentialForDisplayId } from './display/credential'
 import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletBiometricAuthenticationError } from './error'
 import { useParadym } from './hooks'
@@ -51,6 +49,7 @@ import {
 import { getIsBiometricsEnabled, secureWalletKey, setIsBiometricsEnabled } from './secure'
 import { KeychainError } from './secure/error/KeychainError'
 import { deleteCredential } from './storage/credentials'
+import { getWalletStoreId, setupAppGroupStore } from './storage/walletStore'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
 import { reset } from './utils/reset'
@@ -59,32 +58,8 @@ export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<st
   | ({ success: true } & T)
   | { success: false; message: string; cause?: string }
 
-export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfiguration'> & {
-  /**
-   *
-   * Configuration for when OpenId4Vc is used
-   *
-   * @note by default, openid4vc is configured on the agent
-   *
-   * @note to disable openid4vc, pass in `false`
-   *
-   * @note the trusted x509 certificates are derived from the `trustMechanisms` entry where
-   *       `trustMechanism === 'x509'`, so they don't have to be specified here
-   *
-   */
-  openId4VcConfiguration?: Omit<X509ModuleConfigOptions, 'trustedCertificates'> | false
-
-  /**
-   *
-   * Trust mechanisms supported by the wallet
-   *
-   * The order matters. The first index will be tried first, until the last
-   *
-   * When one is found that works, it will be used
-   *
-   */
-  trustMechanisms?: TrustMechanismConfiguration[]
-}
+export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfiguration'> &
+  Pick<ParadymWalletSdkSharedOptions, 'openId4VcConfiguration' | 'trustMechanisms'>
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
@@ -103,17 +78,10 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public constructor(options: ParadymWalletSdkOptions) {
     const trustMechanisms = options.trustMechanisms ?? []
 
-    const x509TrustedCertificates = trustMechanisms
-      .filter(
-        (tm): tm is Extract<TrustMechanismConfiguration, { trustMechanism: 'x509' }> =>
-          'trustMechanism' in tm && tm.trustMechanism === 'x509'
-      )
-      .flatMap((tm) => tm.trustedX509Entities.map((e) => e.certificate))
-
     const openId4VcConfiguration =
       options.openId4VcConfiguration === false
         ? (false as const)
-        : { ...options.openId4VcConfiguration, trustedCertificates: x509TrustedCertificates }
+        : { ...options.openId4VcConfiguration, trustedCertificates: getTrustedX509Certificates(trustMechanisms) }
 
     this.agent = setupAgent({ ...options, openId4VcConfiguration }) as unknown as AgentForAgentType<T>
     this.trustMechanisms = trustMechanisms
@@ -132,7 +100,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   }
 
   public async reset() {
-    reset(this)
+    await reset(this)
   }
 
   /**
@@ -268,18 +236,13 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
   /**
    *
-   * Digital credentials API functionality for presentating a proof
+   * Digital credentials API functionality for presenting a proof
    *
    */
   public get dcApi() {
     return {
       registerCredentials: (options: Omit<DcApiRegisterCredentialsOptions, 'paradym'>) =>
         dcApiRegisterCredentials({ ...options, paradym: this }),
-      resolveRequest: (options: Omit<DcApiResolveRequestOptions, 'paradym'>) =>
-        dcApiResolveRequest({ ...options, paradym: this }),
-      sendResponse: (options: Omit<DcApiSendResponseOptions, 'paradym'>) =>
-        dcApiSendResponse({ ...options, paradym: this }),
-      sendErrorResponse: dcApisendErrorResponse,
     }
   }
 
@@ -290,8 +253,8 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
    */
   public get proximity() {
     return {
-      getSubmissionForMdocDocumentRequest: (options: Omit<GetSubmissionForMdocDocumentRequestOptions, 'paradym'>) =>
-        getSubmissionForMdocDocumentRequest({ ...options, paradym: this }),
+      getSubmissionForMdocDocumentRequest: (options: Omit<GetSubmissionForMdocDocumentRequestOptions, 'mdocApi'>) =>
+        getSubmissionForMdocDocumentRequest({ ...options, mdocApi: this.agent.mdoc }),
     }
   }
 }
@@ -361,12 +324,13 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       reinitialize,
       reset: async () => {
         reinitialize()
-        reset(paradym)
+        await reset(paradym)
       },
       unlock: async (options) => {
         try {
-          const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-          const id = configuration.id ? `${configuration.id}-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
+          // The base id, without the wallet key version — `setupAgent` composes the store id from
+          // it, and composing it here as well is what used to produce `<id>-<version>-<version>`.
+          const id = configuration.id ?? defaultWalletId
           const key = walletKey
 
           const isBiometricsEnabled = options?.enableBiometrics ?? getIsBiometricsEnabled()
@@ -379,10 +343,15 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             }
           }
 
+          // Must happen before the store is opened: on iOS the store lives in the shared container
+          // so the identity document provider extension can open it too.
+          const storePath = await setupAppGroupStore(getWalletStoreId(id))
+
           const pws = new ParadymWalletSdk({
             ...configuration,
             id,
             key,
+            storePath,
           })
           await pws.agent.initialize()
           setState('unlocked')
@@ -413,7 +382,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       canTryUnlockingUsingBiometrics,
       reinitialize,
       reset: async () => {
-        await reset()
+        await reset(undefined)
         reinitialize()
       },
       tryUnlockingUsingBiometrics: async () => {

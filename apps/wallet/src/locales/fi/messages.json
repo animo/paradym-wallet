@@ -402,11 +402,27 @@
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 186]],
 		"translation": "{0} luottavaa organisaatiota"
 	},
+	"dcApi.verifier.approvedByMultiple": {
+		"message": "Approved by {0} organizations",
+		"placeholders": {
+			"0": ["approvedBy.length"]
+		},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 85]],
+		"translation": "{0} luottavaa organisaatiota"
+	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 191]],
+		"translation": "1 luottava organisaatio"
+	},
+	"dcApi.verifier.approvedByOne": {
+		"message": "Approved by one organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 83]],
 		"translation": "1 luottava organisaatio"
 	},
 	"common.archiveCardTitle": {
@@ -562,6 +578,13 @@
 		"comments": ["Label for the toggle to enable biometric unlock"],
 		"origin": [["src/features/menu/SettingsScreen.tsx", 164]],
 		"translation": "Biometrinen lukituksen avaus"
+	},
+	"dcApi.biometricsUnavailable": {
+		"message": "Biometric unlock is not set up. Enter your PIN instead.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 18]],
+		"translation": "Biometristä avausta ei ole otettu käyttöön. Syötä PIN-koodi sen sijaan."
 	},
 	"biometrics.disabled": {
 		"message": "Biometrics disabled",
@@ -996,6 +1019,24 @@
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 213]],
 		"translation": "Demo-organisaatio"
 	},
+	"dcApi.verifier.demoOrganization": {
+		"message": "Demo organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 110]
+		],
+		"translation": "Demo-organisaatio"
+	},
+	"dcApi.verifier.demoTitle": {
+		"message": "Demo organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 142]
+		],
+		"translation": "Demo-organisaatio"
+	},
 	"settings.developmentMode": {
 		"message": "Development Mode",
 		"placeholders": {},
@@ -1018,6 +1059,24 @@
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 217]],
 		"translation": "Älä jaa oikeita tietoja"
+	},
+	"dcApi.verifier.demoDescription": {
+		"message": "Do not share real data",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 143]
+		],
+		"translation": "Älä jaa oikeita tietoja"
+	},
+	"dcApi.verifier.trustHeading": {
+		"message": "Do you trust {0}?",
+		"placeholders": {
+			"0": ["verifier.name"]
+		},
+		"comments": ["Heading above the organization asking for data"],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 58]],
+		"translation": "Luotatko toimijaan {0}?"
 	},
 	"verifyPartySlide.interactWithHeading": {
 		"message": "Do you trust {name}?",
@@ -1841,6 +1900,26 @@
 		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 32]],
 		"translation": "Kutsua ei löytynyt. Yritä uudelleen."
 	},
+	"dcApi.verifier.noApprovals": {
+		"message": "No organization has approved {0}. Consider carefully whether you want to share with them.",
+		"placeholders": {
+			"0": ["verifier.name"]
+		},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 128]
+		],
+		"translation": "Mikään organisaatio ei luota toimijaan {0}. Harkitse tarkkaan, haluatko jakaa tietoja."
+	},
+	"dcApi.verifier.noApprovalsUnknown": {
+		"message": "No organization has approved this one. Consider carefully whether you want to share with them.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 132]
+		],
+		"translation": "Mikään organisaatio ei luota tähän toimijaan. Harkitse tarkkaan, haluatko jakaa tietoja."
+	},
 	"verifyPartySlide.hasNoPreviousInteractionsDescription": {
 		"message": "No previous interactions found",
 		"placeholders": {},
@@ -1889,6 +1968,13 @@
 		"origin": [["src/features/menu/AboutScreen.tsx", 52]],
 		"translation": "Avaa tietosuojakäytäntö"
 	},
+	"dcApi.openWalletFirst": {
+		"message": "Open the wallet app once before sharing from it.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 30]],
+		"translation": "Avaa lompakkosovellus kerran ennen kuin jaat siitä tietoja."
+	},
 	"verifyPartySlide.unknownOrganizationDescription": {
 		"message": "Organization is not verified",
 		"placeholders": {},
@@ -1896,11 +1982,25 @@
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 203]],
 		"translation": "Organisaatiota ei ole vahvistettu"
 	},
+	"dcApi.verifier.notVerifiedDescription": {
+		"message": "Organization is not verified",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 90]],
+		"translation": "Organisaatiota ei ole vahvistettu"
+	},
 	"verifyPartySlide.organizationNotVerifiedHeading": {
 		"message": "Organization not verified",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 127]],
+		"translation": "Organisaatio ei ole vahvistettu"
+	},
+	"dcApi.verifier.notVerifiedHeading": {
+		"message": "Organization not verified",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 62]],
 		"translation": "Organisaatio ei ole vahvistettu"
 	},
 	"requestPurpose.infoSheet.title": {
@@ -2247,6 +2347,15 @@
 		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 62]],
 		"translation": "Syy:"
 	},
+	"dcApi.errorReasonPrefix": {
+		"message": "Reason:",
+		"placeholders": {},
+		"comments": [
+			"Label before the underlying error, only shown with development mode enabled"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 44]],
+		"translation": "Syy:"
+	},
 	"home.receiveOrShare": {
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
@@ -2286,6 +2395,13 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 180]],
+		"translation": "Luotettu toimija"
+	},
+	"dcApi.verifier.recognizedTitle": {
+		"message": "Recognized organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 77]],
 		"translation": "Luotettu toimija"
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2330,6 +2446,13 @@
 		"origin": [
 			["src/features/share/components/RequestedAttributesSection.tsx", 25]
 		],
+		"translation": "PYYDETYT KORTIT"
+	},
+	"dcApi.cards.requestedHeading": {
+		"message": "REQUESTED CARDS",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 49]],
 		"translation": "PYYDETYT KORTIT"
 	},
 	"activity.requestedInformationHeading": {
@@ -2522,6 +2645,13 @@
 		"placeholders": {},
 		"comments": ["Button label to accept and share credentials"],
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 51]],
+		"translation": "Jaa"
+	},
+	"dcApi.share": {
+		"message": "Share",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 22]],
 		"translation": "Jaa"
 	},
 	"offlineQr.heading": {
@@ -2926,6 +3056,13 @@
 		],
 		"translation": "Seuraavat kortit jaetaan."
 	},
+	"dcApi.cards.allSatisfied": {
+		"message": "The following cards will be shared.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 54]],
+		"translation": "Seuraavat kortit jaetaan."
+	},
 	"signShare.documentIntro": {
 		"message": "The following document will be signed.",
 		"placeholders": {},
@@ -3014,6 +3151,22 @@
 		],
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 38]],
 		"translation": "Ilmoitettu tarkoitus ei vastaa pyydettyjä tietoja."
+	},
+	"dcApi.nothingRequested": {
+		"message": "The request asks for no documents.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 26]],
+		"translation": "Pyyntö ei pyydä yhtään asiakirjaa."
+	},
+	"dcApi.declined": {
+		"message": "The request was declined",
+		"placeholders": {},
+		"comments": [
+			"Reason passed to the OS when the user declines; not shown to the user"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 34]],
+		"translation": "Pyyntö hylättiin"
 	},
 	"invalidTxCode.message": {
 		"message": "The transaction code you entered is incorrect. Ask the issuer to generate a new QR-code and try again.",
@@ -3331,6 +3484,16 @@
 		],
 		"translation": "PUUTTUVAT KORTIT"
 	},
+	"dcApi.cards.unavailableHeading": {
+		"message": "UNAVAILABLE CARDS",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiRequestedCards.tsx", 50],
+			["src/features/dc-api/components/DcApiRequestedCards.tsx", 70]
+		],
+		"translation": "PUUTTUVAT KORTIT"
+	},
 	"common.unknown": {
 		"message": "Unknown",
 		"placeholders": {},
@@ -3345,12 +3508,30 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 195]],
 		"translation": "Tuntematon organisaatio"
 	},
+	"dcApi.unlockSubtitle": {
+		"message": "Unlock to see what {origin} is asking for",
+		"placeholders": {
+			"origin": ["origin"]
+		},
+		"comments": [
+			"Shown while the wallet is locked, before it can say what is being asked for"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 13]],
+		"translation": "Avaa lompakko nähdäksesi, mitä {origin} pyytää"
+	},
 	"onboardingIdCardVerify.unlock": {
 		"message": "Unlock with biometrics",
 		"placeholders": {},
 		"comments": ["Button label for unlocking the ID card using biometrics"],
 		"origin": [["src/features/onboarding/screens/id-card-verify.tsx", 22]],
 		"translation": "Avaa biometriikalla"
+	},
+	"dcApi.unlockTitle": {
+		"message": "Unlock your wallet",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 8]],
+		"translation": "Avaa lompakkosi"
 	},
 	"qrScan.unsupportedQrCode": {
 		"message": "Unsupported QR code. Try another.",
@@ -3586,6 +3767,13 @@
 		],
 		"translation": "Sinulla ei ole kaikkia pyydettyjä kortteja."
 	},
+	"dcApi.cards.someSatisfied": {
+		"message": "You don't have all of the requested cards.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 57]],
+		"translation": "Sinulla ei ole kaikkia pyydettyjä kortteja."
+	},
 	"noContentInbox.message": {
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
@@ -3607,6 +3795,13 @@
 		"origin": [
 			["src/features/share/components/RequestedAttributesSection.tsx", 43]
 		],
+		"translation": "Sinulla ei ole pyydettyjä kortteja."
+	},
+	"dcApi.cards.noneSatisfied": {
+		"message": "You don't have the requested card(s).",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 56]],
 		"translation": "Sinulla ei ole pyydettyjä kortteja."
 	},
 	"payShare.missingCards": {
@@ -3688,6 +3883,15 @@
 		"comments": ["Heading shown when the inbox is empty"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 57]],
 		"translation": "Olet ajan tasalla"
+	},
+	"dcApi.shareFailed": {
+		"message": "Your card could not be shared. Ask the verifier to make a new request and try again.",
+		"placeholders": {},
+		"comments": [
+			"Shown when the card could not be shared, after the user already approved the request"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 39]],
+		"translation": "Korttiasi ei voitu jakaa. Pyydä vastaanottajaa tekemään uusi pyyntö ja yritä uudelleen."
 	},
 	"receiveCredential.deferredCredentialParagraph": {
 		"message": "Your cards are not yet ready. We will check once in a while in the background and fetch the cards once they're ready.",

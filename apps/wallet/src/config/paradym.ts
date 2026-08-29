@@ -1,10 +1,12 @@
+import { walletId } from '@app/config/wallet'
 import { eudiTrustList, trustedDidEntities, trustedOpenId4VciIssuerEntities, trustedX509Entities } from '@app/constants'
 import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
-import { LogLevel } from '@paradym/wallet-sdk'
+// The leaf rather than the barrel: the credential request UI imports this configuration too, and
+// the barrel would pull the entire SDK into its bundle.
+import { LogLevel } from '@paradym/wallet-sdk/logging/ParadymWalletSdkLogger'
 
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
-  // Must stay 'easypid-wallet': it determines the on-disk wallet store id of existing installs
-  id: 'easypid-wallet',
+  id: walletId,
   logging: {
     level: LogLevel.Trace,
     trace: true,

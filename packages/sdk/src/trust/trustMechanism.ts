@@ -1,7 +1,6 @@
-import type { X509Certificate } from '@credo-ts/core'
+import type { AgentContext, X509Certificate } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type { Optionalize } from '../types'
 import {
   type GetTrustedEntitiesForDidForOpenId4VpOptions,
@@ -27,6 +26,20 @@ import {
   getTrustedEntitiesForX509CertificateForOpenId4Vp,
   type TrustedX509Entity,
 } from './handlers/x509'
+
+/**
+ *
+ * What resolving trust needs from a wallet.
+ *
+ * Not the SDK itself: the credential request UI answers requests with
+ * {@link import('../dcApi/ParadymDcApiSdk').ParadymDcApiSdk}, a different agent entirely, and it has
+ * to establish trust exactly the way the app does.
+ *
+ */
+export type TrustContext = {
+  agentContext: AgentContext
+  trustMechanisms: TrustMechanismConfiguration[]
+}
 
 export type TrustedEntity = {
   entityId: string
@@ -83,7 +96,8 @@ export type AuthorizationRequestVerificationResult = {
 }[]
 
 export type GetTrustedEntitiesForOpenId4VpOptions = Omit<
-  { paradym: ParadymWalletSdk } & GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions &
+  TrustContext &
+    GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions &
     GetTrustedEntitiesForDidForOpenId4VpOptions &
     GetTrustedEntitiesForX509CertificateForOpenId4VpOptions &
     GetTrustedEntitiesForFallbackForOpenId4VpOptions,
@@ -91,7 +105,8 @@ export type GetTrustedEntitiesForOpenId4VpOptions = Omit<
 >
 
 export type GetTrustedEntitiesForOpenId4VciOptions = Omit<
-  { paradym: ParadymWalletSdk } & GetTrustedEntitiesForDidForOpenId4VpOptions &
+  TrustContext &
+    GetTrustedEntitiesForDidForOpenId4VpOptions &
     GetTrustedEntitiesForX509CertificateForOpenId4VpOptions &
     GetTrustedEntitiesForFallbackForOpenId4VciOptions,
   'trustMechanismConfiguration'
@@ -142,14 +157,14 @@ export const getTrustedEntitiesForOpenId4Vp = async (
   options: GetTrustedEntitiesForOpenId4VpOptions
 ): Promise<{
   trustMechanism: TrustMechanism
-  relyingParty: TrustedRelyingPartyEntity['relyingParty']
+  relyingParty: TrustedRelyingPartyEntity['relyingParty'] & { entityId: string }
   trustedEntities: Array<TrustedEntity>
 }> => {
   const trustMechanism = detectTrustMechanismForAuthorizationRequest(options)
-  const walletTrustedEntity = options.paradym.trustMechanisms.find(
+  const walletTrustedEntity = options.trustMechanisms.find(
     (tm): tm is { walletTrustedEntity?: TrustedEntity } => 'walletTrustedEntity' in tm
   )?.walletTrustedEntity
-  const trustMechanismConfiguration = options.paradym.trustMechanisms.find(
+  const trustMechanismConfiguration = options.trustMechanisms.find(
     (tm) => 'trustMechanism' in tm && tm.trustMechanism === trustMechanism
   )
 
@@ -203,11 +218,12 @@ export const getTrustedEntitiesForOpenId4Vp = async (
   }
 }
 
-export const getTrustedEntitiesForOpenId4Vci = async (options: {
-  paradym: ParadymWalletSdk
-  resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-  walletTrustedEntity?: TrustedEntity
-}): Promise<{
+export const getTrustedEntitiesForOpenId4Vci = async (
+  options: TrustContext & {
+    resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
+    walletTrustedEntity?: TrustedEntity
+  }
+): Promise<{
   trustMechanism: TrustMechanism
   issuer: TrustedIssuerEntity['issuer']
   trustedEntities: Array<TrustedEntity>
@@ -215,10 +231,10 @@ export const getTrustedEntitiesForOpenId4Vci = async (options: {
   const trustMechanism = detectTrustMechanismForCredentialOffer({
     resolvedCredentialOffer: options.resolvedCredentialOffer,
   })
-  const walletTrustedEntity = options.paradym.trustMechanisms.find(
+  const walletTrustedEntity = options.trustMechanisms.find(
     (tm): tm is { walletTrustedEntity?: TrustedEntity } => 'walletTrustedEntity' in tm
   )?.walletTrustedEntity
-  const trustMechanismConfiguration = options.paradym.trustMechanisms.find(
+  const trustMechanismConfiguration = options.trustMechanisms.find(
     (tm) => 'trustMechanism' in tm && tm.trustMechanism === trustMechanism
   )
 

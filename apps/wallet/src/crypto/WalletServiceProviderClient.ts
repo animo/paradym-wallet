@@ -19,7 +19,13 @@ import {
 import { agentDependencies } from '@credo-ts/react-native'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
 import type { AnyAgent, ParadymWalletSdk } from '@paradym/wallet-sdk'
-import { ParadymWalletAuthenticationInvalidPinError, secureWalletKey } from '@paradym/wallet-sdk'
+import {
+  getWalletStoreDatabaseConfig,
+  getWalletStoreDirectories,
+  ParadymWalletAuthenticationInvalidPinError,
+  secureWalletKey,
+  setupAppGroupStore,
+} from '@paradym/wallet-sdk'
 import { deriveKeypairFromPin } from './pin'
 
 // TODO: should auto reset after X seconds
@@ -39,8 +45,10 @@ export const resetWalletServiceProviderState = async () => {
   __pin = undefined
   const fs = new agentDependencies.FileSystem()
   const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+  const validationStoreId = getValidationStoreId(walletKeyVersion)
+
   const paths = [
-    `${fs.dataPath}/wallet/${getValidationStoreId(walletKeyVersion)}`,
+    ...getWalletStoreDirectories(validationStoreId),
     // Legacy store id used before the rename — keep cleaning up so existing
     // installs don't leave an orphan directory behind on reset.
     `${fs.dataPath}/wallet/paradym-wallet-${walletKeyVersion}`,
@@ -55,6 +63,13 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
   if (validatePin) {
     const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
+    const validationStoreId = getValidationStoreId(walletKeyVersion)
+
+    // On iOS this store lives in the container shared with the identity document provider
+    // extension, so the request UI validates a PIN against the same store the app does. Existing
+    // stores are moved there rather than left behind: a second one would be provisioned on the
+    // first PIN entry and lock the check to whatever was typed then, right or wrong.
+    const storePath = await setupAppGroupStore(validationStoreId)
 
     const agent = new Agent({
       config: {},
@@ -62,9 +77,10 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
         askar: new AskarModule({
           askar: NativeAskar.instance,
           store: {
-            id: getValidationStoreId(walletKeyVersion),
+            id: validationStoreId,
             key: walletKey,
             keyDerivationMethod: 'raw',
+            ...getWalletStoreDatabaseConfig(storePath),
           },
         }),
       },

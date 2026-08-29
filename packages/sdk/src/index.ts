@@ -3,8 +3,10 @@ import type { OpenId4VciAuthorizationFlow, OpenId4VciResolvedAuthorizationReques
 export type { CredentialForDisplayId} from './display/credential' 
 export type { BaseAgent, DidCommAgent, OpenId4VcAgent, AnyAgent } from './agent'
 export { assertAgentType } from './agent'
-export { DigitalCredentialsRequest } from './dcApi'
 export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
+export { getAppGroupContainerPath } from './dcApi/appGroup'
+export { getWalletStoreDatabaseConfig, getWalletStoreDirectories, setupAppGroupStore } from './storage/walletStore'
+export { getSharedMmkv } from './storage/sharedMmkv'
 export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay, CredentialMetadata } from './display/credential'
 export * from './error'
 export type {
@@ -21,6 +23,13 @@ export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
 export type { FormattedTransactionData, FormattedTransactionDataPaymentSingle, QtspInfo } from './openid4vc/transaction'
 export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
+export {
+  defaultWalletId,
+  getTrustedX509Certificates,
+  type ParadymWalletSdkLoggingOptions,
+  type ParadymWalletSdkSharedOptions,
+} from './config'
+export type { DcApiReview, ParadymDcApiSdkOptions } from './dcApi/ParadymDcApiSdk'
 export type {
   CredentialRecord,
   MdocRecord,
@@ -44,7 +53,12 @@ export type { TrustedDidEntity } from './trust/handlers/did'
 export type { TrustedOpenId4VciEntity } from './trust/handlers/fallback'
 export type { TrustList } from './trust/handlers/eudiRpAuthentication'
 export type { TrustedX509Entity } from './trust/handlers/x509'
-export type { TrustedEntity, TrustMechanism } from './trust/trustMechanism'
+export type { TrustContext, TrustedEntity, TrustMechanism } from './trust/trustMechanism'
+export {
+  getVerifierForMdocReaderAuthentication,
+  getVerifierForOpenId4VpRequest,
+  type RequestVerifier,
+} from './trust/verifier'
 export type { CredentialCategoryMetadata } from './metadata/credentials'
 
 /**

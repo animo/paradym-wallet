@@ -1,7 +1,8 @@
 import { cloneElement } from 'react'
 import type { ViewProps } from 'tamagui'
-import { AnimatedStack } from '../base'
-import { useScaleAnimation } from '../hooks'
+// Deep import: the `base` barrel pulls in components that animate through reanimated, and the
+// credential request UI renders this without linking it.
+import { Stack } from '../base/Stacks'
 
 const variantStyles = {
   default: {
@@ -39,15 +40,13 @@ export function IconContainer({
   ...props
 }: IconContainerProps) {
   const isPressable = !!props.onPress
-  const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation({ scaleInValue: scaleOnPress ? 0.9 : 1 })
 
   return (
-    <AnimatedStack
+    <Stack
       accessible={true}
       accessibilityRole="button"
-      style={isPressable ? pressStyle : undefined}
-      onPressIn={isPressable ? handlePressIn : undefined}
-      onPressOut={isPressable ? handlePressOut : undefined}
+      transition={isPressable ? 'quick' : undefined}
+      pressStyle={isPressable ? { scale: scaleOnPress ? 0.9 : 1 } : undefined}
       aria-label={ariaLabel}
       bg={variantStyles[variant].bg}
       br={radius === 'full' ? '$12' : '$4'}
@@ -60,6 +59,6 @@ export function IconContainer({
         size: icon.props.size ?? 24,
         color: icon.props.color ?? variantStyles[variant].color,
       })}
-    </AnimatedStack>
+    </Stack>
   )
 }
