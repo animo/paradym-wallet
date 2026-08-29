@@ -174,6 +174,8 @@ export class ParadymDcApiSdk {
     request: AndroidDcApiRequest,
     protocolRequest: IsoMdocProtocolRequest
   ): Promise<DcApiReview> {
+    if (!request.origin) throw new Error('The request carries no origin, so the wallet cannot establish trust')
+      
     const resolved = await this.agent.mdoc.resolveDcApiRequest({
       request: protocolRequest.data,
       // Must come from the OS, never from the request payload (ISO 18013-7 C.5).
@@ -188,7 +190,8 @@ export class ParadymDcApiSdk {
       // A request without an origin came from a native app calling for itself, which the calling
       // package is the only identity for.
       ...(await this.getMdocVerifier(
-        resolved.docRequests.find((docRequest) => docRequest.readerCertificateChain?.length)?.readerCertificateChain,
+        resolved.docRequests.find((docRequest) => docRequest.readerAuth?.certificateChain.length)?.readerAuth
+          ?.certificateChain,
         request.origin ?? request.callingPackage
       )),
       share: async () => {

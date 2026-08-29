@@ -15,9 +15,17 @@ overrides:
   # Pin exactly: react-native 0.86 exists and open-ended peer ranges (tamagui, askar,
   # masked-view, wallet-sdk) would otherwise hoist it over the SDK 56 version.
   react-native: 0.85.3
-  # @owf/mdoc registers a cbor-x extension for tag 24 with its own DataItem class.
-  # Two copies would clobber each other's extension and break IssuerNamespaces parsing
-  # with "Expected DataItem, received object". Force a single copy across the tree.
+  # @owf/cose registers a cbor-x extension for tag 24 with its own DataItem class, and
+  # cbor-x keeps one extension per tag: a second copy clobbers the first, so decoding
+  # yields DataItems of the losing class and @owf/mdoc's z.instanceof(DataItem) fails
+  # with "Expected DataItem, received object" on IssuerNamespaces. @owf/token-status-list
+  # pins @owf/cose exactly, so without this a stale token-status-list drags in a second
+  # @owf/cose. Force a single copy across the tree.
+  '@owf/cose': 'catalog:'
+  # Only dedupe the 0.3.x line here; @sd-jwt/* and @owf/crypto pin much older alphas of
+  # these two and neither registers a cbor-x extension, so their copies are harmless.
+  '@owf/token-status-list@0.3.1': 0.3.2
+  '@owf/identity-common@0.3.1': 0.3.2
   '@owf/mdoc': 'catalog:'
 
 patchedDependencies:

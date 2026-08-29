@@ -4,7 +4,7 @@
 import { registerDcApiScreen } from '@animo-id/expo-digital-credentials-api/request-handler'
 import type { Messages } from '@lingui/core'
 import { registerLocales, type SupportedLocale, supportedLocales } from '@package/translations'
-import { getLocales } from 'expo-localization'
+import { getLocales, Locale } from 'expo-localization'
 import { mmkv } from '../../storage/mmkv'
 import { DcApiScreen } from './DcApiScreen'
 
@@ -51,7 +51,7 @@ function activeLocale(): SupportedLocale {
   const stored = mmkv.getString('useStoredLocale')
   if (isSupported(stored)) return stored
 
-  const device = getLocales().find(({ languageCode }) => isSupported(languageCode))?.languageCode
+  const device = getLocales().find((locale): locale is Locale & { languageCode: SupportedLocale } => isSupported(locale.languageCode))?.languageCode
   return device ?? 'en'
 }
 

@@ -72,9 +72,6 @@ catalogs:
     '@openwallet-foundation/askar-react-native':
       specifier: 0.6.1-alpha-20260609123727
       version: 0.6.1-alpha-20260609123727
-    '@owf/cose':
-      specifier: ^0.3.2
-      version: 0.3.2
     '@react-native-community/blur':
       specifier: ^4.4.1
       version: 4.4.1
@@ -264,6 +261,9 @@ overrides:
   react: 19.2.3
   react-dom: 19.2.3
   react-native: 0.85.3
+  '@owf/cose': ^0.3.2
+  '@owf/token-status-list@0.3.1': 0.3.2
+  '@owf/identity-common@0.3.1': 0.3.2
   '@owf/mdoc': 0.8.0-alpha-20260829141538
 
 patchedDependencies:
@@ -322,7 +322,7 @@ importers:
         specifier: 'catalog:'
         version: 0.6.1-alpha-20260609123727(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       '@owf/cose':
-        specifier: 'catalog:'
+        specifier: ^0.3.2
         version: 0.3.2
       '@owf/mdoc':
         specifier: 0.8.0-alpha-20260829141538
@@ -2226,9 +2226,6 @@ packages:
   '@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727':
     resolution: {integrity: sha512-tbbf2rMHf2pKfFgoHYUf8cZ5XNCigLxiT6o6vFA8cG8Xkbc1hFE30zamLOGOOJ5Oh94JXzjViTlIzpTB7cjoTg==}
 
-  '@owf/cose@0.3.1':
-    resolution: {integrity: sha512-uWGLOMUDEsJfo8rIEoPE3rr6AXF4OBZqjkKlruIa7tfVaqy6leVEi/UmT0PY/JPN8RYXQu8F8qWDi3R9NlS9HQ==}
-
   '@owf/cose@0.3.2':
     resolution: {integrity: sha512-g1l55f31iqx5SEUv7MSAjLoCFZZAmwiXXkouRdiVltrwHLrnVAAStYUZozh3mN3RibpDftB2+4W4QTIRjl2nXw==}
 
@@ -2244,9 +2241,6 @@ packages:
   '@owf/identity-common@0.2.0-alpha-20260506130404':
     resolution: {integrity: sha512-bSir5MsE6Xv29kBCIkATMLiiBsE58Y741KyDiMgx3yMYnsjnS3MSkA3G+c/kPmCW1oB1SelzZAZ/O6qSvtiyVg==}
 
-  '@owf/identity-common@0.3.1':
-    resolution: {integrity: sha512-DLDZtZYMDiV58zpTYVoDc0uFPdZBkmNL31Az5X7sMEttmnU5JvArw3dqPwSMMlT2VfeB0SiPHsuM5dcnqaeNnw==}
-
   '@owf/identity-common@0.3.2':
     resolution: {integrity: sha512-XH5Bg6zuXc9SeimTe2ZD/+54GnhSyenFSy2Qe/z2HY1ul5j+6/lDNIhI83xct5aOkCD0uZ7zHbMhTI4Nq8YJOQ==}
 
@@ -2256,9 +2250,6 @@ packages:
 
   '@owf/token-status-list@0.1.0-alpha-20260422101556':
     resolution: {integrity: sha512-cwZHQPqBaXt3pTbllI6GLafE+Ws8HfEYoOgmpiQiK1sFElkF07mFZt1FTt1YElbMWtEV6YLTh+MjEWdJdRNklA==}
-
-  '@owf/token-status-list@0.3.1':
-    resolution: {integrity: sha512-EaudhPEhCDr7oy7iK0iA+8f2ZXg2NtdVQBmhJvz38gGBGmUWnAFNJer583bSx2aT67id8EADaUWO/MMQqn3uVg==}
 
   '@owf/token-status-list@0.3.2':
     resolution: {integrity: sha512-12UDEVJaXp4DX0U+rNwkznWYD8dPRJ4GdOEkUSHbnWRm0D6iWXVXtePtbXtsOgYsT3J120+WaqzJc05sVu2Uhg==}
@@ -5657,8 +5648,8 @@ packages:
   package-manager-detector@0.2.11:
     resolution: {integrity: sha512-BEnLolu+yuz22S56CU1SUKq3XC3PkwD5wv4ikR4MfGvnRVcmzXR9DwSlW2fEamyTPyXHomBJRzgapeuBvRNzJQ==}
 
-  pako@2.1.0:
-    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+  pako@2.2.0:
+    resolution: {integrity: sha512-zJq6RP/5q+TO2OpFV3FHzlPnFjmkb7Nc99a5SNjJE+uu/PkpChs+NIZSSzbBoD+6kjiISXjfYdwj1ZRQ81dz/w==}
 
   pako@3.0.1:
     resolution: {integrity: sha512-GupotUUI0mlhugKjUs4bjOwLt3nrehy9Ys2dxC0GtgVef5cnKggkDMmf2bq2poCCuVXopWPmqsc9VDT2iJUy+w==}
@@ -9081,13 +9072,6 @@ snapshots:
       buffer: 6.0.3
       tar: 7.5.16
 
-  '@owf/cose@0.3.1':
-    dependencies:
-      '@owf/identity-common': 0.3.1
-      cbor-x: 1.6.4
-      zod: 4.4.3
-      zod-validation-error: 5.0.0(zod@4.4.3)
-
   '@owf/cose@0.3.2':
     dependencies:
       '@owf/identity-common': 0.3.2
@@ -9115,30 +9099,20 @@ snapshots:
 
   '@owf/identity-common@0.2.0-alpha-20260506130404': {}
 
-  '@owf/identity-common@0.3.1': {}
-
   '@owf/identity-common@0.3.2': {}
 
   '@owf/mdoc@0.8.0-alpha-20260829141538':
     dependencies:
       '@owf/cose': 0.3.2
       '@owf/identity-common': 0.3.2
-      '@owf/token-status-list': 0.3.1
+      '@owf/token-status-list': 0.3.2
       zod: 4.4.3
 
   '@owf/token-status-list@0.1.0-alpha-20260422101556':
     dependencies:
       '@owf/identity-common': 0.1.0-alpha-20260422101556
       cbor-x: 1.6.4
-      pako: 2.1.0
-
-  '@owf/token-status-list@0.3.1':
-    dependencies:
-      '@owf/cose': 0.3.1
-      '@owf/identity-common': 0.3.1
-      cbor-x: 1.6.4
-      pako: 3.0.1
-      zod: 4.4.3
+      pako: 2.2.0
 
   '@owf/token-status-list@0.3.2':
     dependencies:
@@ -13643,7 +13617,7 @@ snapshots:
     dependencies:
       quansync: 0.2.11
 
-  pako@2.1.0: {}
+  pako@2.2.0: {}
 
   pako@3.0.1: {}
 

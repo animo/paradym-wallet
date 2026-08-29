@@ -3,6 +3,7 @@ import {
   isSupported,
   type RegisterCredentialsOptions,
   registerCredentials,
+  DcApiCredential,
 } from '@animo-id/expo-digital-credentials-api'
 import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
@@ -261,7 +262,10 @@ export async function dcApiRegisterCredentials({
           claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces, record),
           iconDataUrl,
         },
-      } as const
+        ios: {
+          supportedAuthorityKeyIdentifiers: []
+        }
+      } as const satisfies DcApiCredential
     })
 
     const sdJwtCredentials = sdJwtVcRecords.map(async (record): Promise<CredentialItem> => {
@@ -292,7 +296,7 @@ export async function dcApiRegisterCredentials({
           claims: mapSdJwtAttributesToClaimDisplay(claims, sdJwtVc.prettyClaims),
           iconDataUrl,
         },
-      } as const
+      } as const satisfies DcApiCredential
     })
 
     const credentials = await Promise.all([...sdJwtCredentials, ...mdocCredentials])
@@ -303,8 +307,6 @@ export async function dcApiRegisterCredentials({
       // Multipaz is the only matcher that can answer org-iso-mdoc, which is what the request UI
       // builds an Annex C response for on both platforms.
       android: { matcher: 'multipaz' },
-      // Empty (the default) means requests without reader authentication also surface the wallet.
-      ios: { supportedAuthorityKeyIdentifiers: [] },
     })
   } catch (error) {
     // Since this is an experimental feature, and it doedisplayTitleFallbacksn't work if you don't have the latest
