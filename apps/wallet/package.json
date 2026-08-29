@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
-		"@animo-id/expo-digital-credentials-api": "file:../../vendor/animo-id-expo-digital-credentials-api-0.5.0.tgz",
+		"@animo-id/expo-digital-credentials-api": "file:../../vendor/animo-id-expo-digital-credentials-api-0.5.1.tgz",
 		"@animo-id/expo-mdoc-data-transfer": "catalog:",
 		"@credo-ts/askar": "catalog:",
 		"@credo-ts/react-native": "catalog:",
