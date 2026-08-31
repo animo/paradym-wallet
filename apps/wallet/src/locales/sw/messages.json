@@ -158,7 +158,7 @@
 		"message": "A verifier needs to scan your QR-Code.",
 		"placeholders": {},
 		"comments": ["Instruction for the verifier to scan the QR code"],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 140]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 170]],
 		"translation": "En verifierare behöver skanna din QR-kod."
 	},
 	"cardAttributes.aboutTheCard": {
@@ -402,11 +402,27 @@
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 186]],
 		"translation": "Betrodd av {0} organisationer"
 	},
+	"dcApi.verifier.approvedByMultiple": {
+		"message": "Approved by {0} organizations",
+		"placeholders": {
+			"0": ["approvedBy.length"]
+		},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 85]],
+		"translation": "Betrodd av {0} organisationer"
+	},
 	"verifyPartySlide.approvedByOneOrganization": {
 		"message": "Approved by one organization",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 191]],
+		"translation": "Betrodd av en organisation"
+	},
+	"dcApi.verifier.approvedByOne": {
+		"message": "Approved by one organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 83]],
 		"translation": "Betrodd av en organisation"
 	},
 	"common.archiveCardTitle": {
@@ -459,7 +475,7 @@
 		"comments": [
 			"Shown when there is a general auth error during offline flow"
 		],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 90]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 96]],
 		"translation": "Autentiseringsfel"
 	},
 	"presentation.authFailed": {
@@ -562,6 +578,13 @@
 		"comments": ["Label for the toggle to enable biometric unlock"],
 		"origin": [["src/features/menu/SettingsScreen.tsx", 164]],
 		"translation": "Biometrisk upplåsning"
+	},
+	"dcApi.biometricsUnavailable": {
+		"message": "Biometric unlock is not set up. Enter your PIN instead.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 18]],
+		"translation": "Biometrisk upplåsning är inte inställd. Ange din PIN-kod i stället."
 	},
 	"biometrics.disabled": {
 		"message": "Biometrics disabled",
@@ -857,7 +880,7 @@
 		"message": "Could not share device response",
 		"placeholders": {},
 		"comments": ["Shown when shareDeviceResponse fails"],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 122]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 128]],
 		"translation": "Kunde inte dela enhetsresponsen"
 	},
 	"common.fields.country": {
@@ -996,6 +1019,24 @@
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 213]],
 		"translation": "Demoorganisation"
 	},
+	"dcApi.verifier.demoOrganization": {
+		"message": "Demo organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 110]
+		],
+		"translation": "Demoorganisation"
+	},
+	"dcApi.verifier.demoTitle": {
+		"message": "Demo organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 142]
+		],
+		"translation": "Demoorganisation"
+	},
 	"settings.developmentMode": {
 		"message": "Development Mode",
 		"placeholders": {},
@@ -1018,6 +1059,24 @@
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 217]],
 		"translation": "Dela inte riktig data"
+	},
+	"dcApi.verifier.demoDescription": {
+		"message": "Do not share real data",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 143]
+		],
+		"translation": "Dela inte riktig data"
+	},
+	"dcApi.verifier.trustHeading": {
+		"message": "Do you trust {0}?",
+		"placeholders": {
+			"0": ["verifier.name"]
+		},
+		"comments": ["Heading above the organization asking for data"],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 58]],
+		"translation": "Litar du på {0}?"
 	},
 	"verifyPartySlide.interactWithHeading": {
 		"message": "Do you trust {name}?",
@@ -1841,6 +1900,26 @@
 		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 32]],
 		"translation": "Ingen inbjudan hittades. Försök igen."
 	},
+	"dcApi.verifier.noApprovals": {
+		"message": "No organization has approved {0}. Consider carefully whether you want to share with them.",
+		"placeholders": {
+			"0": ["verifier.name"]
+		},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 128]
+		],
+		"translation": "Ingen organisation litar på {0}. Tänk noga efter om du vill dela med dem."
+	},
+	"dcApi.verifier.noApprovalsUnknown": {
+		"message": "No organization has approved this one. Consider carefully whether you want to share with them.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiVerifierSection.tsx", 132]
+		],
+		"translation": "Ingen organisation litar på den här. Tänk noga efter om du vill dela med dem."
+	},
 	"verifyPartySlide.hasNoPreviousInteractionsDescription": {
 		"message": "No previous interactions found",
 		"placeholders": {},
@@ -1889,6 +1968,13 @@
 		"origin": [["src/features/menu/AboutScreen.tsx", 52]],
 		"translation": "Öppna integritetspolicyn"
 	},
+	"dcApi.openWalletFirst": {
+		"message": "Open the wallet app once before sharing from it.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 30]],
+		"translation": "Öppna plånboksappen en gång innan du delar från den."
+	},
 	"verifyPartySlide.unknownOrganizationDescription": {
 		"message": "Organization is not verified",
 		"placeholders": {},
@@ -1896,11 +1982,25 @@
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 203]],
 		"translation": "Organisationen är inte verifierad"
 	},
+	"dcApi.verifier.notVerifiedDescription": {
+		"message": "Organization is not verified",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 90]],
+		"translation": "Organisationen är inte verifierad"
+	},
 	"verifyPartySlide.organizationNotVerifiedHeading": {
 		"message": "Organization not verified",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 127]],
+		"translation": "Organisation ej verifierad"
+	},
+	"dcApi.verifier.notVerifiedHeading": {
+		"message": "Organization not verified",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 62]],
 		"translation": "Organisation ej verifierad"
 	},
 	"requestPurpose.infoSheet.title": {
@@ -2108,7 +2208,7 @@
 		"message": "Please allow bluetooth access",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 120]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 150]],
 		"translation": "Tillåt Bluetooth-åtkomst"
 	},
 	"qrScanner.permissionHeading": {
@@ -2200,7 +2300,7 @@
 		"message": "Proof has been declined",
 		"placeholders": {},
 		"comments": ["Shown when user declines sharing proof"],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 148]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 153]],
 		"translation": "Bevis har avvisats"
 	},
 	"pidSetup.dataProtection.title": {
@@ -2247,6 +2347,15 @@
 		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 62]],
 		"translation": "Anledning:"
 	},
+	"dcApi.errorReasonPrefix": {
+		"message": "Reason:",
+		"placeholders": {},
+		"comments": [
+			"Label before the underlying error, only shown with development mode enabled"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 49]],
+		"translation": "Anledning:"
+	},
 	"home.receiveOrShare": {
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
@@ -2286,6 +2395,13 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 180]],
+		"translation": "Betrodd organisation"
+	},
+	"dcApi.verifier.recognizedTitle": {
+		"message": "Recognized organization",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiVerifierSection.tsx", 77]],
 		"translation": "Betrodd organisation"
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2330,6 +2446,13 @@
 		"origin": [
 			["src/features/share/components/RequestedAttributesSection.tsx", 25]
 		],
+		"translation": "BEGÄRDA KORT"
+	},
+	"dcApi.cards.requestedHeading": {
+		"message": "REQUESTED CARDS",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 49]],
 		"translation": "BEGÄRDA KORT"
 	},
 	"activity.requestedInformationHeading": {
@@ -2524,11 +2647,18 @@
 		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 51]],
 		"translation": "Dela"
 	},
+	"dcApi.share": {
+		"message": "Share",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 22]],
+		"translation": "Dela"
+	},
 	"offlineQr.heading": {
 		"message": "Share with QR code",
 		"placeholders": {},
 		"comments": ["Main heading for offline QR sharing screen"],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 135]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 165]],
 		"translation": "Dela med QR-kod"
 	},
 	"credentials.shareableAttributes": {
@@ -2926,6 +3056,13 @@
 		],
 		"translation": "Följande kort kommer att delas."
 	},
+	"dcApi.cards.allSatisfied": {
+		"message": "The following cards will be shared.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 54]],
+		"translation": "Följande kort kommer att delas."
+	},
 	"signShare.documentIntro": {
 		"message": "The following document will be signed.",
 		"placeholders": {},
@@ -3015,6 +3152,22 @@
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 38]],
 		"translation": "Det angivna syftet stämmer inte överens med den begärda datan."
 	},
+	"dcApi.nothingRequested": {
+		"message": "The request asks for no documents.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 26]],
+		"translation": "Begäran gäller inga dokument."
+	},
+	"dcApi.declined": {
+		"message": "The request was declined",
+		"placeholders": {},
+		"comments": [
+			"Reason passed to the OS when the user declines; not shown to the user"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 34]],
+		"translation": "Begäran avvisades"
+	},
 	"invalidTxCode.message": {
 		"message": "The transaction code you entered is incorrect. Ask the issuer to generate a new QR-code and try again.",
 		"placeholders": {},
@@ -3101,7 +3254,7 @@
 		"message": "This allows the app to share with a QR code.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 123]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 153]],
 		"translation": "Detta gör det möjligt för appen att dela med en QR-kod."
 	},
 	"paradymWallet.about.description": {
@@ -3197,6 +3350,15 @@
 		"comments": ["Explanation of the PIN purpose in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 15]],
 		"translation": "Denna PIN-kod säkrar din identitetsplånbok. Du anger den varje gång du delar data."
+	},
+	"dcApi.requestFailed": {
+		"message": "This request could not be read. Ask the verifier to make a new request and try again.",
+		"placeholders": {},
+		"comments": [
+			"Shown when the request could not be read, before the user was asked to approve anything"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 39]],
+		"translation": "Den här förfrågan kunde inte läsas. Be verifieraren skicka en ny förfrågan och försök igen."
 	},
 	"common.archiveCardDescription": {
 		"message": "This will make {name} unusable and delete it from your wallet.",
@@ -3331,6 +3493,16 @@
 		],
 		"translation": "OTILLGÄNGLIGA KORT"
 	},
+	"dcApi.cards.unavailableHeading": {
+		"message": "UNAVAILABLE CARDS",
+		"placeholders": {},
+		"comments": [],
+		"origin": [
+			["src/features/dc-api/components/DcApiRequestedCards.tsx", 50],
+			["src/features/dc-api/components/DcApiRequestedCards.tsx", 70]
+		],
+		"translation": "OTILLGÄNGLIGA KORT"
+	},
 	"common.unknown": {
 		"message": "Unknown",
 		"placeholders": {},
@@ -3345,12 +3517,30 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 195]],
 		"translation": "Okänd organisation"
 	},
+	"dcApi.unlockSubtitle": {
+		"message": "Unlock to see what {origin} is asking for",
+		"placeholders": {
+			"origin": ["origin"]
+		},
+		"comments": [
+			"Shown while the wallet is locked, before it can say what is being asked for"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 13]],
+		"translation": "Lås upp för att se vad {origin} begär"
+	},
 	"onboardingIdCardVerify.unlock": {
 		"message": "Unlock with biometrics",
 		"placeholders": {},
 		"comments": ["Button label for unlocking the ID card using biometrics"],
 		"origin": [["src/features/onboarding/screens/id-card-verify.tsx", 22]],
 		"translation": "Lås upp med biometri"
+	},
+	"dcApi.unlockTitle": {
+		"message": "Unlock your wallet",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/messages.ts", 8]],
+		"translation": "Lås upp din plånbok"
 	},
 	"qrScan.unsupportedQrCode": {
 		"message": "Unsupported QR code. Try another.",
@@ -3586,6 +3776,13 @@
 		],
 		"translation": "Du har inte alla begärda kort."
 	},
+	"dcApi.cards.someSatisfied": {
+		"message": "You don't have all of the requested cards.",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 57]],
+		"translation": "Du har inte alla begärda kort."
+	},
 	"noContentInbox.message": {
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
@@ -3607,6 +3804,13 @@
 		"origin": [
 			["src/features/share/components/RequestedAttributesSection.tsx", 43]
 		],
+		"translation": "Du har inte de begärda korten."
+	},
+	"dcApi.cards.noneSatisfied": {
+		"message": "You don't have the requested card(s).",
+		"placeholders": {},
+		"comments": [],
+		"origin": [["src/features/dc-api/components/DcApiRequestedCards.tsx", 56]],
 		"translation": "Du har inte de begärda korten."
 	},
 	"payShare.missingCards": {
@@ -3688,6 +3892,15 @@
 		"comments": ["Heading shown when the inbox is empty"],
 		"origin": [["src/features/didcomm/InboxScreen.tsx", 57]],
 		"translation": "Du är ikapp med allt"
+	},
+	"dcApi.shareFailed": {
+		"message": "Your card could not be shared. Ask the verifier to make a new request and try again.",
+		"placeholders": {},
+		"comments": [
+			"Shown when the card could not be shared, after the user already approved the request"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 44]],
+		"translation": "Ditt kort kunde inte delas. Be verifieraren skicka en ny förfrågan och försök igen."
 	},
 	"receiveCredential.deferredCredentialParagraph": {
 		"message": "Your cards are not yet ready. We will check once in a while in the background and fetch the cards once they're ready.",

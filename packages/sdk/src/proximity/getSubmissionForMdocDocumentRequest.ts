@@ -1,4 +1,5 @@
 import { DeviceRequest, limitDisclosureToDeviceRequestNameSpaces, parseIssuerSigned } from '@animo-id/mdoc'
+import type { MdocApi } from '@credo-ts/core'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { getCredentialForDisplay } from '../display/credential'
 import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
@@ -8,10 +9,13 @@ import type {
   FormattedSubmissionEntry,
   FormattedSubmissionEntrySatisfiedCredential,
 } from '../format/submission'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 
 export type GetSubmissionForMdocDocumentRequestOptions = {
-  paradym: ParadymWalletSdk
+  /**
+   * The wallet's mdoc storage. Not the SDK itself: the credential request UI matches iOS requests
+   * with this too, and it runs on a different agent.
+   */
+  mdocApi: MdocApi
   encodedDeviceRequest: Uint8Array
 }
 
@@ -20,7 +24,7 @@ export async function getSubmissionForMdocDocumentRequest(
 ): Promise<FormattedSubmission> {
   const deviceRequest = DeviceRequest.parse(options.encodedDeviceRequest)
 
-  const matchingDocTypeRecords = await options.paradym.agent.mdoc.findAllByQuery({
+  const matchingDocTypeRecords = await options.mdocApi.findAllByQuery({
     $or: deviceRequest.docRequests.map((request) => ({
       docType: request.itemsRequest.data.docType,
     })),
@@ -32,7 +36,9 @@ export async function getSubmissionForMdocDocumentRequest(
     return {
       credential: getCredentialForDisplay(record),
       mdoc: firstMdoc,
-      issuerSignedDocument: parseIssuerSigned(TypedArrayEncoder.fromBase64(firstMdoc.base64Url), firstMdoc.docType),
+      // `Mdoc.base64Url` is base64url without padding, so it has to be decoded as that — the
+      // strict base64 decoder rejects it as soon as the CBOR contains a byte encoding to `-` or `_`.
+      issuerSignedDocument: parseIssuerSigned(TypedArrayEncoder.fromBase64Url(firstMdoc.base64Url), firstMdoc.docType),
     }
   })
 

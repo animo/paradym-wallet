@@ -1,0 +1,58 @@
+# Upstream: https://github.com/oblador/react-native-keychain/issues/801 (also #777, #784; the open fix in #793 keeps the module-owned scope)
+diff --git a/android/src/main/java/com/oblador/keychain/DataStorePrefsStorage.kt b/android/src/main/java/com/oblador/keychain/DataStorePrefsStorage.kt
+index 70912a95a36d1e1b2998916cb3f9604eda435bbd..4d97a65ebcb5e4650347a114dbcc802e28c268b9 100644
+--- a/android/src/main/java/com/oblador/keychain/DataStorePrefsStorage.kt
++++ b/android/src/main/java/com/oblador/keychain/DataStorePrefsStorage.kt
+@@ -18,26 +18,42 @@ import com.oblador.keychain.PrefsStorageBase.Companion.isKeyForCipherStorage
+ import com.oblador.keychain.PrefsStorageBase.ResultSet
+ import com.oblador.keychain.cipherStorage.CipherStorage
+ import kotlinx.coroutines.CoroutineScope
++import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.SupervisorJob
+ import kotlinx.coroutines.flow.first
+ import kotlinx.coroutines.runBlocking
+ 
++/**
++ * DataStore refuses to open the same file twice in a process, and the delegate below used to be an
++ * instance member: a second `KeychainModule` — which is what a second react host in the process
++ * gets — created a second DataStore over `RN_KEYCHAIN.preferences_pb` and every read failed with
++ * "There are multiple DataStores active for the same file". Declaring the delegate at file level is
++ * the documented singleton pattern, and gives every module instance the same DataStore.
++ */
++private val dataStoreScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
++
++private fun sharedPreferencesMigration(context: Context): List<DataMigration<Preferences>> {
++  return listOf(SharedPreferencesMigration(context, KEYCHAIN_DATA))
++}
++
++/**
++ * Owned by the process rather than by a module, so it outlives `KeychainModule.invalidate()`
++ * cancelling that module's scope — the surviving module's reads keep working.
++ */
++private val Context.keychainPrefs: DataStore<Preferences> by preferencesDataStore(
++  name = KEYCHAIN_DATA,
++  produceMigrations = ::sharedPreferencesMigration,
++  scope = dataStoreScope,
++)
++
+ class DataStorePrefsStorage(
+   reactContext: ReactApplicationContext,
+   private val coroutineScope: CoroutineScope,
+ ) : PrefsStorageBase {
+ 
+-  private val Context.prefs: DataStore<Preferences> by preferencesDataStore(
+-    name = KEYCHAIN_DATA,
+-    produceMigrations = ::sharedPreferencesMigration,
+-    scope = coroutineScope,
+-  )
+-  private val prefs: DataStore<Preferences> = reactContext.prefs
++  private val prefs: DataStore<Preferences> = reactContext.applicationContext.keychainPrefs
+   private val prefsData: Preferences get() = callSuspendable { prefs.data.first() }
+ 
+-  private fun sharedPreferencesMigration(context: Context): List<DataMigration<Preferences>> {
+-    return listOf(SharedPreferencesMigration(context, KEYCHAIN_DATA))
+-  }
+-
+   override fun getEncryptedEntry(service: String): ResultSet? {
+     val bytesForUsername = getBytesForUsername(service)
+     val bytesForPassword = getBytesForPassword(service)

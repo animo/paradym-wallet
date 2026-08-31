@@ -14,6 +14,11 @@
 			"@package/utils/*": ["./packages/utils/src/*"],
 			"@app/*": ["./apps/wallet/src/*"],
 			"@paradym/wallet-sdk/*": ["./packages/sdk/src/*"],
+			// Per-icon entry points keep whole icon sets out of the bundles, but their `exports`
+			// entries carry no `types` condition — map them onto the declarations that do ship.
+			"@tamagui/lucide-icons-2/icons/*": [
+				"./node_modules/@tamagui/lucide-icons-2/types/icons/*"
+			],
 			"@paradym/wallet-sdk": ["./packages/sdk/src/index.ts"]
 		}
 	},

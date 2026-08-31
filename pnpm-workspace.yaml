@@ -15,14 +15,25 @@ overrides:
   # Pin exactly: react-native 0.86 exists and open-ended peer ranges (tamagui, askar,
   # masked-view, wallet-sdk) would otherwise hoist it over the SDK 56 version.
   react-native: 0.85.3
-  # @owf/mdoc registers a cbor-x extension for tag 24 with its own DataItem class.
-  # Two copies would clobber each other's extension and break IssuerNamespaces parsing
-  # with "Expected DataItem, received object". Force a single copy across the tree.
+  # @owf/cose registers a cbor-x extension for tag 24 with its own DataItem class, and
+  # cbor-x keeps one extension per tag: a second copy clobbers the first, so decoding
+  # yields DataItems of the losing class and @owf/mdoc's z.instanceof(DataItem) fails
+  # with "Expected DataItem, received object" on IssuerNamespaces. @owf/token-status-list
+  # pins @owf/cose exactly, so without this a stale token-status-list drags in a second
+  # @owf/cose. Force a single copy across the tree.
+  '@owf/cose': 'catalog:'
+  # Only dedupe the 0.3.x line here; @sd-jwt/* and @owf/crypto pin much older alphas of
+  # these two and neither registers a cbor-x extension, so their copies are harmless.
+  '@owf/token-status-list@0.3.1': 0.3.2
+  '@owf/identity-common@0.3.1': 0.3.2
   '@owf/mdoc': 'catalog:'
 
 patchedDependencies:
   '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
   '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4': patches/@animo-id__expo-mdoc-data-transfer@0.2.0-alpha.4.patch
+  # Patches required for DC API
+  react-native-keychain: patches/react-native-keychain.patch
+  react-native@0.85.3: patches/react-native@0.85.3.patch
 
 allowBuilds:
   '@hyperledger/anoncreds-react-native': true
@@ -56,23 +67,26 @@ catalog:
   query-string: ^9.4.0
   "@animo-id/eudi-wallet-functionality": 0.1.0
   "@animo-id/expo-secure-environment": 0.1.5
+  # Not released yet: pnpm catalogs do not support the file: protocol, so apps/wallet
+  # and packages/sdk depend on the local tarball in vendor/ directly instead of
+  # "catalog:". Restore a "catalog:" reference once a release is published.
   "@animo-id/expo-digital-credentials-api": 0.4.0
   "@animo-id/expo-mdoc-data-transfer": 0.2.0-alpha.4
-  "@owf/mdoc": 0.7.0-alpha-20260605164430
-  "@owf/cose": 0.3.0-alpha-20260605053037
-  "@openid4vc/oauth2": ^0.4.6
-  "@openid4vc/openid4vp": ^0.4.6
-  "@openid4vc/openid4vci": ^0.4.6
-  "@openid4vc/utils": ^0.4.6
-  "@credo-ts/anoncreds": 0.7.1-alpha-20260707121432
-  "@credo-ts/askar": 0.7.1-alpha-20260707121432
-  "@credo-ts/cheqd": 0.7.1-alpha-20260707121432
-  "@credo-ts/core": 0.7.1-alpha-20260707121432
-  "@credo-ts/openid4vc": 0.7.1-alpha-20260707121432
-  "@credo-ts/question-answer": 0.7.1-alpha-20260707121432
-  "@credo-ts/react-native": 0.7.1-alpha-20260707121432
-  "@credo-ts/didcomm": 0.7.1-alpha-20260707121432
-  "@credo-ts/webvh": 0.7.1-alpha-20260707121432
+  "@owf/mdoc": 0.8.0-alpha-20260829141538
+  "@owf/cose": ^0.3.2
+  "@openid4vc/oauth2": ^0.5.5
+  "@openid4vc/openid4vp": ^0.5.5
+  "@openid4vc/openid4vci": ^0.5.5
+  "@openid4vc/utils": ^0.5.5
+  "@credo-ts/anoncreds": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/askar": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/cheqd": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/core": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/openid4vc": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/question-answer": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/react-native": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/didcomm": 0.7.1-pr-2922-20260829144742
+  "@credo-ts/webvh": 0.7.1-pr-2922-20260829144742
   "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
   "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
   "@openwallet-foundation/askar-react-native": 0.6.1-alpha-20260609123727
@@ -151,11 +165,12 @@ catalog:
   tamagui: 2.3.3
 
 minimumReleaseAgeExclude:
-  - '@credo-ts/anoncreds@0.7.1-alpha-20260707121432'
-  - '@credo-ts/askar@0.7.1-alpha-20260707121432'
-  - '@credo-ts/cheqd@0.7.1-alpha-20260707121432'
-  - '@credo-ts/core@0.7.1-alpha-20260707121432'
-  - '@credo-ts/didcomm@0.7.1-alpha-20260707121432'
-  - '@credo-ts/openid4vc@0.7.1-alpha-20260707121432'
-  - '@credo-ts/react-native@0.7.1-alpha-20260707121432'
-  - '@credo-ts/webvh@0.7.1-alpha-20260707121432'
+  - '@credo-ts/anoncreds@0.7.1-pr-2922-20260829144742'
+  - '@credo-ts/askar@0.7.1-pr-2922-20260829144742'
+  - '@credo-ts/cheqd@0.7.1-pr-2922-20260829144742'
+  - '@credo-ts/core@0.7.1-pr-2922-20260829144742'
+  - '@credo-ts/didcomm@0.7.1-pr-2922-20260829144742'
+  - '@credo-ts/openid4vc@0.7.1-pr-2922-20260829144742'
+  - '@credo-ts/react-native@0.7.1-pr-2922-20260829144742'
+  - '@credo-ts/webvh@0.7.1-pr-2922-20260829144742'
+  - '@owf/mdoc@0.8.0-alpha-20260829141538'

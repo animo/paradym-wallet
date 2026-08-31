@@ -2,6 +2,11 @@
 	"name": "@paradym/wallet-sdk",
 	"version": "0.0.0",
 	"main": "src/index.ts",
+	"exports": {
+		".": "./src/index.ts",
+		"./package.json": "./package.json",
+		"./*": "./src/*"
+	},
 	"license": "Apache-2.0",
 	"files": [
 		"dist"
@@ -25,7 +30,7 @@
 	},
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
-		"@animo-id/expo-digital-credentials-api": "catalog:",
+		"@animo-id/expo-digital-credentials-api": "file:../../vendor/animo-id-expo-digital-credentials-api-0.5.1.tgz",
 		"@animo-id/expo-secure-environment": "catalog:",
 		"@astronautlabs/jsonpath": "catalog:",
 		"@credo-ts/anoncreds": "catalog:",

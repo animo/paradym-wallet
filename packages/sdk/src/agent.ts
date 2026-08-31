@@ -37,18 +37,15 @@ import { WebVhAnonCredsRegistry, WebVhDidResolver, WebVhModule } from '@credo-ts
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
+import { defaultWalletId, type ParadymWalletSdkLoggingOptions, type ParadymWalletSdkSharedOptions } from './config'
 import { ParadymWalletMustBeAgentTypeError } from './error'
-import { type LogLevel, ParadymWalletSdkConsoleLogger, type ParadymWalletSdkLogger } from './logging'
-import { secureWalletKey } from './secure'
+import { createLogger, type ParadymWalletSdkLogger } from './logging'
+import { getWalletStoreDatabaseConfig, getWalletStoreId } from './storage/walletStore'
 
-export type SetupAgentOptions<T extends ParadymWalletSdkLogger = ParadymWalletSdkLogger> = {
-  /**
-   *
-   * Unique identifier of your wallet storage
-   *
-   */
-  id?: string
-
+export type SetupAgentOptions<T extends ParadymWalletSdkLogger = ParadymWalletSdkLogger> = Omit<
+  ParadymWalletSdkSharedOptions,
+  'logging' | 'openId4VcConfiguration' | 'trustMechanisms'
+> & {
   /**
    *
    * Key that will be used to securely open your wallet
@@ -64,45 +61,7 @@ export type SetupAgentOptions<T extends ParadymWalletSdkLogger = ParadymWalletSd
    * Configuration regarding logging with the Paradym Wallet SDK
    *
    */
-  logging?: {
-    /**
-     *
-     * Loglevel to be used. Set to `trace` to log everything and `off` for nothing
-     *
-     */
-    level: LogLevel
-
-    /**
-     *
-     * Whether to trace the logs. Later, this can be exported
-     *
-     * exporting the logs can be done with the following:
-     *
-     * ```typescript
-     * const { paradym } = useParadym('unlocked')
-     * const logs = paradym.logger.loggedMessageContents
-     * ```
-     *
-     */
-    trace?: boolean
-
-    /**
-     *
-     * Number of logs to be traced.
-     *
-     */
-    traceLimit?: number
-
-    /**
-     *
-     * Provide a custom logger which implements the `ParadymWalletSdkLogger` interface.
-     *
-     *
-     */
-    customLogger?: new (
-      logLevel: LogLevel
-    ) => T
-  }
+  logging?: ParadymWalletSdkLoggingOptions<T>
 
   /**
    *
@@ -146,9 +105,7 @@ export const setupAgent = (options: SetupAgentOptions) => {
 
   const didcommConfiguration = options.didcommConfiguration ?? false
 
-  const logger = options.logging?.customLogger
-    ? new options.logging.customLogger(options.logging.level)
-    : new ParadymWalletSdkConsoleLogger(options.logging?.level)
+  const logger = createLogger(options.logging)
 
   const modules = {
     ...getBaseModules(options),
@@ -156,13 +113,10 @@ export const setupAgent = (options: SetupAgentOptions) => {
     ...(didcommConfiguration ? getDidCommModules(didcommConfiguration) : {}),
   }
 
-  if (options.logging?.trace && logger instanceof ParadymWalletSdkConsoleLogger) {
-    logger?.trackLoggedMessages(options.logging.traceLimit)
-  }
-
   const agent = new Agent({
     config: {
       logger,
+      getTrustedIssuersForVerification: options.getTrustedIssuersForVerification,
     },
     dependencies: agentDependencies,
     modules,
@@ -177,16 +131,17 @@ export const setupAgent = (options: SetupAgentOptions) => {
   return agent
 }
 
-const getBaseModules = (options: Pick<SetupAgentOptions, 'id' | 'key'>) => {
-  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+const getBaseModules = (options: Pick<SetupAgentOptions, 'id' | 'key' | 'storePath'>) => {
   return {
     askar: new AskarModule({
       enableKms: false,
       askar,
       store: {
-        id: `${options.id ?? 'paradym-wallet'}-${walletKeyVersion}`,
+        // The same composition the credential request UI opens the store with.
+        id: getWalletStoreId(options.id ?? defaultWalletId),
         key: options.key,
         keyDerivationMethod: 'raw',
+        ...getWalletStoreDatabaseConfig(options.storePath),
       },
     }),
     kms: new Kms.KeyManagementModule({

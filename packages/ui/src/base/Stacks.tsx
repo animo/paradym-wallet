@@ -1,4 +1,3 @@
-import Animated from 'react-native-reanimated'
 import { ScrollView, type ScrollViewProps, styled, View as TStack, type ViewProps } from 'tamagui'
 
 export const Stack = styled(TStack, {
@@ -130,5 +129,3 @@ export const ScrollableStack = ({ layout, scrollViewProps, children, ref, ...pro
     </ScrollView>
   )
 }
-
-export const AnimatedStack = Animated.createAnimatedComponent(Stack)

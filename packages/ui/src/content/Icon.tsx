@@ -1,92 +1,86 @@
-import {
-  AlertOctagon,
-  ArrowLeft,
-  CornerDownRight,
-  FileBadge,
-  History,
-  Inbox,
-  ListFilter,
-  RefreshCw,
-  Scan,
-  Trash2,
-  X,
-} from '@tamagui/lucide-icons-2'
+import { AlertOctagon } from '@tamagui/lucide-icons-2/icons/AlertOctagon'
+import { ArrowLeft } from '@tamagui/lucide-icons-2/icons/ArrowLeft'
+import { CornerDownRight } from '@tamagui/lucide-icons-2/icons/CornerDownRight'
+import { FileBadge } from '@tamagui/lucide-icons-2/icons/FileBadge'
+import { History } from '@tamagui/lucide-icons-2/icons/History'
+import { Inbox } from '@tamagui/lucide-icons-2/icons/Inbox'
+import { ListFilter } from '@tamagui/lucide-icons-2/icons/ListFilter'
+import { RefreshCw } from '@tamagui/lucide-icons-2/icons/RefreshCw'
+import { Scan } from '@tamagui/lucide-icons-2/icons/Scan'
+import { Trash2 } from '@tamagui/lucide-icons-2/icons/Trash2'
+import { X } from '@tamagui/lucide-icons-2/icons/X'
 import { forwardRef } from 'react'
-import {
-  ArrowLeftIcon,
-  ArrowPathIcon,
-  ArrowRightIcon,
-  ArrowsRightLeftIcon,
-  ArrowUpOnSquareStackIcon,
-  BackspaceIcon,
-  Bars3Icon,
-  BellIcon,
-  BuildingOfficeIcon,
-  ChatBubbleBottomCenterTextIcon,
-  CheckCircleIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-  CircleStackIcon,
-  CloudIcon,
-  Cog8ToothIcon,
-  CreditCardIcon,
-  DevicePhoneMobileIcon,
-  EllipsisHorizontalIcon,
-  EllipsisVerticalIcon,
-  ExclamationCircleIcon,
-  FingerPrintIcon,
-  GlobeAltIcon,
-  HandRaisedIcon,
-  IdentificationIcon,
-  InformationCircleIcon,
-  KeyIcon,
-  LanguageIcon,
-  LinkIcon,
-  LockClosedIcon,
-  MagnifyingGlassIcon,
-  NoSymbolIcon,
-  PencilIcon,
-  PlusIcon,
-  QrCodeIcon,
-  QuestionMarkCircleIcon,
-  QueueListIcon,
-  ShieldCheckIcon,
-  StarIcon,
-  TrashIcon,
-  UserIcon,
-  XCircleIcon,
-  XMarkIcon,
-} from 'react-native-heroicons/outline'
-import {
-  ArchiveBoxXMarkIcon as ArchiveBoxXMarkFilledIcon,
-  ArrowUpRightIcon as ArrowUpRightFilledIcon,
-  BellIcon as BellFilledIcon,
-  BoltIcon as BoltFilledIcon,
-  CameraIcon as CameraFilledIcon,
-  ChatBubbleBottomCenterTextIcon as ChatBubbleBottomCenterTextFilledIcon,
-  CheckCircleIcon as CheckCircleFilledIcon,
-  CircleStackIcon as CircleStackFilledIcon,
-  ClockIcon as ClockFilledIcon,
-  CodeBracketIcon as CodeBracketFilledIcon,
-  Cog8ToothIcon as Cog8ToothFilledIcon,
-  CommandLineIcon,
-  CpuChipIcon as CpuChipFilledIcon,
-  CreditCardIcon as CreditCardFilledIcon,
-  ExclamationCircleIcon as ExclamationCircleFilledIcon,
-  ExclamationTriangleIcon as ExclamationTriangleFilledIcon,
-  EyeIcon as EyeFilledIcon,
-  EyeSlashIcon as EyeSlashFilledIcon,
-  HandRaisedIcon as HandRaisedFilledIcon,
-  IdentificationIcon as IdentificationFilledIcon,
-  InformationCircleIcon as InformationCircleFilledIcon,
-  LockClosedIcon as LockClosedFilledIcon,
-  PencilIcon as PencilFilledIcon,
-  QueueListIcon as QueueListFilledIcon,
-  ShieldCheckIcon as ShieldCheckFilledIcon,
-  TrashIcon as TrashFilledIcon,
-} from 'react-native-heroicons/solid'
+import ArrowLeftIcon from 'react-native-heroicons/outline/ArrowLeftIcon'
+import ArrowPathIcon from 'react-native-heroicons/outline/ArrowPathIcon'
+import ArrowRightIcon from 'react-native-heroicons/outline/ArrowRightIcon'
+import ArrowsRightLeftIcon from 'react-native-heroicons/outline/ArrowsRightLeftIcon'
+import ArrowUpOnSquareStackIcon from 'react-native-heroicons/outline/ArrowUpOnSquareStackIcon'
+import BackspaceIcon from 'react-native-heroicons/outline/BackspaceIcon'
+import Bars3Icon from 'react-native-heroicons/outline/Bars3Icon'
+import BellIcon from 'react-native-heroicons/outline/BellIcon'
+import BuildingOfficeIcon from 'react-native-heroicons/outline/BuildingOfficeIcon'
+import ChatBubbleBottomCenterTextIcon from 'react-native-heroicons/outline/ChatBubbleBottomCenterTextIcon'
+import CheckCircleIcon from 'react-native-heroicons/outline/CheckCircleIcon'
+import CheckIcon from 'react-native-heroicons/outline/CheckIcon'
+import ChevronDownIcon from 'react-native-heroicons/outline/ChevronDownIcon'
+import ChevronRightIcon from 'react-native-heroicons/outline/ChevronRightIcon'
+import ChevronUpIcon from 'react-native-heroicons/outline/ChevronUpIcon'
+import CircleStackIcon from 'react-native-heroicons/outline/CircleStackIcon'
+import CloudIcon from 'react-native-heroicons/outline/CloudIcon'
+import Cog8ToothIcon from 'react-native-heroicons/outline/Cog8ToothIcon'
+import CreditCardIcon from 'react-native-heroicons/outline/CreditCardIcon'
+import DevicePhoneMobileIcon from 'react-native-heroicons/outline/DevicePhoneMobileIcon'
+import EllipsisHorizontalIcon from 'react-native-heroicons/outline/EllipsisHorizontalIcon'
+import EllipsisVerticalIcon from 'react-native-heroicons/outline/EllipsisVerticalIcon'
+import ExclamationCircleIcon from 'react-native-heroicons/outline/ExclamationCircleIcon'
+import FingerPrintIcon from 'react-native-heroicons/outline/FingerPrintIcon'
+import GlobeAltIcon from 'react-native-heroicons/outline/GlobeAltIcon'
+import HandRaisedIcon from 'react-native-heroicons/outline/HandRaisedIcon'
+import IdentificationIcon from 'react-native-heroicons/outline/IdentificationIcon'
+import InformationCircleIcon from 'react-native-heroicons/outline/InformationCircleIcon'
+import KeyIcon from 'react-native-heroicons/outline/KeyIcon'
+import LanguageIcon from 'react-native-heroicons/outline/LanguageIcon'
+import LinkIcon from 'react-native-heroicons/outline/LinkIcon'
+import LockClosedIcon from 'react-native-heroicons/outline/LockClosedIcon'
+import MagnifyingGlassIcon from 'react-native-heroicons/outline/MagnifyingGlassIcon'
+import NoSymbolIcon from 'react-native-heroicons/outline/NoSymbolIcon'
+import PencilIcon from 'react-native-heroicons/outline/PencilIcon'
+import PlusIcon from 'react-native-heroicons/outline/PlusIcon'
+import QrCodeIcon from 'react-native-heroicons/outline/QrCodeIcon'
+import QuestionMarkCircleIcon from 'react-native-heroicons/outline/QuestionMarkCircleIcon'
+import QueueListIcon from 'react-native-heroicons/outline/QueueListIcon'
+import ShieldCheckIcon from 'react-native-heroicons/outline/ShieldCheckIcon'
+import StarIcon from 'react-native-heroicons/outline/StarIcon'
+import TrashIcon from 'react-native-heroicons/outline/TrashIcon'
+import UserIcon from 'react-native-heroicons/outline/UserIcon'
+import XCircleIcon from 'react-native-heroicons/outline/XCircleIcon'
+import XMarkIcon from 'react-native-heroicons/outline/XMarkIcon'
+import { default as ArchiveBoxXMarkFilledIcon } from 'react-native-heroicons/solid/ArchiveBoxXMarkIcon'
+import { default as ArrowUpRightFilledIcon } from 'react-native-heroicons/solid/ArrowUpRightIcon'
+import { default as BellFilledIcon } from 'react-native-heroicons/solid/BellIcon'
+import { default as BoltFilledIcon } from 'react-native-heroicons/solid/BoltIcon'
+import { default as CameraFilledIcon } from 'react-native-heroicons/solid/CameraIcon'
+import { default as ChatBubbleBottomCenterTextFilledIcon } from 'react-native-heroicons/solid/ChatBubbleBottomCenterTextIcon'
+import { default as CheckCircleFilledIcon } from 'react-native-heroicons/solid/CheckCircleIcon'
+import { default as CircleStackFilledIcon } from 'react-native-heroicons/solid/CircleStackIcon'
+import { default as ClockFilledIcon } from 'react-native-heroicons/solid/ClockIcon'
+import { default as CodeBracketFilledIcon } from 'react-native-heroicons/solid/CodeBracketIcon'
+import { default as Cog8ToothFilledIcon } from 'react-native-heroicons/solid/Cog8ToothIcon'
+import CommandLineIcon from 'react-native-heroicons/solid/CommandLineIcon'
+import { default as CpuChipFilledIcon } from 'react-native-heroicons/solid/CpuChipIcon'
+import { default as CreditCardFilledIcon } from 'react-native-heroicons/solid/CreditCardIcon'
+import { default as ExclamationCircleFilledIcon } from 'react-native-heroicons/solid/ExclamationCircleIcon'
+import { default as ExclamationTriangleFilledIcon } from 'react-native-heroicons/solid/ExclamationTriangleIcon'
+import { default as EyeFilledIcon } from 'react-native-heroicons/solid/EyeIcon'
+import { default as EyeSlashFilledIcon } from 'react-native-heroicons/solid/EyeSlashIcon'
+import { default as HandRaisedFilledIcon } from 'react-native-heroicons/solid/HandRaisedIcon'
+import { default as IdentificationFilledIcon } from 'react-native-heroicons/solid/IdentificationIcon'
+import { default as InformationCircleFilledIcon } from 'react-native-heroicons/solid/InformationCircleIcon'
+import { default as LockClosedFilledIcon } from 'react-native-heroicons/solid/LockClosedIcon'
+import { default as PencilFilledIcon } from 'react-native-heroicons/solid/PencilIcon'
+import { default as QueueListFilledIcon } from 'react-native-heroicons/solid/QueueListIcon'
+import { default as ShieldCheckFilledIcon } from 'react-native-heroicons/solid/ShieldCheckIcon'
+import { default as TrashFilledIcon } from 'react-native-heroicons/solid/TrashIcon'
 import type { NumberProp, SvgProps } from 'react-native-svg'
 
 import { styled } from 'tamagui'

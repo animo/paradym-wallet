@@ -1,5 +1,11 @@
-import { type RegisterCredentialsOptions, registerCredentials } from '@animo-id/expo-digital-credentials-api'
-import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord } from '@credo-ts/core'
+import {
+  type DcApiCredential,
+  getRegistrationStatus,
+  isSupported,
+  type RegisterCredentialsOptions,
+  registerCredentials,
+} from '@animo-id/expo-digital-credentials-api'
+import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
 import { commonMessages, i18n } from '@package/translations'
 import { ImageFormat, Skia } from '@shopify/react-native-skia'
@@ -70,30 +76,50 @@ function mapSdJwtAttributesToClaimDisplay(
 }
 
 /**
+ * The svg source behind a uri, or `undefined` when it does not point at one.
+ *
+ * Sniffed by content rather than by extension, the way the wallet receives these: a display uri
+ * carries no filename to go on.
+ */
+async function readSvgSource(uri: string): Promise<string | undefined> {
+  if (uri.startsWith('data:')) {
+    if (!uri.startsWith('data:image/svg+xml')) return undefined
+
+    const [metadata, data] = splitDataUrl(uri)
+    if (data === undefined) return undefined
+
+    return metadata.includes(';base64')
+      ? new TextDecoder().decode(TypedArrayEncoder.fromBase64(data))
+      : decodeURIComponent(data)
+  }
+
+  const file = new File(uri)
+  const handle = file.open()
+  try {
+    const header = new TextDecoder().decode(handle.readBytes(50))
+    if (!header.startsWith('<?xml') && !header.startsWith('<svg')) return undefined
+  } finally {
+    handle.close()
+  }
+
+  return await file.text()
+}
+
+function splitDataUrl(url: string): [metadata: string, data?: string] {
+  const separator = url.indexOf(',')
+  if (separator === -1) return [url]
+
+  return [url.slice(0, separator), url.slice(separator + 1)]
+}
+
+/**
  * Returns base64 data url
  */
-async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset) {
+async function resizeImageWithAspectRatio(logger: Logger, uri: string) {
   try {
-    // Make sure the asset is loaded
-    if (!asset.localUri) {
-      await asset.downloadAsync()
-    }
-
-    if (!asset.localUri) {
-      return undefined
-    }
-
-    const file = new File(asset.localUri)
-    const handle = file.open()
-    let header: string = ''
-    try {
-      const first50Bytes = handle.readBytes(50) // Returns Uint8Array
-      header = new TextDecoder().decode(first50Bytes)
-    } finally {
-      handle.close()
-    }
-    if (header.startsWith('<?xml') || header.startsWith('<svg')) {
-      const svg = Skia.SVG.MakeFromString(await file.text())
+    const svgSource = await readSvgSource(uri)
+    if (svgSource !== undefined) {
+      const svg = Skia.SVG.MakeFromString(svgSource)
       if (!svg) return undefined
 
       const scale = Math.min(20 / svg.width(), 20 / svg.height()) // Fit inside 20x20
@@ -105,7 +131,7 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
       return `data:image/png;base64,${surface.makeImageSnapshot().encodeToBase64(ImageFormat.PNG, 80)}` as const
     }
 
-    const image = await Image.loadAsync(asset.localUri)
+    const image = await Image.loadAsync(uri)
 
     // Calculate new dimensions maintaining aspect ratio
     let width: number
@@ -120,8 +146,16 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
       width = Math.round((image.width / image.height) * 20)
     }
 
-    // Use the new API to resize the image
-    const resizedImage = await ImageManipulator.manipulate(image).resize({ width, height }).renderAsync()
+    // Only the dimensions were needed, and holding a full-size decoded bitmap until GC is wasteful
+    // when this runs once per credential.
+    image.release()
+
+    // The uri, never the `ImageRef`: `manipulate` takes an `Either<URL, SharedRef<UIImage>>`, and
+    // `Either` tries `URL` first — which converts the argument with `getAny()`, walking the object's
+    // properties. On a shared ref that reaches `release`, and `getAny()` on a function is a Swift
+    // `fatalError` the surrounding `try?` cannot catch, so the app dies before the `SharedRef`
+    // branch is ever tried.
+    const resizedImage = await ImageManipulator.manipulate(uri).resize({ width, height }).renderAsync()
     const savedImages = await resizedImage.saveAsync({
       base64: true,
       format: SaveFormat.PNG,
@@ -141,25 +175,32 @@ async function resizeImageWithAspectRatio(logger: Logger, asset: ExpoAsset.Asset
   }
 }
 
+/**
+ * A uri the image can be read from, for each of the three shapes a display image arrives in.
+ */
+async function resolveImageUri(url: string): Promise<string | undefined> {
+  // Already inline: there is nothing to fetch, and nothing caches it either.
+  if (url.startsWith('data:')) return url
+
+  // Remote, so only usable once the wallet has already displayed it and expo-image cached it.
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    const cachePath = await Image.getCachePathAsync(url)
+    return cachePath ? `file://${cachePath}` : undefined
+  }
+
+  // A bundled asset, handed over as the `require`d module rather than as a url.
+  const asset = await ExpoAsset.Asset.fromModule(url).downloadAsync()
+  return asset.localUri ?? undefined
+}
+
 async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
-  let asset: ExpoAsset.Asset
-
   try {
-    // in case of external image
-    if (url.startsWith('data://') || url.startsWith('https://')) {
-      const cachePath = await Image.getCachePathAsync(url)
-      if (!cachePath) return undefined
+    const uri = await resolveImageUri(url)
+    if (!uri) return undefined
 
-      asset = await ExpoAsset.Asset.fromURI(`file://${cachePath}`).downloadAsync()
-    }
-    // In case of local image
-    else {
-      asset = ExpoAsset.Asset.fromModule(url)
-    }
-
-    return await resizeImageWithAspectRatio(logger, asset)
+    return await resizeImageWithAspectRatio(logger, uri)
   } catch (error) {
-    // just ignore it, we don't want to cause issues with registering crednetials
+    // just ignore it, we don't want to cause issues with registering credentials
     logger.error('Error resizing and retrieving cached image for DC API', {
       error,
     })
@@ -179,12 +220,25 @@ export async function dcApiRegisterCredentials({
   displaySubtitleFallback,
   displaySubtitle,
 }: DcApiRegisterCredentialsOptions) {
-  if (Platform.OS === 'ios') return
-
   try {
-    const mdocRecords = await paradym.agent.mdoc.getAll()
-    const sdJwtVcRecords = await paradym.agent.sdJwtVc.getAll()
+    if (!isSupported()) {
+      paradym.logger.debug('Skipping Digital Credentials API registration, not supported on this device')
+      return
+    }
 
+    // On iOS the registrations live in the OS store behind a user permission; registering while the
+    // user has denied it throws, and prompting is only useful while it is undecided.
+    if (Platform.OS === 'ios') {
+      const status = await getRegistrationStatus()
+      if (status !== 'authorized' && status !== 'notDetermined') {
+        paradym.logger.debug(`Not registering credentials for Digital Credentials API, status is '${status}'`)
+        return
+      }
+    }
+
+    const mdocRecords = await paradym.agent.mdoc.getAll()
+    // iOS only matches ISO 18013-7 mdocs, so building the sd-jwt entries would be wasted work.
+    const sdJwtVcRecords = Platform.OS === 'ios' ? [] : await paradym.agent.sdJwtVc.getAll()
     const mdocCredentials = mdocRecords.map(async (record): Promise<CredentialItem> => {
       const mdoc = record.firstCredential
       const { display } = getCredentialForDisplay(record)
@@ -208,7 +262,10 @@ export async function dcApiRegisterCredentials({
           claims: mapMdocAttributesToClaimDisplay(mdoc.issuerSignedNamespaces, record),
           iconDataUrl,
         },
-      } as const
+        ios: {
+          supportedAuthorityKeyIdentifiers: [],
+        },
+      } as const satisfies DcApiCredential
     })
 
     const sdJwtCredentials = sdJwtVcRecords.map(async (record): Promise<CredentialItem> => {
@@ -234,10 +291,12 @@ export async function dcApiRegisterCredentials({
         display: {
           title: display.name ?? displayTitleFallback,
           subtitle: display.issuer.name ? displaySubtitle(display.issuer.name) : displaySubtitleFallback,
-          claims: mapSdJwtAttributesToClaimDisplay(claims, record),
+          // The disclosed claims, not the storage record — walking the record would register its
+          // own fields (`id`, `createdAt`, `_tags`, …) as the credential's claim display metadata.
+          claims: mapSdJwtAttributesToClaimDisplay(claims, sdJwtVc.prettyClaims),
           iconDataUrl,
         },
-      } as const
+      } as const satisfies DcApiCredential
     })
 
     const credentials = await Promise.all([...sdJwtCredentials, ...mdocCredentials])
@@ -245,7 +304,9 @@ export async function dcApiRegisterCredentials({
 
     await registerCredentials({
       credentials,
-      matcher: 'ubique',
+      // Multipaz is the only matcher that can answer org-iso-mdoc, which is what the request UI
+      // builds an Annex C response for on both platforms.
+      android: { matcher: 'multipaz' },
     })
   } catch (error) {
     // Since this is an experimental feature, and it doedisplayTitleFallbacksn't work if you don't have the latest

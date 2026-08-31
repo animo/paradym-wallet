@@ -1,16 +1,9 @@
-import { PinPad, PinValues, XStack, YStack } from '@package/ui'
+import { XStack, YStack } from '@package/ui/base/Stacks'
+import { PinPad, PinValues } from '@package/ui/components/PinPad'
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated'
+import { Animated, Easing } from 'react-native'
 import { Circle, Input, type InputRef } from 'tamagui'
-import { useHaptics } from '../hooks'
+import { useHaptics } from '../hooks/useHaptics'
 
 interface PinDotsInputProps {
   pinLength: number
@@ -36,32 +29,34 @@ interface PinDotProps {
 }
 
 const PinDot = ({ filled, index, totalDots, isLoading }: PinDotProps) => {
-  const animation = useSharedValue(0)
-  const style = useAnimatedStyle(() => ({ transform: [{ translateY: animation.value }] }))
+  const animation = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     if (!isLoading) {
-      animation.value = withTiming(0, { duration: 75 })
+      Animated.timing(animation, { toValue: 0, duration: 75, useNativeDriver: true }).start()
       return
     }
 
-    const delay = index * (500 / totalDots)
-    animation.value = withDelay(
-      delay,
-      withRepeat(
-        withSequence(
-          withTiming(-10, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
-          withTiming(0, { duration: 400 / 2, easing: Easing.bezier(0.42, 0, 0.58, 1) }),
-          withDelay(500, withTiming(0, { duration: 0 }))
-        ),
-        -1,
-        false
-      )
-    )
-  }, [isLoading, index, totalDots])
+    const easing = Easing.bezier(0.42, 0, 0.58, 1)
+    const bounce = Animated.sequence([
+      Animated.delay(index * (500 / totalDots)),
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(animation, { toValue: -10, duration: 400 / 2, easing, useNativeDriver: true }),
+          Animated.timing(animation, { toValue: 0, duration: 400 / 2, easing, useNativeDriver: true }),
+          Animated.delay(500),
+        ])
+      ),
+    ])
+
+    bounce.start()
+    // Unlike a shared value the loop keeps running on its own, so it has to be stopped before the
+    // effect below animates the dot back down.
+    return () => bounce.stop()
+  }, [isLoading, index, totalDots, animation])
 
   return (
-    <Animated.View style={style}>
+    <Animated.View style={{ transform: [{ translateY: animation }] }}>
       <Circle
         size="$1.5"
         backgroundColor={filled ? '$primary-500' : '$background'}
@@ -90,16 +85,16 @@ export const PinDotsInput = forwardRef(
 
     const isInLoadingState = isLoading
 
-    const shakeAnimation = useSharedValue(0)
-    const shakeStyle = useAnimatedStyle(() => ({ left: shakeAnimation.value }))
+    // `translateX` rather than `left`, so the shake can run on the native driver.
+    const shakeAnimation = useRef(new Animated.Value(0)).current
 
     const startShakeAnimation = useCallback(() => {
       errorHaptic()
-      shakeAnimation.value = withRepeat(
-        withSequence(...[10, -7.5, 5, -2.5, 0].map((toValue) => withTiming(toValue, { duration: 75 }))),
-        1,
-        true
-      )
+      Animated.sequence(
+        [10, -7.5, 5, -2.5, 0].map((toValue) =>
+          Animated.timing(shakeAnimation, { toValue, duration: 75, useNativeDriver: true })
+        )
+      ).start()
     }, [shakeAnimation, errorHaptic])
 
     useImperativeHandle(
@@ -152,7 +147,7 @@ export const PinDotsInput = forwardRef(
 
     return (
       <YStack flexGrow={1} gap="$8" jc="space-between" onPress={() => inputRef.current?.focus()}>
-        <Animated.View style={shakeStyle}>
+        <Animated.View style={{ transform: [{ translateX: shakeAnimation }] }}>
           <XStack justifyContent="center" gap="$2">
             {Array.from({ length: pinLength }, (_, i) => (
               <PinDot
