@@ -116,6 +116,7 @@ export const setupAgent = (options: SetupAgentOptions) => {
   const agent = new Agent({
     config: {
       logger,
+      getTrustedIssuersForVerification: options.getTrustedIssuersForVerification,
     },
     dependencies: agentDependencies,
     modules,

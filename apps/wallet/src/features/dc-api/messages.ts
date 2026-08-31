@@ -36,6 +36,11 @@ export const dcApiMessages = {
     comment: 'Reason passed to the OS when the user declines; not shown to the user',
     message: 'The request was declined',
   }),
+  requestFailed: defineMessage({
+    id: 'dcApi.requestFailed',
+    comment: 'Shown when the request could not be read, before the user was asked to approve anything',
+    message: 'This request could not be read. Ask the verifier to make a new request and try again.',
+  }),
   shareFailed: defineMessage({
     id: 'dcApi.shareFailed',
     comment: 'Shown when the card could not be shared, after the user already approved the request',

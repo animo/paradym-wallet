@@ -63,10 +63,12 @@ type Phase =
   // Carries the review it was approved from: sharing keeps the request on screen with the share
   // button in a loading state, rather than replacing what the user just agreed to with a spinner.
   | { name: 'sharing'; review: DcApiReview }
-  // Terminal: sharing failed after the user approved, so there is nothing left to retry — the
-  // request is declined when the user closes the screen. `reason` is the underlying error, which
-  // goes to the OS as the decline reason and is only shown with development mode enabled.
-  | { name: 'failed'; reason: string }
+  // Terminal: the wallet was already open when this failed, so there is nothing left for the user
+  // to retry — the request is declined when they close the screen. `reason` is the underlying
+  // error, which goes to the OS as the decline reason and is only shown with development mode
+  // enabled. `stage` only picks which sentence is shown: whether the request could not be read at
+  // all, or the card could not be sent after it was approved.
+  | { name: 'failed'; stage: 'review' | 'share'; reason: string }
 
 /**
  * Credential request UI, on both platforms.
@@ -118,6 +120,9 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
       setError(undefined)
       setPhase({ name: 'opening', method })
 
+      let sdk: ParadymDcApiSdk
+      // Opening the wallet. Everything that fails here is something the user can answer for — a
+      // wrong pin, a dismissed biometric prompt — so it goes back to the pad to be tried again.
       try {
         const { getWalletKeyVersion } = await walletKeyVersion()
         const key = await getKey(getWalletKeyVersion())
@@ -133,11 +138,8 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           dcApiSdk(),
           paradymConfiguration(),
         ])
-        const sdk = await ParadymDcApiSdk.initialize({ ...paradymWalletSdkOptions, walletKey: key })
+        sdk = await ParadymDcApiSdk.initialize({ ...paradymWalletSdkOptions, walletKey: key })
         sdkRef.current = sdk
-
-        const review = await sdk.reviewRequest(request)
-        setPhase({ name: 'review', review })
       } catch (unlockError) {
         setPhase({ name: 'unlock' })
         console.error('Error unlocking wallet', unlockError)
@@ -148,6 +150,19 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
             : unlockMessage(unlockError, t)
         )
         pinRef.current?.clear()
+        return
+      }
+
+      // Reading the request. The wallet is open now, so retyping the pin would only run the same
+      // request into the same wall — a bad request, an untrusted verifier, an origin the wallet
+      // cannot place. Android does this work here, where iOS cannot get at the request until
+      // `approve()` and fails inside `share` instead; both end on the same screen.
+      try {
+        const review = await sdk.reviewRequest(request)
+        setPhase({ name: 'review', review })
+      } catch (reviewError) {
+        console.error('Error reviewing request', reviewError)
+        setPhase({ name: 'failed', stage: 'review', reason: message(reviewError) })
       }
     },
     [request, t]
@@ -184,7 +199,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
       // On iOS `approve()` has already released the request by the time most failures happen, so
       // there is nothing to retry. The request is declined from the failure screen rather than
       // here: declining takes the UI down with it, and the user would never see what went wrong.
-      setPhase({ name: 'failed', reason: message(shareError) })
+      setPhase({ name: 'failed', stage: 'share', reason: message(shareError) })
     }
   }, [])
 
@@ -274,7 +289,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
               <HeroIcons.NoSymbol color="$grey-800" size={32} />
             </XStack>
           </Stack>
-          <Paragraph>{t(messages.shareFailed)}</Paragraph>
+          <Paragraph>{t(phase.stage === 'review' ? messages.requestFailed : messages.shareFailed)}</Paragraph>
 
           {/* The error itself says nothing a user can act on, so it is kept for the people who can:
               the same development mode setting the app shows its own errors behind. */}

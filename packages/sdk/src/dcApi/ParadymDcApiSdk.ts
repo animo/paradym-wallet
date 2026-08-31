@@ -119,7 +119,12 @@ export class ParadymDcApiSdk {
     }
 
     const agent = new Agent({
-      config: { logger: createLogger(options.logging) },
+      // The app's trust callback included: it is the only hook mdoc reader authentication reaches,
+      // and the request UI has to trust exactly what the app trusts.
+      config: {
+        logger: createLogger(options.logging),
+        getTrustedIssuersForVerification: options.getTrustedIssuersForVerification,
+      },
       dependencies: agentDependencies,
       modules: getModules({ ...options, storeId }),
     })
@@ -175,7 +180,7 @@ export class ParadymDcApiSdk {
     protocolRequest: IsoMdocProtocolRequest
   ): Promise<DcApiReview> {
     if (!request.origin) throw new Error('The request carries no origin, so the wallet cannot establish trust')
-      
+
     const resolved = await this.agent.mdoc.resolveDcApiRequest({
       request: protocolRequest.data,
       // Must come from the OS, never from the request payload (ISO 18013-7 C.5).

@@ -1,9 +1,9 @@
 import {
+  type DcApiCredential,
   getRegistrationStatus,
   isSupported,
   type RegisterCredentialsOptions,
   registerCredentials,
-  DcApiCredential,
 } from '@animo-id/expo-digital-credentials-api'
 import { DateOnly, type Logger, type MdocNameSpaces, type MdocRecord, TypedArrayEncoder } from '@credo-ts/core'
 import { t } from '@lingui/core/macro'
@@ -263,8 +263,8 @@ export async function dcApiRegisterCredentials({
           iconDataUrl,
         },
         ios: {
-          supportedAuthorityKeyIdentifiers: []
-        }
+          supportedAuthorityKeyIdentifiers: [],
+        },
       } as const satisfies DcApiCredential
     })
 

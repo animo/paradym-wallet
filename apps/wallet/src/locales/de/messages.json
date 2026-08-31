@@ -158,7 +158,7 @@
 		"message": "A verifier needs to scan your QR-Code.",
 		"placeholders": {},
 		"comments": ["Instruction for the verifier to scan the QR code"],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 140]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 170]],
 		"translation": "Ein Prüfer muss deinen QR-Code scannen."
 	},
 	"cardAttributes.aboutTheCard": {
@@ -475,7 +475,7 @@
 		"comments": [
 			"Shown when there is a general auth error during offline flow"
 		],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 90]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 96]],
 		"translation": "Authentifizierungsfehler"
 	},
 	"presentation.authFailed": {
@@ -880,7 +880,7 @@
 		"message": "Could not share device response",
 		"placeholders": {},
 		"comments": ["Shown when shareDeviceResponse fails"],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 122]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 128]],
 		"translation": "Geräteantwort konnte nicht geteilt werden"
 	},
 	"common.fields.country": {
@@ -2208,7 +2208,7 @@
 		"message": "Please allow bluetooth access",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 120]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 150]],
 		"translation": "Bitte erlaube Bluetooth-Zugriff"
 	},
 	"qrScanner.permissionHeading": {
@@ -2300,7 +2300,7 @@
 		"message": "Proof has been declined",
 		"placeholders": {},
 		"comments": ["Shown when user declines sharing proof"],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 148]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 153]],
 		"translation": "Nachweis wurde abgelehnt"
 	},
 	"pidSetup.dataProtection.title": {
@@ -2353,7 +2353,7 @@
 		"comments": [
 			"Label before the underlying error, only shown with development mode enabled"
 		],
-		"origin": [["src/features/dc-api/messages.ts", 44]],
+		"origin": [["src/features/dc-api/messages.ts", 49]],
 		"translation": "Grund:"
 	},
 	"home.receiveOrShare": {
@@ -2658,7 +2658,7 @@
 		"message": "Share with QR code",
 		"placeholders": {},
 		"comments": ["Main heading for offline QR sharing screen"],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 135]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 165]],
 		"translation": "Mit QR-Code teilen"
 	},
 	"credentials.shareableAttributes": {
@@ -3254,7 +3254,7 @@
 		"message": "This allows the app to share with a QR code.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 123]],
+		"origin": [["src/features/wallet/OfflineQrScreen.tsx", 153]],
 		"translation": "Das ermöglicht der App das Teilen über QR-Code."
 	},
 	"paradymWallet.about.description": {
@@ -3350,6 +3350,15 @@
 		"comments": ["Explanation of the PIN purpose in onboarding"],
 		"origin": [["src/features/onboarding/steps.ts", 15]],
 		"translation": "Diese PIN sichert deine Identitäts-Wallet. Du gibst sie jedes Mal ein, wenn du Daten teilst."
+	},
+	"dcApi.requestFailed": {
+		"message": "This request could not be read. Ask the verifier to make a new request and try again.",
+		"placeholders": {},
+		"comments": [
+			"Shown when the request could not be read, before the user was asked to approve anything"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 39]],
+		"translation": "Diese Anfrage konnte nicht gelesen werden. Bitte den Prüfer, eine neue Anfrage zu stellen, und versuche es erneut."
 	},
 	"common.archiveCardDescription": {
 		"message": "This will make {name} unusable and delete it from your wallet.",
@@ -3890,7 +3899,7 @@
 		"comments": [
 			"Shown when the card could not be shared, after the user already approved the request"
 		],
-		"origin": [["src/features/dc-api/messages.ts", 39]],
+		"origin": [["src/features/dc-api/messages.ts", 44]],
 		"translation": "Deine Karte konnte nicht geteilt werden. Bitte den Prüfer, eine neue Anfrage zu stellen, und versuche es erneut."
 	},
 	"receiveCredential.deferredCredentialParagraph": {

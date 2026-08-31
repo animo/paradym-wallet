@@ -31,6 +31,8 @@ const baseInvitationSchemes = [
   'eudi-openid4vp',
   'mdoc-openid4vp',
   'haip',
+  'haip-vci',
+  'haip-vp',
 ]
 
 const baseAssets = [
@@ -58,7 +60,12 @@ const baseAssets = [
 // ISO 18013-7 Annex C document types the wallet can present through the OS credential picker.
 // Anything outside this set is filtered out before registration, so this is the only place it is
 // declared.
-const dcApiDocumentTypes = ['org.iso.18013.5.1.mDL', 'eu.europa.ec.eudi.pid.1', 'org.iso.23220.photoid.1', 'eu.europa.ec.av.1',]
+const dcApiDocumentTypes = [
+  'org.iso.18013.5.1.mDL',
+  'eu.europa.ec.eudi.pid.1',
+  'org.iso.23220.photoid.1',
+  'eu.europa.ec.av.1',
+]
 
 // Everything the credential request UI's own bundle links. The iOS extension is a separate binary
 // running on a much tighter memory budget than the app, so it links only these — the config plugin

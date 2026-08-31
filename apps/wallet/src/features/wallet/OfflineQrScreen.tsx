@@ -1,9 +1,22 @@
 import { useAppIcon } from '@app/config/copy'
+import { useDevelopmentMode } from '@app/hooks'
 import { mmkv } from '@app/storage/mmkv'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { isIos, useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { AnimatedStack, Button, Heading, Loader, Page, Paragraph, Spacer, Stack, XStack, YStack } from '@package/ui'
+import {
+  AnimatedStack,
+  Button,
+  Heading,
+  Loader,
+  Page,
+  Paragraph,
+  Spacer,
+  Stack,
+  useToastController,
+  XStack,
+  YStack,
+} from '@package/ui'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Linking, useWindowDimensions } from 'react-native'
@@ -25,6 +38,8 @@ export function OfflineQrScreen() {
   const { replace, back } = useRouter()
   const { width } = useWindowDimensions()
   const { t } = useLingui()
+  const toast = useToastController()
+  const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   const [qrCodeData, setQrCodeData] = useState<string>()
   const [arePermissionsGranted, setArePermissionsGranted] = useState(false)
@@ -44,19 +59,34 @@ export function OfflineQrScreen() {
   }, [])
 
   useEffect(() => {
-    if (arePermissionsGranted) {
-      void getMdocQrCode()
-        .then(setQrCodeData)
-        .catch(() => {
-          // NOTE: iOS automatically handles Bluetooth permissions, so we can't
-          // easily detect if they've been granted or not. This is a workaround
-          // to ensure the user is aware of the need for permissions.
-          if (isIos()) setArePermissionsGranted(false)
-        })
-    } else {
+    if (!arePermissionsGranted) {
       setQrCodeData(undefined)
+      return
     }
-  }, [arePermissionsGranted])
+
+    void getMdocQrCode()
+      .then(setQrCodeData)
+      .catch((error) => {
+        // NOTE: iOS automatically handles Bluetooth permissions, so we can't easily detect if
+        // they've been granted or not. We only find out they were denied once starting the
+        // engagement fails with a not-authorized error.
+        if (isIos() && error instanceof Error && error.message.includes('BLE_NOT_AUTHORIZED')) {
+          setArePermissionsGranted(false)
+          return
+        }
+
+        // Any other failure is not a permission problem, and showing the permission screen for it
+        // would send the user to their settings for no reason.
+        toast.show(t(commonMessages.somethingWentWrong), {
+          message:
+            error instanceof Error && isDevelopmentModeEnabled
+              ? `Development mode error: ${error.message}`
+              : t(commonMessages.pleaseTryAgain),
+          customData: { preset: 'danger' },
+        })
+        back()
+      })
+  }, [arePermissionsGranted, toast.show, back, t, isDevelopmentModeEnabled])
 
   const checkPermissions = async () => {
     if (isIos()) {

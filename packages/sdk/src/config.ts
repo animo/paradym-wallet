@@ -1,4 +1,4 @@
-import type { X509ModuleConfigOptions } from '@credo-ts/core'
+import type { InitConfig, X509ModuleConfigOptions } from '@credo-ts/core'
 import type { LogLevel, ParadymWalletSdkLogger } from './logging'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 
@@ -100,6 +100,20 @@ export type ParadymWalletSdkSharedOptions = {
    *
    */
   openId4VcConfiguration?: Omit<X509ModuleConfigOptions, 'trustedCertificates'> | false
+
+  /**
+   *
+   * Callback resolving the trust anchors a signer is verified against
+   *
+   * @note this is the only hook the mdoc reader authentication of an ISO 18013-7 Annex C request
+   *       reaches. `openId4VcConfiguration.getTrustedCertificatesForVerification` is scoped to the
+   *       x509 module and is never consulted for `mdocReaderAuth`
+   *
+   * @note returning `undefined` falls through to the x509 callback and then to the certificates
+   *       derived from `trustMechanisms`, so it only has to answer the contexts it cares about
+   *
+   */
+  getTrustedIssuersForVerification?: InitConfig['getTrustedIssuersForVerification']
 
   /**
    *
