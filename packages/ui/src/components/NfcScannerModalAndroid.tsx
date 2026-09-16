@@ -18,11 +18,7 @@ const nfcScanningMessages = {
     message: 'Ready to scan',
     comment: 'Title when the NFC scanner is ready to scan',
   }),
-  readyToScanDescription: defineMessage({
-    id: 'nfcScanner.readyToScan.description',
-    message: 'Place your device on top of your eID card to scan it.',
-    comment: 'Description when the NFC scanner is ready',
-  }),
+  readyToScanDescription: commonMessages.placeDeviceOnIdCard,
   scanningTitle: defineMessage({
     id: 'nfcScanner.scanning.title',
     message: 'Do not move the eID card',

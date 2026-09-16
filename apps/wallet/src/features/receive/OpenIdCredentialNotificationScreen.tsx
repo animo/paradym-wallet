@@ -165,10 +165,7 @@ export function CredentialNotificationScreen() {
   )
 
   // These are callbacks to not change on every render
-  const onCancelAuthorization = useCallback(
-    () => setErrorReason(t({ id: 'browserAuthFlow.authorizationCancelled', message: 'Authorization cancelled' })),
-    [t]
-  )
+  const onCancelAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationCancelled)), [t])
 
   const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
 

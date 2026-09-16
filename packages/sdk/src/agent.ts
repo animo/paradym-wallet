@@ -39,6 +39,7 @@ import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { defaultWalletId, type ParadymWalletSdkLoggingOptions, type ParadymWalletSdkSharedOptions } from './config'
 import { ParadymWalletMustBeAgentTypeError } from './error'
+import { RsaVerificationKeyManagementService } from './kms/RsaVerificationKeyManagementService'
 import { createLogger, type ParadymWalletSdkLogger } from './logging'
 import { getWalletStoreDatabaseConfig, getWalletStoreId } from './storage/walletStore'
 
@@ -145,7 +146,15 @@ const getBaseModules = (options: Pick<SetupAgentOptions, 'id' | 'key' | 'storePa
       },
     }),
     kms: new Kms.KeyManagementModule({
-      backends: [new AskarKeyManagementService(), new SecureEnvironmentKeyManagementService()],
+      // Neither askar nor the secure environment implements RSA, so RSA verification is a third
+      // backend. It only ever verifies, and only with a public key handed to it on the call —
+      // issuers that chain up to an RSA CA are otherwise unverifiable, and Credo reports that as an
+      // unbuildable certificate chain rather than as a missing algorithm.
+      backends: [
+        new AskarKeyManagementService(),
+        new SecureEnvironmentKeyManagementService(),
+        new RsaVerificationKeyManagementService(),
+      ],
       defaultBackend: 'askar',
     }),
     dids: new DidsModule({

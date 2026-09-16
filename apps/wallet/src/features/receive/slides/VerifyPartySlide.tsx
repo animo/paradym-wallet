@@ -51,7 +51,7 @@ export const VerifyPartySlide = ({
   const { onNext, onCancel } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
-  const { activities } = useActivities({ filters: { entityId } })
+  const { activities } = useActivities({ filters: { entityId }, limit: 1 })
   const lastInteractionDate = activities[0]?.date
   const { t } = useLingui()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
@@ -121,11 +121,7 @@ export const VerifyPartySlide = ({
           </XStack>
           <Stack gap="$2">
             <Heading heading="h2" numberOfLines={2} center fontSize={24} lineHeight="$5">
-              {name ? (
-                <Trans id="verifyPartySlide.interactWithHeading">Do you trust {name}?</Trans>
-              ) : (
-                <Trans id="verifyPartySlide.organizationNotVerifiedHeading">Organization not verified</Trans>
-              )}
+              {name ? t(commonMessages.doYouTrust(name)) : t(commonMessages.organizationNotVerifiedHeading)}
             </Heading>
             {type === 'offer' ? (
               <Paragraph center px="$4">
@@ -177,21 +173,12 @@ export const VerifyPartySlide = ({
           {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
             <InfoButton
               variant={entityIsTrustAnchor ? 'positive' : 'info'}
-              title={t({
-                id: 'verifyPartySlide.recognizedOrganizationTitle',
-                message: 'Recognized organization',
-              })}
+              title={t(commonMessages.recognizedOrganization)}
               description={
                 trustedEntitiesWithoutSelf.length > 1
-                  ? t({
-                      id: 'verifyPartySlide.approvedByMultipleOrganizations',
-                      message: `Approved by ${trustedEntitiesWithoutSelf.length} organizations`,
-                    })
+                  ? t(commonMessages.approvedByOrganizations(trustedEntitiesWithoutSelf.length))
                   : trustedEntitiesWithoutSelf.length === 1
-                    ? t({
-                        id: 'verifyPartySlide.approvedByOneOrganization',
-                        message: 'Approved by one organization',
-                      })
+                    ? t(commonMessages.approvedByOneOrganization)
                     : undefined
               }
               onPress={onPressVerifiedIssuer}
@@ -200,24 +187,15 @@ export const VerifyPartySlide = ({
             <InfoButton
               variant="warning"
               title={t(commonMessages.unknownOrganization)}
-              description={t({
-                id: 'verifyPartySlide.unknownOrganizationDescription',
-                message: 'Organization is not verified',
-              })}
+              description={t(commonMessages.organizationNotVerifiedDescription)}
               onPress={onPressVerifiedIssuer}
             />
           )}
           {isDemoTrustedEntity && (
             <InfoButton
               variant="warning"
-              title={t({
-                id: 'verifyPartySlide.demoTrustedEntityTitle',
-                message: 'Demo organization',
-              })}
-              description={t({
-                id: 'verifyPartySlide.demoTrustedEntityDescription',
-                message: 'Do not share real data',
-              })}
+              title={t(commonMessages.demoOrganization)}
+              description={t(commonMessages.demoOrganizationWarning)}
             />
           )}
           <InfoButton

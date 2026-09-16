@@ -1,5 +1,5 @@
 import { DateOnly, TypedArrayEncoder } from '@credo-ts/core'
-import { formatDate, isDateString } from '../utils/date'
+import { formatDate, isDateString } from '../utils/format'
 import { detectImageMimeType } from '../utils/image'
 
 type MappedAttributesReturnType =

@@ -44,6 +44,7 @@ export const WalletJsonStoreProvider: React.FC<Props> = ({ agent, children, reco
     const fetchRecords = async () => {
       const records = await Promise.all(recordIds.map((id) => agent.genericRecords.findById(id)))
       const validRecords = records.filter((record): record is GenericRecord => record !== null)
+
       setState({ jsonRecords: validRecords, isLoading: false })
     }
     void fetchRecords()

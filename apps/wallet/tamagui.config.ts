@@ -56,7 +56,11 @@ const tokens = createTokens({
 const darkColors = {
   // No `white`: it is a colour rather than a role, and stays white in both themes. What flips with
   // the theme is `background`, which is the surface every screen and control paints itself with.
-  background: '#14171A',
+  // Close to the iOS elevated sheet (#1C1C1E) the request UI is presented in, with the slight cool
+  // tint of the rest of the ramp. A near-black background made every surface on it look heavy.
+  // Mirrored in the DC API plugin's `backgroundColor` in `base.app.config.js`, which paints the strip
+  // around the sheet's title: change one, change the other.
+  background: '#1C1F23',
 
   // Hairlines and scrims, which are the light theme's own colours at low alpha and so do not come
   // along with the ramp: a light hairline over a dark surface reads as a halo rather than an edge.
@@ -64,11 +68,11 @@ const darkColors = {
   lightTranslucent: 'rgba(255, 255, 255, 0.08)',
   darkTranslucent: 'rgba(0, 0, 0, 0.6)',
 
-  'grey-50': '#1A1E22',
-  'grey-100': '#21262B',
-  'grey-200': '#2A3037',
-  'grey-300': '#39414A',
-  'grey-400': '#4E5862',
+  'grey-50': '#22262B',
+  'grey-100': '#292E34',
+  'grey-200': '#323840',
+  'grey-300': '#414952',
+  'grey-400': '#565F69',
   'grey-500': '#8B979F',
   'grey-600': '#A3ADB6',
   'grey-700': '#C2C9D0',
@@ -85,11 +89,13 @@ const darkColors = {
   'primary-800': '#D5CFFF',
   'primary-900': '#E8E4FF',
 
-  'danger-300': '#3A1E1E',
-  'danger-400': '#B93B3A',
-  'danger-500': '#F26B6A',
-  'danger-600': '#FF9A99',
-  'danger-700': '#FFC4C3',
+  // Desaturated rather than only lifted: at full saturation the red glows against a dark background
+  // and reads as an alarm, where it mostly marks what is missing. Still 5.9:1 on `background`.
+  'danger-300': '#3F2527',
+  'danger-400': '#B55453',
+  'danger-500': '#DA8281',
+  'danger-600': '#E8A6A5',
+  'danger-700': '#F2CAC9',
 
   'positive-300': '#10301E',
   'positive-400': '#2E8E56',
@@ -131,7 +137,7 @@ const config = createTamagui({
       ...darkColors,
       tableBackgroundColor: darkColors['grey-50'],
       tableBorderColor: darkColors.background,
-      idCardBackground: '#23262A',
+      idCardBackground: '#2A2D32',
     },
   },
 })

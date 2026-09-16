@@ -1,5 +1,4 @@
 import { paradymWalletSdkOptions } from '@app/config/paradym'
-import { DcApiCredentialRegistration } from '@app/features/dc-api/DcApiCredentialRegistration'
 import { BackgroundLockProvider, NoInternetToastProvider, Provider } from '@package/app'
 import { ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { Slot } from 'expo-router'
@@ -34,7 +33,6 @@ export default function RootLayout() {
         <BackgroundLockProvider>
           <NoInternetToastProvider>
             <ParadymWalletSdk.UnlockProvider configuration={paradymWalletSdkOptions}>
-              <DcApiCredentialRegistration />
               <Slot />
             </ParadymWalletSdk.UnlockProvider>
           </NoInternetToastProvider>

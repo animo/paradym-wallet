@@ -10,11 +10,20 @@ import { Agent, CredoError, Kms, type X509Certificate, X509Module } from '@credo
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
-import { defaultWalletId, getTrustedX509Certificates, type ParadymWalletSdkSharedOptions } from '../config'
+import {
+  defaultWalletId,
+  getTrustedX509Certificates,
+  type ParadymWalletSdkAttributeLabelOptions,
+  type ParadymWalletSdkLocaleOptions,
+  type ParadymWalletSdkSharedOptions,
+} from '../config'
+import { setResolveAttributeLabel } from '../config/attributeLabel'
+import { setLocale } from '../config/locale'
 import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletNoStoreError } from '../error'
 import { type FormattedSubmission, getFormattedSubmission } from '../format/submission'
 import { createLogger } from '../logging'
 import { getSubmissionForMdocDocumentRequest } from '../proximity/getSubmissionForMdocDocumentRequest'
+import { storeSharedActivityForSubmission } from '../storage/activityStore'
 import {
   getWalletStoreDatabaseConfig,
   getWalletStoreId,
@@ -27,7 +36,7 @@ import {
   getVerifierForOpenId4VpRequest,
   type RequestVerifier,
 } from '../trust/verifier'
-import { getSubmissionForMdocDcApiRequest, orderMdocMatches, toDeviceRequest } from './submission'
+import { getSubmissionForMdocDcApiRequest, toDeviceRequest } from './submission'
 
 export type ParadymDcApiAgent = Agent<ReturnType<typeof getModules>>
 
@@ -44,13 +53,15 @@ export type ParadymDcApiAgent = Agent<ReturnType<typeof getModules>>
  * await ParadymDcApiSdk.initialize({ ...paradymWalletSdkOptions, walletKey })
  * ```
  */
-export type ParadymDcApiSdkOptions = Omit<ParadymWalletSdkSharedOptions, 'storePath'> & {
-  /**
-   * The key the store was created with, from
-   * {@link import('../secure/walletKey').getWalletKeyUsingPin} or its biometrics counterpart.
-   */
-  walletKey: string
-}
+export type ParadymDcApiSdkOptions = Omit<ParadymWalletSdkSharedOptions, 'storePath'> &
+  ParadymWalletSdkLocaleOptions &
+  ParadymWalletSdkAttributeLabelOptions & {
+    /**
+     * The key the store was created with, from
+     * {@link import('../secure/walletKey').getWalletKeyUsingPin} or its biometrics counterpart.
+     */
+    walletKey: string
+  }
 
 export type DcApiReview = {
   /**
@@ -74,7 +85,19 @@ export type DcApiReview = {
    * review, so the caller only has to call this once the user approved.
    */
   share: () => Promise<void>
+
+  /**
+   * Declines the request, after recording it in the activity log the way the app records a declined
+   * request: stopped when the wallet could have answered it, failed when it lacked the credentials.
+   * The reason is passed on to the OS, for logs only.
+   *
+   * Only the first call does anything, so a second tap cannot log the request twice.
+   */
+  decline: (reason?: string) => Promise<void>
 }
+
+/** A review as the platform- and protocol-specific paths build it, before it is recorded. */
+type ResolvedReview = Omit<DcApiReview, 'decline'>
 
 /**
  * The wallet, reduced to what answering a digital credentials request needs.
@@ -108,6 +131,10 @@ export class ParadymDcApiSdk {
    * @throws {ParadymWalletAuthenticationInvalidPinError} when the key does not open the store.
    */
   public static async initialize(options: ParadymDcApiSdkOptions): Promise<ParadymDcApiSdk> {
+    // Its own process, so its own copy of the locale: the app setting it does not reach here.
+    if (options.locale) setLocale(options.locale)
+    setResolveAttributeLabel(options.resolveAttributeLabel)
+
     const storeId = getWalletStoreId(options.id ?? defaultWalletId)
 
     // Before the store is opened: Credo provisions a store it cannot find, so a wallet that has
@@ -153,17 +180,80 @@ export class ParadymDcApiSdk {
    */
   public async reviewRequest(request: DcApiRequest): Promise<DcApiReview> {
     try {
-      if (request.platform === 'ios') return await this.reviewIosRequest(request)
-
-      const protocolRequest = request.requests[request.selectedRequestIndex]
-      if (!protocolRequest) throw new Error('The request carries no protocol this wallet can answer')
-
-      return protocolRequest.protocol === 'org-iso-mdoc'
-        ? await this.reviewMdocRequest(request, protocolRequest)
-        : await this.reviewOpenId4VpRequest(request, protocolRequest)
+      const review = await this.resolveReview(request)
+      return this.recordingSharedActivity(review, request)
     } catch (error) {
       this.agent.config.logger.error('Failed to review the request', { error })
       throw error
+    }
+  }
+
+  private async resolveReview(request: DcApiRequest): Promise<ResolvedReview> {
+    if (request.platform === 'ios') return await this.reviewIosRequest(request)
+
+    // Multipaz only reports the protocol it matched, so with several requests of that protocol the
+    // first one is taken: the matcher answers the first request the wallet's credentials satisfy.
+    const { selection } = request
+    const protocolRequest = request.requests[selection?.requestIndex ?? selection?.candidateRequestIndexes[0] ?? 0]
+    if (!protocolRequest) throw new Error('The request carries no protocol this wallet can answer')
+
+    return protocolRequest.protocol === 'org-iso-mdoc'
+      ? await this.reviewMdocRequest(request, protocolRequest)
+      : await this.reviewOpenId4VpRequest(request, protocolRequest)
+  }
+
+  /**
+   * The same review, with its response — or its decline — recorded in the activity log.
+   *
+   * Wrapped here rather than in each of the three review paths, so a request answered through the
+   * OS credential picker lands in the log exactly like one answered from a link, a QR code or in
+   * person. The store is the one the app reads, shared between the two processes.
+   */
+  private recordingSharedActivity(review: ResolvedReview, request: DcApiRequest): DcApiReview {
+    let declining: Promise<void> | undefined
+
+    return {
+      ...review,
+      share: async () => {
+        try {
+          await review.share()
+        } catch (error) {
+          await this.storeSharedActivity(review, 'failed')
+          throw error
+        }
+
+        await this.storeSharedActivity(review, 'success')
+      },
+      decline: (reason) => {
+        declining ??= (async () => {
+          // Recorded first: declining takes the request UI down with it.
+          await this.storeSharedActivity(review, review.submission.areAllSatisfied ? 'stopped' : 'failed')
+          request.decline(reason)
+        })()
+
+        return declining
+      },
+    }
+  }
+
+  /**
+   * Never throws: the verifier already has its response (or the decline) by the time this runs, so
+   * failing to write the log entry cannot be allowed to change what happens to the request.
+   */
+  private async storeSharedActivity(review: ResolvedReview, status: 'success' | 'failed' | 'stopped') {
+    try {
+      await storeSharedActivityForSubmission(
+        this,
+        review.submission,
+        {
+          id: review.verifier.entityId,
+          name: review.verifier.name,
+          logo: review.verifier.logo,
+        },
+        status
+      )
+    } catch (error) {
+      this.agent.config.logger.error('Failed to store the activity for a digital credentials request', { error })
     }
   }
 
@@ -178,20 +268,28 @@ export class ParadymDcApiSdk {
   private async reviewMdocRequest(
     request: AndroidDcApiRequest,
     protocolRequest: IsoMdocProtocolRequest
-  ): Promise<DcApiReview> {
+  ): Promise<ResolvedReview> {
     if (!request.origin) throw new Error('The request carries no origin, so the wallet cannot establish trust')
 
     const resolved = await this.agent.mdoc.resolveDcApiRequest({
       request: protocolRequest.data,
       // Must come from the OS, never from the request payload (ISO 18013-7 C.5).
       origin: request.origin,
+      // Several doc requests are alternatives, the way iOS presents them (see `selectAlternativeEntry`).
+      treatAmbiguousMultipleDocRequestsAsAlternatives: true,
     })
 
-    // Decided here rather than in `share`, so what the user reviewed is exactly what is sent.
-    const credentials = bestMatches(resolved)
+    // Decided here rather than in `share`, so what the user reviewed is exactly what is sent: the one
+    // doc request the review is for, answered with the credential it shows first.
+    const { submission, docRequest } = getSubmissionForMdocDcApiRequest(resolved)
+    const [validCredential] = docRequest?.validCredentials ?? []
+    const credentials =
+      docRequest && validCredential
+        ? [{ docRequestIndex: docRequest.docRequestIndex, record: validCredential.record }]
+        : []
 
     return {
-      submission: getSubmissionForMdocDcApiRequest(resolved),
+      submission,
       // A request without an origin came from a native app calling for itself, which the calling
       // package is the only identity for.
       ...(await this.getMdocVerifier(
@@ -216,7 +314,7 @@ export class ParadymDcApiSdk {
   private async reviewOpenId4VpRequest(
     request: AndroidDcApiRequest,
     protocolRequest: Openid4vpProtocolRequest
-  ): Promise<DcApiReview> {
+  ): Promise<ResolvedReview> {
     if (!this.isOpenId4VcEnabled) {
       throw new Error(`The wallet is not configured for OpenID4VP, so it cannot answer '${protocolRequest.protocol}'`)
     }
@@ -257,33 +355,25 @@ export class ParadymDcApiSdk {
    * identifiers, which is what the OS matched on too. The real request is resolved inside `share`,
    * after `approve()`.
    */
-  private async reviewIosRequest(request: IosDcApiRequest): Promise<DcApiReview> {
-    const stored = await this.agent.mdoc.getAll()
-    const canAnswer = (doctype: string) => stored.some((record) => record.firstCredential.docType === doctype)
-
-    // Exactly one document request set answers a presentment request; the first one the wallet can
-    // answer in full is used, which is also what the response below picks.
-    const documentRequests = request.presentmentRequests.flatMap((presentmentRequest) => {
-      const sets = presentmentRequest.documentRequestSets
-      const satisfiable = sets.find((set) =>
-        set.documentRequests.every((documentRequest) => canAnswer(documentRequest.doctype))
-      )
-
-      return (satisfiable ?? sets[0])?.documentRequests ?? []
-    })
+  private async reviewIosRequest(request: IosDcApiRequest): Promise<ResolvedReview> {
+    // iOS presents several document requests as alternative document request sets, which is how the
+    // wallet reads them anyway (see `selectAlternativeEntry`). So its structure needs no handling of
+    // its own: every document it lists is a candidate, and the submission picks the one to answer.
+    const documentRequests = request.presentmentRequests.flatMap((presentmentRequest) =>
+      presentmentRequest.documentRequestSets.flatMap((set) => set.documentRequests)
+    )
 
     const submission = await getSubmissionForMdocDocumentRequest({
       mdocApi: this.agent.mdoc,
       encodedDeviceRequest: toDeviceRequest(documentRequests),
     })
 
-    // The credential the review showed for each document type, so the response cannot end up
-    // disclosing a different one than the user approved.
-    const reviewedRecordIds = new Map(
-      submission.entries
-        .filter((entry) => entry.isSatisfied)
-        .map((entry) => [entry.inputDescriptorId, entry.credentials[0].credential.record.id])
-    )
+    // The document and credential the review showed, so the response cannot end up disclosing a
+    // different one than the user approved.
+    const [reviewedEntry] = submission.entries
+    const reviewed = reviewedEntry?.isSatisfied
+      ? { docType: reviewedEntry.inputDescriptorId, recordId: reviewedEntry.credentials[0].credential.record.id }
+      : undefined
 
     return {
       submission,
@@ -300,21 +390,23 @@ export class ParadymDcApiSdk {
           request: isoMdoc.data,
           // Must come from the OS, never from the request payload (ISO 18013-7 C.5).
           origin: request.origin,
+          treatAmbiguousMultipleDocRequestsAsAlternatives: true,
         })
 
-        const credentials = resolved.docRequests.flatMap((docRequest) => {
-          const reviewedRecordId = reviewedRecordIds.get(docRequest.docType)
-          const match =
-            docRequest.matches.find(({ record }) => record.id === reviewedRecordId) ??
-            orderMdocMatches(docRequest.matches)[0]
-
-          return match ? [{ docRequestIndex: docRequest.docRequestIndex, record: match.record }] : []
-        })
-        if (credentials.length === 0) throw new Error('No stored card matches the request')
+        // Only what the user reviewed: the raw request carries every alternative, and answering each
+        // one that matches would disclose cards nobody approved.
+        if (!reviewed) throw new Error('No stored card matches the request')
+        const docRequest = resolved.docRequests.find(
+          ({ docType, validCredentials }) =>
+            docType === reviewed.docType && validCredentials.some(({ record }) => record.id === reviewed.recordId)
+        )
+        if (!docRequest) {
+          throw new Error(`The card reviewed for '${reviewed.docType}' does not answer the request`)
+        }
 
         const { response } = await this.agent.mdoc.createDcApiResponse({
           resolvedRequest: resolved,
-          credentials,
+          credentials: [{ docRequestIndex: docRequest.docRequestIndex, record: reviewed.recordId }],
         })
         await request.respond({ protocol: 'org-iso-mdoc', data: { response } })
       },
@@ -372,12 +464,4 @@ function getModules({
         : undefined,
     }),
   }
-}
-
-/** The credential to answer each document request with, in the order the review showed them. */
-function bestMatches(resolved: Awaited<ReturnType<ParadymDcApiAgent['mdoc']['resolveDcApiRequest']>>) {
-  return resolved.docRequests.flatMap((docRequest) => {
-    const [match] = orderMdocMatches(docRequest.matches)
-    return match ? [{ docRequestIndex: docRequest.docRequestIndex, record: match.record }] : []
-  })
 }

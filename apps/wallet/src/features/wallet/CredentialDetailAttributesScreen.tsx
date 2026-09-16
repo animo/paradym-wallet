@@ -1,6 +1,8 @@
+import { metadataForDisplay } from '@app/utils/metadataForDisplay'
 import { useLingui } from '@lingui/react/macro'
 import { CredentialAttributes, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -14,7 +16,7 @@ import {
   useToastController,
   YStack,
 } from '@package/ui'
-import { type CredentialId, metadataForDisplay, useCredentialById } from '@paradym/wallet-sdk'
+import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
@@ -127,11 +129,7 @@ export function CredentialDetailAttributesScreen() {
               {isMetadataVisible && (
                 <CredentialAttributes
                   key="metadata"
-                  headerTitle={t({
-                    id: 'credentials.metadataAttributes',
-                    message: 'Metadata',
-                    comment: 'Header for metadata attributes of a credential',
-                  })}
+                  headerTitle={t(commonMessages.metadataHeading)}
                   attributes={metadataForDisplay(credential.metadata)}
                   scrollRef={scrollViewRef}
                 />
@@ -173,16 +171,8 @@ export function CredentialDetailAttributesScreen() {
           {
             icon: <HeroIcons.CodeBracketFilled color="$grey-500" />,
             title: isMetadataVisible
-              ? t({
-                  id: 'credentials.hideMetadata',
-                  message: 'Hide metadata attributes',
-                  comment: 'Button label: toggles visibility of metadata attributes',
-                })
-              : t({
-                  id: 'credentials.showMetadata',
-                  message: 'Show metadata attributes',
-                  comment: 'Button label: toggles visibility of metadata attributes',
-                }),
+              ? t(commonMessages.hideMetadataAttributes)
+              : t(commonMessages.showMetadataAttributes),
             onPress: handleToggleMetadata,
           },
         ]}

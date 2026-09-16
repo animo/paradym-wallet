@@ -1,4 +1,5 @@
-import { defineMessage } from '@lingui/core/macro'
+import { defineMessage, plural } from '@lingui/core/macro'
+import { commonMessages } from '@package/translations'
 
 /**
  * Strings only the credential request UI uses. Everything it shares with the app comes from
@@ -19,10 +20,13 @@ export const dcApiMessages = {
     id: 'dcApi.biometricsUnavailable',
     message: 'Biometric unlock is not set up. Enter your PIN instead.',
   }),
-  share: defineMessage({
-    id: 'dcApi.share',
-    message: 'Share',
-  }),
+  share: commonMessages.share,
+  entryCount: (count: number) =>
+    defineMessage({
+      id: 'dcApi.entryCount',
+      comment: 'Value shown for a list the request UI does not expand, such as the categories of a driving licence.',
+      message: plural(count, { one: '# entry', other: '# entries' }),
+    }),
   nothingRequested: defineMessage({
     id: 'dcApi.nothingRequested',
     message: 'The request asks for no documents.',
@@ -46,9 +50,5 @@ export const dcApiMessages = {
     comment: 'Shown when the card could not be shared, after the user already approved the request',
     message: 'Your card could not be shared. Ask the verifier to make a new request and try again.',
   }),
-  errorReasonPrefix: defineMessage({
-    id: 'dcApi.errorReasonPrefix',
-    comment: 'Label before the underlying error, only shown with development mode enabled',
-    message: 'Reason:',
-  }),
+  errorReasonPrefix: commonMessages.errorReasonPrefix,
 } as const

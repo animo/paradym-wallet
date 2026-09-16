@@ -26,11 +26,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
   const slides = [
     {
       image: <WalletExplanation />,
-      title: t({
-        id: 'onboardingWalletExplanation.slide1.title',
-        message: 'This is your wallet',
-        comment: 'Title for first slide of wallet onboarding',
-      }),
+      title: t(commonMessages.thisIsYourWallet),
       subtitle: t({
         id: 'onboardingWalletExplanation.slide1.subtitle',
         message:
@@ -68,11 +64,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
     },
   ]
 
-  const getStartedLabel = t({
-    id: 'onboardingWalletExplanation.getStarted',
-    message: 'Get Started',
-    comment: 'Button label to finish onboarding explanation',
-  })
+  const getStartedLabel = t(commonMessages.getStarted)
 
   const skipLabel = t({
     id: 'onboardingWalletExplanation.skip',

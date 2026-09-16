@@ -1,6 +1,8 @@
 import type { InitConfig, X509ModuleConfigOptions } from '@credo-ts/core'
-import type { LogLevel, ParadymWalletSdkLogger } from './logging'
-import type { TrustMechanismConfiguration } from './trust/trustMechanism'
+import type { LogLevel, ParadymWalletSdkLogger } from '../logging'
+import type { TrustMechanismConfiguration } from '../trust/trustMechanism'
+import type { ResolveAttributeLabel } from './attributeLabel'
+import type { ResolveDcApiDisplay } from './dcApiDisplay'
 
 /**
  *
@@ -8,6 +10,35 @@ import type { TrustMechanismConfiguration } from './trust/trustMechanism'
  *
  */
 export const defaultWalletId = 'paradym-wallet'
+
+/**
+ *
+ * Language the wallet renders credentials in, as a BCP 47 tag.
+ *
+ * Defaults to English. Change it while the wallet is open with `paradym.setLocale` — a credential's
+ * display is derived per locale, so switching re-derives rather than going stale.
+ */
+export type ParadymWalletSdkLocaleOptions = {
+  locale?: string
+}
+
+/**
+ *
+ * How the wallet names claims the credential did not name — see {@link ResolveAttributeLabel}.
+ *
+ */
+export type ParadymWalletSdkAttributeLabelOptions = {
+  resolveAttributeLabel?: ResolveAttributeLabel
+}
+
+/**
+ *
+ * What the OS credential picker shows for a credential — see {@link ResolveDcApiDisplay}.
+ *
+ */
+export type ParadymWalletSdkDcApiDisplayOptions = {
+  resolveDcApiDisplay?: ResolveDcApiDisplay
+}
 
 export type ParadymWalletSdkLoggingOptions<T extends ParadymWalletSdkLogger = ParadymWalletSdkLogger> = {
   /**

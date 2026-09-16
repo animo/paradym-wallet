@@ -3,7 +3,13 @@
 	"files": {
 		"includes": ["**", "!packages/sdk/src/index.ts"]
 	},
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
 	"javascript": {
 		"parser": {
 			"unsafeParameterDecoratorsEnabled": true
@@ -36,5 +42,27 @@
 		"useIgnoreFile": true,
 		"clientKind": "git",
 		"enabled": true
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["packages/sdk/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"patterns": [
+									{
+										"group": ["@package/**", "@app/**"],
+										"message": "The SDK is published to npm and cannot import the workspace's private packages."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		}
+	]
 }

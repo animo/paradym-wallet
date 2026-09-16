@@ -4,12 +4,15 @@ import { CardWithAttributes } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Heading, Paragraph, YStack } from '@package/ui'
 import {
+  type CredentialRecord,
   type FormattedSubmission,
   type FormattedSubmissionEntryNotSatisfied,
+  type FormattedSubmissionEntryPartialMatch,
   type FormattedSubmissionEntrySatisfied,
   type FormattedSubmissionEntrySatisfiedCredential,
+  getClosestPartialMatch,
   getDisclosedAttributeNamesForDisplay,
-  getUnsatisfiedAttributePathsForDisplay,
+  getRequestedAttributeNamesForDisplay,
 } from '@paradym/wallet-sdk'
 
 export type RequestedAttributesSectionProps = {
@@ -21,63 +24,43 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
 
   const satisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntrySatisfied => e.isSatisfied)
   const unsatisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntryNotSatisfied => !e.isSatisfied)
+  // The user has a card of the requested type for these, it just lacks some requested attributes.
+  const partiallySatisfiedEntries = unsatisfiedEntries.filter((e) => e.partialMatches.length > 0)
+  const unavailableEntries = unsatisfiedEntries.filter((e) => e.partialMatches.length === 0)
 
-  const requestedCardsHeading = t({
-    id: 'requestedAttributes.requestedCardsHeading',
-    message: 'REQUESTED CARDS',
-    comment: 'Heading shown above a list of requested cards the user has',
-  })
-
-  const unavailableCardsHeading = t({
-    id: 'requestedAttributes.unavailableCardsHeading',
-    message: 'UNAVAILABLE CARDS',
-    comment: 'Heading shown above a list of requested cards the user does not have',
-  })
-
-  const onlySatisfiedDescription = t({
-    id: 'requestedAttributes.onlySatisfiedDescription',
-    message: 'The following cards will be shared.',
-    comment: 'Description when the user has all requested cards',
-  })
-
-  const onlyUnsatisfiedDescription = t({
-    id: 'requestedAttributes.onlyUnsatisfiedDescription',
-    message: `You don't have the requested card(s).`,
-    comment: 'Description when the user has none of the requested cards',
-  })
-
-  const partialDescription = t({
-    id: 'requestedAttributes.partialDescription',
-    message: `You don't have all of the requested cards.`,
-    comment: 'Description when the user has some but not all requested cards',
-  })
-
-  const fallbackCardLabel = t({
-    id: 'requestedAttributes.fallbackCardLabel',
-    message: 'Credential',
-    comment: 'Fallback name shown when a credential does not have a display name',
-  })
+  const requestedCardsHeading = t(commonMessages.requestedCardsHeading)
+  const unavailableCardsHeading = t(commonMessages.unavailableCardsHeading)
+  const fallbackCardLabel = t(commonMessages.credential)
 
   const formatDisclosedAttributes = (credential: FormattedSubmissionEntrySatisfiedCredential) =>
     getDisclosedAttributeNamesForDisplay(credential).map((c) => (typeof c === 'string' ? c : formatPredicate(c)))
 
-  const formatDisclosedUnsatisfiedAttributes = (credential: FormattedSubmissionEntryNotSatisfied) =>
-    getUnsatisfiedAttributePathsForDisplay(credential.requestedAttributePaths).map((c) =>
-      typeof c === 'string' ? c : formatPredicate(c)
-    )
+  const formatAttributePaths = (
+    paths: FormattedSubmissionEntryNotSatisfied['requestedAttributePaths'],
+    record?: CredentialRecord
+  ) => getRequestedAttributeNamesForDisplay(paths, record).map((c) => (typeof c === 'string' ? c : formatPredicate(c)))
+
+  const firstHeading =
+    satisfiedEntries.length > 0
+      ? requestedCardsHeading
+      : partiallySatisfiedEntries.length > 0
+        ? t(commonMessages.missingAttributesHeading)
+        : unavailableCardsHeading
 
   return (
     <YStack gap="$4">
       <YStack gap="$2">
-        <Heading heading="sub2">
-          {satisfiedEntries.length > 0 ? requestedCardsHeading : unavailableCardsHeading}
-        </Heading>
+        <Heading heading="sub2">{firstHeading}</Heading>
         <Paragraph>
-          {unsatisfiedEntries.length === 0
-            ? onlySatisfiedDescription
-            : satisfiedEntries.length === 0
-              ? onlyUnsatisfiedDescription
-              : partialDescription}
+          {t(
+            unsatisfiedEntries.length === 0
+              ? commonMessages.allRequestedCardsDescription
+              : unavailableEntries.length === 0
+                ? commonMessages.missingAttributesDescription
+                : satisfiedEntries.length === 0 && partiallySatisfiedEntries.length === 0
+                  ? commonMessages.noRequestedCardsDescription
+                  : commonMessages.someRequestedCardsMissingDescription
+          )}
         </Paragraph>
       </YStack>
 
@@ -109,22 +92,55 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         )
       })}
 
-      {unsatisfiedEntries.length > 0 && (
+      {partiallySatisfiedEntries.length > 0 && (
         <>
           {satisfiedEntries.length !== 0 && (
+            <YStack>
+              <Heading heading="sub2">{t(commonMessages.missingAttributesHeading)}</Heading>
+            </YStack>
+          )}
+          {partiallySatisfiedEntries.map((entry) => {
+            // Always defined, the entry has partial matches
+            const { credential, missingAttributePaths } = getClosestPartialMatch(
+              entry
+            ) as FormattedSubmissionEntryPartialMatch
+            const missingAttributes = formatAttributePaths(missingAttributePaths, credential.record)
+
+            return (
+              <CardWithAttributes
+                key={entry.inputDescriptorId}
+                name={credential.display.name ?? entry.name ?? fallbackCardLabel}
+                backgroundImage={credential.display.backgroundImage}
+                backgroundColor={credential.display.backgroundColor}
+                issuerImage={credential.display.issuer.logo}
+                textColor={credential.display.textColor}
+                formattedDisclosedAttributes={Array.from(
+                  new Set([
+                    ...formatAttributePaths(entry.requestedAttributePaths, credential.record),
+                    ...missingAttributes,
+                  ])
+                )}
+                missingAttributes={missingAttributes}
+              />
+            )
+          })}
+        </>
+      )}
+
+      {unavailableEntries.length > 0 && (
+        <>
+          {(satisfiedEntries.length !== 0 || partiallySatisfiedEntries.length !== 0) && (
             <YStack>
               <Heading heading="sub2">{unavailableCardsHeading}</Heading>
             </YStack>
           )}
-          {unsatisfiedEntries.map((entry) => (
+          {unavailableEntries.map((entry) => (
             <CardWithAttributes
               key={entry.inputDescriptorId}
               name={entry.name ?? fallbackCardLabel}
               // We only have the attribute paths, no way to know how to render
               // TODO: we could look at the vct?
-              // TODO: we should maybe support partial matches (i.e. vct matches), as then we can
-              // show a much better UI (you have the cred, but age is not valid, or this param is missing)
-              formattedDisclosedAttributes={formatDisclosedUnsatisfiedAttributes(entry)}
+              formattedDisclosedAttributes={formatAttributePaths(entry.requestedAttributePaths)}
               backgroundColor="$grey-800"
               textColor="$white"
             />

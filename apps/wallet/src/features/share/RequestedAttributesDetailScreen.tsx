@@ -1,6 +1,8 @@
+import { metadataForDisplay } from '@app/utils/metadataForDisplay'
 import { useLingui } from '@lingui/react/macro'
 import { CredentialAttributes, CredentialCard, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Heading,
@@ -20,7 +22,6 @@ import {
   type CredentialForDisplayId,
   type CredentialMetadata,
   type FormattedAttribute,
-  metadataForDisplay,
   useCredentialById,
 } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
@@ -81,11 +82,7 @@ export function RequestedAttributesDetailScreen({
         comment: 'Title shown in toast when credential cannot be loaded',
       }),
       {
-        message: t({
-          id: 'credentialDetail.errorMessage',
-          message: 'Credential not found',
-          comment: 'Error message when a credential is missing',
-        }),
+        message: t(commonMessages.credentialNotFound),
         customData: {
           preset: 'danger',
         },
@@ -157,11 +154,7 @@ export function RequestedAttributesDetailScreen({
                   {isMetadataVisible && (
                     <CredentialAttributes
                       key="metadata"
-                      headerTitle={t({
-                        id: 'requestedAttributes.metadataTitle',
-                        message: 'Metadata',
-                        comment: 'Section header title for metadata attributes',
-                      })}
+                      headerTitle={t(commonMessages.metadataHeading)}
                       attributes={metadataForDisplay(disclosedMetadata ?? activeCredential.metadata)}
                     />
                   )}
@@ -181,16 +174,8 @@ export function RequestedAttributesDetailScreen({
           {
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
             title: isMetadataVisible
-              ? t({
-                  id: 'optionSheet.hideMetadata',
-                  message: 'Hide metadata attributes',
-                  comment: 'Option to hide metadata in option sheet',
-                })
-              : t({
-                  id: 'optionSheet.showMetadata',
-                  message: 'Show metadata attributes',
-                  comment: 'Option to show metadata in option sheet',
-                }),
+              ? t(commonMessages.hideMetadataAttributes)
+              : t(commonMessages.showMetadataAttributes),
             onPress: handleToggleMetadata,
           },
         ]}

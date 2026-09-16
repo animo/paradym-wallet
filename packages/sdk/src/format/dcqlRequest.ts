@@ -7,15 +7,36 @@ import { formatAttributesWithRecordMetadata } from './attributes'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
+  FormattedSubmissionEntryPartialMatch,
   FormattedSubmissionEntrySatisfiedCredential,
 } from './submission'
 
-function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryResult['credentials'][number]) {
+type DcqlQueryCredential = DcqlQueryResult['credentials'][number]
+
+/**
+ * The path the share UI shows for a claim query: the element identifier for mdoc, the claim path
+ * otherwise. Requested and missing attributes both go through here, so they can be compared.
+ */
+function getAttributePathForClaim(credential: DcqlQueryCredential, claimIndex: number) {
+  if (credential.format === 'mso_mdoc') {
+    const claim = credential.claims?.[claimIndex]
+    if (!claim) return undefined
+    return 'path' in claim ? [claim.path[1]] : [claim.claim_name]
+  }
+
+  return credential.claims?.[claimIndex]?.path
+}
+
+function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryCredential) {
+  const requestedAttributePaths = credential.claims
+    ?.map((_, index) => getAttributePathForClaim(credential, index))
+    .filter((path) => path !== undefined)
+
   if (credential.format === 'mso_mdoc') {
     return {
       claimFormat: ClaimFormat.MsoMdoc,
       credentialName: credential.meta?.doctype_value ?? 'Unknown',
-      requestedAttributePaths: credential.claims?.map((c) => ('path' in c ? [c.path[1]] : [c.claim_name])),
+      requestedAttributePaths,
     }
   }
 
@@ -29,14 +50,47 @@ function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryRe
         credential.meta && 'vct_values' in credential.meta
           ? credential.meta?.vct_values?.[0].replace('https://', '')
           : undefined,
-      requestedAttributePaths: credential.claims?.map((c) => c.path),
+      requestedAttributePaths,
     }
   }
 
   return {
     claimFormat: ClaimFormat.JwtVc,
-    requestedAttributePaths: credential.claims?.map((c) => c.path),
+    requestedAttributePaths,
   }
+}
+
+/**
+ * Credentials of the requested type that fail the query on their claims. A credential of another
+ * type is a different card altogether, not a partial match. Whether the issuer is one the verifier
+ * accepts (`trusted_authorities`) is not considered: the card still lacks what is asked for.
+ */
+function getPartialMatches(
+  queryCredential: DcqlQueryCredential,
+  match: DcqlQueryResult['credential_matches'][string] | undefined
+): FormattedSubmissionEntryPartialMatch[] {
+  const partialMatches = new Map<string, FormattedSubmissionEntryPartialMatch>()
+
+  for (const failedCredential of match?.failed_credentials ?? []) {
+    const { meta, claims, record } = failedCredential
+    if (!meta.success || claims.success) continue
+    // An SD-JWT VC is queried once for every format and vct it can be presented as.
+    if (partialMatches.has(record.id)) continue
+
+    // The claim set that comes closest to being satisfied.
+    const [closestClaimSet] = [...claims.failed_claim_sets].sort(
+      (a, b) => a.failed_claim_indexes.length - b.failed_claim_indexes.length
+    )
+
+    partialMatches.set(record.id, {
+      credential: getCredentialForDisplay(record),
+      missingAttributePaths: closestClaimSet.failed_claim_indexes
+        .map((claimIndex) => getAttributePathForClaim(queryCredential, claimIndex))
+        .filter((path) => path !== undefined),
+    })
+  }
+
+  return Array.from(partialMatches.values())
 }
 
 export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult): FormattedSubmission {
@@ -66,6 +120,7 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
           inputDescriptorId: credentialId,
           name: placeholderCredential.credentialName,
           requestedAttributePaths: placeholderCredential.requestedAttributePaths ?? [],
+          partialMatches: getPartialMatches(queryCredential, match),
         })
         continue
       }

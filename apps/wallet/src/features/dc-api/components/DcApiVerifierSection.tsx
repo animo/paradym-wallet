@@ -54,13 +54,9 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
         </Circle>
         <YStack gap="$1">
           <Heading heading="h2" center numberOfLines={2}>
-            {verifier.name ? (
-              <Trans id="dcApi.verifier.trustHeading" comment="Heading above the organization asking for data">
-                Do you trust {verifier.name}?
-              </Trans>
-            ) : (
-              <Trans id="dcApi.verifier.notVerifiedHeading">Organization not verified</Trans>
-            )}
+            {verifier.name
+              ? t(commonMessages.doYouTrust(verifier.name))
+              : t(commonMessages.organizationNotVerifiedHeading)}
           </Heading>
           <Paragraph variant="annotation" center>
             {verifier.hostName ?? origin ?? verifier.entityId}
@@ -72,22 +68,15 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
         <InfoButton
           variant={isRecognized ? (entityIsTrustAnchor ? 'positive' : 'info') : 'warning'}
           routingType="modal"
-          title={
-            isRecognized
-              ? t({ id: 'dcApi.verifier.recognizedTitle', message: 'Recognized organization' })
-              : t(commonMessages.unknownOrganization)
-          }
+          title={isRecognized ? t(commonMessages.recognizedOrganization) : t(commonMessages.unknownOrganization)}
           description={
             isRecognized
               ? approvedBy.length === 1
-                ? t({ id: 'dcApi.verifier.approvedByOne', message: 'Approved by one organization' })
+                ? t(commonMessages.approvedByOneOrganization)
                 : approvedBy.length > 1
-                  ? t({
-                      id: 'dcApi.verifier.approvedByMultiple',
-                      message: `Approved by ${approvedBy.length} organizations`,
-                    })
+                  ? t(commonMessages.approvedByOrganizations(approvedBy.length))
                   : undefined
-              : t({ id: 'dcApi.verifier.notVerifiedDescription', message: 'Organization is not verified' })
+              : t(commonMessages.organizationNotVerifiedDescription)
           }
           onPress={() => setAreTrustedEntitiesVisible((isVisible) => !isVisible)}
         />
@@ -105,11 +94,7 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
                   <Heading heading="h3" numberOfLines={2}>
                     {entity.organizationName}
                   </Heading>
-                  {entity.demo && (
-                    <Paragraph variant="sub">
-                      <Trans id="dcApi.verifier.demoOrganization">Demo organization</Trans>
-                    </Paragraph>
-                  )}
+                  {entity.demo && <Paragraph variant="sub">{t(commonMessages.demoOrganization)}</Paragraph>}
                 </YStack>
                 <IconContainer
                   icon={
@@ -139,8 +124,8 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
         {isDemoTrustedEntity && (
           <InfoButton
             variant="warning"
-            title={t({ id: 'dcApi.verifier.demoTitle', message: 'Demo organization' })}
-            description={t({ id: 'dcApi.verifier.demoDescription', message: 'Do not share real data' })}
+            title={t(commonMessages.demoOrganization)}
+            description={t(commonMessages.demoOrganizationWarning)}
           />
         )}
       </YStack>

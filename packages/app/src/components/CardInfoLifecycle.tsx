@@ -202,10 +202,7 @@ function getCardInfoLimitedByDateVariant(
     active: {
       variant: 'positive',
       title: cardInfoLifecycleVariant.active.title,
-      description: defineMessage({
-        id: 'cardLifecycle.limitedByDate.active.description',
-        message: 'No actions required',
-      }),
+      description: cardInfoLifecycleVariant.active.description,
       sheetDescription: defineMessage({
         id: 'cardLifecycle.limitedByDate.active.sheetDescription',
         message: 'Some credentials may expire or require an active internet connection to validate',

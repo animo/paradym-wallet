@@ -293,7 +293,8 @@ export const getTrustedEntitiesForOpenId4Vci = async (
     issuer: trustedEntity?.issuer
       ? { ...trustedEntity.issuer, entityId }
       : {
-          organizationName: display.name,
+          // The issuer's name, not the credential's: its display name, or else the host of its URL.
+          organizationName: display.issuer.name ?? entityId,
           logoUri: display.issuer.logo?.url,
           entityId,
         },

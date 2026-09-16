@@ -142,6 +142,9 @@ const createBaseConfig = (appSpecific) => {
     updates: {
       fallbackToCacheTimeout: 0,
     },
+    experiments: {
+      reactCompiler: true,
+    },
     plugins: [
       'expo-web-browser',
       'expo-localization',
@@ -183,7 +186,7 @@ const createBaseConfig = (appSpecific) => {
         },
       ],
       [
-        '@animo-id/expo-mdoc-data-transfer',
+        'expo-mdoc-data-transfer',
         {
           ios: {
             buildStatic: ['RNReanimated', 'RNScreens', 'askar', 'anoncreds'],
@@ -209,9 +212,10 @@ const createBaseConfig = (appSpecific) => {
             // title in the device's appearance and the extension cannot style it, so a light
             // request UI on a dark device leaves that title white on white.
             userInterfaceStyle: 'automatic',
-            // The strip around that title is this colour, and the screen below it paints `$white`
-            // from the same theme — so these are the two `$white` values, or the two do not meet.
-            backgroundColor: { light: '#ffffff', dark: '#14171A' },
+            // The strip around that title is this colour, and the screen below it paints
+            // `$background` from the same theme — so these are the two `background` values in
+            // `tamagui.config.ts`, or the two do not meet.
+            backgroundColor: { light: '#ffffff', dark: '#1C1F23' },
             // The extension is its own bundle, so the app's `UIAppFonts` do not reach it. These are
             // registered from the app's bundle at launch — read in place, not copied. Trim the list
             // to the weights the request UI actually draws with.

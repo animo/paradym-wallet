@@ -155,6 +155,9 @@ export function formatDifPexCredentialsForRequest(
         description: requirement.purpose,
         isSatisfied: false,
         requestedAttributePaths: requestedAttributePaths,
+        // Credo only reports the credentials that satisfy an input descriptor, not the ones that
+        // come close, so there is nothing to show missing attributes for.
+        partialMatches: [],
       }
     })
   })

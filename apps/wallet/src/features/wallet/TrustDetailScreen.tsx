@@ -144,16 +144,7 @@ export function TrustDetailScreen({
                       <Heading heading="h3" numberOfLines={3} textOverflow="ellipsis">
                         {entity.organizationName}
                       </Heading>
-                      {entity.demo && (
-                        <Paragraph variant="sub">
-                          <Trans
-                            id="trust.demoOrg"
-                            comment="Shown under the name of an organization to indicate that it is a demo"
-                          >
-                            Demo organization
-                          </Trans>
-                        </Paragraph>
-                      )}
+                      {entity.demo && <Paragraph variant="sub">{t(commonMessages.demoOrganization)}</Paragraph>}
                     </YStack>
                     <IconContainer
                       icon={

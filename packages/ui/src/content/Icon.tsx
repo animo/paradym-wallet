@@ -1,6 +1,7 @@
 import { AlertOctagon } from '@tamagui/lucide-icons-2/icons/AlertOctagon'
 import { ArrowLeft } from '@tamagui/lucide-icons-2/icons/ArrowLeft'
 import { CornerDownRight } from '@tamagui/lucide-icons-2/icons/CornerDownRight'
+import { Dot } from '@tamagui/lucide-icons-2/icons/Dot'
 import { FileBadge } from '@tamagui/lucide-icons-2/icons/FileBadge'
 import { History } from '@tamagui/lucide-icons-2/icons/History'
 import { Inbox } from '@tamagui/lucide-icons-2/icons/Inbox'
@@ -97,6 +98,7 @@ export const LucideIcons = {
   Scan,
   FileBadge,
   CornerDownRight,
+  Dot,
   AlertOctagon,
   Inbox,
   X,

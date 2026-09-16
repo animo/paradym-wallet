@@ -1,4 +1,3 @@
-import { mdocDataTransfer } from '@animo-id/expo-mdoc-data-transfer'
 import {
   CredentialMultiInstanceUseMode,
   type Mdoc,
@@ -9,6 +8,7 @@ import {
 import { cborDecode, cborEncode, DataItem } from '@owf/cose'
 import { DeviceRequest } from '@owf/mdoc'
 import type { FormattedSubmission, ParadymWalletSdk } from '@paradym/wallet-sdk'
+import { mdocDataTransfer } from 'expo-mdoc-data-transfer'
 import { PermissionsAndroid, Platform } from 'react-native'
 
 type ShareDeviceResponseOptions = {

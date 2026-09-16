@@ -3,6 +3,7 @@ import type { OpenId4VciAuthorizationFlow, OpenId4VciResolvedAuthorizationReques
 export type { CredentialForDisplayId} from './display/credential' 
 export type { BaseAgent, DidCommAgent, OpenId4VcAgent, AnyAgent } from './agent'
 export { assertAgentType } from './agent'
+export { RsaVerificationKeyManagementService } from './kms/RsaVerificationKeyManagementService'
 export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
 export { getAppGroupContainerPath } from './dcApi/appGroup'
 export { getWalletStoreDatabaseConfig, getWalletStoreDirectories, setupAppGroupStore } from './storage/walletStore'
@@ -12,10 +13,13 @@ export * from './error'
 export type {
   FormattedSubmission,
   FormattedSubmissionEntryNotSatisfied,
+  FormattedSubmissionEntryPartialMatch,
   FormattedSubmissionEntrySatisfied,
   FormattedSubmissionEntrySatisfiedCredential
 } from './format/submission'
-export { useCredentialByCategory, useDidCommCredentialActions, useParadym,type CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
+export { useMdocRecords } from './providers/MdocProvider'
+export { useSdJwtVcRecords } from './providers/SdJwtVcProvider'
+export { useCredentialByCategory, useDidCommCredentialActions, useParadym,type CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useActivityById, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
 export { InvitationQrTypes, type InvitationType } from './invitation/parser'
 export type { ResolveOutOfBandInvitationResult } from './invitation/resolver'
 export { LogLevel, ParadymWalletSdkConsoleLogger, ParadymWalletSdkLogger } from './logging'
@@ -48,7 +52,7 @@ export type {
   SharingFailureReason,
   PaymentActivity,
 } from './storage/activityStore'
-export { type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesWithRecordMetadata  } from './format/attributes'
+export { type ClaimPath, type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesWithRecordMetadata, getAttributeLabelsForPaths, pickAttributesAtPaths  } from './format/attributes'
 export type { TrustedDidEntity } from './trust/handlers/did'
 export type { TrustedOpenId4VciEntity } from './trust/handlers/fallback'
 export type { TrustList } from './trust/handlers/eudiRpAuthentication'
@@ -89,7 +93,7 @@ export {
  *
  */
 
-export { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay, metadataForDisplay,getCredentialDisplayWithDefaults  } from './display/common'
+export { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay, getRequestedAttributeNamesForDisplay, getClosestPartialMatch, hasMissingCards, getCredentialDisplayWithDefaults  } from './display/common'
 export {getCredentialForDisplay,getCredentialForDisplayId } from './display/credential'
 export {getOpenId4VcCredentialDisplay } from './display/openid4vc'
 export { parseInvitationUrl,parseInvitationUrlSync } from './invitation/parser'
@@ -108,7 +112,14 @@ export { acquireAuthorizationCodeAccessToken } from './openid4vc/func/acquireAut
 export { acquireRefreshTokenAccessToken } from './openid4vc/func/acquireRefreshTokenAccessToken'
 export { secureWalletKey, useCanUseBiometryBackedWalletKey, useIsBiometricsEnabled } from './secure'
 export { kdf } from './secure/kdf'
-export { activityStorage, type ActivityStatus, type PaymentTransactionStatusCode, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
+export type {
+  AttributeLabelContext,
+  AttributeLabelCredentialContext,
+  ResolveAttributeLabel,
+} from './config/attributeLabel'
+export type { ResolveDcApiDisplay } from './config/dcApiDisplay'
+export { activityIndexStore } from './storage/activityRecords'
+export { migrateActivities, activityStorage, type ActivityStatus, type PaymentTransactionStatusCode, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
 export { fetchPaymentTransactionStatus } from './openid4vc/paymentTransactionStatus'
 export { storeCredential, updateCredential } from './storage/credentials'
 export { type DeferredCredentialBefore } from './storage/deferredCredentialStore'

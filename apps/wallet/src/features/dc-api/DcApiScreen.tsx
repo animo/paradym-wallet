@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 // Deep imports throughout: the `@package/ui` and `@package/app` barrels pull in the whole kit —
 // the icon sets alone are thousands of modules — and this bundle is separate from the app's.
 import { PinDotsInput, type PinDotsInputRef } from '@package/app/components/PinDotsInput'
-import { commonMessages, TranslationProvider } from '@package/translations'
+import { commonMessages, i18n, TranslationProvider } from '@package/translations'
 import { Button } from '@package/ui/base/Button'
 import { Heading } from '@package/ui/base/Headings'
 import { Paragraph } from '@package/ui/base/Paragraph'
@@ -17,6 +17,7 @@ import { HeroIcons } from '@package/ui/content/Icon'
 import { IconContainer } from '@package/ui/content/IconContainer'
 import { Spinner } from '@package/ui/content/Spinner'
 import type { DcApiReview, ParadymDcApiSdk } from '@paradym/wallet-sdk/dcApi/ParadymDcApiSdk'
+import { hasMissingCards } from '@paradym/wallet-sdk/display/common'
 import {
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
@@ -113,7 +114,8 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
   const sdkRef = useRef<ParadymDcApiSdk | undefined>(undefined)
   useEffect(() => () => void sdkRef.current?.shutdown(), [])
 
-  const decline = useCallback(() => request.decline(t(messages.declined)), [request, t])
+  // Through the review, so the declined request lands in the activity log before the UI goes down.
+  const decline = useCallback((review: DcApiReview) => review.decline(t(messages.declined)), [t])
 
   const unlock = useCallback(
     async (method: UnlockMethod, getKey: (version: number) => Promise<string | null>) => {
@@ -138,7 +140,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           dcApiSdk(),
           paradymConfiguration(),
         ])
-        sdk = await ParadymDcApiSdk.initialize({ ...paradymWalletSdkOptions, walletKey: key })
+        sdk = await ParadymDcApiSdk.initialize({ ...paradymWalletSdkOptions, walletKey: key, locale: i18n.locale })
         sdkRef.current = sdk
       } catch (unlockError) {
         setPhase({ name: 'unlock' })
@@ -331,18 +333,29 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         <Stack btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
           <Button.Solid onPress={() => request.decline(phase.reason)}>{t(commonMessages.close)}</Button.Solid>
         </Stack>
+      ) : phase.name === 'review' && !canShare(phase.review) ? (
+        // Nothing the wallet holds answers the request, so declining is all there is to do — the
+        // same as the app's own share screen, rather than a share button that can never be pressed.
+        <YStack gap="$3" btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
+          <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
+            {t(
+              phase.review.submission.entries.length === 0 || hasMissingCards(phase.review.submission)
+                ? commonMessages.missingCardsWarning
+                : commonMessages.missingAttributesWarning
+            )}
+          </Paragraph>
+          <Button.Solid onPress={() => phase.review.decline(missingCredentialsReason)}>
+            {t(commonMessages.close)}
+          </Button.Solid>
+        </YStack>
       ) : phase.name === 'review' || phase.name === 'sharing' ? (
         <XStack gap="$2" btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
           {/* Both are disabled while the response is being built: it cannot be taken back once
               `approve()` has released the request, so there is nothing a second press could do. */}
-          <Button.Outline fg={1} disabled={phase.name === 'sharing'} onPress={decline}>
+          <Button.Outline fg={1} disabled={phase.name === 'sharing'} onPress={() => decline(phase.review)}>
             {t(commonMessages.declineButton)}
           </Button.Outline>
-          <Button.Solid
-            fg={1}
-            disabled={phase.name === 'sharing' || !canShare(phase.review)}
-            onPress={() => share(phase.review)}
-          >
+          <Button.Solid fg={1} disabled={phase.name === 'sharing'} onPress={() => share(phase.review)}>
             {phase.name === 'sharing' ? <Spinner variant="dark" /> : t(messages.share)}
           </Button.Solid>
         </XStack>
@@ -371,6 +384,9 @@ function isUnlocking(phase: Phase) {
 function canShare(review: DcApiReview) {
   return review.submission.entries.length > 0 && review.submission.areAllSatisfied
 }
+
+/** The decline reason passed to the OS when the wallet cannot answer the request. For logs only. */
+const missingCredentialsReason = 'The wallet does not hold credentials that answer the request'
 
 function message(error: unknown) {
   return error instanceof Error ? error.message : String(error)

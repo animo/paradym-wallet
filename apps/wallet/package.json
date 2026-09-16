@@ -15,8 +15,8 @@
 	},
 	"dependencies": {
 		"@animo-id/eudi-wallet-functionality": "catalog:",
-		"@animo-id/expo-digital-credentials-api": "file:../../vendor/animo-id-expo-digital-credentials-api-0.5.1.tgz",
-		"@animo-id/expo-mdoc-data-transfer": "catalog:",
+		"@animo-id/expo-digital-credentials-api": "catalog:",
+		"expo-mdoc-data-transfer": "catalog:",
 		"@credo-ts/askar": "catalog:",
 		"@credo-ts/react-native": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
@@ -63,6 +63,8 @@
 		"react-native-gesture-handler": "catalog:",
 		"react-native-nitro-modules": "catalog:",
 		"react-native-qrcode-svg": "catalog:",
+		"react-native-quick-base64": "catalog:",
+		"react-native-quick-crypto": "catalog:",
 		"react-native-reanimated": "catalog:",
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
@@ -84,7 +86,7 @@
 				"listUnknownPackages": false,
 				"exclude": [
 					"react-native-fs",
-					"@animo-id/expo-mdoc-data-transfer",
+					"expo-mdoc-data-transfer",
 					"@animo-id/expo-digital-credentials-api",
 					"@animo-id/expo-secure-environment",
 					"@hyperledger/anoncreds-react-native",

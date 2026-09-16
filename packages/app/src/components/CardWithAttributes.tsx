@@ -1,16 +1,15 @@
 import {
   AnimatedStack,
+  AttributeListItem,
   Heading,
   HeroIcons,
   IconContainer,
   Image,
-  Paragraph,
   Stack,
   useScaleAnimation,
   XStack,
   YStack,
 } from '@package/ui'
-import { sanitizeString } from '@package/utils'
 import type { CredentialMetadata, DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
@@ -23,12 +22,24 @@ interface CardWithAttributesProps {
   textColor?: string
   issuerImage?: DisplayImage
   backgroundImage?: DisplayImage
+  /** Rendered as given: pass labels ready for display, they are not formatted again. */
   formattedDisclosedAttributes: string[]
+  /** Entries of `formattedDisclosedAttributes` the card lacks, shown in red. */
+  missingAttributes?: string[]
   disclosedPayload?: FormattedAttribute[]
   disclosedMetadata?: CredentialMetadata
   isExpired?: boolean
   isRevoked?: boolean
   isNotYetActive?: boolean
+}
+
+/** Two attributes to a row. */
+function toRows(attributes: string[]) {
+  const rows: Array<[string, string | undefined]> = []
+  for (let i = 0; i < attributes.length; i += 2) {
+    rows.push([attributes[i], attributes[i + 1]])
+  }
+  return rows
 }
 
 export function CardWithAttributes({
@@ -39,6 +50,7 @@ export function CardWithAttributes({
   textColor,
   backgroundImage,
   formattedDisclosedAttributes,
+  missingAttributes,
   disclosedPayload,
   disclosedMetadata,
   isNotYetActive = false,
@@ -48,13 +60,15 @@ export function CardWithAttributes({
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const router = useRouter()
 
+  // What the card holds first, then what it lacks, each group starting on a row of its own.
   const groupedAttributes = useMemo(() => {
-    const result: Array<[string, string | undefined]> = []
-    for (let i = 0; i < formattedDisclosedAttributes.length; i += 2) {
-      result.push([formattedDisclosedAttributes[i], formattedDisclosedAttributes[i + 1]])
-    }
-    return result
-  }, [formattedDisclosedAttributes])
+    const isMissing = (attribute: string) => missingAttributes?.includes(attribute) ?? false
+
+    return [
+      ...toRows(formattedDisclosedAttributes.filter((attribute) => !isMissing(attribute))),
+      ...toRows(formattedDisclosedAttributes.filter(isMissing)),
+    ]
+  }, [formattedDisclosedAttributes, missingAttributes])
 
   const onPress = () => {
     if (id) {
@@ -83,6 +97,7 @@ export function CardWithAttributes({
 
   const isRevokedOrExpired = isRevoked || isExpired
   const disabledNav = !disclosedPayload
+  const isMissing = (attribute: string) => missingAttributes?.includes(attribute) ?? false
 
   return (
     <AnimatedStack
@@ -125,23 +140,25 @@ export function CardWithAttributes({
       </Stack>
       <YStack px="$4" pt="$3" pb="$4" gap="$4" bg="$white">
         <YStack gap="$2" fg={1} pr="$4">
-          {groupedAttributes.map(([first, second], index) => (
-            <XStack key={first + second} gap="$4" minHeight="$3.5">
-              <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph fontSize={15}>{sanitizeString(first)}</Paragraph>
-              </Stack>
-              <Stack flexGrow={1} flexBasis={0}>
-                <Paragraph
-                  fontSize={15}
-                  numberOfLines={index === groupedAttributes.length - 1 ? 1 : undefined}
-                  ellipsizeMode={index === groupedAttributes.length - 1 ? 'tail' : undefined}
-                  pr={index === groupedAttributes.length - 1 ? '$5' : undefined}
-                >
-                  {second ? sanitizeString(second) : ''}
-                </Paragraph>
-              </Stack>
-            </XStack>
-          ))}
+          {groupedAttributes.map(([first, second], index) => {
+            const isLast = index === groupedAttributes.length - 1
+
+            return (
+              // Keeps the last row level with the arrow in the corner.
+              <XStack key={`${first}-${second}`} gap="$3" minHeight={isLast ? '$3.5' : undefined}>
+                <Stack flexGrow={1} flexBasis={0}>
+                  <AttributeListItem name={first} isMissing={isMissing(first)} />
+                </Stack>
+                <Stack flexGrow={1} flexBasis={0}>
+                  {/* Padded inside the column rather than on it: padding on the column itself
+                      would widen it, and shift this row's second column out of line. */}
+                  <Stack pr={isLast && !disabledNav ? '$5' : undefined}>
+                    {second && <AttributeListItem name={second} isMissing={isMissing(second)} />}
+                  </Stack>
+                </Stack>
+              </XStack>
+            )
+          })}
           {!disabledNav && (
             <Stack pos="absolute" bottom="$0" right="$0">
               <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />

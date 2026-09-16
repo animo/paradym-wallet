@@ -1,3 +1,4 @@
+import { NotificationErrorBoundary } from '@app/features/notifications/NotificationErrorBoundary'
 import { MdocOfflineSharingScreen } from '@app/features/share/MdocOfflineSharingScreen'
 import { useLocalSearchParams } from 'expo-router'
 
@@ -7,5 +8,9 @@ export default function Screen() {
   const sessionTranscriptArray = new Uint8Array(Buffer.from(sessionTranscript as string, 'base64'))
   const deviceRequestArray = new Uint8Array(Buffer.from(deviceRequest as string, 'base64'))
 
-  return <MdocOfflineSharingScreen sessionTranscript={sessionTranscriptArray} deviceRequest={deviceRequestArray} />
+  return (
+    <NotificationErrorBoundary>
+      <MdocOfflineSharingScreen sessionTranscript={sessionTranscriptArray} deviceRequest={deviceRequestArray} />
+    </NotificationErrorBoundary>
+  )
 }

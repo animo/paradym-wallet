@@ -1,4 +1,3 @@
-import { dcApiRegisterOptions } from '@app/utils/dcApiRegisterOptions'
 import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../agent'
@@ -74,7 +73,7 @@ export async function fetchAndProcessDeferredCredential(
 
     if (credentials.length) {
       for (const { credential: credentialRecord } of credentials) {
-        await storeCredential(dcApiRegisterOptions({ paradym, credentialRecord }))
+        await storeCredential({ paradym, credentialRecord })
       }
 
       const { issuer: issuerDisplay } = getCredentialDisplayWithDefaults(

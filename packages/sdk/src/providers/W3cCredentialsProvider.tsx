@@ -72,27 +72,28 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
       .then((w3cCredentialRecords) => setState({ w3cCredentialRecords, isLoading: false }))
   }, [agent])
 
+  // Only the agent: re-running this on every state change tore down and rebuilt all three
+  // subscriptions on every record event, and the handlers closed over the state they were created
+  // with. The functional updates below need neither.
   useEffect(() => {
-    if (!state.isLoading && agent) {
-      const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setState(addRecord(record, state))
-      )
+    const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
+      setState((state) => addRecord(record, state))
+    )
 
-      const credentialUpdate$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setState(updateRecord(record, state))
-      )
+    const credentialUpdate$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe((record) =>
+      setState((state) => updateRecord(record, state))
+    )
 
-      const credentialRemove$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setState(removeRecord(record, state))
-      )
+    const credentialRemove$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe((record) =>
+      setState((state) => removeRecord(record, state))
+    )
 
-      return () => {
-        credentialAdded$.unsubscribe()
-        credentialUpdate$.unsubscribe()
-        credentialRemove$.unsubscribe()
-      }
+    return () => {
+      credentialAdded$.unsubscribe()
+      credentialUpdate$.unsubscribe()
+      credentialRemove$.unsubscribe()
     }
-  }, [state, agent])
+  }, [agent])
 
   return <W3cCredentialRecordContext.Provider value={state}>{children}</W3cCredentialRecordContext.Provider>
 }

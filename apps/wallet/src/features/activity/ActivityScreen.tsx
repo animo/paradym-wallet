@@ -1,6 +1,7 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { ActivityRowItem, TextBackButton, useScrollViewPosition } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   FlexPage,
@@ -14,20 +15,13 @@ import {
   YStack,
 } from '@package/ui'
 import { useActivities } from '@paradym/wallet-sdk'
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { FadeInDown } from 'react-native-reanimated'
 
 const activityMessages = {
-  screenTitle: defineMessage({
-    id: 'activity.title',
-    message: 'Activity',
-    comment: 'Title of the activity screen showing shared or received credentials',
-  }),
-  noActivityTitle: defineMessage({
-    id: 'activity.emptyTitle',
-    message: "There's nothing here, yet",
-    comment: 'Shown when the user has no activity items yet',
-  }),
+  screenTitle: commonMessages.activity,
+  noActivityTitle: commonMessages.nothingHereYet,
   noActivityDescription: defineMessage({
     id: 'activity.emptyDescription',
     message: 'Activity will appear here once you share or receive credentials.',
@@ -35,10 +29,32 @@ const activityMessages = {
   }),
 }
 
+/** How many more activities are read each time the list reaches its end. */
+const activityPageSize = 50
+
 export function ActivityScreen({ entityId }: { entityId?: string }) {
-  const { activities, isLoading: isLoadingActivities } = useActivities({ filters: { entityId } })
+  const [limit, setLimit] = useState(activityPageSize)
+  const { activities, isLoading: isLoadingActivities, hasMore } = useActivities({ filters: { entityId }, limit })
   const { t, i18n } = useLingui()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
+  // The whole history is still reachable — it is just read a page at a time, rather than every
+  // activity record being read to render the first screenful.
+  const onScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      handleScroll(event)
+
+      const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent
+      const isNearEnd = layoutMeasurement.height + contentOffset.y >= contentSize.height - layoutMeasurement.height
+
+      // Only once the page that is on screen is full, so scrolling while one is still loading does
+      // not ask for several at once.
+      if (isNearEnd && hasMore && activities.length >= limit) {
+        setLimit((current) => current + activityPageSize)
+      }
+    },
+    [handleScroll, hasMore, activities.length, limit]
+  )
 
   const groupedActivities = useMemo(() => {
     return activities.reduce(
@@ -79,7 +95,7 @@ export function ActivityScreen({ entityId }: { entityId?: string }) {
           <Spacer size="$12" />
         </YStack>
       ) : (
-        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <ScrollView onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
           <YStack fg={1} px="$4" gap="$4">
             {Object.entries(groupedActivities).map(([key, groupActivities]) => {
               const [year, month] = key.split('-')

@@ -91,7 +91,7 @@ export default function Authenticate() {
   if (paradym.state === 'unlocked') {
     // Expo and urls as query params don't go well together, so we encoded the url as base64
     const redirect = redirectAfterUnlock
-      ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64(redirectAfterUnlock))
+      ? TypedArrayEncoder.toUtf8String(TypedArrayEncoder.fromBase64Url(redirectAfterUnlock))
       : '/'
 
     return <Redirect href={redirect} />

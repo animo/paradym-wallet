@@ -1,77 +1,38 @@
 import type { IosDocumentRequest } from '@animo-id/expo-digital-credentials-api/request-handler'
-import { DeviceRequest } from '@animo-id/mdoc'
-import type { MdocDcApiCredentialMatch, MdocDcApiResolvedRequest, MdocNameSpaces, MdocRecord } from '@credo-ts/core'
-import { getCredentialForDisplay } from '../display/credential'
-import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
-import { formatAttributesWithRecordMetadata } from '../format/attributes'
-import type {
-  FormattedSubmission,
-  FormattedSubmissionEntry,
-  FormattedSubmissionEntrySatisfiedCredential,
-} from '../format/submission'
-
-/**
- *
- * The order the request UI shows matches in, and the order a response is built from: a credential
- * that carries every requested element first, so what the user reviewed is what gets shared.
- *
- */
-export const orderMdocMatches = <T extends { isFullMatch: boolean }>(matches: T[]) =>
-  [...matches].sort((a, b) => Number(b.isFullMatch) - Number(a.isFullMatch))
-
-const toSatisfiedCredential = (
-  record: MdocRecord,
-  disclosedClaims: MdocNameSpaces
-): FormattedSubmissionEntrySatisfiedCredential => {
-  const { metadata } = getAttributesAndMetadataForMdocPayload(disclosedClaims, record.firstCredential)
-
-  return {
-    credential: getCredentialForDisplay(record),
-    disclosed: {
-      attributes: formatAttributesWithRecordMetadata(disclosedClaims, record),
-      rawAttributes: disclosedClaims as FormattedSubmissionEntrySatisfiedCredential['disclosed']['rawAttributes'],
-      metadata,
-      paths: Object.entries(disclosedClaims).flatMap(([namespace, elements]) =>
-        Object.keys(elements).map((element) => [namespace, element])
-      ),
-    },
-  }
-}
-
-const requestedPaths = (nameSpaces: Record<string, Record<string, unknown>>) =>
-  Object.entries(nameSpaces).flatMap(([namespace, elements]) =>
-    Object.keys(elements).map((element) => [namespace, element])
-  )
+import type { MdocDcApiResolvedDocRequest, MdocDcApiResolvedRequest } from '@credo-ts/core'
+import { DeviceRequest, DocRequest, ItemsRequest } from '@owf/mdoc'
+import { getSubmissionForMdocDocRequestMatches } from '../format/mdocDeviceRequest'
+import type { FormattedSubmission } from '../format/submission'
 
 /**
  *
  * What an `org-iso-mdoc` request asks for, in the same shape the app's share flow renders.
  *
- * Credo already matched the request against the wallet's mdocs, so each document request either has
- * candidates with the exact claims they would disclose, or none at all.
+ * Credo already matched the request against the wallet's mdocs. Only a credential carrying every
+ * requested element answers a doc request; one of the requested docType that lacks some is shown
+ * with what it lacks.
+ *
+ * Resolve the request with `treatAmbiguousMultipleDocRequestsAsAlternatives`: several doc requests
+ * are alternatives, so this also returns the one doc request the review is for — the one to answer,
+ * and the only one.
  *
  */
-export const getSubmissionForMdocDcApiRequest = (resolvedRequest: MdocDcApiResolvedRequest): FormattedSubmission => {
-  const entries = resolvedRequest.docRequests.map((docRequest): FormattedSubmissionEntry => {
-    const matches: MdocDcApiCredentialMatch[] = orderMdocMatches(docRequest.matches)
+export const getSubmissionForMdocDcApiRequest = (
+  resolvedRequest: MdocDcApiResolvedRequest
+): { submission: FormattedSubmission; docRequest: MdocDcApiResolvedDocRequest | undefined } => {
+  const { submission, entryIndex } = getSubmissionForMdocDocRequestMatches(
+    resolvedRequest.docRequests.map((docRequest) => ({
+      docType: docRequest.docType,
+      requestedElements: Object.values(docRequest.nameSpaces).flatMap((elements) => Object.keys(elements)),
+      validCredentials: docRequest.validCredentials,
+      failedCredentials: docRequest.failedCredentials,
+    }))
+  )
 
-    if (matches.length === 0) {
-      return {
-        inputDescriptorId: docRequest.docType,
-        isSatisfied: false,
-        name: docRequest.docType,
-        requestedAttributePaths: requestedPaths(docRequest.nameSpaces),
-      }
-    }
-
-    return {
-      inputDescriptorId: docRequest.docType,
-      isSatisfied: true,
-      credentials: matches.map((match) => toSatisfiedCredential(match.record, match.disclosedClaims)),
-    }
-  })
-
-  return { areAllSatisfied: entries.every((entry) => entry.isSatisfied), entries }
+  return {
+    submission,
+    docRequest: entryIndex === undefined ? undefined : resolvedRequest.docRequests[entryIndex],
+  }
 }
 
 /**
@@ -85,17 +46,19 @@ export const getSubmissionForMdocDcApiRequest = (resolvedRequest: MdocDcApiResol
  *
  */
 export const toDeviceRequest = (documentRequests: IosDocumentRequest[]) =>
-  DeviceRequest.from(
-    '1.0',
-    documentRequests.map((documentRequest) => ({
-      itemsRequestData: {
-        docType: documentRequest.doctype,
-        nameSpaces: new Map(
-          Object.entries(documentRequest.namespaces).map(([namespace, elements]) => [
-            namespace,
-            new Map(Object.entries(elements).map(([element, { intentToRetain }]) => [element, intentToRetain])),
-          ])
-        ),
-      },
-    }))
-  ).encode()
+  DeviceRequest.create({
+    docRequests: documentRequests.map((documentRequest) =>
+      DocRequest.create({
+        itemsRequest: ItemsRequest.create({
+          docType: documentRequest.doctype,
+          namespaces: new Map(
+            Object.entries(documentRequest.namespaces).map(([namespace, elements]) => [
+              namespace,
+              new Map(Object.entries(elements).map(([element, { intentToRetain }]) => [element, intentToRetain])),
+            ])
+          ),
+        }),
+      })
+    ),
+    version: '1.0',
+  }).encode()

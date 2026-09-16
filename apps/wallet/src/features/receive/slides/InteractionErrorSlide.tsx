@@ -58,13 +58,7 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType }: Interactio
           {reason && scrollViewHeight !== 0 && (
             <YStack>
               <Paragraph variant="sub">
-                <Paragraph variant="caption">
-                  {t({
-                    id: 'interactionError.reasonPrefix',
-                    message: 'Reason:',
-                    comment: 'Label before displaying a backend or internal error message',
-                  })}{' '}
-                </Paragraph>
+                <Paragraph variant="caption">{t(commonMessages.errorReasonPrefix)} </Paragraph>
                 {reason}
               </Paragraph>
             </YStack>

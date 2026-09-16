@@ -144,14 +144,7 @@ export function SettingsScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <HeaderContainer
-        title={t({
-          id: 'settings.title',
-          message: 'Settings',
-          comment: 'Header title for the settings screen',
-        })}
-        isScrolledByOffset={isScrolledByOffset}
-      />
+      <HeaderContainer title={t(commonMessages.settings)} isScrolledByOffset={isScrolledByOffset} />
       <ScrollView
         onScroll={handleScroll}
         scrollEventThrottle={scrollEventThrottle}
