@@ -1,4 +1,5 @@
 import { formatPredicate } from '@app/utils/formatePredicate'
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { useLingui } from '@lingui/react/macro'
 import { CardWithAttributes } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -31,6 +32,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
   const requestedCardsHeading = t(commonMessages.requestedCardsHeading)
   const unavailableCardsHeading = t(commonMessages.unavailableCardsHeading)
   const fallbackCardLabel = t(commonMessages.credential)
+  const unmetAttributeMessages = getUnmetAttributeMessages(submission)
 
   const formatDisclosedAttributes = (credential: FormattedSubmissionEntrySatisfiedCredential) =>
     getDisclosedAttributeNamesForDisplay(credential).map((c) => (typeof c === 'string' ? c : formatPredicate(c)))
@@ -44,7 +46,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
     satisfiedEntries.length > 0
       ? requestedCardsHeading
       : partiallySatisfiedEntries.length > 0
-        ? t(commonMessages.missingAttributesHeading)
+        ? t(unmetAttributeMessages.heading)
         : unavailableCardsHeading
 
   return (
@@ -56,7 +58,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
             unsatisfiedEntries.length === 0
               ? commonMessages.allRequestedCardsDescription
               : unavailableEntries.length === 0
-                ? commonMessages.missingAttributesDescription
+                ? unmetAttributeMessages.description
                 : satisfiedEntries.length === 0 && partiallySatisfiedEntries.length === 0
                   ? commonMessages.noRequestedCardsDescription
                   : commonMessages.someRequestedCardsMissingDescription
@@ -76,8 +78,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
             issuerImage={credential.credential.display.issuer.logo}
             textColor={credential.credential.display.textColor}
             formattedDisclosedAttributes={formatDisclosedAttributes(credential)}
-            disclosedPayload={credential.disclosed.attributes}
-            disclosedMetadata={credential.disclosed.metadata}
+            disclosedPaths={credential.disclosed.paths}
             isExpired={
               credential.credential.metadata?.validUntil
                 ? new Date(credential.credential.metadata.validUntil) < new Date()
@@ -96,15 +97,19 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         <>
           {satisfiedEntries.length !== 0 && (
             <YStack>
-              <Heading heading="sub2">{t(commonMessages.missingAttributesHeading)}</Heading>
+              <Heading heading="sub2">{t(unmetAttributeMessages.heading)}</Heading>
             </YStack>
           )}
           {partiallySatisfiedEntries.map((entry) => {
             // Always defined, the entry has partial matches
-            const { credential, missingAttributePaths } = getClosestPartialMatch(
+            const { credential, missingAttributePaths, mismatchedAttributePaths } = getClosestPartialMatch(
               entry
             ) as FormattedSubmissionEntryPartialMatch
-            const missingAttributes = formatAttributePaths(missingAttributePaths, credential.record)
+            // Both are marked red, the wording above tells which it is
+            const missingAttributes = formatAttributePaths(
+              [...missingAttributePaths, ...mismatchedAttributePaths],
+              credential.record
+            )
 
             return (
               <CardWithAttributes

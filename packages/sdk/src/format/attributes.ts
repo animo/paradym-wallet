@@ -523,34 +523,6 @@ export function resolveAttributeLabelForRecord(key: string, record?: CredentialR
 export type ClaimPath = Array<string | number>
 
 /**
- * Labels for a set of claim paths, resolved against the credential they were disclosed from.
- *
- * The activity log stores the paths rather than the labels: a label baked in at sharing time stays
- * in whatever locale was active then, while a path can be resolved again every time it is rendered.
- *
- * The record is optional — an activity outlives the credential it was created from, and a path is
- * still nameable without one.
- */
-export function getAttributeLabelsForPaths(
-  paths: ClaimPath[],
-  { record, isMdoc }: { record?: CredentialRecord; isMdoc?: boolean } = {}
-) {
-  const claims = record ? resolveClaimsWithRecordMetadata(record) : undefined
-  const credentialContext = getAttributeLabelContextForRecord(record)
-  const pathsAreNamespaced = isMdoc ?? record instanceof MdocRecord
-
-  const resolvedLabels = paths.map((path) => {
-    // For mdoc we use the attribute name (second element in path), as the first is the namespace.
-    // For other formats, use the last string element
-    const key = pathsAreNamespaced ? path[1] : [...path].reverse().find((e) => typeof e === 'string')
-
-    return resolveAttributeLabelForPath({ path, key: String(key), claims, credentialContext })
-  })
-
-  return Array.from(new Set(resolvedLabels))
-}
-
-/**
  * The subset of a credential's attributes at the given claim paths, in the same nested shape.
  *
  * What the activity log renders once it stores paths instead of values: the values come from the
@@ -591,4 +563,45 @@ export function pickAttributesAtPaths(
   }
 
   return picked
+}
+
+/**
+ * The attributes of a credential at the given claim paths, formatted as the credential's own attributes
+ * are, and so in the same order and with the same labels.
+ */
+export function formatAttributesAtPaths(
+  credential: { rawAttributes: Record<string, unknown>; record: CredentialRecord },
+  paths: ClaimPath[]
+): FormattedAttribute[] {
+  return formatAttributesWithRecordMetadata(pickAttributesAtPaths(credential.rawAttributes, paths), credential.record)
+}
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && Object.getPrototypeOf(value) === Object.prototype
+
+/**
+ * The paths to the elements of mdoc namespaces: a namespace and an element identifier each. An element
+ * is disclosed as a whole, whatever its value holds.
+ */
+export function getClaimPathsForMdocNamespaces(namespaces: Record<string, Record<string, unknown>>): ClaimPath[] {
+  return Object.entries(namespaces).flatMap(([namespace, elements]) =>
+    Object.keys(elements).map((element) => [namespace, element])
+  )
+}
+
+/**
+ * The paths to the claims in disclosed attributes, for a presentation that discloses an array as a
+ * whole, such as one for presentation exchange.
+ *
+ * An object is followed down to its claims, as only part of it may be disclosed. An array has a single
+ * path: the attributes don't tell which of the credential's elements it holds, as an element that is
+ * not disclosed is left out rather than kept in its place.
+ */
+export function getClaimPathsForDisclosedAttributes(attributes: Record<string, unknown>): ClaimPath[] {
+  const getPaths = (value: unknown, path: ClaimPath): ClaimPath[] =>
+    isPlainObject(value) && Object.keys(value).length > 0
+      ? Object.entries(value).flatMap(([key, claim]) => getPaths(claim, [...path, key]))
+      : [path]
+
+  return Object.entries(attributes).flatMap(([key, claim]) => getPaths(claim, [key]))
 }

@@ -1,4 +1,5 @@
 import { formatPredicate } from '@app/utils/formatePredicate'
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 // Deep imports throughout: the `@package/ui` barrel pulls in the whole kit, and this bundle is
 // separate from the app's.
 import { useLingui } from '@lingui/react/macro'
@@ -49,6 +50,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
   }
 
   const unavailableHeading = t(commonMessages.unavailableCardsHeading)
+  const unmetAttributeMessages = getUnmetAttributeMessages(submission)
 
   return (
     <YStack gap="$4">
@@ -57,7 +59,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
           {satisfied.length > 0
             ? t(commonMessages.requestedCardsHeading)
             : partiallySatisfied.length > 0
-              ? t(commonMessages.missingAttributesHeading)
+              ? t(unmetAttributeMessages.heading)
               : unavailableHeading}
         </Heading>
         <Paragraph>
@@ -65,7 +67,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
             unsatisfied.length === 0
               ? commonMessages.allRequestedCardsDescription
               : unavailable.length === 0
-                ? commonMessages.missingAttributesDescription
+                ? unmetAttributeMessages.description
                 : satisfied.length === 0 && partiallySatisfied.length === 0
                   ? commonMessages.noRequestedCardsDescription
                   : commonMessages.someRequestedCardsMissingDescription
@@ -80,7 +82,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
 
       {partiallySatisfied.length > 0 && (
         <>
-          {satisfied.length > 0 && <Heading heading="sub2">{t(commonMessages.missingAttributesHeading)}</Heading>}
+          {satisfied.length > 0 && <Heading heading="sub2">{t(unmetAttributeMessages.heading)}</Heading>}
           {partiallySatisfied.map((entry) => (
             <PartiallyMatchingCard key={entry.inputDescriptorId} entry={entry} />
           ))}
@@ -119,9 +121,15 @@ const formatAttributePaths = (
 function PartiallyMatchingCard({ entry }: { entry: FormattedSubmissionEntryNotSatisfied }) {
   const { t } = useLingui()
   // Always defined, the entry has partial matches
-  const { credential, missingAttributePaths } = getClosestPartialMatch(entry) as FormattedSubmissionEntryPartialMatch
+  const { credential, missingAttributePaths, mismatchedAttributePaths } = getClosestPartialMatch(
+    entry
+  ) as FormattedSubmissionEntryPartialMatch
   const { display } = credential
-  const missingAttributeNames = formatAttributePaths(missingAttributePaths, credential.record)
+  // Both are marked red, the wording above the cards tells which it is
+  const missingAttributeNames = formatAttributePaths(
+    [...missingAttributePaths, ...mismatchedAttributePaths],
+    credential.record
+  )
 
   return (
     <Card

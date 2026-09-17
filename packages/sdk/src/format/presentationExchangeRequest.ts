@@ -1,11 +1,14 @@
 import { JSONPath } from '@astronautlabs/jsonpath'
 import { ClaimFormat, type DifPexCredentialsForRequest, type DifPresentationExchangeDefinitionV2 } from '@credo-ts/core'
-import { getDisclosedAttributePathArrays } from '../display/common'
 import { getCredentialForDisplay } from '../display/credential'
 import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
 import { getAttributesAndMetadataForSdJwtPayload } from '../display/sdJwt'
 import type { NonEmptyArray } from '../types'
-import { formatAttributesWithRecordMetadata } from './attributes'
+import {
+  formatAttributesWithRecordMetadata,
+  getClaimPathsForDisclosedAttributes,
+  getClaimPathsForMdocNamespaces,
+} from './attributes'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -99,7 +102,7 @@ export function formatDifPexCredentialsForRequest(
                   rawAttributes: attributes,
                   attributes: formatAttributesWithRecordMetadata(attributes, verifiableCredential.credentialRecord),
                   metadata,
-                  paths: getDisclosedAttributePathArrays(attributes, 2),
+                  paths: getClaimPathsForDisclosedAttributes(attributes),
                 }
               } else if (verifiableCredential.claimFormat === ClaimFormat.MsoMdoc) {
                 const { attributes, attributesWithoutNamespace, metadata } = getAttributesAndMetadataForMdocPayload(
@@ -111,7 +114,7 @@ export function formatDifPexCredentialsForRequest(
                   rawAttributes: attributesWithoutNamespace,
                   metadata,
                   attributes: formatAttributesWithRecordMetadata(attributes, verifiableCredential.credentialRecord),
-                  paths: getDisclosedAttributePathArrays(verifiableCredential.disclosedPayload, 2),
+                  paths: getClaimPathsForMdocNamespaces(verifiableCredential.disclosedPayload),
                 }
               } else {
                 disclosed = {
@@ -119,7 +122,7 @@ export function formatDifPexCredentialsForRequest(
                   // All attributes  disclosed for W3C
                   attributes: credentialForDisplay.attributes,
                   metadata: credentialForDisplay.metadata,
-                  paths: getDisclosedAttributePathArrays(credentialForDisplay.rawAttributes, 2),
+                  paths: Object.keys(credentialForDisplay.rawAttributes).map((claim) => [claim]),
                 }
               }
 

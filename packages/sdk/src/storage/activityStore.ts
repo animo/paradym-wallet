@@ -1,8 +1,8 @@
 import type { Agent } from '@credo-ts/core'
 import { utils } from '@credo-ts/core'
-import { getUnsatisfiedAttributePathsForDisplay } from '../display/common'
+import { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay } from '../display/common'
 import type { CredentialDisplay, CredentialForDisplayId, DisplayImage } from '../display/credential'
-import { type ClaimPath, getAttributeLabelsForPaths } from '../format/attributes'
+import type { ClaimPath } from '../format/attributes'
 import type { FormattedSubmission } from '../format/submission'
 import type { CredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type {
@@ -14,8 +14,10 @@ import {
   deleteActivityRecord,
   getActivityRecordById,
   saveActivityRecord,
+  saveActivityRecords,
   updateActivityRecord,
 } from './activityRecords'
+import { upgradeLegacyActivity } from './activityUpgrade'
 import { getWalletJsonStore } from './walletJsonStore'
 
 export type ActivityType = 'shared' | 'received' | 'signed' | 'payment'
@@ -48,21 +50,6 @@ export interface PresentationActivityCredentialNotFound {
 }
 
 /**
- * A shared credential as stored before v3, with the disclosed values themselves.
- *
- * `version` undefined is v1; v2 additionally stores the full mdoc namespace structure. Both are
- * still read — existing activities keep rendering — but nothing writes them any more.
- */
-export type PresentationActivityCredentialWithValues = {
-  version?: 'v2'
-  id: CredentialForDisplayId
-  name?: string
-  attributeNames: string[]
-  attributes: Record<string, unknown>
-  metadata: Record<string, unknown>
-}
-
-/**
  * A shared credential, recorded as which fields were disclosed rather than what they contained.
  *
  * The activity log answers "which fields you disclosed, to whom, when"; the values themselves live
@@ -72,7 +59,7 @@ export type PresentationActivityCredentialWithValues = {
  * Paths rather than labels, so the names follow the language the user is reading in now instead of
  * the one that happened to be active when the credential was shared.
  */
-export type PresentationActivityCredentialWithPaths = {
+export type PresentationActivityCredential = {
   version: 'v3'
   id: CredentialForDisplayId
   name?: string
@@ -90,10 +77,6 @@ export type PresentationActivityCredentialWithPaths = {
    */
   attributeNames: string[]
 }
-
-export type PresentationActivityCredential =
-  | PresentationActivityCredentialWithValues
-  | PresentationActivityCredentialWithPaths
 
 export interface PresentationActivity extends BaseActivity {
   type: 'shared'
@@ -163,13 +146,14 @@ export function migrateActivities(agent: Agent): Promise<void> {
     const legacy = await legacyActivityStorage.get(agent)
     if (!legacy) return
 
-    // Oldest first, so an interrupted run leaves the newest activities to a later attempt rather
-    // than leaving a gap in the middle of the history.
-    const activities = [...legacy.activities].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-
-    for (const activity of activities) {
-      await saveActivityRecord(agent, activity)
+    // Upgraded as they are moved, so none of them is stored with the values it disclosed again. The
+    // index is written once all records are saved, so an interrupted run adds none of them to it.
+    const activities = []
+    for (const activity of legacy.activities) {
+      activities.push(await upgradeLegacyActivity(agent, activity))
     }
+
+    await saveActivityRecords(agent, activities)
 
     // Last, and only once every activity has a record of its own: until this happens the old record
     // is still the source of truth, and the migration can simply run again.
@@ -345,7 +329,8 @@ export function getDisclosedCredentialForSubmission(
       version: 'v3',
       name: credential.credential.display.name,
       paths,
-      attributeNames: getAttributeLabelsForPaths(paths, { record: credential.credential.record }),
+      // The names on the card that was shared, for once the credential is gone
+      attributeNames: getDisclosedAttributeNamesForDisplay(credential).filter((name) => typeof name === 'string'),
     } satisfies PresentationActivityCredential
   })
 }

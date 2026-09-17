@@ -1,5 +1,5 @@
 import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
-import { resolveAttributeLabelForRecord } from '../format/attributes'
+import { type FormattedAttribute, resolveAttributeLabelForRecord } from '../format/attributes'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntryNotSatisfied,
@@ -22,39 +22,18 @@ export function findDisplay<Display extends { locale?: string; lang?: string }>(
   return item
 }
 
-export function getDisclosedAttributePathArrays(
-  payload: object,
-  maxDepth: number | undefined = undefined,
-  prefix: string[] = []
-): string[][] {
-  let attributePaths: string[][] = []
-
-  for (const [key, value] of Object.entries(payload)) {
-    if (!value) continue
-
-    // TODO: handle arrays
-    const newPath = [...prefix, key]
-    if (value && typeof value === 'object' && maxDepth !== 0) {
-      // If the value is a nested object, recurse
-      attributePaths = [
-        ...attributePaths,
-        ...getDisclosedAttributePathArrays(value, maxDepth !== undefined ? maxDepth - 1 : undefined, newPath),
-      ]
-    } else {
-      // If the value is a primitive or maxDepth is reached, add the key to the list
-      attributePaths.push(newPath)
-    }
-  }
-
-  return attributePaths
+/**
+ * The labels of formatted attributes, in the order they are rendered once a card is opened: the same
+ * labels, from the same claim metadata and label resolver, as the attributes themselves.
+ */
+export function getLabelsForAttributes(attributes: FormattedAttribute[]): string[] {
+  return Array.from(
+    new Set(attributes.map((attribute) => attribute.label ?? sanitizeString(String(attribute.path.at(-1)))))
+  )
 }
 
 export function getDisclosedAttributeNamesForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
-  // The labels of the disclosed attributes, in the order they are rendered once the card is opened:
-  // the same labels, from the same claim metadata and label resolver, as the attributes themselves.
-  const labels = credential.disclosed.attributes.map(
-    (attribute) => attribute.label ?? sanitizeString(String(attribute.path.at(-1)))
-  )
+  const labels = getLabelsForAttributes(credential.disclosed.attributes)
 
   // AnonCreds predicates reveal no attribute, so they are only in the paths. Rendering one needs
   // wording the app translates, so the predicate itself is returned.
@@ -62,7 +41,7 @@ export function getDisclosedAttributeNamesForDisplay(credential: FormattedSubmis
     .map((path) => path[0])
     .filter((first): first is AnonCredsRequestedPredicate => typeof first === 'object' && first !== null)
 
-  return [...Array.from(new Set(labels)), ...predicates]
+  return [...labels, ...predicates]
 }
 
 /**
@@ -100,15 +79,41 @@ export function getRequestedAttributeNamesForDisplay(
   return [...getUnsatisfiedAttributePathsForDisplay(paths, record), ...predicates]
 }
 
-/** The partial match to show for an entry: the card that lacks the fewest requested attributes. */
+/**
+ * The partial match to show for an entry: the card that fails the fewest requested attributes. Of cards
+ * that fail as many, the one that lacks the fewest, as a card that holds an attribute with another value
+ * is closer to what is requested.
+ */
 export function getClosestPartialMatch(entry: FormattedSubmissionEntryNotSatisfied) {
+  const unmet = (partialMatch: FormattedSubmissionEntryPartialMatch) =>
+    partialMatch.missingAttributePaths.length + partialMatch.mismatchedAttributePaths.length
+
   return entry.partialMatches.reduce<FormattedSubmissionEntryPartialMatch | undefined>(
     (closest, partialMatch) =>
-      !closest || partialMatch.missingAttributePaths.length < closest.missingAttributePaths.length
+      !closest ||
+      unmet(partialMatch) < unmet(closest) ||
+      (unmet(partialMatch) === unmet(closest) &&
+        partialMatch.missingAttributePaths.length < closest.missingAttributePaths.length)
         ? partialMatch
         : closest,
     undefined
   )
+}
+
+/**
+ * Why the cards the wallet shows for a request can't answer it: they lack requested attributes, hold
+ * them with a value the request does not accept, or both. Only the cards that are shown count, which
+ * is the closest partial match of each entry.
+ */
+export function getUnmetAttributeRequirements(submission: FormattedSubmission) {
+  const closestPartialMatches = submission.entries
+    .map((entry) => (entry.isSatisfied ? undefined : getClosestPartialMatch(entry)))
+    .filter((partialMatch) => partialMatch !== undefined)
+
+  return {
+    hasMissingAttributes: closestPartialMatches.some((match) => match.missingAttributePaths.length > 0),
+    hasMismatchedAttributes: closestPartialMatches.some((match) => match.mismatchedAttributePaths.length > 0),
+  }
 }
 
 /**

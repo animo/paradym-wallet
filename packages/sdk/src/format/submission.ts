@@ -26,8 +26,8 @@ export interface FormattedSubmissionEntryNotSatisfied {
 
   /**
    * Credentials of the requested type the wallet does hold, but that cannot answer the entry because
-   * some requested attributes are missing from them. Empty when the wallet has no credential of the
-   * requested type at all.
+   * some requested attributes are missing from them, or don't have a requested value. Empty when the
+   * wallet has no credential of the requested type at all.
    */
   partialMatches: FormattedSubmissionEntryPartialMatch[]
 }
@@ -36,10 +36,16 @@ export interface FormattedSubmissionEntryPartialMatch {
   credential: CredentialForDisplay
 
   /**
-   * The requested attributes this credential lacks, or holds with a value the request does not
-   * accept. Uses the same path format as `requestedAttributePaths`.
+   * The requested attributes this credential lacks. Uses the same path format as
+   * `requestedAttributePaths`.
    */
   missingAttributePaths: FormattedSubmissionEntryNotSatisfied['requestedAttributePaths']
+
+  /**
+   * The requested attributes this credential holds, but with a value the request does not accept. Uses
+   * the same path format as `requestedAttributePaths`.
+   */
+  mismatchedAttributePaths: FormattedSubmissionEntryNotSatisfied['requestedAttributePaths']
 }
 
 export interface FormattedSubmissionEntrySatisfied {
@@ -85,7 +91,12 @@ export interface FormattedSubmissionEntrySatisfiedCredential {
     attributes: CredentialForDisplay['attributes']
     metadata: CredentialForDisplay['metadata']
 
-    paths: (string | AnonCredsRequestedPredicate)[][]
+    /**
+     * The paths to the disclosed claims, each with everything below it. An array element has the
+     * position it has in the credential. AnonCreds predicates disclose no claim, and are a path of
+     * their own.
+     */
+    paths: (string | number | AnonCredsRequestedPredicate)[][]
   }
 }
 

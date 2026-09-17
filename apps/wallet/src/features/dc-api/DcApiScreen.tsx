@@ -3,6 +3,7 @@ import type { DcApiRequest } from '@animo-id/expo-digital-credentials-api/reques
 // bundle links. The setting itself lives in the shared MMKV, so the request UI reads what the app
 // wrote — in its own process, on iOS.
 import { useDevelopmentMode } from '@app/hooks/useDevelopmentMode'
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { useLingui } from '@lingui/react/macro'
 // Deep imports throughout: the `@package/ui` and `@package/app` barrels pull in the whole kit —
 // the icon sets alone are thousands of modules — and this bundle is separate from the app's.
@@ -341,7 +342,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
             {t(
               phase.review.submission.entries.length === 0 || hasMissingCards(phase.review.submission)
                 ? commonMessages.missingCardsWarning
-                : commonMessages.missingAttributesWarning
+                : getUnmetAttributeMessages(phase.review.submission).warning
             )}
           </Paragraph>
           <Button.Solid onPress={() => phase.review.decline(missingCredentialsReason)}>

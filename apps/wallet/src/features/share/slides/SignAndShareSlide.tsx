@@ -1,4 +1,5 @@
 import { formatPredicate } from '@app/utils/formatePredicate'
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -141,7 +142,7 @@ export const SignAndShareSlide = ({
                   formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(cardForSigning).map((c) =>
                     typeof c === 'string' ? c : formatPredicate(c)
                   )}
-                  disclosedPayload={cardForSigning.disclosed.attributes}
+                  disclosedPaths={cardForSigning.disclosed.paths}
                   isExpired={
                     cardForSigning.credential.metadata?.validUntil
                       ? new Date(cardForSigning.credential.metadata.validUntil) < new Date()
@@ -180,7 +181,7 @@ export const SignAndShareSlide = ({
               {t(
                 !submission || hasMissingCards(submission)
                   ? commonMessages.missingCardsWarning
-                  : commonMessages.missingAttributesWarning
+                  : getUnmetAttributeMessages(submission).warning
               )}
             </Paragraph>
             <Button.Solid onPress={onDecline}>{t(commonMessages.close)}</Button.Solid>

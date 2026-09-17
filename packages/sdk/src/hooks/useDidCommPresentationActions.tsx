@@ -160,7 +160,14 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
                   attributes: formatAttributesWithRecordMetadata(disclosedRawAttributes, credential),
                   rawAttributes: disclosedRawAttributes,
                   metadata: credentialForDisplay.metadata,
-                  paths: Array.from(entry.requestedAttributes).map((a) => [a]),
+                  // The credential's own names rather than the requested ones, which only match them
+                  // case-insensitively, so the attributes can be read from the credential by path.
+                  paths: [
+                    ...Object.keys(disclosedRawAttributes).map((name) => [name]),
+                    ...Array.from(entry.requestedAttributes)
+                      .filter((requested) => typeof requested !== 'string')
+                      .map((predicate) => [predicate]),
+                  ],
                 },
               }
             })

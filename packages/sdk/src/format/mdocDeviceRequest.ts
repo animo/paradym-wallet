@@ -80,6 +80,8 @@ const toSubmissionEntry = (docRequest: MdocDocRequestMatch): FormattedSubmission
           missingAttributePaths: claims.failedClaims
             .filter((claim) => !claim.optional)
             .map((claim) => [claim.elementIdentifier]),
+          // A device request asks for elements, not for values
+          mismatchedAttributePaths: [],
         })),
     }
   }

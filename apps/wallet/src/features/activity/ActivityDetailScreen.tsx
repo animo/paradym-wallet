@@ -7,21 +7,13 @@ import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack
 import { formatRelativeDate } from '@package/utils'
 import type {
   CredentialForDisplay,
-  FormattedAttributeObject,
   IssuanceActivity,
   PaymentActivity,
   PresentationActivity,
   PresentationActivityCredential,
   SignedActivity,
 } from '@paradym/wallet-sdk'
-import {
-  formatAllAttributes,
-  formatAttributesWithRecordMetadata,
-  getAttributeLabelsForPaths,
-  pickAttributesAtPaths,
-  useActivityById,
-  useCredentials,
-} from '@paradym/wallet-sdk'
+import { formatAttributesAtPaths, getLabelsForAttributes, useActivityById, useCredentials } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { usePaymentTransactionStatus } from '../../hooks/usePaymentTransactionStatus'
@@ -35,15 +27,16 @@ import { FailedReasonContainer } from './components/FailedReasonContainer'
  * Resolved from the stored claim paths while the credential is still in the wallet, so the names
  * follow the language the user is reading in now. Once it has been deleted there is nothing to
  * resolve against, and the names fall back to the ones captured when it was shared — which stay in
- * whatever language was active then. Activities written before v3 only ever had those.
+ * whatever language was active then.
  */
 function getDisclosedLabels(
   activityCredential: PresentationActivityCredential,
   credential?: CredentialForDisplay
 ): string[] {
-  if (activityCredential.version !== 'v3' || !credential) return activityCredential.attributeNames
+  if (!credential) return activityCredential.attributeNames
 
-  return getAttributeLabelsForPaths(activityCredential.paths, { record: credential.record })
+  // From the attributes the card opens, so the names are in the same order as they are there
+  return getLabelsForAttributes(formatAttributesAtPaths(credential, activityCredential.paths))
 }
 
 export function ActivityDetailScreen() {
@@ -325,22 +318,13 @@ export function SharedActivityDetailSection({
                 // Credential has been deleted
                 if (!credential) {
                   return (
+                    // The activity records which fields were disclosed, not what they held, and the
+                    // credential they came from is gone, so the names are all there is.
                     <CardWithAttributes
                       name={activityCredential.name ?? t(activityMessages.deletedCredential)}
                       textColor="$grey-100"
                       backgroundColor="$primary-500"
                       formattedDisclosedAttributes={getDisclosedLabels(activityCredential)}
-                      // A v3 activity records which fields were disclosed, not what they held, and
-                      // the credential they came from is gone — so the names are all there is.
-                      disclosedPayload={
-                        activityCredential.version === 'v3'
-                          ? undefined
-                          : activityCredential.version === 'v2' && activityCredential.id.startsWith('mdoc-')
-                            ? formatAllAttributes(activityCredential.attributes).flatMap(
-                                (item) => (item as FormattedAttributeObject).value
-                              )
-                            : formatAllAttributes(activityCredential.attributes)
-                      }
                     />
                   )
                 }
@@ -363,14 +347,9 @@ export function SharedActivityDetailSection({
                     backgroundColor={credential.display.backgroundColor}
                     backgroundImage={credential.display.backgroundImage}
                     formattedDisclosedAttributes={getDisclosedLabels(activityCredential, credential)}
-                    disclosedPayload={formatAttributesWithRecordMetadata(
-                      activityCredential.version === 'v3'
-                        ? // The values come from the credential as it is now, which is the whole
-                          // point of linking to it rather than copying it into the activity.
-                          pickAttributesAtPaths(credential.rawAttributes, activityCredential.paths)
-                        : activityCredential.attributes,
-                      credential.record
-                    )}
+                    // The values come from the credential as it is now, which is the whole point of
+                    // linking to it rather than copying it into the activity.
+                    disclosedPaths={activityCredential.paths}
                     isExpired={isExpired}
                     isNotYetActive={isNotYetActive}
                   />

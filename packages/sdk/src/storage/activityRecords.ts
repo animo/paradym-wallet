@@ -1,6 +1,7 @@
 import type { Agent } from '@credo-ts/core'
 import { GenericRecord } from '@credo-ts/core'
 import type { Activity, ActivityType } from './activityStore'
+import { isLegacyActivity, upgradeLegacyActivity } from './activityUpgrade'
 import { getWalletJsonStore } from './walletJsonStore'
 
 /**
@@ -83,16 +84,28 @@ async function upsertActivityRecord(agent: Agent, activity: Activity) {
 }
 
 export async function saveActivityRecord(agent: Agent, activity: Activity) {
-  // The record before the index: an index entry pointing at a record that is not there yet would
-  // be rendered as a missing activity, while a record no entry points at is merely unreachable.
-  await upsertActivityRecord(agent, activity)
+  await saveActivityRecords(agent, [activity])
+}
 
+/**
+ * Saves the activities, and writes the index once for all of them rather than once each: the index
+ * holds every activity, so writing it per activity made moving a whole history over quadratic.
+ */
+export async function saveActivityRecords(agent: Agent, activities: Activity[]) {
+  // The records before the index: an index entry pointing at a record that is not there yet would
+  // be rendered as a missing activity, while a record no entry points at is merely unreachable.
+  for (const activity of activities) {
+    await upsertActivityRecord(agent, activity)
+  }
+
+  const savedIds = new Set(activities.map((activity) => activity.id))
   const entries = await getActivityIndex(agent)
-  const withoutActivity = entries.filter((entry) => entry.id !== activity.id)
 
   await writeActivityIndex(
     agent,
-    [toIndexEntry(activity), ...withoutActivity].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    [...activities.map(toIndexEntry), ...entries.filter((entry) => !savedIds.has(entry.id))].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
   )
 }
 
@@ -114,7 +127,15 @@ export async function deleteActivityRecord(agent: Agent, activityId: string) {
 
 export async function getActivityRecordById(agent: Agent, activityId: string): Promise<Activity | undefined> {
   const record = await agent.genericRecords.findById(getActivityRecordId(activityId))
-  return record?.content as Activity | undefined
+  const activity = record?.content as Activity | undefined
+  if (!activity || !isLegacyActivity(activity)) return activity
+
+  // An activity that was moved to a record of its own before the migration upgraded it stays as it was
+  // stored until it is read, and is upgraded then, once.
+  const upgraded = await upgradeLegacyActivity(agent, activity)
+  await upsertActivityRecord(agent, upgraded)
+
+  return upgraded
 }
 
 export async function getActivityRecordsByIds(agent: Agent, activityIds: string[]): Promise<Activity[]> {

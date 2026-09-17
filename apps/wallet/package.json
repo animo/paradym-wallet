@@ -14,7 +14,6 @@
 		"translations:compile": "lingui compile --typescript"
 	},
 	"dependencies": {
-		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"expo-mdoc-data-transfer": "catalog:",
 		"@credo-ts/askar": "catalog:",

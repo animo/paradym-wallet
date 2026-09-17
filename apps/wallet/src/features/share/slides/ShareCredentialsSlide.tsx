@@ -1,4 +1,5 @@
 import type { OverAskingResponse } from '@app/use-cases/OverAskingApi'
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -118,7 +119,7 @@ export const ShareCredentialsSlide = ({
               {t(
                 hasMissingCards(submission)
                   ? commonMessages.missingCardsWarning
-                  : commonMessages.missingAttributesWarning
+                  : getUnmetAttributeMessages(submission).warning
               )}
             </Paragraph>
             <Button.Solid onPress={onDecline}>{t(commonMessages.close)}</Button.Solid>

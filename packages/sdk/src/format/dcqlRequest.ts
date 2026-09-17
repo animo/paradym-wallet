@@ -1,9 +1,17 @@
-import { ClaimFormat, type DcqlQueryResult, type MdocNameSpaces, type NonEmptyArray } from '@credo-ts/core'
-import { getDisclosedAttributePathArrays } from '../display/common'
+import {
+  ClaimFormat,
+  type DcqlQueryResult,
+  type MdocNameSpaces,
+  MdocRecord,
+  type NonEmptyArray,
+  SdJwtVcRecord,
+  W3cCredentialRecord,
+} from '@credo-ts/core'
 import { getCredentialForDisplay } from '../display/credential'
 import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
 import { getAttributesAndMetadataForSdJwtPayload } from '../display/sdJwt'
-import { formatAttributesWithRecordMetadata } from './attributes'
+import type { CredentialRecord } from '../storage/credentials'
+import { formatAttributesWithRecordMetadata, getClaimPathsForMdocNamespaces } from './attributes'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -61,6 +69,29 @@ function extractCredentialPlaceholderFromQueryCredential(credential: DcqlQueryCr
 }
 
 /**
+ * The claims of a credential as Credo queries them with dcql.
+ */
+function getDcqlClaimsOfRecord(record: CredentialRecord): unknown {
+  if (record instanceof SdJwtVcRecord) return record.firstCredential.prettyClaims
+  if (record instanceof MdocRecord) return record.firstCredential.issuerSignedNamespaces
+  if (record instanceof W3cCredentialRecord) return record.firstCredential.jsonCredential
+  return record.firstCredential.resolvedCredential.toJSON()
+}
+
+/**
+ * Whether there is a value at a dcql claims path, where `null` stands for any element of an array.
+ */
+function hasValueAtClaimPath(value: unknown, path: Array<string | number | null>): boolean {
+  if (path.length === 0) return value !== undefined && value !== null
+
+  const [segment, ...rest] = path
+  if (segment === null) return Array.isArray(value) && value.some((element) => hasValueAtClaimPath(element, rest))
+  if (typeof value !== 'object' || value === null) return false
+
+  return hasValueAtClaimPath((value as Record<string | number, unknown>)[segment], rest)
+}
+
+/**
  * Credentials of the requested type that fail the query on their claims. A credential of another
  * type is a different card altogether, not a partial match. Whether the issuer is one the verifier
  * accepts (`trusted_authorities`) is not considered: the card still lacks what is asked for.
@@ -82,11 +113,26 @@ function getPartialMatches(
       (a, b) => a.failed_claim_indexes.length - b.failed_claim_indexes.length
     )
 
+    // dcql fails a claim both when the credential lacks it and when its value is not one of the requested
+    // values. It holds the claim when there is a value at the claim's path.
+    const claimsOfCredential = getDcqlClaimsOfRecord(record)
+    const isMismatched = (claimIndex: number) => {
+      const claim = queryCredential.claims?.[claimIndex]
+      if (!claim?.values) return false
+
+      const path = 'path' in claim ? claim.path : [claim.namespace, claim.claim_name]
+      return hasValueAtClaimPath(claimsOfCredential, path)
+    }
+
+    const getAttributePaths = (claimIndexes: number[]) =>
+      claimIndexes
+        .map((claimIndex) => getAttributePathForClaim(queryCredential, claimIndex))
+        .filter((path) => path !== undefined)
+
     partialMatches.set(record.id, {
       credential: getCredentialForDisplay(record),
-      missingAttributePaths: closestClaimSet.failed_claim_indexes
-        .map((claimIndex) => getAttributePathForClaim(queryCredential, claimIndex))
-        .filter((path) => path !== undefined),
+      missingAttributePaths: getAttributePaths(closestClaimSet.failed_claim_indexes.filter((i) => !isMismatched(i))),
+      mismatchedAttributePaths: getAttributePaths(closestClaimSet.failed_claim_indexes.filter(isMismatched)),
     })
   }
 
@@ -133,15 +179,16 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
 
         if (validMatch.record.type === 'SdJwtVcRecord') {
           // Credo already applied selective disclosure on payload
-          const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(
-            validMatch.claims.valid_claim_sets[0].output
-          )
+          const [{ output, disclosed_paths }] = validMatch.claims.valid_claim_sets
+          const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(output)
 
           disclosed = {
             rawAttributes: attributes,
             attributes: formatAttributesWithRecordMetadata(attributes, validMatch.record),
             metadata,
-            paths: getDisclosedAttributePathArrays(attributes, 2),
+            // The paths Credo discloses, which unlike the output keep an array element at its position
+            // in the credential. They include the claims of the JWT itself, which are not attributes.
+            paths: (disclosed_paths ?? []).filter(([claim]) => claim in attributes),
           }
         } else if (validMatch.record.type === 'MdocRecord') {
           const namespaces = validMatch.claims.valid_claim_sets[0].output as MdocNameSpaces
@@ -154,7 +201,7 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
             metadata,
             rawAttributes: attributes,
             attributes: formatAttributesWithRecordMetadata(attributes, validMatch.record),
-            paths: getDisclosedAttributePathArrays(namespaces, 2),
+            paths: getClaimPathsForMdocNamespaces(namespaces),
           }
         } else {
           // All paths disclosed for W3C
@@ -162,7 +209,7 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
             rawAttributes: credentialForDisplay.rawAttributes,
             attributes: credentialForDisplay.attributes,
             metadata: credentialForDisplay.metadata,
-            paths: getDisclosedAttributePathArrays(credentialForDisplay.rawAttributes, 2),
+            paths: Object.keys(credentialForDisplay.rawAttributes).map((claim) => [claim]),
           }
         }
 

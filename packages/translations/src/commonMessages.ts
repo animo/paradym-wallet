@@ -207,6 +207,42 @@ export const commonMessages = {
     message: 'Some of your cards are missing requested attributes. These are marked in red.',
     comment: 'Description when the user has the requested cards, but some lack requested attributes',
   }),
+  mismatchedAttributesHeading: defineMessage({
+    id: 'common.mismatchedAttributesHeading',
+    message: `ATTRIBUTES DON'T MATCH`,
+    comment:
+      'Heading shown above requested cards the user has, but that hold some of the requested attributes with a value the request does not accept',
+  }),
+  mismatchedAttributesDescription: defineMessage({
+    id: 'common.mismatchedAttributesDescription',
+    message: `Some attributes of your cards don't have the requested value. These are marked in red.`,
+    comment:
+      'Description when the user has the requested cards, but some hold requested attributes with a value the request does not accept',
+  }),
+  mismatchedAttributesWarning: defineMessage({
+    id: 'common.mismatchedAttributesWarning',
+    message: `Your cards don't have the requested values`,
+    comment:
+      'Shown above the close button when the user has the required cards, but they hold requested attributes with a value the request does not accept',
+  }),
+  unmetAttributesHeading: defineMessage({
+    id: 'common.unmetAttributesHeading',
+    message: `ATTRIBUTES DON'T MEET THE REQUEST`,
+    comment:
+      'Heading shown above requested cards the user has, but that lack some requested attributes and hold others with a value the request does not accept',
+  }),
+  unmetAttributesDescription: defineMessage({
+    id: 'common.unmetAttributesDescription',
+    message: `Some of your cards are missing requested attributes or don't have the requested value. These are marked in red.`,
+    comment:
+      'Description when the user has the requested cards, but some lack requested attributes and some hold requested attributes with a value the request does not accept',
+  }),
+  unmetAttributesWarning: defineMessage({
+    id: 'common.unmetAttributesWarning',
+    message: `Your cards are missing required attributes or don't have the requested values`,
+    comment:
+      'Shown above the close button when the user has the required cards, but they lack requested attributes and hold others with a value the request does not accept',
+  }),
   missingCardsWarning: defineMessage({
     id: 'common.missingCardsWarning',
     message: `You don't have the required cards`,

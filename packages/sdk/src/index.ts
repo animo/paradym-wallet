@@ -52,7 +52,7 @@ export type {
   SharingFailureReason,
   PaymentActivity,
 } from './storage/activityStore'
-export { type ClaimPath, type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesWithRecordMetadata, getAttributeLabelsForPaths, pickAttributesAtPaths  } from './format/attributes'
+export { type ClaimPath, type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesAtPaths, formatAttributesWithRecordMetadata, pickAttributesAtPaths  } from './format/attributes'
 export type { TrustedDidEntity } from './trust/handlers/did'
 export type { TrustedOpenId4VciEntity } from './trust/handlers/fallback'
 export type { TrustList } from './trust/handlers/eudiRpAuthentication'
@@ -93,7 +93,7 @@ export {
  *
  */
 
-export { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay, getRequestedAttributeNamesForDisplay, getClosestPartialMatch, hasMissingCards, getCredentialDisplayWithDefaults  } from './display/common'
+export { getDisclosedAttributeNamesForDisplay, getLabelsForAttributes, getUnsatisfiedAttributePathsForDisplay, getRequestedAttributeNamesForDisplay, getClosestPartialMatch, getUnmetAttributeRequirements, hasMissingCards, getCredentialDisplayWithDefaults  } from './display/common'
 export {getCredentialForDisplay,getCredentialForDisplayId } from './display/credential'
 export {getOpenId4VcCredentialDisplay } from './display/openid4vc'
 export { parseInvitationUrl,parseInvitationUrlSync } from './invitation/parser'

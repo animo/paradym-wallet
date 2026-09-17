@@ -10,7 +10,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import type { CredentialMetadata, DisplayImage, FormattedAttribute, FormattedAttributeArray } from '@paradym/wallet-sdk'
+import type { DisplayImage, FormattedSubmissionEntrySatisfiedCredential } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 import { BlurBadge } from './BlurBadge'
@@ -26,8 +26,11 @@ interface CardWithAttributesProps {
   formattedDisclosedAttributes: string[]
   /** Entries of `formattedDisclosedAttributes` the card lacks, shown in red. */
   missingAttributes?: string[]
-  disclosedPayload?: FormattedAttribute[]
-  disclosedMetadata?: CredentialMetadata
+  /**
+   * The paths to the disclosed claims in the credential with `id`. The card opens the disclosed
+   * attributes when both are given.
+   */
+  disclosedPaths?: FormattedSubmissionEntrySatisfiedCredential['disclosed']['paths']
   isExpired?: boolean
   isRevoked?: boolean
   isNotYetActive?: boolean
@@ -51,8 +54,7 @@ export function CardWithAttributes({
   backgroundImage,
   formattedDisclosedAttributes,
   missingAttributes,
-  disclosedPayload,
-  disclosedMetadata,
+  disclosedPaths,
   isNotYetActive = false,
   isExpired = false,
   isRevoked = false,
@@ -71,32 +73,21 @@ export function CardWithAttributes({
   }, [formattedDisclosedAttributes, missingAttributes])
 
   const onPress = () => {
-    if (id) {
-      router.push(
-        `/credentials/requestedAttributes?id=${id}&disclosedPayload=${encodeURIComponent(
-          JSON.stringify(disclosedPayload ?? [])
-        )}&disclosedMetadata=${encodeURIComponent(
-          JSON.stringify(disclosedMetadata ?? {})
-        )}&disclosedAttributeLength=${formattedDisclosedAttributes?.length}`
-      )
-    } else {
-      const params = new URLSearchParams({
-        item: JSON.stringify({
-          path: [],
-          type: 'array',
-          rawValue: [],
-          value: disclosedPayload ?? [],
-        } satisfies FormattedAttributeArray),
-      })
+    if (!id || !disclosedPaths) return
 
-      if (name) params.set('parentName', name)
+    // Only what identifies the attributes: the values are read from the credential by the screen, as
+    // passing them in the route made it as large as the credential, an mDL portrait included.
+    const params = new URLSearchParams({
+      id,
+      paths: JSON.stringify(disclosedPaths),
+      disclosedAttributeLength: String(formattedDisclosedAttributes.length),
+    })
 
-      router.push(`/credentials/id/nested?${params.toString()}`)
-    }
+    router.push(`/credentials/requestedAttributes?${params.toString()}`)
   }
 
   const isRevokedOrExpired = isRevoked || isExpired
-  const disabledNav = !disclosedPayload
+  const disabledNav = !id || !disclosedPaths
   const isMissing = (attribute: string) => missingAttributes?.includes(attribute) ?? false
 
   return (

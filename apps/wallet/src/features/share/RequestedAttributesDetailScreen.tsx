@@ -19,33 +19,36 @@ import {
   YStack,
 } from '@package/ui'
 import {
+  type ClaimPath,
   type CredentialForDisplayId,
-  type CredentialMetadata,
-  type FormattedAttribute,
+  formatAttributesAtPaths,
   useCredentialById,
 } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type RequestedAttributesDetailScreenProps = {
   id: CredentialForDisplayId
-  disclosedPayload: FormattedAttribute[]
-  disclosedMetadata?: CredentialMetadata
+  /** The paths to the disclosed claims in the credential, each with everything below it */
+  disclosedPaths: ClaimPath[]
   disclosedAttributeLength: number
 }
 
 export function RequestedAttributesDetailScreen({
   id,
-  disclosedPayload,
-  disclosedMetadata,
+  disclosedPaths,
   disclosedAttributeLength,
 }: RequestedAttributesDetailScreenProps) {
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { credential: activeCredential, isLoading } = useCredentialById(id)
+  const disclosedAttributes = useMemo(
+    () => (activeCredential ? formatAttributesAtPaths(activeCredential, disclosedPaths) : []),
+    [activeCredential, disclosedPaths]
+  )
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { withHaptics } = useHaptics()
@@ -144,7 +147,7 @@ export function RequestedAttributesDetailScreen({
                     })}
                   </Paragraph>
                 </Stack>
-                <CredentialAttributes attributes={disclosedPayload} />
+                <CredentialAttributes attributes={disclosedAttributes} />
                 <AnimatedStack
                   key={isMetadataVisible ? 'visible' : 'hidden'}
                   onLayout={(event) => setElementPosition(event.nativeEvent.layout.y)}
@@ -155,7 +158,7 @@ export function RequestedAttributesDetailScreen({
                     <CredentialAttributes
                       key="metadata"
                       headerTitle={t(commonMessages.metadataHeading)}
-                      attributes={metadataForDisplay(disclosedMetadata ?? activeCredential.metadata)}
+                      attributes={metadataForDisplay(activeCredential.metadata)}
                     />
                   )}
                 </AnimatedStack>
