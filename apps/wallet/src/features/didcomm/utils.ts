@@ -13,16 +13,8 @@ const messages = {
     message: 'If you decline, you will not receive the card.',
     comment: 'Confirmation description when declining a credential offer',
   }),
-  verifyTitle: defineMessage({
-    id: 'didcommCancelFlow.verification.title',
-    message: 'Stop sharing?',
-    comment: 'Confirmation title when cancelling a data sharing request',
-  }),
-  verifyDescription: defineMessage({
-    id: 'didcommCancelFlow.verification.description',
-    message: 'If you stop, no data will be shared.',
-    comment: 'Confirmation description when cancelling a proof request',
-  }),
+  verifyTitle: commonMessages.stopSharingTitle,
+  verifyDescription: commonMessages.stopSharingDescription,
   connectTitle: defineMessage({
     id: 'didcommCancelFlow.connect.title',
     message: 'Stop interaction?',

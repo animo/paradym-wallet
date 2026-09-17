@@ -1,9 +1,9 @@
 import { X509Certificate } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import type {
   AuthorizationRequestVerificationResult,
   EudiRpAuthenticationTrustMechanismConfiguration,
+  TrustContext,
   TrustedEntity,
   TrustedRelyingPartyEntity,
 } from '../trustMechanism'
@@ -16,8 +16,7 @@ export type TrustList = TrustedEntity & {
   trustList: Array<TrustedEntity & { trustedRelyingPartyRegistrars: Array<TrustedEntity> }>
 }
 
-export type GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions = {
-  paradym: ParadymWalletSdk
+export type GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions = TrustContext & {
   authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
   trustMechanismConfiguration: EudiRpAuthenticationTrustMechanismConfiguration

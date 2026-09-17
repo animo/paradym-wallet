@@ -1,8 +1,13 @@
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
-import type { FormattedSubmission, FormattedTransactionDataPaymentSingle } from '@paradym/wallet-sdk'
+import {
+  type FormattedSubmission,
+  type FormattedTransactionDataPaymentSingle,
+  hasMissingCards,
+} from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
@@ -48,11 +53,7 @@ export const PayAndShareSlide = ({
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4" fg={1}>
-        <Heading>
-          <Trans id="payShare.title" comment="Main heading in the pay & share screen">
-            Review the request
-          </Trans>
-        </Heading>
+        <Heading>{t(commonMessages.reviewRequestTitle)}</Heading>
 
         <YStack
           fg={1}
@@ -76,11 +77,7 @@ export const PayAndShareSlide = ({
           >
             <YStack gap="$4">
               <YStack gap="$2">
-                <Heading heading="sub2">
-                  <Trans id="payShare.documentHeading" comment="Heading above the document name">
-                    Payment
-                  </Trans>
-                </Heading>
+                <Heading heading="sub2">{t(commonMessages.paymentHeading)}</Heading>
                 <Paragraph>
                   <Trans id="payShare.documentIntro" comment="Text above the payment to be paid">
                     The following payment will be authorized
@@ -118,9 +115,11 @@ export const PayAndShareSlide = ({
         ) : (
           <YStack gap="$3">
             <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
-              <Trans id="payShare.missingCards" comment="Shown when the user lacks the required credentials">
-                You don't have the required cards
-              </Trans>
+              {t(
+                !submission || hasMissingCards(submission)
+                  ? commonMessages.missingCardsWarning
+                  : getUnmetAttributeMessages(submission).warning
+              )}
             </Paragraph>
             <Button.Solid onPress={onDecline}>{t(commonMessages.close)}</Button.Solid>
           </YStack>

@@ -8,6 +8,7 @@ import { OnboardingIdCardVerify } from '@app/features/onboarding/screens/id-card
 import type { MessageDescriptor } from '@lingui/core'
 import { defineMessage } from '@lingui/core/macro'
 import type { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 
 export const SIMULATOR_PIN = '276536'
 
@@ -43,17 +44,11 @@ export const pidSetupMessages = {
   },
   idCardStartScan: {
     title: defineMessage({ id: 'pidSetup.idCardScan.title', message: 'Scan your eID card' }),
-    subtitle: defineMessage({
-      id: 'pidSetup.idCardScan.subtitle',
-      message: 'Place your device on top of your eID card to scan it.',
-    }),
+    subtitle: commonMessages.placeDeviceOnIdCard,
   },
   idCardScan: {
     title: defineMessage({ id: 'pidSetup.idCardScan.title', message: 'Scan your eID card' }),
-    subtitle: defineMessage({
-      id: 'pidSetup.idCardScan.subtitle',
-      message: 'Place your device on top of your eID card to scan it.',
-    }),
+    subtitle: commonMessages.placeDeviceOnIdCard,
   },
   idCardFetch: {
     title: defineMessage({ id: 'pidSetup.idCardFetch.title', message: 'Getting eID information' }),
@@ -74,7 +69,7 @@ export const pidSetupMessages = {
     }),
   },
   idCardComplete: {
-    title: defineMessage({ id: 'pidSetup.idCardComplete.title', message: 'Success!' }),
+    title: commonMessages.success,
     subtitle: defineMessage({
       id: 'pidSetup.idCardComplete.subtitle',
       message: 'Your information has been retrieved from your eID card.',

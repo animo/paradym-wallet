@@ -1,12 +1,13 @@
-import { formatPredicate } from '@app/utils/formatePredicate'
 import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
-import { ClaimFormat } from '@credo-ts/core'
-import { t } from '@lingui/core/macro'
-import { commonMessages } from '@package/translations'
-import type { FormattedAttribute } from '../format/attributes'
-import type { FormattedSubmissionEntrySatisfiedCredential } from '../format/submission'
-import { formatDate } from '../utils/date'
-import type { CredentialDisplay, CredentialMetadata } from './credential'
+import { type FormattedAttribute, resolveAttributeLabelForRecord } from '../format/attributes'
+import type {
+  FormattedSubmission,
+  FormattedSubmissionEntryNotSatisfied,
+  FormattedSubmissionEntryPartialMatch,
+  FormattedSubmissionEntrySatisfiedCredential,
+} from '../format/submission'
+import type { CredentialRecord } from '../storage/credentials'
+import type { CredentialDisplay } from './credential'
 import { sanitizeString } from './strings'
 
 export function findDisplay<Display extends { locale?: string; lang?: string }>(
@@ -21,63 +22,35 @@ export function findDisplay<Display extends { locale?: string; lang?: string }>(
   return item
 }
 
-export function getDisclosedAttributePathArrays(
-  payload: object,
-  maxDepth: number | undefined = undefined,
-  prefix: string[] = []
-): string[][] {
-  let attributePaths: string[][] = []
-
-  for (const [key, value] of Object.entries(payload)) {
-    if (!value) continue
-
-    // TODO: handle arrays
-    const newPath = [...prefix, key]
-    if (value && typeof value === 'object' && maxDepth !== 0) {
-      // If the value is a nested object, recurse
-      attributePaths = [
-        ...attributePaths,
-        ...getDisclosedAttributePathArrays(value, maxDepth !== undefined ? maxDepth - 1 : undefined, newPath),
-      ]
-    } else {
-      // If the value is a primitive or maxDepth is reached, add the key to the list
-      attributePaths.push(newPath)
-    }
-  }
-
-  return attributePaths
-}
-
-export function getDisclosedAttributeNamesForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
-  // FIXME: this implementation in still too naive
-  // TODO: use the credential claim metadata (sd-jwt / oid4vc) to get labels for attribute paths
-  // TODO: we miss e.g. showing age_equal_or_over.21 as Age Over 21, but with the display metadata
-  // from bdr we can at least show it as: Age verification. If there is a key for a nested path we can
-  // also decide to include it
-
-  // For mdoc we remove the namespaces
-  if (credential.credential.claimFormat === ClaimFormat.MsoMdoc) {
-    return Array.from(
-      new Set(
-        credential.disclosed.paths.map((path) =>
-          typeof path[1] === 'string' ? sanitizeString(path[1]) : formatPredicate(path[1])
-        )
-      )
-    )
-  }
-
-  // Otherwise we take the top-level keys
+/**
+ * The labels of formatted attributes, in the order they are rendered once a card is opened: the same
+ * labels, from the same claim metadata and label resolver, as the attributes themselves.
+ */
+export function getLabelsForAttributes(attributes: FormattedAttribute[]): string[] {
   return Array.from(
-    new Set(
-      credential.disclosed.paths
-        .filter((path): path is [string] => typeof path[0] === 'string')
-        .map((path) => sanitizeString(path[0]))
-    )
+    new Set(attributes.map((attribute) => attribute.label ?? sanitizeString(String(attribute.path.at(-1)))))
   )
 }
 
+export function getDisclosedAttributeNamesForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
+  const labels = getLabelsForAttributes(credential.disclosed.attributes)
+
+  // AnonCreds predicates reveal no attribute, so they are only in the paths. Rendering one needs
+  // wording the app translates, so the predicate itself is returned.
+  const predicates = credential.disclosed.paths
+    .map((path) => path[0])
+    .filter((first): first is AnonCredsRequestedPredicate => typeof first === 'object' && first !== null)
+
+  return [...labels, ...predicates]
+}
+
+/**
+ * @param record The credential the attributes are requested from, when there is one: its claim
+ * metadata names them before the wallet's own labels do, as it does for disclosed attributes.
+ */
 export function getUnsatisfiedAttributePathsForDisplay(
-  paths: Array<string | number | null | AnonCredsRequestedPredicate>[]
+  paths: Array<string | number | null | AnonCredsRequestedPredicate>[],
+  record?: CredentialRecord
 ) {
   const nonRenderedPaths = ['iss', 'vct']
   return Array.from(
@@ -87,10 +60,69 @@ export function getUnsatisfiedAttributePathsForDisplay(
           (path): path is [string] =>
             typeof path[0] === 'string' && !path.some((p) => nonRenderedPaths.includes(p as string))
         )
-        .map((path) => sanitizeString(path[0]))
+        .map((path) => resolveAttributeLabelForRecord(path[0], record))
     )
   )
 }
+/**
+ * Like {@link getUnsatisfiedAttributePathsForDisplay}, but keeps requested predicates, which the app
+ * words itself.
+ */
+export function getRequestedAttributeNamesForDisplay(
+  paths: Array<string | number | null | AnonCredsRequestedPredicate>[],
+  record?: CredentialRecord
+): Array<string | AnonCredsRequestedPredicate> {
+  const predicates = paths
+    .map((path) => path[0])
+    .filter((first): first is AnonCredsRequestedPredicate => typeof first === 'object' && first !== null)
+
+  return [...getUnsatisfiedAttributePathsForDisplay(paths, record), ...predicates]
+}
+
+/**
+ * The partial match to show for an entry: the card that fails the fewest requested attributes. Of cards
+ * that fail as many, the one that lacks the fewest, as a card that holds an attribute with another value
+ * is closer to what is requested.
+ */
+export function getClosestPartialMatch(entry: FormattedSubmissionEntryNotSatisfied) {
+  const unmet = (partialMatch: FormattedSubmissionEntryPartialMatch) =>
+    partialMatch.missingAttributePaths.length + partialMatch.mismatchedAttributePaths.length
+
+  return entry.partialMatches.reduce<FormattedSubmissionEntryPartialMatch | undefined>(
+    (closest, partialMatch) =>
+      !closest ||
+      unmet(partialMatch) < unmet(closest) ||
+      (unmet(partialMatch) === unmet(closest) &&
+        partialMatch.missingAttributePaths.length < closest.missingAttributePaths.length)
+        ? partialMatch
+        : closest,
+    undefined
+  )
+}
+
+/**
+ * Why the cards the wallet shows for a request can't answer it: they lack requested attributes, hold
+ * them with a value the request does not accept, or both. Only the cards that are shown count, which
+ * is the closest partial match of each entry.
+ */
+export function getUnmetAttributeRequirements(submission: FormattedSubmission) {
+  const closestPartialMatches = submission.entries
+    .map((entry) => (entry.isSatisfied ? undefined : getClosestPartialMatch(entry)))
+    .filter((partialMatch) => partialMatch !== undefined)
+
+  return {
+    hasMissingAttributes: closestPartialMatches.some((match) => match.missingAttributePaths.length > 0),
+    hasMismatchedAttributes: closestPartialMatches.some((match) => match.mismatchedAttributePaths.length > 0),
+  }
+}
+
+/**
+ * Whether the wallet lacks a requested card altogether, rather than only attributes of cards it has.
+ */
+export function hasMissingCards(submission: FormattedSubmission) {
+  return submission.entries.some((entry) => !entry.isSatisfied && entry.partialMatches.length === 0)
+}
+
 export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<CredentialDisplay>): CredentialDisplay {
   return {
     ...credentialDisplay,
@@ -100,72 +132,4 @@ export function getCredentialDisplayWithDefaults(credentialDisplay?: Partial<Cre
       name: credentialDisplay?.issuer?.name ?? 'Unknown',
     },
   }
-}
-
-export function metadataForDisplay(metadata: CredentialMetadata): FormattedAttribute[] {
-  const { type, holder, issuedAt, issuer, validFrom, validUntil } = metadata
-
-  const attributes: FormattedAttribute[] = []
-
-  if (type) {
-    attributes.push({
-      type: 'string',
-      label: t(commonMessages.fields.credentialType),
-      rawValue: type,
-      path: ['type'],
-      value: type,
-    })
-  }
-
-  if (issuer) {
-    attributes.push({
-      type: 'string',
-      label: t(commonMessages.fields.issuer),
-      rawValue: issuer,
-      path: ['issuer'],
-      value: issuer,
-    })
-  }
-
-  if (holder) {
-    attributes.push({
-      type: 'string',
-      label: t(commonMessages.fields.holder),
-      rawValue: holder,
-      path: ['holder'],
-      value: holder,
-    })
-  }
-
-  if (issuedAt) {
-    attributes.push({
-      type: 'date',
-      label: t(commonMessages.fields.issued_at),
-      rawValue: issuedAt,
-      path: ['issuedAt'],
-      value: formatDate(new Date(issuedAt)),
-    })
-  }
-
-  if (validFrom) {
-    attributes.push({
-      type: 'date',
-      label: t(commonMessages.fields.validFrom),
-      rawValue: validFrom,
-      path: ['validFrom'],
-      value: formatDate(new Date(validFrom)),
-    })
-  }
-
-  if (validUntil) {
-    attributes.push({
-      type: 'date',
-      label: t(commonMessages.fields.expires_at),
-      rawValue: validUntil,
-      path: ['validUntil'],
-      value: formatDate(new Date(validUntil)),
-    })
-  }
-
-  return attributes
 }

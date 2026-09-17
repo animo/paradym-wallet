@@ -162,9 +162,7 @@ export const CredentialRetrievalSlide = ({
           >
             <AnimatedStack style={animatedTextStyle}>
               {isCompleted ? (
-                <Heading ta="center">
-                  <Trans id="receiveCredential.successHeader">Success!</Trans>
-                </Heading>
+                <Heading ta="center">{t(commonMessages.success)}</Heading>
               ) : isStoring ? (
                 <Heading></Heading>
               ) : deferred ? (

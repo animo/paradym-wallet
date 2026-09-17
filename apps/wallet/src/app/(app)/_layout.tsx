@@ -1,17 +1,19 @@
+import { DcApiCredentialRegistration } from '@app/features/dc-api/DcApiCredentialRegistration'
 import { useHasFinishedOnboarding } from '@app/features/onboarding'
 import { useFeatureFlag } from '@app/hooks/useFeatureFlag'
 import { useResetWalletDevMenu } from '@app/hooks/useResetWalletDevMenu'
+import { useSyncSdkLocale } from '@app/hooks/useSyncSdkLocale'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { type CredentialDataHandlerOptions, useHaptics } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import type { InvitationType } from '@paradym/wallet-sdk'
-import { activityStorage, deferredCredentialStorage, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
+import { activityIndexStore, deferredCredentialStorage, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
-const jsonRecordIds = [activityStorage.recordId, deferredCredentialStorage.recordId]
+const jsonRecordIds = [activityIndexStore.recordId, deferredCredentialStorage.recordId]
 
 const isDIDCommEnabled = useFeatureFlag('DIDCOMM')
 
@@ -26,6 +28,7 @@ export const credentialDataHandlerOptions = {
 } satisfies CredentialDataHandlerOptions
 
 export default function AppLayout() {
+  useSyncSdkLocale()
   useResetWalletDevMenu()
 
   const paradym = useParadym()
@@ -101,6 +104,7 @@ export default function AppLayout() {
   // Render the normal wallet, which is everything inside (app)
   return (
     <ParadymWalletSdk.AppProvider recordIds={jsonRecordIds}>
+      <DcApiCredentialRegistration />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           options={{

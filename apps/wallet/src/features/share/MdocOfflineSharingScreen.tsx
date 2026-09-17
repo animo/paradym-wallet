@@ -49,6 +49,7 @@ export function MdocOfflineSharingScreen({ sessionTranscript, deviceRequest }: M
           error,
         })
 
+        shutdownDataTransfer()
         pushToWallet()
       })
   }, [paradym, deviceRequest, toast.show, pushToWallet, isDevelopmentModeEnabled, t])
@@ -56,7 +57,12 @@ export function MdocOfflineSharingScreen({ sessionTranscript, deviceRequest }: M
   const handleError = useCallback(
     ({ reason, description, redirect = true }: { reason: string; description?: string; redirect?: boolean }) => {
       toast.show(reason, { message: description, customData: { preset: 'danger' } })
-      if (redirect) pushToWallet()
+      if (redirect) {
+        // Leaving the session open would keep the transfer in a state where a new device
+        // engagement can't be started.
+        shutdownDataTransfer()
+        pushToWallet()
+      }
       return
     },
     [toast, pushToWallet]
@@ -143,7 +149,6 @@ export function MdocOfflineSharingScreen({ sessionTranscript, deviceRequest }: M
 
     setIsProcessing(false)
 
-    shutdownDataTransfer()
     handleError({
       reason: t({
         id: 'mdoc.proof.declined',

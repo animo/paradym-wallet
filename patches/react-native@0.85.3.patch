@@ -1,0 +1,28 @@
+# Upstream: https://github.com/facebook/react-native/issues/54642 (open fix in #54952 returns 1.0 instead of reading the trait collection)
+diff --git a/React/Base/RCTUtils.mm b/React/Base/RCTUtils.mm
+index ba4e930..8622e31 100644
+--- a/React/Base/RCTUtils.mm
++++ b/React/Base/RCTUtils.mm
+@@ -384,7 +384,21 @@ CGFloat RCTFontSizeMultiplier(void)
+     };
+   });
+ 
+-  return mapping[RCTSharedApplication().preferredContentSizeCategory].floatValue;
++  // `RCTSharedApplication()` is nil in an app extension, where the trait collection carries the same
++  // preference — the way `RCTScreenScale()` above already reads `displayScale` from it. Without a
++  // category the lookup yields nothing and the multiplier is zero, which sizes every font to zero: a
++  // named font then draws nothing at all, while the system font quietly falls back to its default
++  // size, so the text that disappears is exactly the text that asked for a `fontFamily`.
++  UIApplication *application = RCTSharedApplication();
++  UIContentSizeCategory contentSizeCategory = application != nil
++      ? application.preferredContentSizeCategory
++      : UITraitCollection.currentTraitCollection.preferredContentSizeCategory;
++
++  CGFloat multiplier = contentSizeCategory != nil ? mapping[contentSizeCategory].floatValue : 0.0;
++
++  // Nothing usable came back: `UIContentSizeCategoryUnspecified` is not in the mapping, and neither
++  // is a trait collection read off the main thread, where UIKit has none to give.
++  return multiplier > 0 ? multiplier : 1.0;
+ }
+ 
+ #if !TARGET_OS_TV

@@ -1,9 +1,10 @@
 import type { OverAskingResponse } from '@app/use-cases/OverAskingApi'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
+import { useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, HeroIcons, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
-import type { DisplayImage, FormattedSubmission } from '@paradym/wallet-sdk'
+import { type DisplayImage, type FormattedSubmission, hasMissingCards } from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import { Spacer } from 'tamagui'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
@@ -42,26 +43,14 @@ export const ShareCredentialsSlide = ({
     onNext()
   }
 
-  const fallbackPurpose = t({
-    id: 'submission.fallbackPurpose',
-    message: 'No information was provided on the purpose of the data request. Be cautious',
-    comment: 'Shown when a submission has no stated purpose',
-  })
+  const fallbackPurpose = t(commonMessages.noPurposeProvided)
 
-  const shareLabel = t({
-    id: 'submission.share',
-    message: 'Share',
-    comment: 'Button label to accept and share credentials',
-  })
+  const shareLabel = t(commonMessages.share)
 
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4" fg={1}>
-        <Heading>
-          <Trans id="submission.reviewTitle" comment="Heading shown at the top of the share credentials screen">
-            Review the request
-          </Trans>
-        </Heading>
+        <Heading>{t(commonMessages.reviewRequestTitle)}</Heading>
 
         <YStack
           fg={1}
@@ -127,9 +116,11 @@ export const ShareCredentialsSlide = ({
         ) : (
           <YStack gap="$3">
             <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
-              <Trans id="submission.missingCardsWarning" comment="Shown when user lacks required credentials">
-                You don't have the required cards
-              </Trans>
+              {t(
+                hasMissingCards(submission)
+                  ? commonMessages.missingCardsWarning
+                  : getUnmetAttributeMessages(submission).warning
+              )}
             </Paragraph>
             <Button.Solid onPress={onDecline}>{t(commonMessages.close)}</Button.Solid>
           </YStack>

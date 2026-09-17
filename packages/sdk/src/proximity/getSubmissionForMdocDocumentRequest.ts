@@ -1,114 +1,50 @@
-import { DeviceRequest, limitDisclosureToDeviceRequestNameSpaces, parseIssuerSigned } from '@animo-id/mdoc'
-import { TypedArrayEncoder } from '@credo-ts/core'
-import { getCredentialForDisplay } from '../display/credential'
-import { getAttributesAndMetadataForMdocPayload } from '../display/mdoc'
-import { formatAttributesWithRecordMetadata } from '../format/attributes'
-import type {
-  FormattedSubmission,
-  FormattedSubmissionEntry,
-  FormattedSubmissionEntrySatisfiedCredential,
-} from '../format/submission'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import type { MdocApi } from '@credo-ts/core'
+import { type CredentialMatch, DeviceRequest, Holder } from '@owf/mdoc'
+import { getSubmissionForMdocDocRequestMatches } from '../format/mdocDeviceRequest'
+import type { FormattedSubmission } from '../format/submission'
 
 export type GetSubmissionForMdocDocumentRequestOptions = {
-  paradym: ParadymWalletSdk
+  /**
+   * The wallet's mdoc storage. Not the SDK itself: the credential request UI matches iOS requests
+   * with this too, and it runs on a different agent.
+   */
+  mdocApi: MdocApi
   encodedDeviceRequest: Uint8Array
 }
 
+/**
+ * What a device request asks for, matched against the wallet's mdocs the same way Credo matches a
+ * digital credentials API request — both go through `@owf/mdoc`'s `Holder.matchDeviceRequest` — so
+ * the review reads the same whichever way the request arrived.
+ *
+ * Several doc requests are alternatives, see `selectAlternativeEntry`: the submission holds the one
+ * document the wallet answers.
+ */
 export async function getSubmissionForMdocDocumentRequest(
   options: GetSubmissionForMdocDocumentRequestOptions
 ): Promise<FormattedSubmission> {
-  const deviceRequest = DeviceRequest.parse(options.encodedDeviceRequest)
+  const deviceRequest = DeviceRequest.decode(options.encodedDeviceRequest)
 
-  const matchingDocTypeRecords = await options.paradym.agent.mdoc.findAllByQuery({
-    $or: deviceRequest.docRequests.map((request) => ({
-      docType: request.itemsRequest.data.docType,
-    })),
+  const records = await options.mdocApi.findAllByQuery({
+    $or: deviceRequest.docRequests.map((docRequest) => ({ docType: docRequest.itemsRequest.docType })),
   })
 
-  const mdocs = matchingDocTypeRecords.map((record) => {
-    const firstMdoc = record.firstCredential
-
-    return {
-      credential: getCredentialForDisplay(record),
-      mdoc: firstMdoc,
-      issuerSignedDocument: parseIssuerSigned(TypedArrayEncoder.fromBase64(firstMdoc.base64Url), firstMdoc.docType),
-    }
+  const match = Holder.matchDeviceRequest({
+    deviceRequest,
+    credentials: records.map((record) => record.firstCredential.issuerSigned),
+    treatAmbiguousMultipleDocRequestsAsAlternatives: true,
   })
 
-  const entries: FormattedSubmissionEntry[] = deviceRequest.docRequests.map((docRequest): FormattedSubmissionEntry => {
-    const matchingMdocs = mdocs
-      .map((mdoc) => {
-        if (mdoc.mdoc.docType !== docRequest.itemsRequest.data.docType) return undefined
+  const withRecord = (credential: CredentialMatch) => ({ ...credential, record: records[credential.credentialIndex] })
 
-        try {
-          const disclosedNamespaces = limitDisclosureToDeviceRequestNameSpaces(
-            mdoc.issuerSignedDocument,
-            docRequest.itemsRequest.data.nameSpaces
-          )
-
-          return {
-            ...mdoc,
-            disclosedNameSpaces: disclosedNamespaces,
-          }
-        } catch (_error) {
-          return undefined
-        }
-      })
-      .filter((m): m is NonNullable<typeof m> => m !== undefined)
-
-    if (matchingMdocs.length === 0) {
-      const requestedAttributePaths = Array.from(docRequest.itemsRequest.data.nameSpaces.values()).flatMap((value) =>
-        Array.from(value.keys()).map((key) => [key])
-      )
-
-      return {
-        inputDescriptorId: docRequest.itemsRequest.data.docType,
-        isSatisfied: false,
-        name: docRequest.itemsRequest.data.docType,
-        requestedAttributePaths,
-      }
-    }
-
-    return {
-      // input descriptor id is doctype
-      inputDescriptorId: docRequest.itemsRequest.data.docType,
-      isSatisfied: true,
-      credentials: matchingMdocs.map((matchingMdoc): FormattedSubmissionEntrySatisfiedCredential => {
-        const disclosedAttributePaths = Array.from(matchingMdoc.disclosedNameSpaces.entries()).flatMap(
-          ([namespace, value]) =>
-            Array.from(value.values()).map((issuerSignedItem) => [namespace, issuerSignedItem.elementIdentifier])
-        )
-
-        const disclosedNamespaces = Object.fromEntries(
-          Array.from(matchingMdoc.disclosedNameSpaces.entries()).map(([namespace, value]) => [
-            namespace,
-            Object.fromEntries(
-              Array.from(value.values()).map((issuerSignedItem) => [
-                issuerSignedItem.elementIdentifier,
-                // TODO: what is element value here?
-                issuerSignedItem.elementValue,
-              ])
-            ),
-          ])
-        )
-        const { metadata } = getAttributesAndMetadataForMdocPayload(disclosedNamespaces, matchingMdoc.mdoc)
-
-        return {
-          credential: matchingMdoc.credential,
-          disclosed: {
-            attributes: formatAttributesWithRecordMetadata(disclosedNamespaces, matchingMdoc.credential.record),
-            rawAttributes: disclosedNamespaces,
-            metadata,
-            paths: disclosedAttributePaths,
-          },
-        }
-      }) as [FormattedSubmissionEntrySatisfiedCredential, ...FormattedSubmissionEntrySatisfiedCredential[]],
-    }
-  })
-
-  return {
-    areAllSatisfied: entries.every((entry) => entry.isSatisfied),
-    entries,
-  }
+  return getSubmissionForMdocDocRequestMatches(
+    match.docRequests.map((docRequestMatch) => ({
+      docType: docRequestMatch.docType,
+      requestedElements: Array.from(
+        deviceRequest.docRequests[docRequestMatch.docRequestIndex].itemsRequest.namespaces.values()
+      ).flatMap((elements) => Array.from(elements.keys())),
+      validCredentials: docRequestMatch.validCredentials.map(withRecord),
+      failedCredentials: docRequestMatch.failedCredentials.map(withRecord),
+    }))
+  ).submission
 }

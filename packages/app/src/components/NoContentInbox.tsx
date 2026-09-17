@@ -1,9 +1,11 @@
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { Button, Heading, LucideIcons, Paragraph, Spacer, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 
 export function NoContentInbox() {
   const { back } = useRouter()
+  const { t } = useLingui()
 
   return (
     <YStack jc="space-between" px="$4" height="80%">
@@ -11,14 +13,10 @@ export function NoContentInbox() {
       <YStack>
         <YStack jc="center" ai="center" gap="$2">
           <Heading heading="h2" fontWeight="$medium" letterSpacing={-0.5}>
-            <Trans id="noContentInbox.heading" comment="Heading shown when user has no notifications">
-              You're all caught up
-            </Trans>
+            {t(commonMessages.noNotificationsTitle)}
           </Heading>
           <Paragraph textAlign="center" secondary>
-            <Trans id="noContentInbox.message" comment="Message shown when user has no notifications">
-              You don't have any notifications at the moment.
-            </Trans>
+            {t(commonMessages.noNotificationsDescription)}
           </Paragraph>
         </YStack>
         <Button.Text fontWeight="$medium" onPress={() => back()} icon={<LucideIcons.ArrowLeft size={20} margin={-4} />}>

@@ -1,6 +1,6 @@
 import { Text } from 'tamagui'
-import { Stack, XStack, YStack } from '../base'
-import { CustomIcons, HeroIcons } from '../content'
+import { Stack, XStack, YStack } from '../base/Stacks'
+import { CustomIcons, HeroIcons } from '../content/Icon'
 
 export enum PinValues {
   One = '1',
@@ -52,7 +52,7 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       backgroundColor={
         [PinValues.Backspace, PinValues.Fingerprint, PinValues.FaceId, PinValues.Empty].includes(character)
           ? '$grey-200'
-          : '$white'
+          : '$background'
       }
       pressStyle={{ opacity: 0.5, backgroundColor: '$grey-100' }}
       onPress={() => onPressPinNumber(character)}

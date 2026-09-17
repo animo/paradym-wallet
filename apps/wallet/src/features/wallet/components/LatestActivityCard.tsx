@@ -1,6 +1,7 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
+import { commonMessages } from '@package/translations'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import { useActivities, useCredentials } from '@paradym/wallet-sdk'
@@ -19,11 +20,7 @@ const noActivityDescription = defineMessage({
   comment: 'Description shown if the user has no activity history',
 })
 
-const sharingFailed = defineMessage({
-  id: 'activity.latest.sharingFailed',
-  message: 'Sharing failed',
-  comment: 'Shown if the last sharing activity failed or was stopped',
-})
+const sharingFailed = commonMessages.sharingFailed
 
 const sharedCard = defineMessage({
   id: 'activity.latest.sharedCard',
@@ -37,11 +34,7 @@ const sharedCards = defineMessage({
   comment: 'Shown if multiple credentials were shared successfully',
 })
 
-const signingFailed = defineMessage({
-  id: 'activity.latest.signingFailed',
-  message: 'Signing failed',
-  comment: 'Shown if signing a document failed or was cancelled',
-})
+const signingFailed = commonMessages.signingFailed
 
 const signedDocument = defineMessage({
   id: 'activity.latest.signedDocument',
@@ -49,11 +42,7 @@ const signedDocument = defineMessage({
   comment: 'Shown if a document was signed successfully',
 })
 
-const paymentFailed = defineMessage({
-  id: 'activity.latest.paymentFailed',
-  message: 'Payment failed',
-  comment: 'Shown if a payment failed or was cancelled',
-})
+const paymentFailed = commonMessages.paymentFailed
 
 const paymentSuccessful = defineMessage({
   id: 'activity.latest.paymentMade',
@@ -82,7 +71,7 @@ const fallbackCardName = defineMessage({
 export function LatestActivityCard() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
-  const { activities } = useActivities()
+  const { activities } = useActivities({ limit: 1 })
   const { t } = useLingui()
   const latestActivity = activities[0]
   const { credentials } = useCredentials()

@@ -6,18 +6,14 @@ import { commonMessages } from '@package/translations'
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import type {
-  FormattedAttributeObject,
+  CredentialForDisplay,
   IssuanceActivity,
   PaymentActivity,
   PresentationActivity,
+  PresentationActivityCredential,
   SignedActivity,
 } from '@paradym/wallet-sdk'
-import {
-  formatAllAttributes,
-  formatAttributesWithRecordMetadata,
-  useActivities,
-  useCredentials,
-} from '@paradym/wallet-sdk'
+import { formatAttributesAtPaths, getLabelsForAttributes, useActivityById, useCredentials } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { usePaymentTransactionStatus } from '../../hooks/usePaymentTransactionStatus'
@@ -25,15 +21,38 @@ import { RequestPurposeSection } from '../share/components/RequestPurposeSection
 import { CredentialRowCard } from '../wallet/CredentialsScreen'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
 
+/**
+ * Names for the fields an activity recorded as disclosed.
+ *
+ * Resolved from the stored claim paths while the credential is still in the wallet, so the names
+ * follow the language the user is reading in now. Once it has been deleted there is nothing to
+ * resolve against, and the names fall back to the ones captured when it was shared — which stay in
+ * whatever language was active then.
+ */
+function getDisclosedLabels(
+  activityCredential: PresentationActivityCredential,
+  credential?: CredentialForDisplay
+): string[] {
+  if (!credential) return activityCredential.attributeNames
+
+  // From the attributes the card opens, so the names are in the same order as they are there
+  return getLabelsForAttributes(formatAttributesAtPaths(credential, activityCredential.paths))
+}
+
 export function ActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
   const { bottom } = useSafeAreaInsets()
   const { t } = useLingui()
 
-  const { activities } = useActivities()
-  const activity = activities.find((activity) => activity.id === id)
+  const { activity, isLoading: isLoadingActivity } = useActivityById(id)
   usePaymentTransactionStatus(activity?.type === 'payment' ? activity : undefined)
+
+  // Above the early returns below: reading an activity is a query now, so there is a render where
+  // it is still loading — and a hook called only on the renders after it is a different hook count.
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
+  if (isLoadingActivity) return null
 
   if (!activity) {
     router.back()
@@ -42,8 +61,6 @@ export function ActivityDetailScreen() {
 
   const Icon = getActivityInteraction(activity)
   const Title = t(Icon.text)
-
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   return (
     <FlexPage p={0} gap={0}>
@@ -86,12 +103,7 @@ const activityMessages = {
     message: 'Deleted credential',
     comment: 'Shown when a credential no longer exists in the wallet',
   }),
-  noPurposeGiven: defineMessage({
-    id: 'activity.noPurposeGiven',
-    message: 'No information was provided on the purpose of the data request. Be cautious',
-    comment:
-      'Shown as a warning to the user when the verifier did not provide a purpose for the request. The user can still continue to accept if they wish.',
-  }),
+  noPurposeGiven: commonMessages.noPurposeProvided,
   documentSigned: defineMessage({
     id: 'activity.documentSigned',
     message: 'The document was signed.',
@@ -165,14 +177,7 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
     <Stack gap="$6">
       <YStack gap="$4">
         <YStack gap="$2">
-          <Heading heading="sub2">
-            <Trans
-              id="activity.cardsHeading"
-              comment="Section heading for list of received cards in the activity detail screen"
-            >
-              Cards
-            </Trans>
-          </Heading>
+          <Heading heading="sub2">{t(commonMessages.cards)}</Heading>
 
           <Paragraph>{description}</Paragraph>
         </YStack>
@@ -251,14 +256,7 @@ export function SharedActivityDetailSection({
       {activity && activity.type === 'signed' ? (
         <YStack gap="$4">
           <YStack gap="$2">
-            <Heading heading="sub2">
-              <Trans
-                id="activity.documentHeading"
-                comment="Section heading shown when a document was signed or attempted to be signed"
-              >
-                Document
-              </Trans>
-            </Heading>
+            <Heading heading="sub2">{t(commonMessages.documentHeading)}</Heading>
             <Paragraph>
               {activity.status === 'success'
                 ? t(activityMessages.documentSigned)
@@ -286,14 +284,7 @@ export function SharedActivityDetailSection({
         activity.type === 'payment' && (
           <YStack gap="$4">
             <YStack gap="$2">
-              <Heading heading="sub2">
-                <Trans
-                  id="activity.paymentHeading"
-                  comment="Section heading shown when a payment was paid or attempted to be paid"
-                >
-                  Payment
-                </Trans>
-              </Heading>
+              <Heading heading="sub2">{t(commonMessages.paymentHeading)}</Heading>
             </YStack>
             <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
               <YStack f={1} gap="$2" ai="center">
@@ -327,18 +318,13 @@ export function SharedActivityDetailSection({
                 // Credential has been deleted
                 if (!credential) {
                   return (
+                    // The activity records which fields were disclosed, not what they held, and the
+                    // credential they came from is gone, so the names are all there is.
                     <CardWithAttributes
                       name={activityCredential.name ?? t(activityMessages.deletedCredential)}
                       textColor="$grey-100"
                       backgroundColor="$primary-500"
-                      formattedDisclosedAttributes={activityCredential.attributeNames}
-                      disclosedPayload={
-                        activityCredential.version === 'v2' && activityCredential.id.startsWith('mdoc-')
-                          ? formatAllAttributes(activityCredential.attributes).flatMap(
-                              (item) => (item as FormattedAttributeObject).value
-                            )
-                          : formatAllAttributes(activityCredential.attributes)
-                      }
+                      formattedDisclosedAttributes={getDisclosedLabels(activityCredential)}
                     />
                   )
                 }
@@ -360,13 +346,10 @@ export function SharedActivityDetailSection({
                     textColor={credential.display.textColor}
                     backgroundColor={credential.display.backgroundColor}
                     backgroundImage={credential.display.backgroundImage}
-                    // FIXME should store the paths as well, so we can dynamically resolve
-                    // the claim labels
-                    formattedDisclosedAttributes={activityCredential.attributeNames}
-                    disclosedPayload={formatAttributesWithRecordMetadata(
-                      activityCredential.attributes,
-                      credential.record
-                    )}
+                    formattedDisclosedAttributes={getDisclosedLabels(activityCredential, credential)}
+                    // The values come from the credential as it is now, which is the whole point of
+                    // linking to it rather than copying it into the activity.
+                    disclosedPaths={activityCredential.paths}
                     isExpired={isExpired}
                     isNotYetActive={isNotYetActive}
                   />

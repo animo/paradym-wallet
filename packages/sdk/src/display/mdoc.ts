@@ -1,6 +1,6 @@
 import { DateOnly, type Mdoc, type MdocNameSpaces, TypedArrayEncoder } from '@credo-ts/core'
 import type { OpenId4VcCredentialMetadata } from '../metadata/credentials'
-import { formatDate, isDateString } from '../utils/date'
+import { formatDate, isDateString } from '../utils/format'
 import { detectImageMimeType } from '../utils/image'
 import { safeCalculateJwkThumbprint } from '../utils/jwkThumbprint'
 import type { CredentialDisplay, CredentialForDisplay, CredentialMetadata } from './credential'

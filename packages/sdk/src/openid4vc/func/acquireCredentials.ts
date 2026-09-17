@@ -17,16 +17,19 @@ export type AcquireCredentialsOptions = { paradym: ParadymWalletSdk } & (
   | AcquireCredentialsAuthPresentationDuringIssuanceOptions
 )
 
+// `'x' in options` is true for an explicitly-undefined property, so a caller spreading an
+// optional value (e.g. `transactionCode: txCode` where `txCode` is undefined for a plain
+// pre-auth offer) would otherwise be routed to the wrong flow. Discriminate on the value.
 export const acquireCredentials = async (options: AcquireCredentialsOptions) => {
-  if ('transactionCode' in options) {
+  if ('transactionCode' in options && options.transactionCode !== undefined) {
     return await acquireCredentialsPreAuthWithTransactionCode(options)
   }
 
-  if ('credentialsForRequest' in options) {
+  if ('credentialsForRequest' in options && options.credentialsForRequest !== undefined) {
     return await acquireCredentialsAuthPresentationDuringIssuance(options)
   }
 
-  if ('authorizationCode' in options) {
+  if ('authorizationCode' in options && options.authorizationCode !== undefined) {
     return await acquireCredentialsAuth(options)
   }
 

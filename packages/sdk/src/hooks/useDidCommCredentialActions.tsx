@@ -31,7 +31,13 @@ function useOfferAttributes(credentialExchangeId: string) {
           ({ name, value }) =>
             ({
               type: 'string',
-              label: mapAttributeName(name),
+              label: mapAttributeName({
+                format: 'anoncreds',
+                schemaId: offer.schema_id,
+                credentialDefinitionId: offer.cred_def_id,
+                key: name,
+                path: [name],
+              }),
               value,
               path: [name],
               rawValue: value,

@@ -91,7 +91,7 @@ export const getFormattedTransactionData = (
       },
       cardForTransactionId,
       hash: TypedArrayEncoder.toBase64Url(
-        Hasher.hash(TypedArrayEncoder.fromBase64(transactionDataEntry.entry.encoded), 'sha-256')
+        Hasher.hash(TypedArrayEncoder.fromBase64Url(transactionDataEntry.entry.encoded), 'sha-256')
       ),
     }
   }

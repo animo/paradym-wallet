@@ -1,50 +1,54 @@
 import { Circle } from 'tamagui'
-import { AnimatedStack, Heading, Paragraph, Stack, XStack, YStack } from '../base'
-import { HeroIcons, Image } from '../content'
-import { useScaleAnimation } from '../hooks'
+// Deep imports: the `base` and `content` barrels pull in components that animate through
+// reanimated, and the credential request UI renders this without linking it.
+import { Heading } from '../base/Headings'
+import { Paragraph } from '../base/Paragraph'
+import { Stack, XStack, YStack } from '../base/Stacks'
+import { HeroIcons } from '../content/Icon'
+import { Image } from '../content/Image'
 import type { StatusVariant } from '../utils/variants'
 
 const infoButtonVariants = {
   default: {
-    icon: <HeroIcons.CheckCircleFilled color="$white" />,
+    icon: <HeroIcons.CheckCircleFilled color="$background" />,
     accent: '$grey-500',
   },
   positive: {
-    icon: <HeroIcons.ShieldCheckFilled color="$white" />,
+    icon: <HeroIcons.ShieldCheckFilled color="$background" />,
     accent: '$positive-500',
   },
   warning: {
-    icon: <HeroIcons.ExclamationTriangleFilled color="$white" />,
+    icon: <HeroIcons.ExclamationTriangleFilled color="$background" />,
     accent: '$warning-500',
   },
   danger: {
-    icon: <HeroIcons.ExclamationCircleFilled color="$white" />,
+    icon: <HeroIcons.ExclamationCircleFilled color="$background" />,
     accent: '$danger-500',
   },
   info: {
-    icon: <HeroIcons.InformationCircleFilled color="$white" />,
+    icon: <HeroIcons.InformationCircleFilled color="$background" />,
     accent: '$grey-500',
   },
 
   // States
   expired: {
-    icon: <HeroIcons.ClockFilled color="$white" />,
+    icon: <HeroIcons.ClockFilled color="$background" />,
     accent: '$grey-500',
   },
   view: {
-    icon: <HeroIcons.Eye color="$white" />,
+    icon: <HeroIcons.Eye color="$background" />,
     accent: '$primary-500',
   },
   'interaction-success': {
-    icon: <HeroIcons.Interaction color="$white" />,
+    icon: <HeroIcons.Interaction color="$background" />,
     accent: '$positive-500',
   },
   'interaction-new': {
-    icon: <HeroIcons.Interaction color="$white" />,
+    icon: <HeroIcons.Interaction color="$background" />,
     accent: '$grey-500',
   },
   unknown: {
-    icon: <HeroIcons.ExclamationCircleFilled color="$white" />,
+    icon: <HeroIcons.ExclamationCircleFilled color="$background" />,
     accent: '$grey-500',
   },
 }
@@ -74,17 +78,15 @@ export function InfoButton({
   ariaLabel,
 }: InfoButtonProps) {
   const isPressable = !!onPress
-  const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   return (
-    <AnimatedStack
-      style={isPressable ? pressStyle : undefined}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+    <Stack
+      transition={isPressable ? 'quick' : undefined}
+      pressStyle={isPressable ? { scale: 0.98 } : undefined}
       flexDirection="row"
       gap="$4"
       br="$8"
-      bg={isPressable ? '$grey-50' : '$white'}
+      bg={isPressable ? '$grey-50' : '$background'}
       p="$3.5"
       bw="$0.5"
       accessible={true}
@@ -117,6 +119,6 @@ export function InfoButton({
           </Stack>
         )}
       </XStack>
-    </AnimatedStack>
+    </Stack>
   )
 }

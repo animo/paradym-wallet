@@ -10,6 +10,7 @@ import {
   type W3cV2JsonCredential,
 } from '@credo-ts/core'
 import type { OpenId4VciMetadata } from '@credo-ts/openid4vc'
+import { getLocale } from '../config/locale'
 import { ParadymWalletUnsupportedCredentialRecordTypeError } from '../error'
 import { type FormattedAttribute, formatAttributesWithRecordMetadata } from '../format/attributes'
 import {
@@ -103,6 +104,7 @@ export interface CredentialForDisplay {
     | ClaimFormat.SdJwtDc
     | ClaimFormat.SdJwtW3cVc
     | ClaimFormat.JwtW3cVc
+    | ClaimFormat.DiVc
     | ClaimFormat.MsoMdoc
     | ClaimFormat.JwtVc
     | ClaimFormat.LdpVc
@@ -129,7 +131,33 @@ export function getCredentialForDisplayId(credentialRecord: CredentialRecord): C
   throw new ParadymWalletUnsupportedCredentialRecordTypeError()
 }
 
+/**
+ * Already-computed display for a record, keyed by the record instance.
+ *
+ * Deriving the display is expensive: it decodes the credential (`firstCredential` is an uncached
+ * getter that re-parses the compact sd-jwt or re-decodes the mdoc CBOR on every access), hashes
+ * every sd-jwt disclosure, and walks the whole claim tree — base64-encoding any embedded image,
+ * such as an mDL portrait, into a data url. Screens call this through `useCredentials`, which every
+ * consumer memoizes separately, so the same record was re-derived once per consumer per render.
+ *
+ * Keying on the record instance is safe because Credo hands out a fresh instance for every read and
+ * every repository event (`record.clone()`), so an updated record can never hit a stale entry. The
+ * locale is part of the entry rather than the key because labels resolve against the active one.
+ */
+const credentialForDisplayCache = new WeakMap<CredentialRecord, { locale: string; display: CredentialForDisplay }>()
+
 export function getCredentialForDisplay(credentialRecord: CredentialRecord): CredentialForDisplay {
+  const locale = getLocale()
+  const cached = credentialForDisplayCache.get(credentialRecord)
+  if (cached && cached.locale === locale) return cached.display
+
+  const display = deriveCredentialForDisplay(credentialRecord)
+  credentialForDisplayCache.set(credentialRecord, { locale, display })
+
+  return display
+}
+
+function deriveCredentialForDisplay(credentialRecord: CredentialRecord): CredentialForDisplay {
   const credentialCategoryMetadata = getCredentialCategoryMetadata(credentialRecord)
   const credentialForDisplayId = getCredentialForDisplayId(credentialRecord)
   const hasRefreshToken = getRefreshCredentialMetadata(credentialRecord) !== null

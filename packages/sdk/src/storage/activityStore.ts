@@ -1,9 +1,8 @@
 import type { Agent } from '@credo-ts/core'
 import { utils } from '@credo-ts/core'
-import { useMemo } from 'react'
-import { getUnsatisfiedAttributePathsForDisplay } from '../display/common'
+import { getDisclosedAttributeNamesForDisplay, getUnsatisfiedAttributePathsForDisplay } from '../display/common'
 import type { CredentialDisplay, CredentialForDisplayId, DisplayImage } from '../display/credential'
-import { getDisclosedAttributeLabelsForDisplay } from '../format/attributes'
+import type { ClaimPath } from '../format/attributes'
 import type { FormattedSubmission } from '../format/submission'
 import type { CredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type {
@@ -11,8 +10,14 @@ import type {
   FormattedTransactionDataPaymentSingle,
   FormattedTransactionDataQesAuthorization,
 } from '../openid4vc/transaction'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
-import { useWalletJsonRecord } from '../providers/WalletJsonStoreProvider'
+import {
+  deleteActivityRecord,
+  getActivityRecordById,
+  saveActivityRecord,
+  saveActivityRecords,
+  updateActivityRecord,
+} from './activityRecords'
+import { upgradeLegacyActivity } from './activityUpgrade'
 import { getWalletJsonStore } from './walletJsonStore'
 
 export type ActivityType = 'shared' | 'received' | 'signed' | 'payment'
@@ -44,18 +49,33 @@ export interface PresentationActivityCredentialNotFound {
   name?: string
 }
 
+/**
+ * A shared credential, recorded as which fields were disclosed rather than what they contained.
+ *
+ * The activity log answers "which fields you disclosed, to whom, when"; the values themselves live
+ * in the credential, which `id` links to. Storing them here made every presentation append its
+ * disclosed payload — an mDL portrait included — to a record the wallet reads whole on startup.
+ *
+ * Paths rather than labels, so the names follow the language the user is reading in now instead of
+ * the one that happened to be active when the credential was shared.
+ */
 export type PresentationActivityCredential = {
-  /**
-   * if not defined, it means it's 'v1'.
-   *
-   * Starting from v2 we store the full mdoc attributes structure
-   */
-  version?: 'v2'
+  version: 'v3'
   id: CredentialForDisplayId
   name?: string
+  paths: ClaimPath[]
+
+  /**
+   * The names those paths resolved to when the credential was shared, in whatever language the user
+   * was reading at the time.
+   *
+   * A fallback, not the source of truth: while the credential is still in the wallet the names are
+   * resolved from {@link paths} against it, so they follow the current language. Once it has been
+   * deleted there is nothing left to resolve against, and these are all that is left to show. They
+   * are stored because they are a handful of short strings — unlike the values, which is what made
+   * the log expensive to keep.
+   */
   attributeNames: string[]
-  attributes: Record<string, unknown>
-  metadata: Record<string, unknown>
 }
 
 export interface PresentationActivity extends BaseActivity {
@@ -91,67 +111,79 @@ export interface PaymentActivity extends Omit<PresentationActivity, 'type'> {
 
 export type Activity = PresentationActivity | IssuanceActivity | SignedActivity | PaymentActivity
 
+/**
+ * What writing an activity needs.
+ *
+ * Structural rather than the full SDK, because the credential request UI answers requests from its
+ * own process with {@link import('../dcApi/ParadymDcApiSdk').ParadymDcApiSdk} — a wallet with none
+ * of issuance, didcomm or the app's UI stack, but the same store underneath.
+ */
+export type ActivityWriter = { agent: Agent }
+
 export type ActivityRecord = {
   activities: Activity[]
 }
 
-const internalActivityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
-// const internalActivityStorage = getWalletJsonStore<ActivityRecord>('PARADYM_WALLET_SDK_ACTIVITY_RECORD')
-export const activityStorage = {
-  recordId: internalActivityStorage.recordId,
-  addActivity: async (agent: Agent, activity: Activity) => {
-    // get activity and then add this activity
-    const record = await internalActivityStorage.get(agent)
-    if (!record) {
-      await internalActivityStorage.store(agent, {
-        activities: [activity],
-      })
-    } else {
-      record.activities.push(activity)
-      await internalActivityStorage.update(agent, record)
+/**
+ * Where the whole history used to live, as one record.
+ *
+ * Only read now, and only by {@link migrateActivities}, which fans it out into a record per
+ * activity and then removes it.
+ */
+const legacyActivityStorage = getWalletJsonStore<ActivityRecord>('EASYPID_ACTIVITY_RECORD')
+
+let migration: Promise<void> | undefined
+
+/**
+ * Move a single-record history into a record per activity, once.
+ *
+ * Memoised rather than guarded by a flag in storage, because the flag would have to be written
+ * before the work it describes is finished. Re-running it is safe instead: every write is an
+ * upsert, and the record it reads from is removed only once everything else is in place.
+ */
+export function migrateActivities(agent: Agent): Promise<void> {
+  migration ??= (async () => {
+    const legacy = await legacyActivityStorage.get(agent)
+    if (!legacy) return
+
+    // Upgraded as they are moved, so none of them is stored with the values it disclosed again. The
+    // index is written once all records are saved, so an interrupted run adds none of them to it.
+    const activities = []
+    for (const activity of legacy.activities) {
+      activities.push(await upgradeLegacyActivity(agent, activity))
     }
 
+    await saveActivityRecords(agent, activities)
+
+    // Last, and only once every activity has a record of its own: until this happens the old record
+    // is still the source of truth, and the migration can simply run again.
+    await agent.genericRecords.deleteById(legacyActivityStorage.recordId)
+  })()
+
+  return migration
+}
+
+export const activityStorage = {
+  addActivity: async (agent: Agent, activity: Activity) => {
+    await saveActivityRecord(agent, activity)
     return activity
   },
   deleteActivity: async (agent: Agent, id: string) => {
-    const record = await internalActivityStorage.get(agent)
-    if (!record) {
-      throw new Error('No activity record found')
-    }
-
-    record.activities = record.activities.filter((d) => d.id !== id)
-    await internalActivityStorage.update(agent, record)
+    await deleteActivityRecord(agent, id)
   },
   updateActivity: async (agent: Agent, id: string, update: Partial<Activity>) => {
-    const record = await internalActivityStorage.get(agent)
-    if (!record) throw new Error('No activity record found')
-    const index = record.activities.findIndex((a) => a.id === id)
-    if (index === -1) throw new Error(`Activity ${id} not found`)
-    record.activities[index] = { ...record.activities[index], ...update } as Activity
-    await internalActivityStorage.update(agent, record)
-    return record.activities[index]
+    const activity = await getActivityRecordById(agent, id)
+    if (!activity) throw new Error(`Activity ${id} not found`)
+
+    const updated = { ...activity, ...update } as Activity
+    await updateActivityRecord(agent, updated)
+
+    return updated
   },
-}
-
-export const useActivities = ({ filters }: { filters?: { entityId?: string } } = {}) => {
-  const { record, isLoading } = useWalletJsonRecord<ActivityRecord>(activityStorage.recordId)
-
-  const activities = useMemo(() => {
-    if (!record?.activities) return []
-
-    return [...record.activities]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .filter((activity) => !filters?.entityId || activity.entity.id === filters?.entityId)
-  }, [record?.activities, filters?.entityId])
-
-  return {
-    activities,
-    isLoading,
-  }
 }
 
 export const storeReceivedActivity = async (
-  paradym: ParadymWalletSdk,
+  paradym: ActivityWriter,
   input: {
     entityId?: string
     name?: string
@@ -181,7 +213,7 @@ export const storeReceivedActivity = async (
 }
 
 export const storeSharedOrSignedActivity = async (
-  paradym: ParadymWalletSdk,
+  paradym: ActivityWriter,
   input:
     | Omit<PresentationActivity, 'type' | 'date' | 'id'>
     | Omit<SignedActivity, 'type' | 'date' | 'id'>
@@ -219,7 +251,7 @@ export const storeSharedOrSignedActivity = async (
 }
 
 export function storeSharedActivityForCredentialsForRequest(
-  paradym: ParadymWalletSdk,
+  paradym: ActivityWriter,
   credentialsForRequest: Pick<CredentialsForProofRequest, 'formattedSubmission'> & {
     verifier: Omit<CredentialsForProofRequest['verifier'], 'entityId'> & { entityId?: string }
   },
@@ -250,7 +282,7 @@ export function storeSharedActivityForCredentialsForRequest(
 }
 
 export function storeSharedActivityForSubmission(
-  paradym: ParadymWalletSdk,
+  paradym: ActivityWriter,
   submission: FormattedSubmission,
   verifier: {
     id: string
@@ -290,16 +322,15 @@ export function getDisclosedCredentialForSubmission(
     // TODO: once we support selection we should update [0] to the selected credential
     const credential = entry.credentials[0]
 
+    const paths = credential.disclosed.paths as ClaimPath[]
+
     return {
       id: credential.credential.id,
-      version: 'v2',
+      version: 'v3',
       name: credential.credential.display.name,
-      // FIXME: we should not store the attribute labels
-      // but instead the path, so we can still properly run translations
-      // on the paths.
-      attributeNames: getDisclosedAttributeLabelsForDisplay(credential),
-      attributes: credential.disclosed.rawAttributes,
-      metadata: credential.disclosed.metadata as unknown as Record<string, unknown>,
+      paths,
+      // The names on the card that was shared, for once the credential is gone
+      attributeNames: getDisclosedAttributeNamesForDisplay(credential).filter((name) => typeof name === 'string'),
     } satisfies PresentationActivityCredential
   })
 }

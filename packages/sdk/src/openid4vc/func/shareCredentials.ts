@@ -3,6 +3,7 @@ import {
   CredentialMultiInstanceUseMode,
   type DcqlCredentialsForRequest,
   type DcqlQueryResult,
+  type DcqlValidCredential,
   type JsonObject,
   type MdocNameSpaces,
 } from '@credo-ts/core'
@@ -184,10 +185,9 @@ function getSelectedCredentialsForRequest(
         )
       }
 
-      // TODO: fix the typing, make selection in Credo easier
-      const matchWithRecord = validCredentialMatch as typeof validCredentialMatch & {
-        record: CredentialRecord
-      }
+      // TODO: make selection in Credo easier. `find` loses the Credo type of the match, which
+      // has the record and the disclosed paths.
+      const matchWithRecord = validCredentialMatch as DcqlValidCredential
 
       if (matchWithRecord.record.type === 'MdocRecord') {
         credentials[credentialQueryId] = [
@@ -201,11 +201,16 @@ function getSelectedCredentialsForRequest(
           },
         ]
       } else if (matchWithRecord.record.type === 'SdJwtVcRecord') {
+        const [{ output, disclosed_paths }] = matchWithRecord.claims.valid_claim_sets
+
         credentials[credentialQueryId] = [
           {
             claimFormat: ClaimFormat.SdJwtDc,
             credentialRecord: matchWithRecord.record,
-            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as JsonObject,
+            // The paths the share screen shows and the activity stores, when Credo gives them
+            ...(disclosed_paths
+              ? { disclosedPaths: disclosed_paths, disclosedPayload: output as JsonObject }
+              : { disclosedPayload: output as JsonObject }),
             // FIXME: we currently allow re-sharing if we don't have new instances anymore
             // we should make this configurable maybe? Or dependant on credential type?
             useMode: CredentialMultiInstanceUseMode.NewOrFirst,

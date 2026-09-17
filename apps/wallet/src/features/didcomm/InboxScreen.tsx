@@ -1,4 +1,4 @@
-import { Trans, useLingui } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
 import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
@@ -54,15 +54,9 @@ export function InboxScreen() {
             fg={1}
           >
             <Heading ta="center" heading="h3" fontWeight="$semiBold">
-              <Trans id="inbox.emptyTitle" comment="Heading shown when the inbox is empty">
-                You're all caught up
-              </Trans>
+              {t(commonMessages.noNotificationsTitle)}
             </Heading>
-            <Paragraph ta="center">
-              <Trans id="inbox.emptyMessage" comment="Paragraph shown when the inbox is empty">
-                You don't have any notifications at the moment.
-              </Trans>
-            </Paragraph>
+            <Paragraph ta="center">{t(commonMessages.noNotificationsDescription)}</Paragraph>
           </AnimatedStack>
         ) : (
           <YStack overflow="hidden" px="$4" gap="$4">

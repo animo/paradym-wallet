@@ -1,23 +1,28 @@
 import {
-  ClaimFormat,
   DateOnly,
   MdocRecord,
   SdJwtVcRecord,
   type SdJwtVcTypeMetadataClaim,
   TypedArrayEncoder,
+  W3cCredentialRecord,
+  W3cV2CredentialRecord,
 } from '@credo-ts/core'
-import type { MessageDescriptor } from '@lingui/core'
-import { commonMessages, i18n } from '@package/translations'
-import { detectImageMimeType, formatDate, isDateString, isLikelyDate, sanitizeString } from '@package/utils'
+import {
+  type AttributeLabelContext,
+  type AttributeLabelCredentialContext,
+  getAttributeLabel,
+} from '../config/attributeLabel'
+import { getLocale } from '../config/locale'
 import { getOpenId4VcCredentialMetadata, type OpenId4VciCredentialDisplayClaims } from '../metadata/credentials'
 import type { CredentialRecord } from '../storage/credentials'
-import type { FormattedSubmissionEntrySatisfiedCredential } from './submission'
+import { formatDate, isDateString, isLikelyDate, sanitizeString } from '../utils/format'
+import { detectImageMimeType } from '../utils/image'
 
 /**
  * Base interface for all formatted credential attribute types
  */
 interface BaseFormattedAttribute {
-  /** Translated label (from claim metadata or mapAttributeName) */
+  /** Label from claim metadata, the app's resolver, or the formatted key */
   label?: string
   /** Description from claim metadata if present */
   description?: string
@@ -77,34 +82,25 @@ export type FormattedAttributePrimitive =
 
 export type FormattedAttribute = FormattedAttributePrimitive | FormattedAttributeArray | FormattedAttributeObject
 
-// ─── Common Attribute name mapping ───────────────────────────────────────────────────
-const attributeNameMapping: Record<string, MessageDescriptor> = {
-  age_equal_or_over: commonMessages.fields.age_over,
-  age_birth_year: commonMessages.fields.birth_year,
-  age_in_years: commonMessages.fields.age,
-  street_address: commonMessages.fields.street,
-  resident_street: commonMessages.fields.street,
-  resident_city: commonMessages.fields.city,
-  resident_country: commonMessages.fields.country,
-  resident_postal_code: commonMessages.fields.postal_code,
-  birth_date: commonMessages.fields.date_of_birth,
-  birthdate: commonMessages.fields.date_of_birth,
-  expiry_date: commonMessages.fields.expires_at,
-  issue_date: commonMessages.fields.issued_at,
-  issuance_date: commonMessages.fields.issued_at,
-  ...commonMessages.fields,
-  ...commonMessages.credentials.mdl,
-}
+export const mapAttributeName = (context: AttributeLabelContext) =>
+  getAttributeLabel(context) ?? sanitizeString(context.key)
 
-export const mapAttributeName = (key: string) => {
-  const messageDescriptor = attributeNameMapping[key]
-  if (messageDescriptor) return i18n.t(messageDescriptor)
-
-  if (key.startsWith('age_over_')) {
-    return `${i18n.t(commonMessages.fields.age_over)} ${key.replace('age_over_', '')}`
+/**
+ * What a record says about itself, for the app's label resolver to branch on.
+ *
+ * Read from the record's tags rather than its credential: naming a claim should not cost a decode,
+ * and the DC API registers every claim of every credential the wallet holds.
+ *
+ * Without a record there is nothing to say — see {@link AttributeLabelCredentialContext}.
+ */
+export function getAttributeLabelContextForRecord(record?: CredentialRecord): AttributeLabelCredentialContext {
+  if (record instanceof MdocRecord) return { format: 'mso_mdoc', docType: record.getTags().docType }
+  if (record instanceof SdJwtVcRecord) return { format: 'dc+sd-jwt', vct: record.getTags().vct }
+  if (record instanceof W3cCredentialRecord || record instanceof W3cV2CredentialRecord) {
+    return { format: 'w3c', types: record.getTags().types }
   }
 
-  return sanitizeString(key)
+  return { format: 'unknown' }
 }
 
 // ─── Display locale helpers ───────────────────────────────────────────────────
@@ -237,6 +233,24 @@ export function resolveLabelFromClaimsPath(
   return resolveLabelFromClaim(match.claim, currentLocale)
 }
 
+/**
+ * The label for the claim at a path: the credential's claim metadata in the current locale, then
+ * the wallet's name for a well-known claim, then the formatted key.
+ */
+export function resolveAttributeLabelForPath({
+  path,
+  key,
+  claims,
+  credentialContext,
+}: {
+  path: Array<string | number>
+  key: string
+  claims?: ClaimMetadataArray
+  credentialContext: AttributeLabelCredentialContext
+}): string {
+  return resolveLabelFromClaimsPath(path, claims, getLocale()) ?? mapAttributeName({ ...credentialContext, key, path })
+}
+
 // ─── Two-pass tree builder ────────────────────────────────────────────────────
 
 export type ClaimMetadataArray = OpenId4VciCredentialDisplayClaims | SdJwtVcTypeMetadataClaim[]
@@ -252,20 +266,25 @@ function buildFormattedAttributeTree(
   value: unknown,
   path: Array<string | number>,
   claims?: ClaimMetadataArray,
-  currentLocale?: string
+  currentLocale?: string,
+  credentialContext: AttributeLabelCredentialContext = { format: 'unknown' }
 ): FormattedAttribute {
   const claimMatch = resolveClaimFromClaimsPath(path, claims)
   const claimIndex = claimMatch?.index
+
+  // Array elements are named by the array they are in, so only a named claim is resolved.
+  const resolveLabel = () =>
+    typeof key === 'string' ? mapAttributeName({ ...credentialContext, key, path }) : undefined
 
   let label: string | undefined
   let description: string | undefined
 
   if (claimMatch) {
     const displayItem = findDisplayByLocale(claimMatch.claim.display, currentLocale)
-    label = extractLabelFromDisplay(displayItem) ?? (typeof key === 'string' ? mapAttributeName(key) : undefined)
+    label = extractLabelFromDisplay(displayItem) ?? resolveLabel()
     description = extractDescriptionFromDisplay(displayItem)
   } else {
-    label = typeof key === 'string' ? mapAttributeName(key) : undefined
+    label = resolveLabel()
     description = undefined
   }
 
@@ -335,14 +354,14 @@ function buildFormattedAttributeTree(
   if (Array.isArray(value)) {
     const formattedArray = value.map((item, index) => {
       const itemPath = [...path, index]
-      return buildFormattedAttributeTree(index, item, itemPath, claims, currentLocale)
+      return buildFormattedAttributeTree(index, item, itemPath, claims, currentLocale, credentialContext)
     })
     return { type: 'array', label, description, rawValue, path, claimIndex, value: formattedArray }
   }
 
   // Handle Maps
   if (value instanceof Map) {
-    return buildFormattedAttributeTree(key, Object.fromEntries(value), path, claims, currentLocale)
+    return buildFormattedAttributeTree(key, Object.fromEntries(value), path, claims, currentLocale, credentialContext)
   }
 
   // Handle objects — fully expanded (no collapsing in Pass 1)
@@ -358,7 +377,9 @@ function buildFormattedAttributeTree(
       if (typeof objValue === 'object' && objValue !== null && Object.keys(objValue).length === 0) continue
 
       const objPath = [...path, objKey]
-      formattedEntries.push(buildFormattedAttributeTree(objKey, objValue, objPath, claims, currentLocale))
+      formattedEntries.push(
+        buildFormattedAttributeTree(objKey, objValue, objPath, claims, currentLocale, credentialContext)
+      )
     }
 
     return { type: 'object', label, description, rawValue, path, claimIndex, value: formattedEntries }
@@ -374,7 +395,8 @@ function buildFormattedAttributeTree(
 function buildAttributesTree(
   rawAttributes: Record<string, unknown>,
   claims?: ClaimMetadataArray,
-  currentLocale?: string
+  currentLocale?: string,
+  credentialContext?: AttributeLabelCredentialContext
 ): FormattedAttribute[] {
   const result: FormattedAttribute[] = []
 
@@ -382,7 +404,7 @@ function buildAttributesTree(
     if (value === undefined || value === null) continue
     if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) continue
 
-    result.push(buildFormattedAttributeTree(key, value, [key], claims, currentLocale))
+    result.push(buildFormattedAttributeTree(key, value, [key], claims, currentLocale, credentialContext))
   }
 
   // If claims were provided, sort the attribute tree
@@ -429,9 +451,10 @@ function sortAttributeTree(nodes: FormattedAttribute[]): FormattedAttribute[] {
 export function formatAllAttributes(
   rawAttributes: Record<string, unknown>,
   claims?: ClaimMetadataArray,
-  currentLocale?: string
+  currentLocale?: string,
+  credentialContext?: AttributeLabelCredentialContext
 ): FormattedAttribute[] {
-  const tree = buildAttributesTree(rawAttributes, claims, currentLocale)
+  const tree = buildAttributesTree(rawAttributes, claims, currentLocale, credentialContext)
   return tree
 }
 
@@ -456,7 +479,12 @@ export function formatAttributesWithRecordMetadata(
 ): FormattedAttribute[] {
   const claims = resolveClaimsWithRecordMetadata(record)
 
-  const formattedAttributes = formatAllAttributes(payload, claims, i18n.locale)
+  const formattedAttributes = formatAllAttributes(
+    payload,
+    claims,
+    getLocale(),
+    getAttributeLabelContextForRecord(record)
+  )
 
   // Mdoc has top-level namespaces, we don't want to render these as attributes
   if (record instanceof MdocRecord) {
@@ -467,32 +495,113 @@ export function formatAttributesWithRecordMetadata(
 }
 
 /**
- * Paths that were requested and we have a matching credential for.
- * This list is used for two purposes:
- *  - rendering attribute names in card preview
- *  - rendering how many attributes (count) will be shared
+ * The label for a top-level attribute when only its name is at hand, such as a requested attribute
+ * a credential does not hold: the credential's own claim metadata first, then the wallet's name for
+ * a well-known claim, then the formatted key. The same precedence the formatted attributes use, so
+ * a card reads the same whether or not it can answer a request.
+ *
+ * mdoc claims are named per namespace, so for an mdoc the element is looked up in whichever
+ * namespace the metadata names it in.
  */
-export function getDisclosedAttributeLabelsForDisplay(credential: FormattedSubmissionEntrySatisfiedCredential) {
-  const claims = resolveClaimsWithRecordMetadata(credential.credential.record)
+export function resolveAttributeLabelForRecord(key: string, record?: CredentialRecord) {
+  const claims = record ? resolveClaimsWithRecordMetadata(record) : undefined
+  const claim =
+    record instanceof MdocRecord
+      ? (claims as AnyClaimEntry[] | undefined)?.find((claim) => claim.path?.length === 2 && claim.path[1] === key)
+      : resolveClaimFromClaimsPath([key], claims)?.claim
 
-  const resolvedLabels = credential.disclosed.paths.map((path) => {
-    // Try to resolve from claims metadata first
-    // TODO(timo): path can be also AnonCredsPredicate, not sure how to fix that at this level
-    // @ts-expect-error
-    const label = resolveLabelFromClaimsPath(path, claims, i18n.locale)
-    if (label) return label
+  // Only the name is at hand, but a matching claim names the path it sits at — which for an mdoc is
+  // the only way to know its namespace. Not a wildcard path, which names a set of paths.
+  const claimPath = claim?.path?.every((segment) => segment !== null) ? (claim.path as ClaimPath) : undefined
 
-    // Fallback to sanitizeString
-    // For mdoc we use the attribute name (second element in path)
-    if (credential.credential.claimFormat === ClaimFormat.MsoMdoc) {
-      return mapAttributeName(String(path[1]))
+  return (
+    (claim ? resolveLabelFromClaim(claim, getLocale()) : null) ??
+    mapAttributeName({ ...getAttributeLabelContextForRecord(record), key, path: claimPath ?? [key] })
+  )
+}
+
+export type ClaimPath = Array<string | number>
+
+/**
+ * The subset of a credential's attributes at the given claim paths, in the same nested shape.
+ *
+ * What the activity log renders once it stores paths instead of values: the values come from the
+ * credential as it is now, so this is only meaningful while that credential is still in the wallet.
+ */
+export function pickAttributesAtPaths(
+  rawAttributes: Record<string, unknown>,
+  paths: ClaimPath[]
+): Record<string, unknown> {
+  const picked: Record<string, unknown> = {}
+
+  for (const path of paths) {
+    if (path.length === 0) continue
+
+    let source: unknown = rawAttributes
+    let target: Record<string, unknown> = picked
+
+    for (let i = 0; i < path.length; i++) {
+      if (source === null || typeof source !== 'object') break
+
+      const segment = path[i]
+      const value = (source as Record<string | number, unknown>)[segment]
+      if (value === undefined) break
+
+      // The leaf carries the value; everything above it only has to exist so the shape matches.
+      if (i === path.length - 1) {
+        target[segment] = value
+        break
+      }
+
+      if (typeof target[segment] !== 'object' || target[segment] === null) {
+        target[segment] = Array.isArray(value) ? [] : {}
+      }
+
+      source = value
+      target = target[segment] as Record<string, unknown>
     }
+  }
 
-    // For other formats, use the first path element or the last non-null element
-    // const lastPathElement = path[path.length - 1]
-    const relevantPathElement = [...path].reverse().find((e) => typeof e === 'string')
-    return mapAttributeName(String(relevantPathElement))
-  })
+  return picked
+}
 
-  return Array.from(new Set(resolvedLabels))
+/**
+ * The attributes of a credential at the given claim paths, formatted as the credential's own attributes
+ * are, and so in the same order and with the same labels.
+ */
+export function formatAttributesAtPaths(
+  credential: { rawAttributes: Record<string, unknown>; record: CredentialRecord },
+  paths: ClaimPath[]
+): FormattedAttribute[] {
+  return formatAttributesWithRecordMetadata(pickAttributesAtPaths(credential.rawAttributes, paths), credential.record)
+}
+
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && Object.getPrototypeOf(value) === Object.prototype
+
+/**
+ * The paths to the elements of mdoc namespaces: a namespace and an element identifier each. An element
+ * is disclosed as a whole, whatever its value holds.
+ */
+export function getClaimPathsForMdocNamespaces(namespaces: Record<string, Record<string, unknown>>): ClaimPath[] {
+  return Object.entries(namespaces).flatMap(([namespace, elements]) =>
+    Object.keys(elements).map((element) => [namespace, element])
+  )
+}
+
+/**
+ * The paths to the claims in disclosed attributes, for a presentation that discloses an array as a
+ * whole, such as one for presentation exchange.
+ *
+ * An object is followed down to its claims, as only part of it may be disclosed. An array has a single
+ * path: the attributes don't tell which of the credential's elements it holds, as an element that is
+ * not disclosed is left out rather than kept in its place.
+ */
+export function getClaimPathsForDisclosedAttributes(attributes: Record<string, unknown>): ClaimPath[] {
+  const getPaths = (value: unknown, path: ClaimPath): ClaimPath[] =>
+    isPlainObject(value) && Object.keys(value).length > 0
+      ? Object.entries(value).flatMap(([key, claim]) => getPaths(claim, [...path, key]))
+      : [path]
+
+  return Object.entries(attributes).flatMap(([key, claim]) => getPaths(claim, [key]))
 }

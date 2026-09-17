@@ -1,6 +1,8 @@
+import { metadataForDisplay } from '@app/utils/metadataForDisplay'
 import { useLingui } from '@lingui/react/macro'
 import { CredentialAttributes, CredentialCard, TextBackButton } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Heading,
@@ -17,34 +19,36 @@ import {
   YStack,
 } from '@package/ui'
 import {
+  type ClaimPath,
   type CredentialForDisplayId,
-  type CredentialMetadata,
-  type FormattedAttribute,
-  metadataForDisplay,
+  formatAttributesAtPaths,
   useCredentialById,
 } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type RequestedAttributesDetailScreenProps = {
   id: CredentialForDisplayId
-  disclosedPayload: FormattedAttribute[]
-  disclosedMetadata?: CredentialMetadata
+  /** The paths to the disclosed claims in the credential, each with everything below it */
+  disclosedPaths: ClaimPath[]
   disclosedAttributeLength: number
 }
 
 export function RequestedAttributesDetailScreen({
   id,
-  disclosedPayload,
-  disclosedMetadata,
+  disclosedPaths,
   disclosedAttributeLength,
 }: RequestedAttributesDetailScreenProps) {
   const toast = useToastController()
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const { bottom } = useSafeAreaInsets()
   const { credential: activeCredential, isLoading } = useCredentialById(id)
+  const disclosedAttributes = useMemo(
+    () => (activeCredential ? formatAttributesAtPaths(activeCredential, disclosedPaths) : []),
+    [activeCredential, disclosedPaths]
+  )
   const router = useRouter()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { withHaptics } = useHaptics()
@@ -81,11 +85,7 @@ export function RequestedAttributesDetailScreen({
         comment: 'Title shown in toast when credential cannot be loaded',
       }),
       {
-        message: t({
-          id: 'credentialDetail.errorMessage',
-          message: 'Credential not found',
-          comment: 'Error message when a credential is missing',
-        }),
+        message: t(commonMessages.credentialNotFound),
         customData: {
           preset: 'danger',
         },
@@ -147,7 +147,7 @@ export function RequestedAttributesDetailScreen({
                     })}
                   </Paragraph>
                 </Stack>
-                <CredentialAttributes attributes={disclosedPayload} />
+                <CredentialAttributes attributes={disclosedAttributes} />
                 <AnimatedStack
                   key={isMetadataVisible ? 'visible' : 'hidden'}
                   onLayout={(event) => setElementPosition(event.nativeEvent.layout.y)}
@@ -157,12 +157,8 @@ export function RequestedAttributesDetailScreen({
                   {isMetadataVisible && (
                     <CredentialAttributes
                       key="metadata"
-                      headerTitle={t({
-                        id: 'requestedAttributes.metadataTitle',
-                        message: 'Metadata',
-                        comment: 'Section header title for metadata attributes',
-                      })}
-                      attributes={metadataForDisplay(disclosedMetadata ?? activeCredential.metadata)}
+                      headerTitle={t(commonMessages.metadataHeading)}
+                      attributes={metadataForDisplay(activeCredential.metadata)}
                     />
                   )}
                 </AnimatedStack>
@@ -181,16 +177,8 @@ export function RequestedAttributesDetailScreen({
           {
             icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
             title: isMetadataVisible
-              ? t({
-                  id: 'optionSheet.hideMetadata',
-                  message: 'Hide metadata attributes',
-                  comment: 'Option to hide metadata in option sheet',
-                })
-              : t({
-                  id: 'optionSheet.showMetadata',
-                  message: 'Show metadata attributes',
-                  comment: 'Option to show metadata in option sheet',
-                }),
+              ? t(commonMessages.hideMetadataAttributes)
+              : t(commonMessages.showMetadataAttributes),
             onPress: handleToggleMetadata,
           },
         ]}

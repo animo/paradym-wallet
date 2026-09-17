@@ -29,8 +29,11 @@ export type GetTrustedEntitiesForFallbackForOpenId4VciOptions = {
 export const getTrustedEntitiesForFallbackForOpenId4Vp = async (
   options: GetTrustedEntitiesForFallbackForOpenId4VpOptions
 ): Promise<TrustedRelyingPartyEntity> => {
-  const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
-  const entityId = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_id
+  const { authorizationRequestPayload, origin } = options.resolvedAuthorizationRequest
+  const clientMetadata = authorizationRequestPayload.client_metadata
+  // An unsigned request over the digital credentials API carries no client_id: the verifier is
+  // identified by the origin the OS reported, which is what credo resolved the client from.
+  const entityId = authorizationRequestPayload.client_id ?? origin
   const organizationName = clientMetadata?.client_name
   const logoUri = clientMetadata?.logo_uri
 
@@ -39,8 +42,12 @@ export const getTrustedEntitiesForFallbackForOpenId4Vp = async (
       organizationName,
       logoUri,
       entityId,
+      uri: origin,
     },
-    trustedEntities: options.walletTrustedEntity ? [options.walletTrustedEntity] : [],
+    // Nothing established who this is — not even the wallet itself, which is only a trusted entity
+    // alongside an approval the other mechanisms actually found. Listing it here would make an
+    // unverified verifier read as approved.
+    trustedEntities: [],
   }
 }
 

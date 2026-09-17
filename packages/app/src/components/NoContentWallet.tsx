@@ -1,9 +1,11 @@
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, Spacer, YStack } from '@package/ui'
 import { useRouter } from 'expo-router'
 
 export function NoContentWallet() {
   const { push } = useRouter()
+  const { t } = useLingui()
 
   return (
     <YStack jc="space-between" px="$4" height="95%">
@@ -11,9 +13,7 @@ export function NoContentWallet() {
       <YStack>
         <YStack jc="center" ai="center" gap="$2">
           <Heading heading="h2" fontWeight="$medium" letterSpacing={-0.5}>
-            <Trans id="noContentWallet.heading" comment="Heading shown on empty wallet screen">
-              This is your wallet
-            </Trans>
+            {t(commonMessages.thisIsYourWallet)}
           </Heading>
           <Paragraph textAlign="center" secondary>
             <Trans id="noContentWallet.message" comment="Message shown when wallet has no credentials">
