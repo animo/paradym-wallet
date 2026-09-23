@@ -6,7 +6,7 @@ import type {
   Openid4vpProtocolRequest,
 } from '@animo-id/expo-digital-credentials-api/request-handler'
 import { AskarKeyManagementService, AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
-import { Agent, CredoError, Kms, type X509Certificate, X509Module } from '@credo-ts/core'
+import { Agent, CredoError, Kms, type MdocRecord, type X509Certificate, X509Module } from '@credo-ts/core'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
@@ -295,7 +295,7 @@ export class ParadymDcApiSdk {
       ...(await this.getMdocVerifier(
         resolved.docRequests.find((docRequest) => docRequest.readerAuth?.certificateChain.length)?.readerAuth
           ?.certificateChain,
-        request.origin ?? request.callingPackage
+        request.origin
       )),
       share: async () => {
         const { response } = await this.agent.mdoc.createDcApiResponse({
@@ -372,7 +372,11 @@ export class ParadymDcApiSdk {
     // different one than the user approved.
     const [reviewedEntry] = submission.entries
     const reviewed = reviewedEntry?.isSatisfied
-      ? { docType: reviewedEntry.inputDescriptorId, recordId: reviewedEntry.credentials[0].credential.record.id }
+      ? {
+          docType: reviewedEntry.inputDescriptorId,
+          // iOS only supports mDoc, cast is safe
+          record: reviewedEntry.credentials[0].credential.record as MdocRecord,
+        }
       : undefined
 
     return {
@@ -398,7 +402,7 @@ export class ParadymDcApiSdk {
         if (!reviewed) throw new Error('No stored card matches the request')
         const docRequest = resolved.docRequests.find(
           ({ docType, validCredentials }) =>
-            docType === reviewed.docType && validCredentials.some(({ record }) => record.id === reviewed.recordId)
+            docType === reviewed.docType && validCredentials.some(({ record }) => record.id === reviewed.record.id)
         )
         if (!docRequest) {
           throw new Error(`The card reviewed for '${reviewed.docType}' does not answer the request`)
@@ -406,7 +410,7 @@ export class ParadymDcApiSdk {
 
         const { response } = await this.agent.mdoc.createDcApiResponse({
           resolvedRequest: resolved,
-          credentials: [{ docRequestIndex: docRequest.docRequestIndex, record: reviewed.recordId }],
+          credentials: [{ docRequestIndex: docRequest.docRequestIndex, record: reviewed.record }],
         })
         await request.respond({ protocol: 'org-iso-mdoc', data: { response } })
       },

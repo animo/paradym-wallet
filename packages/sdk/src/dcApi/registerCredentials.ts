@@ -459,7 +459,7 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
 
     getSharedMmkv().set(registrationFingerprintKey, fingerprint)
   } catch (error) {
-    // Since this is an experimental feature, and it doedisplayTitleFallbacksn't work if you don't have the latest
+    // Since this is an experimental feature, and it doesn't work if you don't have the latest
     // PlayStore services/Android it could error on some devices. It will only impact the usage
     // of the DC API, so it's okay to swallow the error for now.
     paradym.logger.error('Error registering credentials for DigitalCredentialsAPI', {

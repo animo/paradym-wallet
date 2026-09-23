@@ -1,7 +1,5 @@
 import { getLocale } from '../config/locale'
 
-const getLocaleForFormat = () => getLocale()
-
 /**
  * `Intl.DateTimeFormat` instances, keyed by the locale and options they were built with.
  *
@@ -106,7 +104,7 @@ export function formatDate(input: string | Date, options?: { includeTime?: boole
       } as const)
     : {}
 
-  return getDateTimeFormat(getLocaleForFormat(), {
+  return getDateTimeFormat(getLocale(), {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

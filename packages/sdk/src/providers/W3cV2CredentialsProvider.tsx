@@ -76,9 +76,6 @@ export const W3cV2CredentialRecordProvider: React.FC<PropsWithChildren<W3cV2Cred
       .then((w3cV2CredentialRecords) => setState({ w3cV2CredentialRecords, isLoading: false }))
   }, [agent])
 
-  // Only the agent: re-running this on every state change tore down and rebuilt all three
-  // subscriptions on every record event, and the handlers closed over the state they were created
-  // with. The functional updates below need neither.
   useEffect(() => {
     const credentialAdded$ = recordsAddedByType(agent, W3cV2CredentialRecord).subscribe((record) =>
       setState((state) => addRecord(record, state))

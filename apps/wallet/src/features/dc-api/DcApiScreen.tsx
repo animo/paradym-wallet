@@ -115,11 +115,20 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
   const sdkRef = useRef<ParadymDcApiSdk | undefined>(undefined)
   useEffect(() => () => void sdkRef.current?.shutdown(), [])
 
+  // One unlock at a time, and only until one succeeds: a second one would open a second askar store
+  // and overwrite the ref with it, leaving the first handle open until the process goes down. The
+  // phase cannot carry this — it is only current on the next render, and both calls can have
+  // started before that.
+  const isUnlockingRef = useRef(false)
+
   // Through the review, so the declined request lands in the activity log before the UI goes down.
   const decline = useCallback((review: DcApiReview) => review.decline(t(messages.declined)), [t])
 
   const unlock = useCallback(
     async (method: UnlockMethod, getKey: (version: number) => Promise<string | null>) => {
+      if (isUnlockingRef.current) return
+      isUnlockingRef.current = true
+
       setError(undefined)
       setPhase({ name: 'opening', method })
 
@@ -130,6 +139,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         const { getWalletKeyVersion } = await walletKeyVersion()
         const key = await getKey(getWalletKeyVersion())
         if (!key) {
+          isUnlockingRef.current = false
           setPhase({ name: 'unlock' })
           setError(t(messages.biometricsUnavailable))
           return
@@ -144,6 +154,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         sdk = await ParadymDcApiSdk.initialize({ ...paradymWalletSdkOptions, walletKey: key, locale: i18n.locale })
         sdkRef.current = sdk
       } catch (unlockError) {
+        isUnlockingRef.current = false
         setPhase({ name: 'unlock' })
         console.error('Error unlocking wallet', unlockError)
         // A cancelled biometric prompt is the user choosing the pin pad, not a failure.

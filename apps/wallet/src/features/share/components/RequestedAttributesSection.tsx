@@ -143,9 +143,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
             <CardWithAttributes
               key={entry.inputDescriptorId}
               name={entry.name ?? fallbackCardLabel}
-              // We only have the attribute paths, no way to know how to render
-              // TODO: we could look at the vct?
-              formattedDisclosedAttributes={formatAttributePaths(entry.requestedAttributePaths)}
+              formattedDisclosedAttributes={Array.from(new Set(formatAttributePaths(entry.requestedAttributePaths)))}
               backgroundColor="$grey-800"
               textColor="$white"
             />

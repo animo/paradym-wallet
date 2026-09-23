@@ -10,6 +10,7 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
+import { toAttributeRows } from '@package/utils'
 import type { DisplayImage, FormattedSubmissionEntrySatisfiedCredential } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
@@ -36,15 +37,6 @@ interface CardWithAttributesProps {
   isNotYetActive?: boolean
 }
 
-/** Two attributes to a row. */
-function toRows(attributes: string[]) {
-  const rows: Array<[string, string | undefined]> = []
-  for (let i = 0; i < attributes.length; i += 2) {
-    rows.push([attributes[i], attributes[i + 1]])
-  }
-  return rows
-}
-
 export function CardWithAttributes({
   id,
   name,
@@ -62,15 +54,10 @@ export function CardWithAttributes({
   const { handlePressIn, handlePressOut, pressStyle } = useScaleAnimation()
   const router = useRouter()
 
-  // What the card holds first, then what it lacks, each group starting on a row of its own.
-  const groupedAttributes = useMemo(() => {
-    const isMissing = (attribute: string) => missingAttributes?.includes(attribute) ?? false
-
-    return [
-      ...toRows(formattedDisclosedAttributes.filter((attribute) => !isMissing(attribute))),
-      ...toRows(formattedDisclosedAttributes.filter(isMissing)),
-    ]
-  }, [formattedDisclosedAttributes, missingAttributes])
+  const groupedAttributes = useMemo(
+    () => toAttributeRows(formattedDisclosedAttributes, missingAttributes),
+    [formattedDisclosedAttributes, missingAttributes]
+  )
 
   const onPress = () => {
     if (!id || !disclosedPaths) return
@@ -88,7 +75,6 @@ export function CardWithAttributes({
 
   const isRevokedOrExpired = isRevoked || isExpired
   const disabledNav = !id || !disclosedPaths
-  const isMissing = (attribute: string) => missingAttributes?.includes(attribute) ?? false
 
   return (
     <AnimatedStack
@@ -136,15 +122,15 @@ export function CardWithAttributes({
 
             return (
               // Keeps the last row level with the arrow in the corner.
-              <XStack key={`${first}-${second}`} gap="$3" minHeight={isLast ? '$3.5' : undefined}>
+              <XStack key={`${first.name}-${second?.name}`} gap="$3" minHeight={isLast ? '$3.5' : undefined}>
                 <Stack flexGrow={1} flexBasis={0}>
-                  <AttributeListItem name={first} isMissing={isMissing(first)} />
+                  <AttributeListItem name={first.name} isMissing={first.isMissing} />
                 </Stack>
                 <Stack flexGrow={1} flexBasis={0}>
                   {/* Padded inside the column rather than on it: padding on the column itself
                       would widen it, and shift this row's second column out of line. */}
                   <Stack pr={isLast && !disabledNav ? '$5' : undefined}>
-                    {second && <AttributeListItem name={second} isMissing={isMissing(second)} />}
+                    {second && <AttributeListItem name={second.name} isMissing={second.isMissing} />}
                   </Stack>
                 </Stack>
               </XStack>

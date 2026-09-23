@@ -10,7 +10,7 @@ import { Stack, XStack, YStack } from '@package/ui/base/Stacks'
 import { AttributeListItem } from '@package/ui/components/AttributeListItem'
 import { HeroIcons } from '@package/ui/content/Icon'
 import { Image } from '@package/ui/content/Image'
-import { sanitizeString } from '@package/utils'
+import { sanitizeString, toAttributeRows } from '@package/utils'
 import type {
   CredentialRecord,
   FormattedAttribute,
@@ -173,15 +173,6 @@ function RequestedCard({ credential }: { credential: FormattedSubmissionEntrySat
   )
 }
 
-/** Two attribute names to a row. */
-function toRows(names: string[]) {
-  const rows: Array<[string, string | undefined]> = []
-  for (let index = 0; index < names.length; index += 2) {
-    rows.push([names[index], names[index + 1]])
-  }
-  return rows
-}
-
 type CardProps = {
   name: string
   backgroundColor?: string
@@ -208,14 +199,8 @@ function Card({
   onToggle,
   children,
 }: CardProps) {
-  const isMissing = (name: string) => missingAttributeNames?.includes(name) ?? false
-
-  // Two columns of attribute names, the way the app shows them on the card: what the card holds
-  // first, then what it lacks, each group starting on a row of its own.
-  const columns = [
-    ...toRows(attributeNames.filter((name) => !isMissing(name))),
-    ...toRows(attributeNames.filter(isMissing)),
-  ]
+  // The same two columns of attribute names the app shows on the card.
+  const columns = toAttributeRows(attributeNames, missingAttributeNames)
 
   return (
     <Stack
@@ -256,12 +241,12 @@ function Card({
         ) : (
           <YStack gap="$2" pr="$4">
             {columns.map(([first, second]) => (
-              <XStack key={`${first}-${second}`} gap="$3">
+              <XStack key={`${first.name}-${second?.name}`} gap="$3">
                 <Stack flexGrow={1} flexBasis={0}>
-                  <AttributeListItem name={first} isMissing={isMissing(first)} />
+                  <AttributeListItem name={first.name} isMissing={first.isMissing} />
                 </Stack>
                 <Stack flexGrow={1} flexBasis={0}>
-                  {second && <AttributeListItem name={second} isMissing={isMissing(second)} />}
+                  {second && <AttributeListItem name={second.name} isMissing={second.isMissing} />}
                 </Stack>
               </XStack>
             ))}

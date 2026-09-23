@@ -1,20 +1,6 @@
 import 'expo-router/entry'
-import { registerLocales } from '@package/translations'
-import { messages as al } from './src/locales/al/messages'
-import { messages as de } from './src/locales/de/messages'
-import { messages as en } from './src/locales/en/messages'
-import { messages as fi } from './src/locales/fi/messages'
-import { messages as nl } from './src/locales/nl/messages'
-import { messages as pt } from './src/locales/pt/messages'
-import { messages as sw } from './src/locales/sw/messages'
+import { registerCatalogs } from '@package/translations'
+import { catalogs } from './src/locales'
 
-// Register translations
-registerLocales({
-  en,
-  nl,
-  fi,
-  sw,
-  de,
-  al,
-  pt,
-})
+// Register translations. The catalog for the active locale is loaded when it is activated.
+registerCatalogs(catalogs)

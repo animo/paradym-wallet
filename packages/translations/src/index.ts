@@ -5,8 +5,10 @@ import '@formatjs/intl-pluralrules/polyfill-force.js'
 export { commonMessages, supportedLanguageNames } from './commonMessages'
 export {
   activateLocale,
+  type CatalogLoaders,
   i18n,
-  registerLocales,
+  registerCatalogs,
+  resolveLocale,
   type SupportedLocale,
   supportedLocales,
 } from './i18n'

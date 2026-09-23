@@ -2,9 +2,9 @@
 // app: on iOS it runs inside the identity document provider extension, on Android in the activity
 // the credential picker launches. Keep the imports here as light as the extension's budget.
 import { registerDcApiScreen } from '@animo-id/expo-digital-credentials-api/request-handler'
-import type { Messages } from '@lingui/core'
-import { registerLocales, type SupportedLocale, supportedLocales } from '@package/translations'
-import { getLocales, type Locale } from 'expo-localization'
+import { activateLocale, registerCatalogs, resolveLocale } from '@package/translations'
+import { getLocales } from 'expo-localization'
+import { catalogs } from '../../locales'
 import { mmkv } from '../../storage/mmkv'
 import { DcApiScreen } from './DcApiScreen'
 
@@ -21,47 +21,18 @@ ErrorUtils.setGlobalHandler((error, isFatal) => {
 // was never registered, which looks exactly like the request being dismissed for no reason.
 const registration = registerDcApiScreen(DcApiScreen)
 
-/**
- * The same catalogs the app registers, each behind a thunk.
- *
- * Metro has no code splitting, so all seven are in this bundle either way — but a compiled catalog
- * is one large object literal, and only the one that will actually be read has to be *evaluated*
- * and kept on the heap. The provider extension is killed at a hard memory limit, so six catalogs
- * this request will never show are worth not parsing.
- */
-const catalogs: Record<SupportedLocale, () => { messages: Messages }> = {
-  al: () => require('../../locales/al/messages'),
-  de: () => require('../../locales/de/messages'),
-  en: () => require('../../locales/en/messages'),
-  fi: () => require('../../locales/fi/messages'),
-  nl: () => require('../../locales/nl/messages'),
-  pt: () => require('../../locales/pt/messages'),
-  sw: () => require('../../locales/sw/messages'),
-}
+// The same catalogs the app registers, each behind a thunk: only the locale activated below is
+// parsed, and the extension is killed at a hard memory limit.
+registerCatalogs(catalogs)
 
-const isSupported = (locale: string | null | undefined): locale is SupportedLocale =>
-  supportedLocales.includes(locale as SupportedLocale)
-
-/**
- * The locale the screen is going to activate, resolved the way `useSyncLocale` resolves it: the
- * wallet's stored choice, then the device's, then English. Both sources are synchronous, so this is
- * settled before a catalog is touched.
- */
-function activeLocale(): SupportedLocale {
-  const stored = mmkv.getString('useStoredLocale')
-  if (isSupported(stored)) return stored
-
-  const device = getLocales().find((locale): locale is Locale & { languageCode: SupportedLocale } =>
-    isSupported(locale.languageCode)
-  )?.languageCode
-  return device ?? 'en'
-}
-
+// Activated here rather than left to the screen's `TranslationProvider`, which only gets to it in
+// an effect: both sources it resolves from — the wallet's stored choice and the device's locales —
+// are synchronous, so the request UI can be translated on its first frame.
+//
 // Never worth taking the request UI down for: every message carries its English source as a
 // fallback, so the worst case here is an untranslated screen.
 try {
-  const locale = activeLocale()
-  registerLocales({ [locale]: catalogs[locale]().messages })
+  activateLocale(resolveLocale(getLocales(), mmkv.getString('useStoredLocale')))
 } catch (error) {
   console.error('[dc-api] could not load the message catalog, falling back to English', error)
 }

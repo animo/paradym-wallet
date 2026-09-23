@@ -70,9 +70,6 @@ export const MdocRecordProvider: React.FC<PropsWithChildren<{ agent: AnyAgent }>
     void agent.mdoc.getAll().then((mdocRecords) => setState({ mdocRecords, isLoading: false }))
   }, [agent])
 
-  // Only the agent: re-running this on every state change tore down and rebuilt all three
-  // subscriptions on every record event, and the handlers closed over the state they were created
-  // with. The functional updates below need neither.
   useEffect(() => {
     const credentialAdded$ = recordsAddedByType(agent, MdocRecord).subscribe((record) =>
       setState((state) => addRecord(record, state))

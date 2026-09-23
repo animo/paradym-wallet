@@ -5,6 +5,7 @@ import { ErrorBoundary, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, FlexPage, Heading, HeroIcons, Paragraph, Stack, YStack } from '@package/ui'
 import type { PropsWithChildren } from 'react'
+import { logger } from '../../logger'
 
 const messages = {
   title: commonMessages.somethingWentWrong,
@@ -22,7 +23,7 @@ const messages = {
  * the SDK is not provided or the wallet is not unlocked, so it depends on nothing the SDK provides.
  */
 function logRenderError(error: Error) {
-  console.error('Unhandled error while rendering a request', error)
+  logger.error('Unhandled error while rendering a request', { error })
 }
 
 /**

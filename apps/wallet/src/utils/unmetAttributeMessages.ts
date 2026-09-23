@@ -1,5 +1,10 @@
 import { commonMessages } from '@package/translations'
-import { type FormattedSubmission, getUnmetAttributeRequirements } from '@paradym/wallet-sdk'
+// Deep imports: the `@paradym/wallet-sdk` barrel re-exports `assertAgentType` from `./agent`,
+// which imports `@hyperledger/anoncreds-react-native` at module scope. That module is not linked
+// into the DC API bundle, and this file is in its graph — the barrel takes the request UI down
+// before it renders.
+import { getUnmetAttributeRequirements } from '@paradym/wallet-sdk/display/common'
+import type { FormattedSubmission } from '@paradym/wallet-sdk/format/submission'
 
 /**
  * The wording for the cards a request is answered with when they can't answer it because of their
