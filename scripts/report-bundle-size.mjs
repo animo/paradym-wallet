@@ -36,6 +36,8 @@ const lines = [
   '',
   'Bytecode is what the binary ships — the JS column is the Metro output it is compiled from.',
   '',
+  'Packages are listed by size on whichever side is larger, so one this branch drops still shows.',
+  '',
   '| Bundle | Platform | Bytecode | vs main | JS | Modules |',
   '| --- | --- | --: | --: | --: | --: |',
 ]

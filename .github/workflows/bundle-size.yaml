@@ -23,29 +23,61 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # The commit the pull request is measured against has to be reachable.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
 
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
           node-version: '22.x'
-
-      - uses: pnpm/action-setup@v6
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install
 
-      # The last measurement that ran on main, restored by prefix so the most recent one wins. There
-      # is none the first time this workflow runs, and none for a pull request branched off an older
-      # main than the one it was taken on — the comment names the commit it compared against.
-      - name: Restore baseline
+      - name: Resolve the commit to compare against
         if: github.event_name == 'pull_request'
+        id: baseline
+        run: |
+          sha=$(git merge-base origin/${{ github.base_ref }} HEAD)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      # Every run caches its own measurement under the commit it measured, so the run on main a pull
+      # request branches off is usually the one that already built its baseline.
+      - name: Restore the baseline
+        if: github.event_name == 'pull_request'
+        id: restore-baseline
         uses: actions/cache/restore@v6
         with:
           path: bundle-size-main.json
-          key: bundle-size-main-${{ github.sha }}
-          restore-keys: bundle-size-main-
+          key: bundle-size-${{ steps.baseline.outputs.sha }}
+
+      # Nothing cached it, so build it here: a worktree of that commit, measured with this branch's
+      # script — the commit itself may predate it, and a changed script has to measure both sides.
+      - name: Measure the baseline
+        if: github.event_name == 'pull_request' && steps.restore-baseline.outputs.cache-hit != 'true'
+        env:
+          BUNDLE_SIZE_ROOT: ../bundle-size-baseline
+          BUNDLE_SIZE_OUTPUT: bundle-size-main.json
+        run: |
+          git worktree add ../bundle-size-baseline ${{ steps.baseline.outputs.sha }}
+          pnpm --dir ../bundle-size-baseline install
+          node scripts/measure-bundle-size.mjs
+          git worktree remove --force ../bundle-size-baseline
+
+      - name: Cache the baseline
+        if: github.event_name == 'pull_request' && steps.restore-baseline.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: bundle-size-main.json
+          key: bundle-size-${{ steps.baseline.outputs.sha }}
 
       - name: Measure bundles
+        env:
+          BUNDLE_SIZE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
         run: pnpm bundle:size
 
       - name: Upload measurement
@@ -57,8 +89,7 @@ jobs:
       - name: Render comment
         if: github.event_name == 'pull_request'
         run: |
-          node scripts/report-bundle-size.mjs bundle-size.json \
-            $([ -f bundle-size-main.json ] && echo bundle-size-main.json) > bundle-size-comment.md
+          node scripts/report-bundle-size.mjs bundle-size.json bundle-size-main.json > bundle-size-comment.md
           cat bundle-size-comment.md >> "$GITHUB_STEP_SUMMARY"
 
       # Forks get a read-only token, so there is nothing to post the comment with.
@@ -83,14 +114,15 @@ jobs:
               await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body })
             }
 
-      # What the next pull requests compare against.
-      - name: Save baseline
+      # What the pull requests branched off this commit compare against. Cached under the same name
+      # they restore it as.
+      - name: Name this commit's measurement
         if: github.event_name == 'push'
         run: mv bundle-size.json bundle-size-main.json
 
-      - name: Cache baseline
+      - name: Cache this commit's measurement
         if: github.event_name == 'push'
         uses: actions/cache/save@v6
         with:
           path: bundle-size-main.json
-          key: bundle-size-main-${{ github.sha }}
+          key: bundle-size-${{ github.sha }}

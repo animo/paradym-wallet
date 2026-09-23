@@ -7,6 +7,11 @@
 // The steps mirror `react-native-xcode.sh` and the plugin's Gradle task: Metro through
 // `expo export:embed` (unminified, because Hermes does not need it), then `hermesc -O`. The
 // bytecode is what ends up in the binary, so that is the number to watch.
+//
+// `BUNDLE_SIZE_ROOT` measures a checkout other than the one this script lives in — CI points it at
+// a worktree of the commit a pull request branches off, to build its baseline with today's script.
+// `BUNDLE_SIZE_COMMIT` overrides the commit recorded in the output, which is that checkout's `HEAD`
+// otherwise, and `BUNDLE_SIZE_OUTPUT` the file it is written to.
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
@@ -15,7 +20,7 @@ import path from 'node:path'
 
 const require = createRequire(import.meta.url)
 
-const workspaceRoot = path.resolve(import.meta.dirname, '..')
+const workspaceRoot = path.resolve(process.env.BUNDLE_SIZE_ROOT ?? path.join(import.meta.dirname, '..'))
 const projectRoot = path.join(workspaceRoot, 'apps/wallet')
 
 // Keep in sync with `apps/wallet/package.json` (`main`) and the `entry` option of the
@@ -39,7 +44,11 @@ const hermesc = path.join(
   process.platform === 'win32' ? 'hermesc.exe' : 'hermesc'
 )
 
-/** The concrete file Metro is pointed at, preferring the platform variant like the plugin does. */
+/**
+ * The concrete file Metro is pointed at, preferring the platform variant like the plugin does, or
+ * `undefined` when the checkout has no such entry — which is what a bundle a branch adds looks like
+ * from the commit it branches off.
+ */
 function resolveEntryFile(entry, platform) {
   const extensions = ['tsx', 'ts', 'jsx', 'js']
   const candidates = [
@@ -47,13 +56,17 @@ function resolveEntryFile(entry, platform) {
     ...extensions.map((extension) => `${entry}.${extension}`),
   ]
 
-  const entryFile = candidates.find((candidate) => fs.existsSync(path.join(projectRoot, candidate)))
-  if (!entryFile) throw new Error(`No entry file found for '${entry}' in '${projectRoot}'`)
-  return entryFile
+  return candidates.find((candidate) => fs.existsSync(path.join(projectRoot, candidate)))
 }
 
 function buildBundle(target, platform) {
   const name = `${target.id}.${platform}`
+  const entryFile = resolveEntryFile(target.entry, platform)
+  if (!entryFile) {
+    console.log(`\n▸ ${target.label} (${platform}): no '${target.entry}' in this checkout, skipped`)
+    return null
+  }
+
   const bundlePath = path.join(workDir, `${name}.js`)
   const sourcemapPath = `${bundlePath}.map`
   const bytecodePath = path.join(workDir, `${name}.hbc`)
@@ -65,7 +78,7 @@ function buildBundle(target, platform) {
       expoCli,
       'export:embed',
       '--entry-file',
-      resolveEntryFile(target.entry, platform),
+      entryFile,
       '--platform',
       platform,
       '--dev',
@@ -208,7 +221,7 @@ const bundles = {}
 for (const target of targets) {
   for (const platform of platforms) {
     const result = buildBundle(target, platform)
-    bundles[`${target.id}.${platform}`] = result
+    if (result) bundles[`${target.id}.${platform}`] = result
   }
 }
 
@@ -218,7 +231,9 @@ fs.writeFileSync(
   `${JSON.stringify(
     {
       generatedAt: new Date().toISOString(),
-      commit: process.env.GITHUB_SHA ?? execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+      commit:
+        process.env.BUNDLE_SIZE_COMMIT ??
+        execFileSync('git', ['-C', workspaceRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
       bundles,
     },
     null,
