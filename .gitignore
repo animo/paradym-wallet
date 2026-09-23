@@ -88,6 +88,8 @@ buck-out/
 
 # Bundle artifacts
 *.jsbundle
+bundle-size*.json
+bundle-size-comment.md
 
 # CocoaPods
 /ios/Pods/

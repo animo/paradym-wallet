@@ -1,0 +1,96 @@
+name: Bundle Size
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: bundle-size-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  measure:
+    runs-on: ubuntu-22.04
+    name: Measure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22.x'
+
+      - uses: pnpm/action-setup@v6
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # The last measurement that ran on main, restored by prefix so the most recent one wins. There
+      # is none the first time this workflow runs, and none for a pull request branched off an older
+      # main than the one it was taken on — the comment names the commit it compared against.
+      - name: Restore baseline
+        if: github.event_name == 'pull_request'
+        uses: actions/cache/restore@v6
+        with:
+          path: bundle-size-main.json
+          key: bundle-size-main-${{ github.sha }}
+          restore-keys: bundle-size-main-
+
+      - name: Measure bundles
+        run: pnpm bundle:size
+
+      - name: Upload measurement
+        uses: actions/upload-artifact@v7
+        with:
+          name: bundle-size-${{ github.sha }}
+          path: bundle-size.json
+
+      - name: Render comment
+        if: github.event_name == 'pull_request'
+        run: |
+          node scripts/report-bundle-size.mjs bundle-size.json \
+            $([ -f bundle-size-main.json ] && echo bundle-size-main.json) > bundle-size-comment.md
+          cat bundle-size-comment.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Forks get a read-only token, so there is nothing to post the comment with.
+      - name: Comment on the pull request
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const body = require('node:fs').readFileSync('bundle-size-comment.md', 'utf8')
+            const marker = '<!-- paradym-bundle-size -->'
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number: context.issue.number,
+            })
+
+            // Updated in place, so a pull request keeps one comment however often it is pushed to.
+            const existing = comments.find((comment) => comment.body?.startsWith(marker))
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body })
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body })
+            }
+
+      # What the next pull requests compare against.
+      - name: Save baseline
+        if: github.event_name == 'push'
+        run: mv bundle-size.json bundle-size-main.json
+
+      - name: Cache baseline
+        if: github.event_name == 'push'
+        uses: actions/cache/save@v6
+        with:
+          path: bundle-size-main.json
+          key: bundle-size-main-${{ github.sha }}
