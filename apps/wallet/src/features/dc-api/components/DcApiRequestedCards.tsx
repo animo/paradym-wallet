@@ -49,30 +49,18 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
     return <Paragraph color="$danger-500">{t(messages.nothingRequested)}</Paragraph>
   }
 
-  const unavailableHeading = t(commonMessages.unavailableCardsHeading)
-  const unmetAttributeMessages = getUnmetAttributeMessages(submission)
+  const { title, subtitle, unmetHeading, unavailableHeading } = getRequestedCardsMessages({
+    submission,
+    satisfied: satisfied.length,
+    partiallySatisfied: partiallySatisfied.length,
+    unavailable: unavailable.length,
+  })
 
   return (
     <YStack gap="$4">
       <YStack gap="$2">
-        <Heading heading="sub2">
-          {satisfied.length > 0
-            ? t(commonMessages.requestedCardsHeading)
-            : partiallySatisfied.length > 0
-              ? t(unmetAttributeMessages.heading)
-              : unavailableHeading}
-        </Heading>
-        <Paragraph>
-          {t(
-            unsatisfied.length === 0
-              ? commonMessages.allRequestedCardsDescription
-              : unavailable.length === 0
-                ? unmetAttributeMessages.description
-                : satisfied.length === 0 && partiallySatisfied.length === 0
-                  ? commonMessages.noRequestedCardsDescription
-                  : commonMessages.someRequestedCardsMissingDescription
-          )}
-        </Paragraph>
+        <Heading heading="sub2">{t(title)}</Heading>
+        <Paragraph>{t(subtitle)}</Paragraph>
       </YStack>
 
       {/* The first credential is the one that will be shared — there is no selection here. */}
@@ -82,7 +70,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
 
       {partiallySatisfied.length > 0 && (
         <>
-          {satisfied.length > 0 && <Heading heading="sub2">{t(unmetAttributeMessages.heading)}</Heading>}
+          {satisfied.length > 0 && <Heading heading="sub2">{t(unmetHeading)}</Heading>}
           {partiallySatisfied.map((entry) => (
             <PartiallyMatchingCard key={entry.inputDescriptorId} entry={entry} />
           ))}
@@ -92,7 +80,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
       {unavailable.length > 0 && (
         <>
           {(satisfied.length > 0 || partiallySatisfied.length > 0) && (
-            <Heading heading="sub2">{unavailableHeading}</Heading>
+            <Heading heading="sub2">{t(unavailableHeading)}</Heading>
           )}
           {unavailable.map((entry) => (
             <Card
@@ -107,6 +95,39 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
       )}
     </YStack>
   )
+}
+
+/**
+ * The wording above the cards, and the headings the groups below it repeat.
+ *
+ * Which groups the request ended up in decides both: the title names the first group shown, and the
+ * subtitle says whether every card can answer the request, some can't because of their attributes,
+ * none is held, or a mix of those.
+ */
+function getRequestedCardsMessages({
+  submission,
+  satisfied,
+  partiallySatisfied,
+  unavailable,
+}: {
+  submission: FormattedSubmission
+  satisfied: number
+  partiallySatisfied: number
+  unavailable: number
+}) {
+  const unmet = getUnmetAttributeMessages(submission)
+  const unavailableHeading = commonMessages.unavailableCardsHeading
+
+  let title = unavailableHeading
+  if (satisfied > 0) title = commonMessages.requestedCardsHeading
+  else if (partiallySatisfied > 0) title = unmet.heading
+
+  let subtitle = commonMessages.someRequestedCardsMissingDescription
+  if (partiallySatisfied === 0 && unavailable === 0) subtitle = commonMessages.allRequestedCardsDescription
+  else if (unavailable === 0) subtitle = unmet.description
+  else if (satisfied === 0 && partiallySatisfied === 0) subtitle = commonMessages.noRequestedCardsDescription
+
+  return { title, subtitle, unmetHeading: unmet.heading, unavailableHeading }
 }
 
 const formatAttributePaths = (
