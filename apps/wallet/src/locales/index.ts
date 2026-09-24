@@ -5,11 +5,11 @@ import type { CatalogLoaders } from '@package/translations'
  * bundles: the app and the credential request UI.
  */
 export const catalogs: CatalogLoaders = {
-  al: () => require('./al/messages'),
   de: () => require('./de/messages'),
   en: () => require('./en/messages'),
   fi: () => require('./fi/messages'),
   nl: () => require('./nl/messages'),
   pt: () => require('./pt/messages'),
-  sw: () => require('./sw/messages'),
+  sq: () => require('./sq/messages'),
+  sv: () => require('./sv/messages'),
 }

@@ -821,9 +821,9 @@ export const commonMessages = {
 export const supportedLanguageNames: Record<SupportedLocale, string> = {
   nl: 'Nederlands',
   fi: 'Suomi',
-  sw: 'Svenska',
+  sv: 'Svenska',
   en: 'English',
   de: 'Deutsch',
-  al: 'Shqip',
+  sq: 'Shqip',
   pt: 'Português',
 }

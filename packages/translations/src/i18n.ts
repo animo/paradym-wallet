@@ -1,6 +1,6 @@
 import { i18n, type Messages } from '@lingui/core'
 
-export const supportedLocales = ['en', 'nl', 'fi', 'sw', 'de', 'al', 'pt'] as const
+export const supportedLocales = ['en', 'nl', 'fi', 'sv', 'de', 'sq', 'pt'] as const
 export type SupportedLocale = (typeof supportedLocales)[number]
 
 export type CatalogLoaders = Record<SupportedLocale, () => { messages: Messages }>
@@ -23,6 +23,9 @@ export function registerCatalogs(loaders: CatalogLoaders) {
 const isSupported = (locale: string | null | undefined): locale is SupportedLocale =>
   supportedLocales.includes(locale as SupportedLocale)
 
+/** Albanian and Swedish were stored under a wrong tag before, and the choice is still the user's. */
+const legacyLocales: Record<string, SupportedLocale> = { al: 'sq', sw: 'sv' }
+
 /**
  * The locale to use: the user's own choice, then the first supported device locale, then English.
  */
@@ -31,6 +34,7 @@ export function resolveLocale(
   customLocale?: string | null
 ): SupportedLocale {
   if (isSupported(customLocale)) return customLocale
+  if (customLocale && legacyLocales[customLocale]) return legacyLocales[customLocale]
 
   return (
     deviceLocales.find((locale): locale is typeof locale & { languageCode: SupportedLocale } =>
