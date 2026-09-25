@@ -33,7 +33,6 @@ export function usePasoRefusalMessage() {
           })
         case 'unsupportedTransactionType':
         case 'unsupportedHashAlgorithm':
-        case 'riskSignalEncryptionRequired':
         case 'unknownRiskSignalProfile':
           return t({
             id: 'paso.refusal.unsupported',
@@ -46,6 +45,10 @@ export function usePasoRefusalMessage() {
             message: 'The details of this payment cannot be shown safely, so it cannot be authorized.',
             comment: 'Shown when PaSO credential metadata breaks the constraints on what may be displayed',
           })
+        // The card's signed metadata is the only place a risk signal encryption key may come from
+        // ([PaSO Risk Signals] Section 7.3), so a missing one is a metadata problem the issuer fixes
+        // and the wallet picks up on the next renewal — same advice as the two cases above.
+        case 'riskSignalEncryptionKeyUnavailable':
         case 'missingCredentialMetadata':
         case 'invalidCredentialMetadata':
           return t({

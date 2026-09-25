@@ -14,11 +14,13 @@ import {
   pasoPaymentTransactionDataType,
   validatePasoPayloadConformance,
 } from './paymentRulebook'
+import { selectPasoRiskSignalsEncryptionKey } from './riskSignalEncryption'
 import { resolveEffectiveRiskSignalSet } from './riskSignals'
 import {
   isPasoTransactionDataType,
   type PasoClaimMetadata,
   type PasoResolvedRiskSignal,
+  type PasoRiskSignalsEncryptionKey,
   type PasoTransactionDataTypeMetadata,
 } from './types'
 
@@ -110,6 +112,14 @@ export interface FormattedTransactionDataPasoPayment {
     displayLocale: string
     metadataIntegrity: string
     effectiveRiskSignalSet: PasoResolvedRiskSignal[]
+    /**
+     * The issuer key the `risk_signals` array is encrypted to, when encryption is required.
+     *
+     * Absent when it is not — [PaSO Risk Signals] Section 7.2 makes encryption a property of the
+     * transaction data type, so this doubles as the record of which of the two forms of Section 5
+     * and Section 7.5.1 the claim takes.
+     */
+    riskSignalsEncryptionKey?: PasoRiskSignalsEncryptionKey
   }
 
   /** base64url SHA-256 over the *decoded* entry — see {@link hashDecodedEntry}. */
@@ -314,12 +324,21 @@ export async function resolvePasoTransactionData(
     )
   }
 
-  // [PaSO Risk Signals] Section 7: we cannot encrypt, and sending the signals in plaintext where
-  // encryption was required is explicitly forbidden. Ceasing is the specified outcome.
-  if (riskSignals.encryptionRequired) {
+  // [PaSO Risk Signals] Section 7.3 — the issuer key the signals are encrypted to, taken from the
+  // metadata JWT verified just above because "a key that is not integrity-verified SHALL be treated
+  // as absent". Resolved here rather than at signing time so a card whose issuer published no usable
+  // key refuses before the user is asked to consent, which is what "treat the entry as incompatible"
+  // asks for — the alternative is a consent screen for a payment that cannot be sent.
+  const riskSignalsEncryptionKey = riskSignals.encryptionRequired
+    ? selectPasoRiskSignalsEncryptionKey(verifiedMetadata.credentialMetadata)
+    : undefined
+  if (riskSignals.encryptionRequired && !riskSignalsEncryptionKey) {
+    paradym.logger.error(
+      'PaSO transaction data type requires encrypted risk signals, but no usable issuer key is published'
+    )
     throw new ParadymWalletPasoError(
-      'riskSignalEncryptionRequired',
-      'This payment requires encrypted risk signals, which this wallet does not support.'
+      'riskSignalEncryptionKeyUnavailable',
+      'This payment requires encrypted risk signals, but this card publishes no key to encrypt them to.'
     )
   }
 
@@ -376,6 +395,7 @@ export async function resolvePasoTransactionData(
       displayLocale,
       metadataIntegrity: verifiedMetadata.integrity,
       effectiveRiskSignalSet: riskSignals.signals,
+      riskSignalsEncryptionKey,
     },
 
     hash: hashDecodedEntry(encodedEntry),

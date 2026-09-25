@@ -1,5 +1,7 @@
 import { utils } from '@credo-ts/core'
 import { getWalletInstanceVersion } from '../config/walletInstanceVersion'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import { encryptPasoRiskSignals } from './riskSignalEncryption'
 import { collectPasoRiskSignals } from './riskSignals'
 import { computeSriIntegrity } from './sri'
 import type { FormattedTransactionDataPasoPayment } from './transactionData'
@@ -17,7 +19,8 @@ import type { PasoAuthenticationMethod, PasoScaResponseClaims } from './types'
  * risk signals, carried inside `risk_signals`, and only when a referenced profile or a metadata
  * enumeration requires them. See {@link ./riskSignals.ts}.
  */
-export function createPasoScaResponseClaims(options: {
+export async function createPasoScaResponseClaims(options: {
+  paradym: ParadymWalletSdk
   /** The resolved proof material of the transaction the user consented to. */
   proof: NonNullable<FormattedTransactionDataPasoPayment['proof']>
   /** The signed Authorization Request ([JAR] Request Object) in compact serialisation. */
@@ -34,8 +37,14 @@ export function createPasoScaResponseClaims(options: {
    * usually close together, and a signal's `collected_at` is not the place to round.
    */
   authenticatedAt: Date
-}): PasoScaResponseClaims {
-  const { proof, signedRequest, responseMode, authenticationMethods, authenticatedAt } = options
+}): Promise<PasoScaResponseClaims> {
+  const { paradym, proof, signedRequest, responseMode, authenticationMethods, authenticatedAt } = options
+
+  const riskSignals = collectPasoRiskSignals(proof.effectiveRiskSignalSet, {
+    responseMode,
+    authenticationMethods,
+    authenticatedAt,
+  })
 
   return {
     // [RFC7519] Section 4.1.7 — fresh and unique per presentation. Under [PSD2] this doubles as the
@@ -55,10 +64,16 @@ export function createPasoScaResponseClaims(options: {
 
     wallet_instance_version: getWalletInstanceVersion(),
 
-    risk_signals: collectPasoRiskSignals(proof.effectiveRiskSignalSet, {
-      responseMode,
-      authenticationMethods,
-      authenticatedAt,
-    }),
+    // [PaSO Risk Signals] Section 7.4 — "encrypt-then-sign": the ciphertext goes in the claim here,
+    // and Credo signs the KB-JWT over it afterwards. Encryption covers the whole array, `amr`
+    // included (Section 7.8), so an Authorizing Party that is not the issuer sees only that it is an
+    // encrypted structure.
+    risk_signals:
+      riskSignals && proof.riskSignalsEncryptionKey
+        ? await encryptPasoRiskSignals(paradym, {
+            riskSignals,
+            encryptionKey: proof.riskSignalsEncryptionKey,
+          })
+        : riskSignals,
   }
 }

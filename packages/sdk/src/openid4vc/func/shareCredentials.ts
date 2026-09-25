@@ -123,7 +123,8 @@ export const shareCredentials = async ({
       )
     }
 
-    const scaResponseClaims = createPasoScaResponseClaims({
+    const scaResponseClaims = await createPasoScaResponseClaims({
+      paradym,
       proof: transactionData.proof,
       // Safe: `resolvePasoTransactionData` rejects unsigned requests before we ever get here.
       signedRequest: resolvedRequest.signedAuthorizationRequest?.compact as string,

@@ -16,8 +16,9 @@
  *   procedure, storage in signed form with re-verification on every load, renewal before `exp`, the
  *   label and structural constraints of Section 3.3, and `metadata_integrity`.
  * - **[PaSO Proof Risk Signals]** — signal set and encryption-trigger resolution (Sections 4.1 and
- *   7.2), and the two transaction-fact signals `urn:paso:risk:global:response_mode:1` and
- *   `urn:paso:risk:global:amr:1`.
+ *   7.2), the two transaction-fact signals `urn:paso:risk:global:response_mode:1` and
+ *   `urn:paso:risk:global:amr:1`, and encryption of the `risk_signals` array to the issuer's key
+ *   (Section 7) at the `ECDH-ES` / `A256GCM` baseline of Section 7.6.
  * - **Basic Payments rulebook** — `urn:paso:sca:global:payment:1`, with payload conformance, SRI
  *   resolution of `payee.logo` under the [PaSO View] Section 3 resource limits, and a dedicated
  *   consent UI.
@@ -40,10 +41,10 @@
  * - **Measured and device-fact risk signals** — geolocation, call activity, device motion, screen
  *   capture, device basics, app vendor id. Reported `unavailable` when a profile requires them, per
  *   [PaSO Risk Signals] Section 4.2, which also forbids treating that as an incompatibility.
- * - **Risk signal encryption** ([PaSO Risk Signals] Section 7) — a transaction data type that
- *   requires it, from any of the three sources of Section 7.2, is refused: Section 7.3 forbids
- *   falling back to plaintext. Note that this makes the published Default risk signal profile
- *   unusable here, since it sets `encrypted`.
+ * - **Risk signal encryption algorithms beyond the baseline** ([PaSO Risk Signals] Section 7.6) —
+ *   only `ECDH-ES` over `P-256` with `A256GCM` is produced. An issuer publishing nothing else under
+ *   `risk_signals_encryption_keys` has no usable key as far as this wallet is concerned, and
+ *   Section 7.3 then has the transaction refused rather than sent in the clear.
  * - **SVG images** ([PaSO View] Section 3) — URLs inside an SVG need the fragment-carried integrity
  *   values of [PaSO Proof SD-JWT-VC and SVG] Section 3, which we do not implement, and that section
  *   makes an unverifiable resource invalid.
@@ -72,6 +73,7 @@ export {
   validatePasoPayloadConformance,
 } from './paymentRulebook'
 export { createPasoScaResponseClaims } from './responseClaims'
+export { encryptPasoRiskSignals, selectPasoRiskSignalsEncryptionKey } from './riskSignalEncryption'
 export {
   collectPasoRiskSignals,
   pasoAuthenticationMethodsSignalType,
@@ -92,6 +94,7 @@ export {
   type PasoCredentialMetadata,
   type PasoResolvedRiskSignal,
   type PasoRiskSignalEnvelope,
+  type PasoRiskSignalsEncryptionKey,
   type PasoScaResponseClaims,
   type PasoTransactionDataType,
   type PasoTransactionDataTypeMetadata,

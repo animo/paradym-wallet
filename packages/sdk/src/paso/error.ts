@@ -33,8 +33,8 @@ export type PasoRefusalCode =
   | 'metadataViolatesConstraints'
   /** [PaSO Risk Signals] Section 4.1 — a referenced risk signal profile this wallet cannot resolve. */
   | 'unknownRiskSignalProfile'
-  /** [PaSO Risk Signals] Section 7 — encryption is required and this wallet cannot encrypt. */
-  | 'riskSignalEncryptionRequired'
+  /** [PaSO Risk Signals] Section 7.3 — encryption is required and the issuer published no usable key. */
+  | 'riskSignalEncryptionKeyUnavailable'
   /** [PaSO Core] Section 7.3 step 2 — the payload does not conform to the rulebook. */
   | 'payloadDoesNotConform'
   /** [PaSO View] Section 4 — no locale produced a complete match. */

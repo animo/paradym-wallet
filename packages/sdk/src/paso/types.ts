@@ -85,10 +85,41 @@ export interface PasoTransactionDataTypeMetadata {
   encrypted?: boolean
 }
 
+/**
+ * [PaSO Risk Signals] Section 7.3 — a key of the issuer's `risk_signals_encryption_keys` JWK Set.
+ *
+ * Everything is optional because this is what the issuer published, not what we can use. Section 7.3
+ * asks for `use`, `kid` and `alg` on every key, and Section 7.6 fixes the baseline to `ECDH-ES` over
+ * `P-256`; {@link ./riskSignalEncryption.ts} is where a published key is checked against that and
+ * narrowed to {@link PasoRiskSignalsEncryptionKey}.
+ */
+export interface PasoPublishedJwk {
+  kty?: string
+  crv?: string
+  x?: string
+  y?: string
+  use?: string
+  kid?: string
+  alg?: string
+}
+
+/** A published key that meets the [PaSO Risk Signals] Section 7.6 baseline, ready to encrypt to. */
+export interface PasoRiskSignalsEncryptionKey {
+  kty: 'EC'
+  crv: 'P-256'
+  x: string
+  y: string
+  kid: string
+  use?: string
+  alg?: string
+}
+
 /** [PaSO Proof Metadata] Section 3 — `credential_metadata` extended with `transaction_data_types`. */
 export interface PasoCredentialMetadata {
   display?: Array<Record<string, unknown>>
   transaction_data_types: Record<string, PasoTransactionDataTypeMetadata>
+  /** [PaSO Risk Signals] Section 7.3 — the issuer's encryption keys, as a [RFC7517] JWK Set. */
+  risk_signals_encryption_keys?: { keys?: PasoPublishedJwk[] }
   [key: string]: unknown
 }
 
@@ -161,5 +192,11 @@ export type PasoScaResponseClaims = {
   metadata_integrity?: string
   request_integrity: string
   wallet_instance_version: string
-  risk_signals?: PasoRiskSignalEnvelope[]
+  /**
+   * The signal envelopes, or a JWE compact string when encryption is required.
+   *
+   * [PaSO Risk Signals] Section 7.5.1: where the transaction data type requires encryption the claim
+   * value "SHALL be a [JWE] in compact serialization (a string) instead of the JSON array".
+   */
+  risk_signals?: PasoRiskSignalEnvelope[] | string
 }

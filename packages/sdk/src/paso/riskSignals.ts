@@ -47,9 +47,9 @@ const knownRiskSignalProfiles: Record<string, PasoRiskSignalProfile> = {
   // https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-2/rulebooks/risk_profiles/Default/
   //
   // All seven signals of the registry except `amr`, every one of them required with a ten-minute
-  // freshness bound — and `encrypted: true`, which this wallet cannot satisfy. Referencing this
-  // profile therefore makes a transaction unauthorizable here rather than silently downgraded; see
-  // {@link resolveEffectiveRiskSignalSet}.
+  // freshness bound — and `encrypted: true`. The six this wallet does not measure are reported
+  // `unavailable` per Section 4.2, and the array is encrypted to the issuer's key per Section 7, so
+  // referencing this profile is usable here as long as the issuer publishes one.
   'urn:paso:risk-profile:global:default:1': {
     encrypted: true,
     signals: [
