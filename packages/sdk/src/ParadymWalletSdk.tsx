@@ -1,7 +1,7 @@
 import { AskarStoreInvalidKeyError } from '@credo-ts/askar'
-import { CredoError, type X509ModuleConfigOptions } from '@credo-ts/core'
+import { CredoError } from '@credo-ts/core'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
-import { createContext, type PropsWithChildren, useContext, useState } from 'react'
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react'
 import {
   type AgentForAgentType,
   type AgentType,
@@ -10,10 +10,23 @@ import {
   type SetupAgentOptions,
   setupAgent,
 } from './agent'
-import { type DcApiRegisterCredentialsOptions, dcApiRegisterCredentials } from './dcApi/registerCredentials'
-import { type DcApiResolveRequestOptions, dcApiResolveRequest } from './dcApi/resolveRequest'
-import { dcApisendErrorResponse } from './dcApi/sendErrorResponse'
-import { type DcApiSendResponseOptions, dcApiSendResponse } from './dcApi/sendResponse'
+import {
+  defaultWalletId,
+  getTrustedX509Certificates,
+  type ParadymWalletSdkAttributeLabelOptions,
+  type ParadymWalletSdkDcApiDisplayOptions,
+  type ParadymWalletSdkLocaleOptions,
+  type ParadymWalletSdkSharedOptions,
+} from './config'
+import { setResolveAttributeLabel } from './config/attributeLabel'
+import { setResolveDcApiDisplay } from './config/dcApiDisplay'
+import { setLocale } from './config/locale'
+import {
+  type DcApiRegisterCredentialsOptions,
+  dcApiAddCredential,
+  dcApiRegisterCredentials,
+  dcApiRemoveCredential,
+} from './dcApi/registerCredentials'
 import type { CredentialForDisplayId } from './display/credential'
 import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletBiometricAuthenticationError } from './error'
 import { useParadym } from './hooks'
@@ -50,7 +63,9 @@ import {
 } from './proximity/getSubmissionForMdocDocumentRequest'
 import { getIsBiometricsEnabled, secureWalletKey, setIsBiometricsEnabled } from './secure'
 import { KeychainError } from './secure/error/KeychainError'
-import { deleteCredential } from './storage/credentials'
+import { migrateActivities } from './storage/activityStore'
+import { type CredentialRecord, deleteCredential } from './storage/credentials'
+import { getWalletStoreId, setupAppGroupStore } from './storage/walletStore'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
 import { reset } from './utils/reset'
@@ -59,32 +74,11 @@ export type ParadymWalletSdkResult<T extends Record<string, unknown> = Record<st
   | ({ success: true } & T)
   | { success: false; message: string; cause?: string }
 
-export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfiguration'> & {
-  /**
-   *
-   * Configuration for when OpenId4Vc is used
-   *
-   * @note by default, openid4vc is configured on the agent
-   *
-   * @note to disable openid4vc, pass in `false`
-   *
-   * @note the trusted x509 certificates are derived from the `trustMechanisms` entry where
-   *       `trustMechanism === 'x509'`, so they don't have to be specified here
-   *
-   */
-  openId4VcConfiguration?: Omit<X509ModuleConfigOptions, 'trustedCertificates'> | false
-
-  /**
-   *
-   * Trust mechanisms supported by the wallet
-   *
-   * The order matters. The first index will be tried first, until the last
-   *
-   * When one is found that works, it will be used
-   *
-   */
-  trustMechanisms?: TrustMechanismConfiguration[]
-}
+export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfiguration'> &
+  Pick<ParadymWalletSdkSharedOptions, 'openId4VcConfiguration' | 'trustMechanisms'> &
+  ParadymWalletSdkLocaleOptions &
+  ParadymWalletSdkAttributeLabelOptions &
+  ParadymWalletSdkDcApiDisplayOptions
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
@@ -103,20 +97,34 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public constructor(options: ParadymWalletSdkOptions) {
     const trustMechanisms = options.trustMechanisms ?? []
 
-    const x509TrustedCertificates = trustMechanisms
-      .filter(
-        (tm): tm is Extract<TrustMechanismConfiguration, { trustMechanism: 'x509' }> =>
-          'trustMechanism' in tm && tm.trustMechanism === 'x509'
-      )
-      .flatMap((tm) => tm.trustedX509Entities.map((e) => e.certificate))
-
     const openId4VcConfiguration =
       options.openId4VcConfiguration === false
         ? (false as const)
-        : { ...options.openId4VcConfiguration, trustedCertificates: x509TrustedCertificates }
+        : { ...options.openId4VcConfiguration, trustedCertificates: getTrustedX509Certificates(trustMechanisms) }
 
     this.agent = setupAgent({ ...options, openId4VcConfiguration }) as unknown as AgentForAgentType<T>
     this.trustMechanisms = trustMechanisms
+
+    if (options.locale) setLocale(options.locale)
+    setResolveAttributeLabel(options.resolveAttributeLabel)
+    setResolveDcApiDisplay(options.resolveDcApiDisplay)
+  }
+
+  /**
+   *
+   * Set the language credentials are rendered in.
+   *
+   * Everything derived from a credential reads this at the point it renders, so calling it is
+   * enough — there is nothing to rebuild. A credential's display is cached per locale, and the hooks
+   * that memoize displays re-render when it changes, so the screens that were showing the previous
+   * language derive again rather than keeping it.
+   *
+   * Safe to call while rendering, which is where to call it: the components rendered after it then
+   * read the new language in that same render rather than one render later.
+   *
+   */
+  public setLocale(locale: string) {
+    setLocale(locale)
   }
 
   public get isDidCommEnabled() {
@@ -132,7 +140,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   }
 
   public async reset() {
-    reset(this)
+    await reset(this)
   }
 
   /**
@@ -174,10 +182,14 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public static UnlockProvider({
     children,
     configuration,
-    queryClient = new QueryClient(),
+    queryClient,
   }: PropsWithChildren<{ configuration: SetupParadymWalletSdkOptions; queryClient?: QueryClient }>) {
+    // A default parameter would build a new client on every render, throwing away every cached
+    // query and restarting the ones in flight.
+    const [fallbackQueryClient] = useState(() => new QueryClient())
+
     return (
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient ?? fallbackQueryClient}>
         <SecureUnlockProvider configuration={configuration}>{children}</SecureUnlockProvider>
       </QueryClientProvider>
     )
@@ -194,6 +206,15 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
    */
   public static AppProvider({ children, recordIds }: PropsWithChildren<{ recordIds: string[] }>) {
     const { paradym } = useParadym('unlocked')
+
+    // Activities used to be one record holding the whole history; they are a record each now, and
+    // the old one has to be fanned out before anything reads them. Runs at most once per unlock,
+    // and returns immediately when there is nothing to move.
+    useEffect(() => {
+      void migrateActivities(paradym.agent).catch((error) =>
+        paradym.logger.error('Failed to migrate the activity history', { error })
+      )
+    }, [paradym])
 
     return (
       <RecordProvider agent={paradym.agent} recordIds={recordIds}>
@@ -240,59 +261,62 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
    *
    * Openid4vc functionality, for receiving a credential and presenting a proof
    *
+   * A field rather than a getter: a getter rebuilt this object, with new closures, on every
+   * property access, so `paradym.openid4vc` was a different value every time it was read and an
+   * effect that listed it as a dependency re-ran on every render. Every method below reaches
+   * `this` only when called, so the field can be initialized before the constructor body assigns
+   * the agent.
+   *
    */
-  public get openid4vc() {
-    return {
-      resolveCredentialOffer: (options: Omit<ResolveCredentialOfferOptions, 'paradym'>) =>
-        resolveCredentialOffer({ ...options, paradym: this }),
+  public readonly openid4vc = {
+    resolveCredentialOffer: (options: Omit<ResolveCredentialOfferOptions, 'paradym'>) =>
+      resolveCredentialOffer({ ...options, paradym: this }),
 
-      acquireCredentials: (options: DistributedOmit<AcquireCredentialsOptions, 'paradym'>) =>
-        acquireCredentials({ ...options, paradym: this }),
+    acquireCredentials: (options: DistributedOmit<AcquireCredentialsOptions, 'paradym'>) =>
+      acquireCredentials({ ...options, paradym: this }),
 
-      completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
-        completeCredentialRetrieval({ ...options, paradym: this }),
+    completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
+      completeCredentialRetrieval({ ...options, paradym: this }),
 
-      receiveDeferredCredential: (options: Omit<ReceiveDeferredCredentialFromOpenId4VciOfferOptions, 'paradym'>) =>
-        receiveDeferredCredentialFromOpenId4VciOffer({ ...options, paradym: this }),
+    receiveDeferredCredential: (options: Omit<ReceiveDeferredCredentialFromOpenId4VciOfferOptions, 'paradym'>) =>
+      receiveDeferredCredentialFromOpenId4VciOffer({ ...options, paradym: this }),
 
-      resolveCredentialRequest: (options: Omit<ResolveCredentialRequestOptions, 'paradym'>) =>
-        resolveCredentialRequest({ ...options, paradym: this }),
+    resolveCredentialRequest: (options: Omit<ResolveCredentialRequestOptions, 'paradym'>) =>
+      resolveCredentialRequest({ ...options, paradym: this }),
 
-      declineCredentialRequest: (options: Omit<DeclineCredentialRequestOptions, 'paradym'>) =>
-        declineCredentialRequest({ ...options, paradym: this }),
+    declineCredentialRequest: (options: Omit<DeclineCredentialRequestOptions, 'paradym'>) =>
+      declineCredentialRequest({ ...options, paradym: this }),
 
-      shareCredentials: (options: Omit<ShareCredentialsOptions, 'paradym'>) =>
-        shareCredentials({ ...options, paradym: this }),
-    }
+    shareCredentials: (options: Omit<ShareCredentialsOptions, 'paradym'>) =>
+      shareCredentials({ ...options, paradym: this }),
   }
 
   /**
    *
-   * Digital credentials API functionality for presentating a proof
+   * Digital credentials API functionality for presenting a proof
    *
    */
-  public get dcApi() {
-    return {
-      registerCredentials: (options: Omit<DcApiRegisterCredentialsOptions, 'paradym'>) =>
-        dcApiRegisterCredentials({ ...options, paradym: this }),
-      resolveRequest: (options: Omit<DcApiResolveRequestOptions, 'paradym'>) =>
-        dcApiResolveRequest({ ...options, paradym: this }),
-      sendResponse: (options: Omit<DcApiSendResponseOptions, 'paradym'>) =>
-        dcApiSendResponse({ ...options, paradym: this }),
-      sendErrorResponse: dcApisendErrorResponse,
-    }
+  public readonly dcApi = {
+    registerCredentials: (options: Omit<DcApiRegisterCredentialsOptions, 'paradym'>) =>
+      dcApiRegisterCredentials({ ...options, paradym: this }),
+
+    addCredential: (
+      options: Omit<DcApiRegisterCredentialsOptions, 'paradym'> & { credentialRecord: CredentialRecord }
+    ) => dcApiAddCredential({ ...options, paradym: this }),
+
+    removeCredential: (
+      options: Omit<DcApiRegisterCredentialsOptions, 'paradym'> & { credentialId: CredentialForDisplayId }
+    ) => dcApiRemoveCredential({ ...options, paradym: this }),
   }
 
   /**
    *
-   * ISO/IEC 18013:5 mDoc/mDl proximity flow utilites
+   * ISO/IEC 18013:5 mDoc/mDl proximity flow utilities
    *
    */
-  public get proximity() {
-    return {
-      getSubmissionForMdocDocumentRequest: (options: Omit<GetSubmissionForMdocDocumentRequestOptions, 'paradym'>) =>
-        getSubmissionForMdocDocumentRequest({ ...options, paradym: this }),
-    }
+  public readonly proximity = {
+    getSubmissionForMdocDocumentRequest: (options: Omit<GetSubmissionForMdocDocumentRequestOptions, 'mdocApi'>) =>
+      getSubmissionForMdocDocumentRequest({ ...options, mdocApi: this.agent.mdoc }),
   }
 }
 
@@ -361,30 +385,51 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       reinitialize,
       reset: async () => {
         reinitialize()
-        reset(paradym)
+        await reset(paradym)
       },
       unlock: async (options) => {
         try {
-          const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-          const id = configuration.id ? `${configuration.id}-${walletKeyVersion}` : `paradym-wallet-${walletKeyVersion}`
+          // The base id, without the wallet key version — `setupAgent` composes the store id from
+          // it, and composing it here as well is what used to produce `<id>-<version>-<version>`.
+          const id = configuration.id ?? defaultWalletId
           const key = walletKey
 
-          const isBiometricsEnabled = options?.enableBiometrics ?? getIsBiometricsEnabled()
-          if (canUseBiometrics && isBiometricsEnabled) {
-            const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-            await secureWalletKey.storeWalletKey(walletKey, walletKeyVersion)
-            if (options?.enableBiometrics) {
-              await secureWalletKey.getWalletKeyUsingBiometrics(walletKeyVersion)
-              setIsBiometricsEnabled(true)
-            }
-          }
+          // Must happen before the store is opened: on iOS the store lives in the shared container
+          // so the identity document provider extension can open it too.
+          const storePath = await setupAppGroupStore(getWalletStoreId(id))
 
           const pws = new ParadymWalletSdk({
             ...configuration,
             id,
             key,
+            storePath,
           })
           await pws.agent.initialize()
+
+          // Only once the store has actually opened with this key.
+          //
+          // Storing it beforehand meant an incorrect pin overwrote the stored wallet key with the
+          // key it derived. Biometric unlock reads that same key back, so one wrong pin left
+          // biometrics permanently broken — and an unopenable store is reported as a wrong pin,
+          // which is exactly what it would look like from then on.
+          try {
+            const isBiometricsEnabled = options?.enableBiometrics ?? getIsBiometricsEnabled()
+            if (canUseBiometrics && isBiometricsEnabled) {
+              const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+              await secureWalletKey.storeWalletKey(walletKey, walletKeyVersion)
+              if (options?.enableBiometrics) {
+                await secureWalletKey.getWalletKeyUsingBiometrics(walletKeyVersion)
+                setIsBiometricsEnabled(true)
+              }
+            }
+          } catch (error) {
+            // The store opened, so the key was right: whatever failed here is the biometric prompt,
+            // not authentication. The agent holds the store open, so close it before a retry
+            // reopens it.
+            await pws.shutdown()
+            throw error
+          }
+
           setState('unlocked')
           setParadym(pws)
           return pws
@@ -413,7 +458,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       canTryUnlockingUsingBiometrics,
       reinitialize,
       reset: async () => {
-        await reset()
+        await reset(undefined)
         reinitialize()
       },
       tryUnlockingUsingBiometrics: async () => {

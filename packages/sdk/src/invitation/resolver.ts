@@ -175,7 +175,8 @@ export async function resolveCredentialOffer({
 
   const { trustMechanism, trustedEntities, issuer } = await getTrustedEntitiesForOpenId4Vci({
     resolvedCredentialOffer,
-    paradym,
+    agentContext: paradym.agent.context,
+    trustMechanisms: paradym.trustMechanisms,
     // TODO: add wallet trusted entity
   })
 

@@ -1,12 +1,8 @@
-import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
-import type { DifPresentationExchangeDefinitionV2 } from '@credo-ts/core'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletNoRequestToResolveError } from '../../error'
-import { formatDcqlCredentialsForRequest } from '../../format/dcqlRequest'
-import { formatDifPexCredentialsForRequest } from '../../format/presentationExchangeRequest'
-import type { FormattedSubmission } from '../../format/submission'
+import { getFormattedSubmission } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
-import { getTrustedEntitiesForOpenId4Vp } from '../../trust/trustMechanism'
+import { getVerifierForOpenId4VpRequest } from '../../trust/verifier'
 
 export type ResolveCredentialRequestOptions = {
   paradym: ParadymWalletSdk
@@ -40,48 +36,22 @@ export const resolveCredentialRequest = async ({
       // ?.trustedEntityIds,
     })
 
-    const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(paradym.agent.context, {
+    const { trustMechanism, verifier } = await getVerifierForOpenId4VpRequest({
+      agentContext: paradym.agent.context,
+      trustMechanisms: paradym.trustMechanisms,
       resolvedAuthorizationRequest: resolved,
-      allowUntrustedSigned: allowUntrusted,
+      allowUntrusted,
     })
-
-    const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntitiesForOpenId4Vp({
-      paradym,
-      resolvedAuthorizationRequest: resolved,
-      authorizationRequestVerificationResult,
-    })
-
-    let formattedSubmission: FormattedSubmission
-    if (resolved.presentationExchange) {
-      formattedSubmission = formatDifPexCredentialsForRequest(
-        resolved.presentationExchange.credentialsForRequest,
-        resolved.presentationExchange.definition as DifPresentationExchangeDefinitionV2
-      )
-    } else if (resolved.dcql) {
-      formattedSubmission = formatDcqlCredentialsForRequest(resolved.dcql.queryResult)
-    } else {
-      throw new Error('No presentation exchange or dcql found in authorization request.')
-    }
 
     return {
       ...resolved.presentationExchange,
       ...resolved.dcql,
       origin,
       authorizationRequest: resolved.authorizationRequestPayload,
-      formattedSubmission,
+      formattedSubmission: getFormattedSubmission(resolved),
       transactionData: resolved.transactionData,
       trustMechanism,
-      verifier: {
-        hostName: relyingParty.uri,
-        entityId: relyingParty.entityId,
-        logo: relyingParty.logoUri
-          ? {
-              url: relyingParty.logoUri,
-            }
-          : undefined,
-        name: relyingParty.organizationName,
-        trustedEntities,
-      },
+      verifier,
     }
   } catch (error) {
     paradym.logger.error('Error getting credentials for request', {

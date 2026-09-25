@@ -39,18 +39,11 @@ export function CredentialDetailScreen() {
   })
 
   if (!credential) {
-    toast.show(
-      t({
-        id: 'credentials.notFound',
-        message: 'Credential not found',
-        comment: 'Shown if a credential is missing or cannot be loaded',
-      }),
-      {
-        customData: {
-          preset: 'danger',
-        },
-      }
-    )
+    toast.show(t(commonMessages.credentialNotFound), {
+      customData: {
+        preset: 'danger',
+      },
+    })
     router.back()
     return
   }

@@ -13,29 +13,21 @@ export const PinLockedScreen = () => {
   const { t } = useLingui()
 
   const onResetWallet = () => {
-    Alert.alert(
-      t(commonMessages.reset),
-      t({
-        id: 'pinLocked.alertMessage',
-        message: 'Are you sure you want to reset the wallet?',
-        comment: 'Message body of the confirmation dialog (action button) for wallet reset',
-      }),
-      [
-        {
-          style: 'cancel',
-          text: t(commonMessages.yes),
-          onPress: () => {
-            paradym
-              .reset()
-              .then(() => resetWalletServiceProviderState())
-              .then(() => {
-                resetAppState()
-                router.replace('onboarding')
-              })
-          },
+    Alert.alert(t(commonMessages.reset), t(commonMessages.confirmResetWallet), [
+      {
+        style: 'cancel',
+        text: t(commonMessages.yes),
+        onPress: () => {
+          paradym
+            .reset()
+            .then(() => resetWalletServiceProviderState())
+            .then(() => {
+              resetAppState()
+              router.replace('onboarding')
+            })
         },
-      ]
-    )
+      },
+    ])
   }
 
   return (

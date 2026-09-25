@@ -2,6 +2,11 @@
 	"name": "@paradym/wallet-sdk",
 	"version": "0.0.0",
 	"main": "src/index.ts",
+	"exports": {
+		".": "./src/index.ts",
+		"./package.json": "./package.json",
+		"./*": "./src/*"
+	},
 	"license": "Apache-2.0",
 	"files": [
 		"dist"
@@ -40,7 +45,7 @@
 		"@openid4vc/oauth2": "catalog:",
 		"@openid4vc/openid4vp": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
-		"@owf/eudi-sca": "0.2.0-alpha-20260506130404",
+		"@owf/eudi-sca": "catalog:",
 		"@shopify/react-native-skia": "catalog:",
 		"@tanstack/react-query": "catalog:",
 		"credo-ts-didweb-anoncreds": "catalog:",
@@ -52,7 +57,9 @@
 		"react-native-fs": "catalog:",
 		"react-native-get-random-values": "catalog:",
 		"react-native-keychain": "catalog:",
-		"react-native-mmkv": "catalog:"
+		"react-native-mmkv": "catalog:",
+		"react-native-quick-base64": "catalog:",
+		"react-native-quick-crypto": "catalog:"
 	},
 	"peerDependencies": {
 		"@tanstack/react-query": ">=5 <=6",

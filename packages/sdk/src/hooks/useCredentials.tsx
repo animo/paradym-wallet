@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useLocale } from '../config/locale'
 import { type CredentialForDisplay, getCredentialForDisplay } from '../display/credential'
 import type { CredentialCategoryMetadata } from '../metadata/credentials'
 import { useMdocRecords } from '../providers/MdocProvider'
@@ -17,6 +18,8 @@ export const useCredentials = ({
   const { w3cV2CredentialRecords, isLoading: isLoadingW3cV2 } = useW3cV2CredentialRecords()
   const { sdJwtVcRecords, isLoading: isLoadingSdJwt } = useSdJwtVcRecords()
   const { mdocRecords, isLoading: isLoadingMdoc } = useMdocRecords()
+  // Not read in the memo, but the displays derived in it are in this language
+  const locale = useLocale()
 
   const credentials = useMemo((): CredentialForDisplay[] => {
     // Map into common structure that can be rendered
@@ -75,6 +78,7 @@ export const useCredentials = ({
     mdocRecords,
     removeCanonicalRecords,
     credentialCategory,
+    locale,
   ])
 
   return {

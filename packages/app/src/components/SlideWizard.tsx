@@ -1,5 +1,5 @@
-import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack } from '@package/ui'
 import type React from 'react'
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
@@ -47,21 +47,9 @@ const FADE_IN_DURATION = 250
 const EASE_OUT = Easing.bezier(0.25, 0.1, 0.25, 1)
 
 const sharingMessages = {
-  stopSharingTitle: defineMessage({
-    id: 'slideWizard.confirmation.stopSharingTitle',
-    message: 'Stop sharing?',
-    comment: 'Title of confirmation dialog shown when user attempts to stop sharing data',
-  }),
-  stopSharingDescription: defineMessage({
-    id: 'slideWizard.confirmation.stopSharingDescription',
-    message: 'If you stop, no data will be shared.',
-    comment: 'Description in confirmation dialog about stopping data sharing',
-  }),
-  stopSharingConfirm: defineMessage({
-    id: 'slideWizard.confirmation.stopSharingConfirm',
-    message: 'Stop',
-    comment: 'Confirm button text in stop sharing confirmation dialog',
-  }),
+  stopSharingTitle: commonMessages.stopSharingTitle,
+  stopSharingDescription: commonMessages.stopSharingDescription,
+  stopSharingConfirm: commonMessages.stop,
 }
 
 export interface SlideWizardRef {

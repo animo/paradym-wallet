@@ -1,9 +1,15 @@
 import { formatPredicate } from '@app/utils/formatePredicate'
+import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { CardWithAttributes, DualResponseButtons, MiniDocument, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
-import { type FormattedSubmission, getDisclosedAttributeNamesForDisplay, type QtspInfo } from '@paradym/wallet-sdk'
+import {
+  type FormattedSubmission,
+  getDisclosedAttributeNamesForDisplay,
+  hasMissingCards,
+  type QtspInfo,
+} from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
@@ -69,11 +75,7 @@ export const SignAndShareSlide = ({
   return (
     <YStack fg={1} jc="space-between">
       <YStack gap="$4" fg={1}>
-        <Heading>
-          <Trans id="signShare.title" comment="Main heading in the sign & share screen">
-            Review the request
-          </Trans>
-        </Heading>
+        <Heading>{t(commonMessages.reviewRequestTitle)}</Heading>
 
         <YStack
           fg={1}
@@ -97,11 +99,7 @@ export const SignAndShareSlide = ({
           >
             <YStack gap="$4">
               <YStack gap="$2">
-                <Heading heading="sub2">
-                  <Trans id="signShare.documentHeading" comment="Heading above the document name">
-                    Document
-                  </Trans>
-                </Heading>
+                <Heading heading="sub2">{t(commonMessages.documentHeading)}</Heading>
                 <Paragraph>
                   <Trans id="signShare.documentIntro" comment="Text above the document to be signed">
                     The following document will be signed.
@@ -144,7 +142,7 @@ export const SignAndShareSlide = ({
                   formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(cardForSigning).map((c) =>
                     typeof c === 'string' ? c : formatPredicate(c)
                   )}
-                  disclosedPayload={cardForSigning.disclosed.attributes}
+                  disclosedPaths={cardForSigning.disclosed.paths}
                   isExpired={
                     cardForSigning.credential.metadata?.validUntil
                       ? new Date(cardForSigning.credential.metadata.validUntil) < new Date()
@@ -180,9 +178,11 @@ export const SignAndShareSlide = ({
         ) : (
           <YStack gap="$3">
             <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
-              <Trans id="signShare.missingCards" comment="Shown when the user lacks the required credentials">
-                You don't have the required cards
-              </Trans>
+              {t(
+                !submission || hasMissingCards(submission)
+                  ? commonMessages.missingCardsWarning
+                  : getUnmetAttributeMessages(submission).warning
+              )}
             </Paragraph>
             <Button.Solid onPress={onDecline}>{t(commonMessages.close)}</Button.Solid>
           </YStack>

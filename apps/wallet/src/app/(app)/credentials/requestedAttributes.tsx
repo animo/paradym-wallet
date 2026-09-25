@@ -1,20 +1,22 @@
 import { RequestedAttributesDetailScreen } from '@app/features/share/RequestedAttributesDetailScreen'
-import type { CredentialId, CredentialMetadata, FormattedAttribute } from '@paradym/wallet-sdk'
+import type { ClaimPath, CredentialForDisplayId } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
+import { useMemo } from 'react'
 
 export default function Screen() {
-  const { disclosedPayload, disclosedMetadata, disclosedAttributeLength, id } = useLocalSearchParams<{
-    disclosedPayload: string
-    disclosedMetadata?: string
+  const { paths, disclosedAttributeLength, id } = useLocalSearchParams<{
+    paths: string
     disclosedAttributeLength: string
-    id: CredentialId
+    id: CredentialForDisplayId
   }>()
+
+  // Parsed once, as the screen derives the attributes from them
+  const disclosedPaths = useMemo(() => JSON.parse(paths) as ClaimPath[], [paths])
 
   return (
     <RequestedAttributesDetailScreen
       id={id}
-      disclosedPayload={JSON.parse(disclosedPayload) as FormattedAttribute[]}
-      disclosedMetadata={disclosedMetadata ? (JSON.parse(disclosedMetadata) as CredentialMetadata) : undefined}
+      disclosedPaths={disclosedPaths}
       disclosedAttributeLength={Number.parseInt(disclosedAttributeLength, 10)}
     />
   )

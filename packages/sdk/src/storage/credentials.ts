@@ -8,6 +8,7 @@ import {
   W3cV2CredentialRecord,
   W3cV2CredentialRepository,
 } from '@credo-ts/core'
+import { Platform } from 'react-native'
 import type { DcApiRegisterCredentialsOptions } from '../dcApi/registerCredentials'
 import type { CredentialForDisplayId } from '../display/credential'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
@@ -63,8 +64,11 @@ export async function updateCredential(
       .update(options.paradym.agent.context, options.credentialRecord)
   }
 
-  // Update database when we update a credential
-  await options.paradym.dcApi.registerCredentials(options)
+  // The iOS registration is the document identifier and its type, and an update changes neither.
+  // Android encodes display and claims into the registry, so there it does have to be rebuilt.
+  //
+  // Not awaited, for the reason spelled out in `storeCredential`.
+  if (Platform.OS !== 'ios') void options.paradym.dcApi.registerCredentials(options)
 }
 
 export async function storeCredential(
@@ -88,8 +92,13 @@ export async function storeCredential(
       .save(options.paradym.agent.context, options.credentialRecord)
   }
 
-  // Update database when we store a credential
-  await options.paradym.dcApi.registerCredentials(options)
+  // Add just this one where the platform allows it, rather than rebuilding the whole registered set.
+  //
+  // Deliberately not awaited: the credential is already saved, and the OS picker is not part of
+  // storing it. Awaiting made the user wait on the picker registration — on Android that is every
+  // credential decoded and an icon rasterized each — before the receive flow could leave its
+  // loading screen. Failures are logged and swallowed inside, so there is nothing here to catch.
+  void options.paradym.dcApi.addCredential(options)
 }
 
 export async function deleteCredential(
@@ -109,6 +118,7 @@ export async function deleteCredential(
     await options.paradym.agent.mdoc.deleteById(mdocId)
   }
 
-  // Update database when we delete a credential
-  await options.paradym.dcApi.registerCredentials(options)
+  // Remove just this one where the platform allows it, rather than rebuilding the whole registered
+  // set. Not awaited, for the reason spelled out in `storeCredential`.
+  void options.paradym.dcApi.removeCredential(options)
 }

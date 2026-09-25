@@ -1,5 +1,6 @@
 import { type PropsWithChildren, useMemo } from 'react'
 import type { AnyAgent, DidCommAgent } from '../agent'
+import { ActivityQuerySync } from './ActivityQuerySync'
 import { ConnectionProvider } from './ConnectionProvider'
 import { CredentialExchangeProvider } from './CredentialExchangeProvider'
 import { ExchangeRecordDisplayMetadataProvider } from './ExchangeRecordDisplayMetadataProvider'
@@ -38,10 +39,11 @@ export const RecordProvider = ({
         </Provider>
       ),
       <WalletJsonStoreProvider agent={agent} recordIds={recordIds}>
+        <ActivityQuerySync agent={agent} />
         <W3cV2CredentialRecordProvider agent={agent}>
           <W3cCredentialRecordProvider agent={agent}>
             <SdJwtVcRecordProvider agent={agent}>
-              <MdocRecordProvider>{children}</MdocRecordProvider>
+              <MdocRecordProvider agent={agent}>{children}</MdocRecordProvider>
             </SdJwtVcRecordProvider>
           </W3cCredentialRecordProvider>
         </W3cV2CredentialRecordProvider>

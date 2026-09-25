@@ -77,11 +77,7 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
               </Paragraph>
             </XStack>
             <YStack gap="$2">
-              <Heading heading="sub2">
-                <Trans id="payShare.documentHeading" comment="Heading above the document name">
-                  Payment
-                </Trans>
-              </Heading>
+              <Heading heading="sub2">{t(commonMessages.paymentHeading)}</Heading>
               <Paragraph variant="annotation">
                 <Trans id="payShare.documentIntro" comment="Text above the payment to be paid">
                   The following payment will be authorized

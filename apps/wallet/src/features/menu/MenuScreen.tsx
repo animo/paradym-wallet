@@ -91,20 +91,12 @@ export function MenuScreen() {
               <MenuListItem
                 onPress={handlePush('/credentials')}
                 icon={<HeroIcons.CreditCardFilled />}
-                label={t({
-                  id: 'menu.item.cards',
-                  message: 'Cards',
-                  comment: 'Label for the credentials menu item',
-                })}
+                label={t(commonMessages.cards)}
               />
               <MenuListItem
                 onPress={handlePush('/activity')}
                 icon={<HeroIcons.QueueListFilled />}
-                label={t({
-                  id: 'menu.item.activity',
-                  message: 'Activity',
-                  comment: 'Label for activity log',
-                })}
+                label={t(commonMessages.activity)}
               />
             </YStack>
           </YStack>
@@ -121,11 +113,7 @@ export function MenuScreen() {
               <MenuListItem
                 onPress={handlePush('/menu/settings')}
                 icon={<HeroIcons.Cog8ToothFilled />}
-                label={t({
-                  id: 'menu.item.settings',
-                  message: 'Settings',
-                  comment: 'Label for settings menu item',
-                })}
+                label={t(commonMessages.settings)}
               />
               <MenuListItem
                 onPress={handleFeedback}

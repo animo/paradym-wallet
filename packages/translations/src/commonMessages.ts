@@ -197,6 +197,62 @@ export const commonMessages = {
     message: 'Unknown Organization',
   }),
   credential: defineMessage({ id: 'common.credential', message: 'Credential' }),
+  missingAttributesHeading: defineMessage({
+    id: 'common.missingAttributesHeading',
+    message: 'MISSING ATTRIBUTES',
+    comment: 'Heading shown above requested cards the user has, but that lack some of the requested attributes',
+  }),
+  missingAttributesDescription: defineMessage({
+    id: 'common.missingAttributesDescription',
+    message: 'Some of your cards are missing requested attributes. These are marked in red.',
+    comment: 'Description when the user has the requested cards, but some lack requested attributes',
+  }),
+  mismatchedAttributesHeading: defineMessage({
+    id: 'common.mismatchedAttributesHeading',
+    message: `ATTRIBUTES DON'T MATCH`,
+    comment:
+      'Heading shown above requested cards the user has, but that hold some of the requested attributes with a value the request does not accept',
+  }),
+  mismatchedAttributesDescription: defineMessage({
+    id: 'common.mismatchedAttributesDescription',
+    message: `Some attributes of your cards don't have the requested value. These are marked in red.`,
+    comment:
+      'Description when the user has the requested cards, but some hold requested attributes with a value the request does not accept',
+  }),
+  mismatchedAttributesWarning: defineMessage({
+    id: 'common.mismatchedAttributesWarning',
+    message: `Your cards don't have the requested values`,
+    comment:
+      'Shown above the close button when the user has the required cards, but they hold requested attributes with a value the request does not accept',
+  }),
+  unmetAttributesHeading: defineMessage({
+    id: 'common.unmetAttributesHeading',
+    message: `ATTRIBUTES DON'T MEET THE REQUEST`,
+    comment:
+      'Heading shown above requested cards the user has, but that lack some requested attributes and hold others with a value the request does not accept',
+  }),
+  unmetAttributesDescription: defineMessage({
+    id: 'common.unmetAttributesDescription',
+    message: `Some of your cards are missing requested attributes or don't have the requested value. These are marked in red.`,
+    comment:
+      'Description when the user has the requested cards, but some lack requested attributes and some hold requested attributes with a value the request does not accept',
+  }),
+  unmetAttributesWarning: defineMessage({
+    id: 'common.unmetAttributesWarning',
+    message: `Your cards are missing required attributes or don't have the requested values`,
+    comment:
+      'Shown above the close button when the user has the required cards, but they lack requested attributes and hold others with a value the request does not accept',
+  }),
+  missingCardsWarning: defineMessage({
+    id: 'common.missingCardsWarning',
+    message: `You don't have the required cards`,
+    comment: 'Shown above the close button when the user lacks the required credentials',
+  }),
+  missingAttributesWarning: defineMessage({
+    id: 'common.missingAttributesWarning',
+    message: 'Your cards are missing required attributes',
+    comment: 'Shown above the close button when the user has the required cards, but they lack requested attributes',
+  }),
   dataRequest: defineMessage({
     id: 'common.dataRequest',
     message: 'Data Request',
@@ -393,6 +449,189 @@ export const commonMessages = {
     id: 'common.openSettingsButton',
     message: 'Open settings',
   }),
+
+  // Reviewing a request. Shared between every way a request reaches the wallet — a link, a QR code,
+  // proximity, the credential picker — so they all say the same thing.
+  reviewRequestTitle: defineMessage({
+    id: 'common.reviewRequestTitle',
+    message: 'Review the request',
+    comment: 'Main heading of the screen where the user reviews a request to share, sign or pay',
+  }),
+  share: defineMessage({
+    id: 'common.share',
+    message: 'Share',
+    comment: 'Button label to accept a request and share the requested cards',
+  }),
+  noPurposeProvided: defineMessage({
+    id: 'common.noPurposeProvided',
+    message: 'No information was provided on the purpose of the data request. Be cautious',
+    comment: 'Shown in place of the purpose when a data request does not state one',
+  }),
+  requestedCardsHeading: defineMessage({
+    id: 'common.requestedCardsHeading',
+    message: 'REQUESTED CARDS',
+    comment: 'Heading shown above a list of requested cards the user has',
+  }),
+  unavailableCardsHeading: defineMessage({
+    id: 'common.unavailableCardsHeading',
+    message: 'UNAVAILABLE CARDS',
+    comment: 'Heading shown above a list of requested cards the user does not have',
+  }),
+  allRequestedCardsDescription: defineMessage({
+    id: 'common.allRequestedCardsDescription',
+    message: 'The following cards will be shared.',
+    comment: 'Description when the user has all requested cards',
+  }),
+  noRequestedCardsDescription: defineMessage({
+    id: 'common.noRequestedCardsDescription',
+    message: `You don't have the requested card(s).`,
+    comment: 'Description when the user has none of the requested cards',
+  }),
+  someRequestedCardsMissingDescription: defineMessage({
+    id: 'common.someRequestedCardsMissingDescription',
+    message: `You don't have all of the requested cards.`,
+    comment: 'Description when the user has some but not all requested cards',
+  }),
+  documentHeading: defineMessage({
+    id: 'common.documentHeading',
+    message: 'Document',
+    comment: 'Section heading above a document that is, or was, signed',
+  }),
+  paymentHeading: defineMessage({
+    id: 'common.paymentHeading',
+    message: 'Payment',
+    comment: 'Section heading above a payment that is, or was, authorized',
+  }),
+  stopSharingTitle: defineMessage({
+    id: 'common.stopSharingTitle',
+    message: 'Stop sharing?',
+    comment: 'Title of the confirmation dialog shown when the user stops a data sharing request',
+  }),
+  stopSharingDescription: defineMessage({
+    id: 'common.stopSharingDescription',
+    message: 'If you stop, no data will be shared.',
+    comment: 'Description in the confirmation dialog shown when the user stops a data sharing request',
+  }),
+  errorReasonPrefix: defineMessage({
+    id: 'common.errorReasonPrefix',
+    message: 'Reason:',
+    comment: 'Label before the underlying error message',
+  }),
+
+  // Who is asking: the trust established for the verifier or issuer of a request.
+  doYouTrust: (name: string) =>
+    defineMessage({
+      id: 'common.doYouTrust',
+      message: `Do you trust ${name}?`,
+      comment: 'Heading above the organization behind a request',
+    }),
+  recognizedOrganization: defineMessage({
+    id: 'common.recognizedOrganization',
+    message: 'Recognized organization',
+    comment: 'Shown when the organization behind a request is recognized by a trusted party',
+  }),
+  organizationNotVerifiedHeading: defineMessage({
+    id: 'common.organizationNotVerifiedHeading',
+    message: 'Organization not verified',
+    comment: 'Heading shown when the organization behind a request could not be verified',
+  }),
+  organizationNotVerifiedDescription: defineMessage({
+    id: 'common.organizationNotVerifiedDescription',
+    message: 'Organization is not verified',
+    comment: 'Description shown when the organization behind a request could not be verified',
+  }),
+  approvedByOneOrganization: defineMessage({
+    id: 'common.approvedByOneOrganization',
+    message: 'Approved by one organization',
+    comment: 'Shown when one trusted organization approved the organization behind a request',
+  }),
+  approvedByOrganizations: (count: number) =>
+    defineMessage({
+      id: 'common.approvedByOrganizations',
+      message: `Approved by ${count} organizations`,
+      comment: 'Shown when several trusted organizations approved the organization behind a request',
+    }),
+  demoOrganization: defineMessage({
+    id: 'common.demoOrganization',
+    message: 'Demo organization',
+    comment: 'Shown to indicate that an organization is a demo',
+  }),
+  demoOrganizationWarning: defineMessage({
+    id: 'common.demoOrganizationWarning',
+    message: 'Do not share real data',
+    comment: 'Warning shown with a demo organization',
+  }),
+
+  // Cards and their attributes.
+  credentialNotFound: defineMessage({
+    id: 'common.credentialNotFound',
+    message: 'Credential not found',
+    comment: 'Shown if a credential is missing or cannot be loaded',
+  }),
+  metadataHeading: defineMessage({
+    id: 'common.metadataHeading',
+    message: 'Metadata',
+    comment: 'Section heading for the metadata attributes of a card',
+  }),
+  showMetadataAttributes: defineMessage({
+    id: 'common.showMetadataAttributes',
+    message: 'Show metadata attributes',
+    comment: 'Option that shows the metadata attributes of a card',
+  }),
+  hideMetadataAttributes: defineMessage({
+    id: 'common.hideMetadataAttributes',
+    message: 'Hide metadata attributes',
+    comment: 'Option that hides the metadata attributes of a card',
+  }),
+  placeDeviceOnIdCard: defineMessage({
+    id: 'common.placeDeviceOnIdCard',
+    message: 'Place your device on top of your eID card to scan it.',
+    comment: 'Instruction shown when the eID card is about to be scanned with NFC',
+  }),
+
+  // Screen names, used both as the screen title and wherever the screen is linked to.
+  activity: defineMessage({
+    id: 'common.activity',
+    message: 'Activity',
+    comment: 'Name of the activity screen, listing shared and received cards',
+  }),
+  cards: defineMessage({
+    id: 'common.cards',
+    message: 'Cards',
+    comment: 'Name of the screen listing the cards in the wallet, and heading above a list of cards',
+  }),
+  settings: defineMessage({
+    id: 'common.settings',
+    message: 'Settings',
+    comment: 'Name of the settings screen',
+  }),
+
+  // Empty states and onboarding.
+  getStarted: defineMessage({
+    id: 'common.getStarted',
+    message: 'Get Started',
+    comment: 'Button label to begin or finish onboarding',
+  }),
+  thisIsYourWallet: defineMessage({
+    id: 'common.thisIsYourWallet',
+    message: 'This is your wallet',
+    comment: 'Heading introducing the wallet, in onboarding and on the empty wallet screen',
+  }),
+  nothingHereYet: defineMessage({
+    id: 'common.nothingHereYet',
+    message: `There's nothing here, yet`,
+    comment: 'Heading shown when a list, such as the cards or the activity, is still empty',
+  }),
+  noNotificationsTitle: defineMessage({
+    id: 'common.noNotificationsTitle',
+    message: `You're all caught up`,
+    comment: 'Heading shown when the user has no notifications',
+  }),
+  noNotificationsDescription: defineMessage({
+    id: 'common.noNotificationsDescription',
+    message: `You don't have any notifications at the moment.`,
+    comment: 'Message shown when the user has no notifications',
+  }),
   fields: {
     place_of_birth: defineMessage({
       id: 'common.fields.placeOfBirth',
@@ -582,9 +821,9 @@ export const commonMessages = {
 export const supportedLanguageNames: Record<SupportedLocale, string> = {
   nl: 'Nederlands',
   fi: 'Suomi',
-  sw: 'Svenska',
+  sv: 'Svenska',
   en: 'English',
   de: 'Deutsch',
-  al: 'Shqip',
+  sq: 'Shqip',
   pt: 'Português',
 }

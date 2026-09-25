@@ -1,5 +1,6 @@
 import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
 import { defineMessage, t } from '@lingui/core/macro'
+import { sanitizeString } from '@package/utils'
 
 const predicateMessages = {
   '>': defineMessage({
@@ -25,5 +26,5 @@ const predicateMessages = {
 } as const
 
 export function formatPredicate(requestedPredicate: AnonCredsRequestedPredicate) {
-  return `${requestedPredicate.name} ${t(predicateMessages[requestedPredicate.p_type])} ${requestedPredicate.p_value}`
+  return `${sanitizeString(requestedPredicate.name)} ${t(predicateMessages[requestedPredicate.p_type])} ${requestedPredicate.p_value}`
 }

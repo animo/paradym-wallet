@@ -1,6 +1,7 @@
 import { agentDependencies } from '@credo-ts/react-native'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { secureWalletKey } from '../secure'
+import { getWalletStoreDirectories } from '../storage/walletStore'
 
 export const reset = async (paradym?: ParadymWalletSdk) => {
   paradym?.logger.debug('Resetting wallet')
@@ -19,15 +20,19 @@ export const reset = async (paradym?: ParadymWalletSdk) => {
   await secureWalletKey.removeSalt(secureWalletKey.getWalletKeyVersion())
 
   if (paradym) {
-    const walletDirectory = `${fs.dataPath}/wallet/${paradym.walletId}`
+    // `walletId` is the composed store id, so this covers both the shared container on iOS builds
+    // with the digital credentials API config plugin and the app's own data path.
+    const walletDirectories = getWalletStoreDirectories(paradym.walletId)
 
-    const walletDirectoryExists = await fs.exists(walletDirectory)
-    if (walletDirectoryExists) {
-      paradym.logger.debug('wallet directory exists, deleting...')
-      await fs.delete(walletDirectory)
-      paradym.logger.debug('wallet directory deleted')
-    } else {
-      paradym.logger.debug('wallet directory does not exist')
+    for (const walletDirectory of walletDirectories) {
+      const walletDirectoryExists = await fs.exists(walletDirectory)
+      if (walletDirectoryExists) {
+        paradym.logger.debug('wallet directory exists, deleting...', { walletDirectory })
+        await fs.delete(walletDirectory)
+        paradym.logger.debug('wallet directory deleted', { walletDirectory })
+      } else {
+        paradym.logger.debug('wallet directory does not exist', { walletDirectory })
+      }
     }
   }
 }

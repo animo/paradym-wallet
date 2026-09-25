@@ -68,29 +68,27 @@ export const SdJwtVcRecordProvider: React.FC<PropsWithChildren<Props>> = ({ agen
 
   useEffect(() => {
     void agent.sdJwtVc.getAll().then((sdJwtVcRecords) => setState({ sdJwtVcRecords, isLoading: false }))
-  }, [agent.sdJwtVc.getAll])
+  }, [agent])
 
   useEffect(() => {
-    if (!state.isLoading && agent) {
-      const credentialAdded$ = recordsAddedByType(agent, SdJwtVcRecord).subscribe((record) =>
-        setState(addRecord(record, state))
-      )
+    const credentialAdded$ = recordsAddedByType(agent, SdJwtVcRecord).subscribe((record) =>
+      setState((state) => addRecord(record, state))
+    )
 
-      const credentialUpdate$ = recordsUpdatedByType(agent, SdJwtVcRecord).subscribe((record) =>
-        setState(updateRecord(record, state))
-      )
+    const credentialUpdate$ = recordsUpdatedByType(agent, SdJwtVcRecord).subscribe((record) =>
+      setState((state) => updateRecord(record, state))
+    )
 
-      const credentialRemove$ = recordsRemovedByType(agent, SdJwtVcRecord).subscribe((record) =>
-        setState(removeRecord(record, state))
-      )
+    const credentialRemove$ = recordsRemovedByType(agent, SdJwtVcRecord).subscribe((record) =>
+      setState((state) => removeRecord(record, state))
+    )
 
-      return () => {
-        credentialAdded$.unsubscribe()
-        credentialUpdate$.unsubscribe()
-        credentialRemove$.unsubscribe()
-      }
+    return () => {
+      credentialAdded$.unsubscribe()
+      credentialUpdate$.unsubscribe()
+      credentialRemove$.unsubscribe()
     }
-  }, [state, agent])
+  }, [agent])
 
   return <SdJwtVcRecordContext.Provider value={state}>{children}</SdJwtVcRecordContext.Provider>
 }

@@ -15,14 +15,12 @@ overrides:
   # Pin exactly: react-native 0.86 exists and open-ended peer ranges (tamagui, askar,
   # masked-view, wallet-sdk) would otherwise hoist it over the SDK 56 version.
   react-native: 0.85.3
-  # @owf/mdoc registers a cbor-x extension for tag 24 with its own DataItem class.
-  # Two copies would clobber each other's extension and break IssuerNamespaces parsing
-  # with "Expected DataItem, received object". Force a single copy across the tree.
-  '@owf/mdoc': 'catalog:'
 
 patchedDependencies:
   '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
-  '@animo-id/expo-mdoc-data-transfer@0.2.0-alpha.4': patches/@animo-id__expo-mdoc-data-transfer@0.2.0-alpha.4.patch
+  # Patches required for DC API
+  react-native-keychain: patches/react-native-keychain.patch
+  react-native@0.85.3: patches/react-native@0.85.3.patch
 
 allowBuilds:
   '@hyperledger/anoncreds-react-native': true
@@ -56,23 +54,24 @@ catalog:
   query-string: ^9.4.0
   "@animo-id/eudi-wallet-functionality": 0.1.0
   "@animo-id/expo-secure-environment": 0.1.5
-  "@animo-id/expo-digital-credentials-api": 0.4.0
-  "@animo-id/expo-mdoc-data-transfer": 0.2.0-alpha.4
-  "@owf/mdoc": 0.7.0-alpha-20260605164430
-  "@owf/cose": 0.3.0-alpha-20260605053037
-  "@openid4vc/oauth2": ^0.4.6
-  "@openid4vc/openid4vp": ^0.4.6
-  "@openid4vc/openid4vci": ^0.4.6
-  "@openid4vc/utils": ^0.4.6
-  "@credo-ts/anoncreds": 0.7.1-alpha-20260707121432
-  "@credo-ts/askar": 0.7.1-alpha-20260707121432
-  "@credo-ts/cheqd": 0.7.1-alpha-20260707121432
-  "@credo-ts/core": 0.7.1-alpha-20260707121432
-  "@credo-ts/openid4vc": 0.7.1-alpha-20260707121432
-  "@credo-ts/question-answer": 0.7.1-alpha-20260707121432
-  "@credo-ts/react-native": 0.7.1-alpha-20260707121432
-  "@credo-ts/didcomm": 0.7.1-alpha-20260707121432
-  "@credo-ts/webvh": 0.7.1-alpha-20260707121432
+  "@animo-id/expo-digital-credentials-api": 0.5.0
+  expo-mdoc-data-transfer: 0.2.0
+  "@owf/mdoc": ^0.8.0
+  "@owf/cose": ^0.4.0
+  "@owf/eudi-sca": ^0.4.0
+  "@openid4vc/oauth2": ^0.5.6
+  "@openid4vc/openid4vp": ^0.5.6
+  "@openid4vc/openid4vci": ^0.5.6
+  "@openid4vc/utils": ^0.5.6
+  "@credo-ts/anoncreds": 0.7.1-alpha-20260917134851
+  "@credo-ts/askar": 0.7.1-alpha-20260917134851
+  "@credo-ts/cheqd": 0.7.1-alpha-20260917134851
+  "@credo-ts/core": 0.7.1-alpha-20260917134851
+  "@credo-ts/openid4vc": 0.7.1-alpha-20260917134851
+  "@credo-ts/question-answer": 0.7.1-alpha-20260917134851
+  "@credo-ts/react-native": 0.7.1-alpha-20260917134851
+  "@credo-ts/didcomm": 0.7.1-alpha-20260917134851
+  "@credo-ts/webvh": 0.7.1-alpha-20260917134851
   "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
   "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
   "@openwallet-foundation/askar-react-native": 0.6.1-alpha-20260609123727
@@ -99,6 +98,11 @@ catalog:
   react-native-qrcode-svg: ^6.3.21
   react-native-reanimated-carousel: ^4.0.3
   react-native-nitro-modules: ^0.35.10
+  # OpenSSL through Nitro. Only used for RSA signature verification: askar and the secure
+  # environment are both EC-only, so without it an issuer chaining up to an RSA CA cannot be
+  # verified at all. react-native-quick-base64 is its peer dependency.
+  react-native-quick-crypto: ^1.1.7
+  react-native-quick-base64: ^3.0.0
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.4.1
   react-native-edge-to-edge: ^1.8.1
@@ -151,11 +155,26 @@ catalog:
   tamagui: 2.3.3
 
 minimumReleaseAgeExclude:
-  - '@credo-ts/anoncreds@0.7.1-alpha-20260707121432'
-  - '@credo-ts/askar@0.7.1-alpha-20260707121432'
-  - '@credo-ts/cheqd@0.7.1-alpha-20260707121432'
-  - '@credo-ts/core@0.7.1-alpha-20260707121432'
-  - '@credo-ts/didcomm@0.7.1-alpha-20260707121432'
-  - '@credo-ts/openid4vc@0.7.1-alpha-20260707121432'
-  - '@credo-ts/react-native@0.7.1-alpha-20260707121432'
-  - '@credo-ts/webvh@0.7.1-alpha-20260707121432'
+  - '@credo-ts/anoncreds@0.7.1-alpha-20260917134851'
+  - '@credo-ts/askar@0.7.1-alpha-20260917134851'
+  - '@credo-ts/cheqd@0.7.1-alpha-20260917134851'
+  - '@credo-ts/core@0.7.1-alpha-20260917134851'
+  - '@credo-ts/didcomm@0.7.1-alpha-20260917134851'
+  - '@credo-ts/openid4vc@0.7.1-alpha-20260917134851'
+  - '@credo-ts/react-native@0.7.1-alpha-20260917134851'
+  - '@credo-ts/webvh@0.7.1-alpha-20260917134851'
+  - expo-mdoc-data-transfer@0.2.0
+  - zod@4.6.1
+  - '@owf/mdoc@0.8.0'
+  - '@owf/cose@0.4.0'
+  - '@owf/crypto@0.4.0'
+  - '@owf/eudi-sca@0.4.0'
+  - '@owf/identity-common@0.4.0'
+  - '@owf/token-status-list@0.4.0'
+  - '@openid4vc/oauth2@0.5.6'
+  - '@openid4vc/openid4vci@0.5.6'
+  - '@openid4vc/openid4vp@0.5.6'
+  - '@openid4vc/utils@0.5.6'
+  - '@sd-jwt/core@0.21.0'
+  - '@sd-jwt/sd-jwt-vc@0.21.0'
+  - '@animo-id/expo-digital-credentials-api@0.5.0'

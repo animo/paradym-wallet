@@ -10,7 +10,7 @@ import type { PaymentActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useEffect, useRef } from 'react'
 
 export function useRefreshPaymentTransactionStatuses() {
-  const { activities } = useActivities()
+  const { activities } = useActivities({ filters: { type: 'payment' }, limit: 100 })
   const { credentials } = useCredentials()
   const { paradym } = useParadym('unlocked')
   const hasRunRef = useRef(false)

@@ -73,26 +73,24 @@ export const W3cCredentialRecordProvider: React.FC<PropsWithChildren<Props>> = (
   }, [agent])
 
   useEffect(() => {
-    if (!state.isLoading && agent) {
-      const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setState(addRecord(record, state))
-      )
+    const credentialAdded$ = recordsAddedByType(agent, W3cCredentialRecord).subscribe((record) =>
+      setState((state) => addRecord(record, state))
+    )
 
-      const credentialUpdate$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setState(updateRecord(record, state))
-      )
+    const credentialUpdate$ = recordsUpdatedByType(agent, W3cCredentialRecord).subscribe((record) =>
+      setState((state) => updateRecord(record, state))
+    )
 
-      const credentialRemove$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe((record) =>
-        setState(removeRecord(record, state))
-      )
+    const credentialRemove$ = recordsRemovedByType(agent, W3cCredentialRecord).subscribe((record) =>
+      setState((state) => removeRecord(record, state))
+    )
 
-      return () => {
-        credentialAdded$.unsubscribe()
-        credentialUpdate$.unsubscribe()
-        credentialRemove$.unsubscribe()
-      }
+    return () => {
+      credentialAdded$.unsubscribe()
+      credentialUpdate$.unsubscribe()
+      credentialRemove$.unsubscribe()
     }
-  }, [state, agent])
+  }, [agent])
 
   return <W3cCredentialRecordContext.Provider value={state}>{children}</W3cCredentialRecordContext.Provider>
 }

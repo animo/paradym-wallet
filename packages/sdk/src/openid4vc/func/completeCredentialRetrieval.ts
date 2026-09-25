@@ -1,4 +1,3 @@
-import { dcApiRegisterOptions } from '@app/utils/dcApiRegisterOptions'
 import type { OpenId4VciResolvedCredentialOffer } from '@credo-ts/openid4vc'
 import type { DcApiRegisterCredentialsOptions } from '@paradym/wallet-sdk'
 import { getCredentialDisplayWithDefaults } from '../../display/common'
@@ -48,10 +47,9 @@ export const completeCredentialRetrieval = async (options: CompleteCredentialRet
     await storeDeferredCredential(options.paradym, options.deferredCredential)
   }
 
-  if (options.recordToStore) {
-    await storeCredential(
-      dcApiRegisterOptions({ paradym: options.paradym, credentialRecord: options.recordToStore.credentialRecord })
-    )
+  const recordToStore = options.recordToStore
+  if (recordToStore) {
+    await storeCredential({ paradym: options.paradym, credentialRecord: recordToStore.credentialRecord })
   }
 
   await storeReceivedActivity(options.paradym, {

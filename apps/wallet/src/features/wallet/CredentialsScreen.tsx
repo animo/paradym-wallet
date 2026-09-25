@@ -46,14 +46,7 @@ export function CredentialsScreen() {
 
   return (
     <FlexPage gap="$0" paddingHorizontal="$0">
-      <HeaderContainer
-        title={t({
-          id: 'credentials.title',
-          message: 'Cards',
-          comment: 'Heading for the list of user credentials',
-        })}
-        isScrolledByOffset={isScrolledByOffset}
-      />
+      <HeaderContainer title={t(commonMessages.cards)} isScrolledByOffset={isScrolledByOffset} />
 
       {credentials.length === 0 ? (
         <AnimatedStack
@@ -65,9 +58,7 @@ export function CredentialsScreen() {
           fg={1}
         >
           <Heading ta="center" heading="h3" fontWeight="$semiBold">
-            <Trans id="credentials.emptyTitle" comment="Shown when the user has no credentials">
-              There's nothing here, yet
-            </Trans>
+            {t(commonMessages.nothingHereYet)}
           </Heading>
           <Paragraph ta="center" px="$2">
             <Trans id="credentials.emptyDescription" comment="Subtext explaining that credentials will appear later">

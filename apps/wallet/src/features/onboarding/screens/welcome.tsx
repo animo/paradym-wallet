@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import { Blob, Button, FlexPage, Heading, Image, Paragraph, Stack, XStack, YStack } from '@package/ui'
 import ExpoConstants from 'expo-constants'
 
@@ -15,11 +16,7 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
     comment: 'Intro paragraph on the welcome screen',
   })
 
-  const getStartedLabel = t({
-    id: 'onboardingWelcome.getStarted',
-    message: 'Get Started',
-    comment: 'Button label to begin onboarding from the welcome screen',
-  })
+  const getStartedLabel = t(commonMessages.getStarted)
 
   return (
     <YStack fg={1} pos="relative">

@@ -11,6 +11,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { firstValueFrom } from 'rxjs'
 import { filter, first, timeout } from 'rxjs/operators'
 import { getCredentialForDisplay } from '../display/credential'
+import { formatAttributesWithRecordMetadata } from '../format/attributes'
 import type {
   FormattedSubmission,
   FormattedSubmissionEntry,
@@ -21,6 +22,9 @@ import { useProofById } from '../providers/ProofExchangeProvider'
 import { getCredential } from '../storage/credentials'
 import type { NonEmptyArray } from '../types'
 import { useParadym } from './useParadym'
+
+// AnonCreds matches attribute names case-insensitively and ignoring whitespace.
+const normalizeAttributeName = (name: string) => name.toLowerCase().replace(/\s/g, '')
 
 export function useDidCommPresentationActions(proofExchangeId: string) {
   const { paradym } = useParadym('unlocked', 'didcomm')
@@ -130,6 +134,8 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               // TODO: we can fetch the schema name based on requirements
               name: undefined,
               requestedAttributePaths: Array.from(entry.requestedAttributes).map((a) => [a]),
+              // Not supported for AnonCreds
+              partialMatches: [],
             }
           }
 
@@ -138,35 +144,30 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
               const credential = await getCredential(paradym, `w3c-credential-${match.credentialId}`)
               const credentialForDisplay = getCredentialForDisplay(credential)
 
-              const disclosedAttributesWithValues = Object.entries(credentialForDisplay.attributes)
-                .filter(([key]) => entry.requestedAttributes.has(key))
-                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
-
-              const disclosedPredicatesWithValues = Object.entries(anonCredsCredentials.predicates).reduce(
-                (acc, [groupName]) => {
-                  const requestedPredicate = proofRequest.requested_predicates[groupName]
-                  return {
-                    ...acc,
-                    [requestedPredicate.name]: {
-                      type: requestedPredicate.p_type,
-                      value: requestedPredicate.p_value,
-                    },
-                  }
-                },
-                {}
+              // Only the revealed attributes. Predicates reveal no value, so those are only in the paths.
+              const requestedAttributeNames = Array.from(entry.requestedAttributes)
+                .filter((requested) => typeof requested === 'string')
+                .map(normalizeAttributeName)
+              const disclosedRawAttributes = Object.fromEntries(
+                Object.entries(credentialForDisplay.rawAttributes).filter(([key]) =>
+                  requestedAttributeNames.includes(normalizeAttributeName(key))
+                )
               )
 
               return {
                 credential: credentialForDisplay,
                 disclosed: {
-                  // @ts-expect-error: TODO(timo): I am not sure how to restructure this
-                  //                         It is up to the user to do the translations, but the format has changed quite a bit.
-                  attributes: {
-                    ...disclosedAttributesWithValues,
-                    ...disclosedPredicatesWithValues,
-                  },
+                  attributes: formatAttributesWithRecordMetadata(disclosedRawAttributes, credential),
+                  rawAttributes: disclosedRawAttributes,
                   metadata: credentialForDisplay.metadata,
-                  paths: Array.from(entry.requestedAttributes).map((a) => [a]),
+                  // The credential's own names rather than the requested ones, which only match them
+                  // case-insensitively, so the attributes can be read from the credential by path.
+                  paths: [
+                    ...Object.keys(disclosedRawAttributes).map((name) => [name]),
+                    ...Array.from(entry.requestedAttributes)
+                      .filter((requested) => typeof requested !== 'string')
+                      .map((predicate) => [predicate]),
+                  ],
                 },
               }
             })

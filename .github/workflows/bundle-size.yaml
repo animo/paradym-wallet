@@ -1,0 +1,128 @@
+name: Bundle Size
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: bundle-size-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  measure:
+    runs-on: ubuntu-22.04
+    name: Measure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # The commit the pull request is measured against has to be reachable.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22.x'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Resolve the commit to compare against
+        if: github.event_name == 'pull_request'
+        id: baseline
+        run: |
+          sha=$(git merge-base origin/${{ github.base_ref }} HEAD)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      # Every run caches its own measurement under the commit it measured, so the run on main a pull
+      # request branches off is usually the one that already built its baseline.
+      - name: Restore the baseline
+        if: github.event_name == 'pull_request'
+        id: restore-baseline
+        uses: actions/cache/restore@v6
+        with:
+          path: bundle-size-main.json
+          key: bundle-size-${{ steps.baseline.outputs.sha }}
+
+      # Nothing cached it, so build it here: a worktree of that commit, measured with this branch's
+      # script — the commit itself may predate it, and a changed script has to measure both sides.
+      - name: Measure the baseline
+        if: github.event_name == 'pull_request' && steps.restore-baseline.outputs.cache-hit != 'true'
+        env:
+          BUNDLE_SIZE_ROOT: ../bundle-size-baseline
+          BUNDLE_SIZE_OUTPUT: bundle-size-main.json
+        run: |
+          git worktree add ../bundle-size-baseline ${{ steps.baseline.outputs.sha }}
+          pnpm --dir ../bundle-size-baseline install
+          node scripts/measure-bundle-size.mjs
+          git worktree remove --force ../bundle-size-baseline
+
+      - name: Cache the baseline
+        if: github.event_name == 'pull_request' && steps.restore-baseline.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: bundle-size-main.json
+          key: bundle-size-${{ steps.baseline.outputs.sha }}
+
+      - name: Measure bundles
+        env:
+          BUNDLE_SIZE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: pnpm bundle:size
+
+      - name: Upload measurement
+        uses: actions/upload-artifact@v7
+        with:
+          name: bundle-size-${{ github.sha }}
+          path: bundle-size.json
+
+      - name: Render comment
+        if: github.event_name == 'pull_request'
+        run: |
+          node scripts/report-bundle-size.mjs bundle-size.json bundle-size-main.json > bundle-size-comment.md
+          cat bundle-size-comment.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Forks get a read-only token, so there is nothing to post the comment with.
+      - name: Comment on the pull request
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const body = require('node:fs').readFileSync('bundle-size-comment.md', 'utf8')
+            const marker = '<!-- paradym-bundle-size -->'
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number: context.issue.number,
+            })
+
+            // Updated in place, so a pull request keeps one comment however often it is pushed to.
+            const existing = comments.find((comment) => comment.body?.startsWith(marker))
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body })
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body })
+            }
+
+      # What the pull requests branched off this commit compare against. Cached under the same name
+      # they restore it as.
+      - name: Name this commit's measurement
+        if: github.event_name == 'push'
+        run: mv bundle-size.json bundle-size-main.json
+
+      - name: Cache this commit's measurement
+        if: github.event_name == 'push'
+        uses: actions/cache/save@v6
+        with:
+          path: bundle-size-main.json
+          key: bundle-size-${{ github.sha }}

@@ -38,6 +38,14 @@ export class ParadymWalletInvalidTrustMechnismError extends ParadymWalletSdkErro
 
 export class ParadymWalletAuthenticationInvalidPinError extends ParadymWalletSdkError {}
 
+/**
+ * The wallet store has not been created, so the wallet has never been unlocked on this device.
+ *
+ * Only the credential request UI runs into this: it opens the store the app created, and must not
+ * create one itself.
+ */
+export class ParadymWalletNoStoreError extends ParadymWalletSdkError {}
+
 export class ParadymWalletInvalidTransactionCodeError extends ParadymWalletSdkError {}
 
 export class ParadymWalletBiometricAuthenticationError extends ParadymWalletSdkError {
