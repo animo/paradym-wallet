@@ -1,0 +1,24 @@
+diff --git a/build/openid4vc-holder/OpenId4vpHolderService.mjs b/build/openid4vc-holder/OpenId4vpHolderService.mjs
+index d10ae9ca5333afb30747ea282e814240d34597d5..c5b501f79eda808b8bf4c9a9a959a99aa6d0e3b9 100644
+--- a/build/openid4vc-holder/OpenId4vpHolderService.mjs
++++ b/build/openid4vc-holder/OpenId4vpHolderService.mjs
+@@ -66,6 +66,7 @@ let OpenId4VpHolderService = class OpenId4VpHolderService {
+ 			origin: options?.origin,
+ 			signedAuthorizationRequest: verifiedAuthorizationRequest.jar ? {
+ 				signer: verifiedAuthorizationRequest.jar?.signer,
++				compact: verifiedAuthorizationRequest.jar.jwt.compact,
+ 				payload: verifiedAuthorizationRequest.jar.jwt.payload,
+ 				header: verifiedAuthorizationRequest.jar.jwt.header
+ 			} : void 0
+diff --git a/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts b/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts
+index e1e33a1cb5d9caa03d771e53672eabf1d6c4abed..5932820163e1e2111f761385982700c5ef76f98b 100644
+--- a/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts
++++ b/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts
+@@ -51,6 +51,7 @@ interface OpenId4VpResolvedAuthorizationRequest {
+    */
+   signedAuthorizationRequest?: {
+     signer: VerifiedJarRequest['signer'];
++    compact: VerifiedJarRequest['jwt']['compact'];
+     payload: VerifiedJarRequest['jwt']['payload'];
+     header: VerifiedJarRequest['jwt']['header'];
+   };

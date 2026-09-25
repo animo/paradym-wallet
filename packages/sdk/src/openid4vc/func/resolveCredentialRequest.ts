@@ -48,6 +48,8 @@ export const resolveCredentialRequest = async ({
       ...resolved.dcql,
       origin,
       authorizationRequest: resolved.authorizationRequestPayload,
+      // Carries the compact JAR JWT, which PaSO hashes into the `request_integrity` proof claim.
+      signedAuthorizationRequest: resolved.signedAuthorizationRequest,
       formattedSubmission: getFormattedSubmission(resolved),
       transactionData: resolved.transactionData,
       trustMechanism,

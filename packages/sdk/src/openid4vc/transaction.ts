@@ -1,6 +1,13 @@
 import { Hasher, TypedArrayEncoder } from '@credo-ts/core'
 import type { FormattedSubmissionEntrySatisfied } from '../format/submission'
 import { getPaymentsMetadata } from '../metadata/credentials'
+import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import { pasoLocalePriorityList } from '../paso/locale'
+import {
+  type FormattedTransactionDataPasoPayment,
+  hasPasoTransactionData,
+  resolvePasoTransactionData,
+} from '../paso/transactionData'
 import type { CredentialsForProofRequest } from './func/resolveCredentialRequest'
 
 export type QtspInfo = CredentialsForProofRequest['verifier']
@@ -27,8 +34,40 @@ export type FormattedTransactionDataQesAuthorization = {
   cardForTransactionId?: string
 }
 
-export type FormattedTransactionData = FormattedTransactionDataPaymentSingle | FormattedTransactionDataQesAuthorization
+export type FormattedTransactionData =
+  | FormattedTransactionDataPaymentSingle
+  | FormattedTransactionDataQesAuthorization
+  | FormattedTransactionDataPasoPayment
 
+/**
+ * The transaction a request asks the user to authorize, whichever specification defines it.
+ *
+ * PaSO needs network access — verifying the signed credential metadata and resolving the payee logo
+ * before consent is asked for — so this is async, while the TS 12 and QES paths stay synchronous
+ * underneath.
+ */
+export const resolveTransactionData = async (
+  paradym: ParadymWalletSdk,
+  credentialsForRequest?: CredentialsForProofRequest,
+  locale?: string
+): Promise<FormattedTransactionData | undefined> => {
+  if (!credentialsForRequest) return undefined
+
+  if (hasPasoTransactionData(credentialsForRequest)) {
+    return resolvePasoTransactionData(paradym, credentialsForRequest, pasoLocalePriorityList(locale))
+  }
+
+  return getFormattedTransactionData(credentialsForRequest, locale)
+}
+
+/**
+ * The synchronous part: the TS 12 and QES transactions, which need nothing from the network.
+ *
+ * Returns `undefined` for a PaSO request rather than throwing. PaSO resolution is asynchronous, so a
+ * caller that only has this function cannot describe a PaSO transaction — but it should still be
+ * able to *finish*, and the caller that matters here is declining. Throwing left a user unable to
+ * decline a payment the wallet had just shown them.
+ */
 export const getFormattedTransactionData = (
   credentialsForRequest?: CredentialsForProofRequest,
   _locale?: string
@@ -38,6 +77,7 @@ export const getFormattedTransactionData = (
   const transactionData = credentialsForRequest.transactionData
 
   if (!transactionData || transactionData.length === 0) return undefined
+  if (hasPasoTransactionData(credentialsForRequest)) return undefined
 
   // Only allow one transaction data entry
   if (transactionData.length > 1) throw new Error('Multiple transactions are not supported yet.')

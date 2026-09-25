@@ -8,9 +8,10 @@ import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } fr
 import {
   type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
-  getFormattedTransactionData,
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletPasoError,
+  resolveTransactionData,
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
@@ -18,6 +19,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { PresentationNotificationScreen } from './PresentationNotificationScreen'
+import { resolvePasoAuthenticationMethods } from './pasoAuthenticationMethods'
+import { usePasoRefusalMessage } from './pasoRefusalMessage'
 import type { OnPinSubmitProps } from './slides/PinSlide'
 
 type Query = { uri: string }
@@ -28,6 +31,7 @@ export function OpenIdPresentationNotificationScreen() {
   const { paradym } = useParadym('unlocked')
 
   const toast = useToastController()
+  const pasoRefusalMessage = usePasoRefusalMessage()
   const params = useLocalSearchParams<Query>()
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
@@ -87,17 +91,33 @@ export function OpenIdPresentationNotificationScreen() {
 
   useEffect(() => {
     if (!resolvedRequest) return
-    try {
-      setFormattedTransactionData(getFormattedTransactionData(resolvedRequest, locale))
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
-      handleError({
-        reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
-        description: errorMessage,
+
+    let isCurrent = true
+    resolveTransactionData(paradym, resolvedRequest, locale)
+      .then((transaction) => {
+        if (isCurrent) setFormattedTransactionData(transaction)
       })
+      .catch((error) => {
+        if (!isCurrent) return
+
+        // A PaSO refusal is a decision, not a failure: the spec asks the wallet to say which rule it
+        // could not satisfy, so the user knows whether to retry or give up.
+        if (error instanceof ParadymWalletPasoError) {
+          return handleError({ reason: pasoRefusalMessage(error.code) })
+        }
+
+        const errorMessage =
+          error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
+        handleError({
+          reason: t(commonMessages.presentationInformationCouldNotBeExtracted),
+          description: errorMessage,
+        })
+      })
+
+    return () => {
+      isCurrent = false
     }
-  }, [resolvedRequest])
+  }, [resolvedRequest, paradym, locale, handleError, isDevelopmentModeEnabled, pasoRefusalMessage, t])
 
   const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
 
@@ -168,13 +188,19 @@ export function OpenIdPresentationNotificationScreen() {
         }
       }
 
+      // Everything the user had to do to release this transaction is now behind us, which is what
+      // [PaSO Risk Signal Registry] Section 2.8 wants both of these to describe.
+      const authenticatedAt = new Date()
+      const authenticationMethods = resolvePasoAuthenticationMethods({ usedTransactionPin: shouldUsePin === true })
+
       try {
         await paradym.openid4vc.shareCredentials({
           resolvedRequest,
           selectedCredentials: {},
-          acceptTransactionData:
-            formattedTransactionData?.type === 'qes_authorization' ||
-            formattedTransactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1',
+          transactionData: formattedTransactionData,
+          acceptTransactionData: formattedTransactionData !== undefined,
+          authenticationMethods,
+          authenticatedAt,
         })
 
         onPinComplete?.()
@@ -216,14 +242,20 @@ export function OpenIdPresentationNotificationScreen() {
   const onProofDecline = useCallback(async () => {
     stopOverAsking()
     if (resolvedRequest) {
-      await paradym.openid4vc.declineCredentialRequest({ resolvedRequest })
+      // The transaction goes along so the declined activity records what was turned down. Resolving
+      // a PaSO transaction is asynchronous, so leaving this out would record the refusal of a
+      // payment as the refusal of a bare information request.
+      await paradym.openid4vc.declineCredentialRequest({
+        resolvedRequest,
+        transactionData: formattedTransactionData,
+      })
     }
 
     pushToWallet()
     toast.show(t(commonMessages.informationRequestDeclined), {
       customData: { preset: 'danger' },
     })
-  }, [resolvedRequest, pushToWallet, stopOverAsking, t, toast, paradym])
+  }, [resolvedRequest, pushToWallet, stopOverAsking, t, toast, paradym, formattedTransactionData])
 
   const replace = useCallback(() => pushToWallet(), [pushToWallet])
 

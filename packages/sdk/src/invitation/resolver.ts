@@ -49,6 +49,7 @@ import { getCredentialBindingResolver } from '../openid4vc/credentialBindingReso
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import { type CredentialsForProofRequest, resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import { storePasoCredentialMetadata } from '../paso/credentialMetadata'
 import { getTrustedEntitiesForOpenId4Vci, type TrustedEntity, type TrustMechanism } from '../trust/trustMechanism'
 import { resolveCredentialMetadataUri } from '../utils/resolveCredentialMetadataUri'
 
@@ -326,27 +327,37 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
         credentialResponse.credentialConfigurationId
       ] as OpenId4VciCredentialConfigurationSupportedWithFormats
 
-      // OpenID4VC metadata
-      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(configuration, {
-        id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
-        display: resolvedCredentialOffer.metadata.credentialIssuer.display,
-      })
+      // OpenID4VC metadata. Stored before anything else looks at the record: it carries the
+      // Credential Issuer Identifier, which is what PaSO binds its signed credential metadata
+      // against ([PaSO Proof Metadata] Section 7 step 4).
+      setOpenId4VcCredentialMetadata(
+        record,
+        extractOpenId4VcCredentialMetadata(configuration, {
+          id: resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+          display: resolvedCredentialOffer.metadata.credentialIssuer.display,
+        })
+      )
 
       if ('credential_metadata_uri' in configuration) {
         paradym.logger.info(`Received a credential with potential SCA payments capabilities`)
-        const credentialMetadata = await resolveCredentialMetadataUri(
-          paradym,
-          configuration.credential_metadata_uri as string
-        )
-        setPaymentsMetadata(record, credentialMetadata)
+        const credentialMetadataUri = configuration.credential_metadata_uri as string
+
+        const isPasoCredential = await storePasoCredentialMetadata(paradym, record, credentialMetadataUri)
+
+        // TS 12 and PaSO both hang off `credential_metadata_uri`, but their metadata is not
+        // interchangeable: PaSO moved the payload's structural authority to the rulebook and requires
+        // the JWT to be kept in signed form. So a credential is one or the other, never both.
+        if (!isPasoCredential) {
+          const credentialMetadata = await resolveCredentialMetadataUri(paradym, credentialMetadataUri)
+          setPaymentsMetadata(record, credentialMetadata)
+        }
+
         const responseCredentialMetadata = (credentialResponse as { credentialMetadata?: Record<string, unknown> })
           .credentialMetadata
         if (responseCredentialMetadata && 'urn:eudi:sca:eu.europa.ec:payment' in responseCredentialMetadata) {
           setTransactionStatusMetadata(record, responseCredentialMetadata as TransactionStatusMetadata)
         }
       }
-
-      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
 
       // Batch metadata
       if (credentials.length > 1) {

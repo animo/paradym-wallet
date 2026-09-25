@@ -2,6 +2,7 @@ import {
   activityStorage,
   fetchPaymentTransactionStatus,
   getTransactionStatusMetadata,
+  pasoPaymentTransactionDataType,
   useCredentials,
   useParadym,
 } from '@paradym/wallet-sdk'
@@ -15,6 +16,8 @@ export function usePaymentTransactionStatus(activity: PaymentActivity | undefine
   useEffect(() => {
     if (!activity || !paradym) return
     if (activity.transactionStatus === 'ACSC' || activity.transactionStatus === 'RJCT') return
+    // TS 12 defines the status backchannel; a PaSO payment has nothing to poll.
+    if (activity.transaction.type === pasoPaymentTransactionDataType) return
 
     const credentialRecord = credentials.find((c) => getTransactionStatusMetadata(c.record) !== null)?.record
     if (!credentialRecord) return

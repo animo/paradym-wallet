@@ -24,6 +24,19 @@ export type ParadymWalletSdkLocaleOptions = {
 
 /**
  *
+ * Identifier of this wallet build, for the PaSO `wallet_instance_version` proof claim.
+ *
+ * [PaSO Core] Section 6.1 requires it in every PaSO presentation; its examples use
+ * `<platform>:<application id>:<version>`, e.g. `android:com.example.wallet:4.1.2`. It comes from a
+ * native module, so the app supplies it rather than the SDK reading it.
+ *
+ */
+export type ParadymWalletSdkWalletInstanceVersionOptions = {
+  walletInstanceVersion?: string
+}
+
+/**
+ *
  * How the wallet names claims the credential did not name — see {@link ResolveAttributeLabel}.
  *
  */

@@ -5,6 +5,8 @@ import { PixelRatio } from 'react-native'
 
 interface DualResponseButtonProps {
   isLoading?: boolean
+  /** Blocks only the accept action, leaving decline available. */
+  isAcceptDisabled?: boolean
   onAccept: () => void
   onDecline: () => void
   acceptText?: string
@@ -18,6 +20,7 @@ export function DualResponseButtons({
   onAccept,
   onDecline,
   isLoading,
+  isAcceptDisabled,
   align = 'vertical',
   acceptText,
   declineText,
@@ -38,7 +41,8 @@ export function DualResponseButtons({
       <Button.Solid
         f={1}
         fg={giveAcceptButtonMoreSpace ? 2 : 1}
-        disabled={isLoading}
+        disabled={isLoading || isAcceptDisabled}
+        opacity={isAcceptDisabled ? 0.5 : 1}
         onPress={onAccept}
         {...(variant === 'confirmation' ? { bg: '$danger-500' } : {})}
       >

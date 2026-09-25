@@ -17,10 +17,12 @@ import {
   type ParadymWalletSdkDcApiDisplayOptions,
   type ParadymWalletSdkLocaleOptions,
   type ParadymWalletSdkSharedOptions,
+  type ParadymWalletSdkWalletInstanceVersionOptions,
 } from './config'
 import { setResolveAttributeLabel } from './config/attributeLabel'
 import { setResolveDcApiDisplay } from './config/dcApiDisplay'
 import { setLocale } from './config/locale'
+import { setWalletInstanceVersion } from './config/walletInstanceVersion'
 import {
   type DcApiRegisterCredentialsOptions,
   dcApiAddCredential,
@@ -78,7 +80,8 @@ export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfigur
   Pick<ParadymWalletSdkSharedOptions, 'openId4VcConfiguration' | 'trustMechanisms'> &
   ParadymWalletSdkLocaleOptions &
   ParadymWalletSdkAttributeLabelOptions &
-  ParadymWalletSdkDcApiDisplayOptions
+  ParadymWalletSdkDcApiDisplayOptions &
+  ParadymWalletSdkWalletInstanceVersionOptions
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
@@ -106,6 +109,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
     this.trustMechanisms = trustMechanisms
 
     if (options.locale) setLocale(options.locale)
+    if (options.walletInstanceVersion) setWalletInstanceVersion(options.walletInstanceVersion)
     setResolveAttributeLabel(options.resolveAttributeLabel)
     setResolveDcApiDisplay(options.resolveDcApiDisplay)
   }

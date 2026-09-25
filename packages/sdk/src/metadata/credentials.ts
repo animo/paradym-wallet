@@ -83,6 +83,22 @@ export interface CredentialCategoryMetadata {
 
 export type PaymentsCredentialMetadata = CredentialMetadata
 
+/**
+ * The signed credential metadata JWTs held for a PaSO Credential.
+ *
+ * Stored in signed compact form, never decoded, because [PaSO Proof Metadata] Section 5 requires the
+ * full verification procedure to run on every load — and because `metadata_integrity` in the holder
+ * binding proof is the SRI hash of these exact bytes.
+ *
+ * An array because an Attestation Provider may serve a limited set of locales per JWT (Section 2),
+ * so covering several means holding several.
+ */
+export interface PasoCredentialMetadataRecord {
+  signedMetadataJwts: string[]
+  /** The `credential_metadata_uri` of the most recently verified JWT, used for renewal (Section 7). */
+  credentialMetadataUri: string
+}
+
 export type TransactionStatusMetadata = {
   'urn:eudi:sca:eu.europa.ec:payment': {
     transaction_status_token: string
@@ -92,6 +108,7 @@ export type TransactionStatusMetadata = {
 
 const openId4VcCredentialMetadataKey = '_paradym/openId4VcCredentialMetadata'
 const paymentsMetadataKey = '_paradym/paymentsMetadata'
+const pasoCredentialMetadataKey = '_paradym/pasoCredentialMetadata'
 const transactionStatusMetadataKey = '_paradym/transactionStatusMetadata'
 const batchCredentialMetadataKey = '_paradym/batchCredentialMetadata'
 const credentialCategoryMetadataKey = '_paradym/credentialCategoryMetadata'
@@ -148,6 +165,14 @@ export function getPaymentsMetadata(credentialRecord: CredentialRecord): Payment
 
 export function setPaymentsMetadata(credentialRecord: CredentialRecord, metadata: PaymentsCredentialMetadata) {
   credentialRecord.metadata.set(paymentsMetadataKey, metadata)
+}
+
+export function getPasoCredentialMetadata(credentialRecord: CredentialRecord): PasoCredentialMetadataRecord | null {
+  return credentialRecord.metadata.get(pasoCredentialMetadataKey)
+}
+
+export function setPasoCredentialMetadata(credentialRecord: CredentialRecord, metadata: PasoCredentialMetadataRecord) {
+  credentialRecord.metadata.set(pasoCredentialMetadataKey, metadata)
 }
 
 export function getTransactionStatusMetadata(credentialRecord: CredentialRecord): TransactionStatusMetadata | null {

@@ -4,7 +4,7 @@ import { useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import { useActivities, useCredentials } from '@paradym/wallet-sdk'
+import { getPaymentTransactionStatus, useActivities, useCredentials } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo } from 'react'
 
@@ -106,15 +106,22 @@ export function LatestActivityCard() {
     }
 
     if (latestActivity.type === 'payment') {
+      // Pending is only what a settlement status actually says. Reading it off the *absence* of one
+      // treated "the wallet was never told" as "not settled yet", which is how this card came to
+      // report a payment as pending while the activity list and its detail screen — both reading
+      // `getActivityInteraction` — reported the same one as successful. PaSO has no status
+      // backchannel at all, so for those there is never anything to be told.
+      const transactionStatus = getPaymentTransactionStatus(latestActivity)
+
       let description: string
       if (['failed', 'stopped'].includes(latestActivity.status)) {
         description = t(paymentFailed)
-      } else if (latestActivity.transactionStatus === 'RJCT') {
+      } else if (transactionStatus === 'RJCT') {
         description = t(paymentRejected)
-      } else if (latestActivity.transactionStatus === 'ACSC') {
-        description = t(paymentSuccessful)
-      } else {
+      } else if (transactionStatus === 'PDNG') {
         description = t(paymentPending)
+      } else {
+        description = t(paymentSuccessful)
       }
 
       return { title: date, description }

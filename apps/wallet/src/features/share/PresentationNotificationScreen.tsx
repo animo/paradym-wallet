@@ -2,16 +2,18 @@ import type { OverAskingResponse } from '@app/use-cases/OverAskingApi'
 import { useLingui } from '@lingui/react/macro'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
-import type {
-  DisplayImage,
-  FormattedSubmission,
-  FormattedTransactionData,
-  TrustedEntity,
-  TrustMechanism,
+import {
+  type DisplayImage,
+  type FormattedSubmission,
+  type FormattedTransactionData,
+  pasoPaymentTransactionDataType,
+  type TrustedEntity,
+  type TrustMechanism,
 } from '@paradym/wallet-sdk'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
+import { PasoPaymentSlide } from './slides/PasoPaymentSlide'
 import { PayAndShareSlide } from './slides/PayAndShareSlide'
 import { PaymentSlide } from './slides/PaymentSlide'
 import { PinSlide } from './slides/PinSlide'
@@ -106,51 +108,69 @@ export function PresentationNotificationScreen({
                     ),
                   },
                 ]
-              : transaction?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1'
+              : transaction?.type === pasoPaymentTransactionDataType
                 ? [
                     {
-                      step: 'payment',
-                      progress: 50,
+                      step: 'share-credentials',
+                      progress: 66,
                       screen: (
-                        <PaymentSlide
+                        <PasoPaymentSlide
+                          key="paso-payment"
                           transaction={transaction}
                           verifier={{ name: verifierName ?? t(commonMessages.unknownOrganization), logo }}
                           submission={submission}
-                        />
-                      ),
-                    },
-                    {
-                      step: 'share-credentials',
-                      progress: 66,
-                      screen: (
-                        <PayAndShareSlide
-                          key="pay-and-share-slide"
                           onAccept={usePin ? undefined : onAccept}
                           onDecline={onDecline}
                           isAccepting={isAccepting}
-                          transaction={transaction}
-                          submission={submission}
                         />
                       ),
                     },
                   ]
-                : [
-                    {
-                      step: 'share-credentials',
-                      progress: 66,
-                      screen: (
-                        <ShareCredentialsSlide
-                          key="share-credentials"
-                          onAccept={usePin ? undefined : onAccept}
-                          logo={logo}
-                          submission={submission}
-                          onDecline={onDecline}
-                          isAccepting={isAccepting}
-                          overAskingResponse={overAskingResponse}
-                        />
-                      ),
-                    },
-                  ]
+                : transaction?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1'
+                  ? [
+                      {
+                        step: 'payment',
+                        progress: 50,
+                        screen: (
+                          <PaymentSlide
+                            transaction={transaction}
+                            verifier={{ name: verifierName ?? t(commonMessages.unknownOrganization), logo }}
+                            submission={submission}
+                          />
+                        ),
+                      },
+                      {
+                        step: 'share-credentials',
+                        progress: 66,
+                        screen: (
+                          <PayAndShareSlide
+                            key="pay-and-share-slide"
+                            onAccept={usePin ? undefined : onAccept}
+                            onDecline={onDecline}
+                            isAccepting={isAccepting}
+                            transaction={transaction}
+                            submission={submission}
+                          />
+                        ),
+                      },
+                    ]
+                  : [
+                      {
+                        step: 'share-credentials',
+                        progress: 66,
+                        screen: (
+                          <ShareCredentialsSlide
+                            key="share-credentials"
+                            onAccept={usePin ? undefined : onAccept}
+                            logo={logo}
+                            submission={submission}
+                            onDecline={onDecline}
+                            isAccepting={isAccepting}
+                            overAskingResponse={overAskingResponse}
+                          />
+                        ),
+                      },
+                    ]
             : []),
           usePin && {
             step: 'pin-enter',

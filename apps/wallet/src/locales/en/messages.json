@@ -17,6 +17,15 @@
 		"origin": [["src/features/wallet/components/AllCardsCard.tsx", 23]],
 		"translation": "{0} cards total"
 	},
+	"paso.payment.description": {
+		"message": "{0} wants you to authorize a payment.",
+		"placeholders": {
+			"0": ["verifier.name"]
+		},
+		"comments": ["Explanation that the user is about to authorize a payment"],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 152]],
+		"translation": "{0} wants you to authorize a payment."
+	},
 	"payment.description": {
 		"message": "{0} wants you to authorize a payment.",
 		"placeholders": {
@@ -34,7 +43,7 @@
 			"amountShared": ["amountShared"]
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 233]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 239]],
 		"translation": "{amountShared} credentials were shared."
 	},
 	"inbox.notificationType.fromLabel": {
@@ -135,7 +144,7 @@
 		"message": "1 credential was shared.",
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 238]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 244]],
 		"translation": "1 credential was shared."
 	},
 	"dateFormatting.oneDay": {
@@ -304,6 +313,15 @@
 		],
 		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 69]],
 		"translation": "Always consider whether sharing with an organization is wise."
+	},
+	"paso.payment.amountLabel": {
+		"message": "Amount",
+		"placeholders": {},
+		"comments": [
+			"Label above the amount of a payment, when the card supplies no label of its own"
+		],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 71]],
+		"translation": "Amount"
 	},
 	"interactionError.message.connect": {
 		"message": "An error occurred while connecting. Generate a new QR-code or try again later.",
@@ -484,7 +502,7 @@
 		"placeholders": {},
 		"comments": ["Shown when authentication with PIN fails for other reasons"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 59]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 65]
 		],
 		"translation": "Authentication failed"
 	},
@@ -960,7 +978,7 @@
 		"message": "Deleted credential",
 		"placeholders": {},
 		"comments": ["Shown when a credential no longer exists in the wallet"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 101]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 107]],
 		"translation": "Deleted credential"
 	},
 	"common.demoOrganization": {
@@ -1315,7 +1333,7 @@
 		"message": "Hello!",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 59]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 61]],
 		"translation": "Hello!"
 	},
 	"common.hideMetadataAttributes": {
@@ -1720,7 +1738,7 @@
 			"Shown when the user tries to accept a proof but no credentials are loaded"
 		],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 47]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 53]
 		],
 		"translation": "No credentials selected"
 	},
@@ -1728,7 +1746,7 @@
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 243]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 249]],
 		"translation": "No credentials were shared."
 	},
 	"common.noPurposeProvided": {
@@ -1869,12 +1887,30 @@
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 50]],
 		"translation": "Overasking detected"
 	},
+	"paso.payment.accept": {
+		"message": "Pay",
+		"placeholders": {},
+		"comments": [
+			"Fallback label for the button that authorizes a PaSO payment"
+		],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 232]],
+		"translation": "Pay"
+	},
 	"payShare.accept": {
 		"message": "Pay & share",
 		"placeholders": {},
 		"comments": ["Button label for accepting a pay-and-share request"],
 		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 47]],
 		"translation": "Pay & share"
+	},
+	"paso.payment.payeeLabel": {
+		"message": "Payee",
+		"placeholders": {},
+		"comments": [
+			"Label above the payee of a payment, when the card supplies no label of its own"
+		],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 76]],
+		"translation": "Payee"
 	},
 	"TKFmBL": {
 		"message": "Paying with iDeal | Wero",
@@ -1892,6 +1928,13 @@
 		"comments": ["Section heading above a payment that is, or was, authorized"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 500]],
 		"translation": "Payment"
+	},
+	"paso.payment.cardHeading": {
+		"message": "Payment card",
+		"placeholders": {},
+		"comments": ["Heading above the card used to authorize a payment"],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 204]],
+		"translation": "Payment card"
 	},
 	"payShare.cardHeading": {
 		"message": "Payment card",
@@ -1995,7 +2038,7 @@
 		"placeholders": {},
 		"comments": ["Shown when PIN is required but not provided"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 53]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 59]
 		],
 		"translation": "PIN authentication failed"
 	},
@@ -2086,7 +2129,7 @@
 		"message": "Present In-person",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 75]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 77]],
 		"translation": "Present In-person"
 	},
 	"common.presentationCouldNotBeShared": {
@@ -2176,7 +2219,7 @@
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 62]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 64]],
 		"translation": "Receive or share from your wallet"
 	},
 	"activity.receivedFailed": {
@@ -2185,7 +2228,7 @@
 			"0": ["activity.entity.name"]
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 139]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 145]],
 		"translation": "Receiving the cards from {0} failed."
 	},
 	"activity.receivedStopped": {
@@ -2196,7 +2239,7 @@
 		"comments": [
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 146]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 152]],
 		"translation": "Receiving the cards from {0} was cancelled."
 	},
 	"activity.latest.title": {
@@ -2263,7 +2306,7 @@
 		"comments": [
 			"Heading shown when the request did not result in attributes being shared"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 122]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 128]],
 		"translation": "Requested information"
 	},
 	"onboarding.resetAlert.title": {
@@ -2330,7 +2373,7 @@
 		"message": "Scan QR-code",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 69]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 71]],
 		"translation": "Scan QR-code"
 	},
 	"nfcScanner.complete.title": {
@@ -2369,6 +2412,15 @@
 			["../../packages/ui/src/components/NfcScannerModalAndroid.tsx", 27]
 		],
 		"translation": "Scanning in progress."
+	},
+	"paso.payment.scrollToConfirm": {
+		"message": "Scroll down to review all payment details.",
+		"placeholders": {},
+		"comments": [
+			"Shown while the user has not yet scrolled through all payment details"
+		],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 246]],
+		"translation": "Scroll down to review all payment details."
 	},
 	"common.search": {
 		"message": "Search cards",
@@ -2454,7 +2506,7 @@
 		"comments": [
 			"Heading shown when attributes were successfully shared in an activity"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 117]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 123]],
 		"translation": "Shared attributes"
 	},
 	"activity.latest.sharedCard": {
@@ -2592,7 +2644,7 @@
 		"comments": [
 			"Shown below a document name to indicate the user signed it with a specific QTSP"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 272]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 278]],
 		"translation": "Signing with {0}"
 	},
 	"common.simulatorEidCardActivated": {
@@ -2748,8 +2800,17 @@
 		"comments": [
 			"Shown in activity detail when the received credentials are pending"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 153]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 159]],
 		"translation": "The cards from {0} is are not ready yet and will be fetched at a later date."
+	},
+	"paso.refusal.metadataViolatesConstraints": {
+		"message": "The details of this payment cannot be shown safely, so it cannot be authorized.",
+		"placeholders": {},
+		"comments": [
+			"Shown when PaSO credential metadata breaks the constraints on what may be displayed"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 44]],
+		"translation": "The details of this payment cannot be shown safely, so it cannot be authorized."
 	},
 	"onboardingWalletExplanation.slide2.subtitle": {
 		"message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
@@ -2762,14 +2823,14 @@
 		"message": "The document was not signed.",
 		"placeholders": {},
 		"comments": ["Shown after a failed digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 112]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 118]],
 		"translation": "The document was not signed."
 	},
 	"activity.documentSigned": {
 		"message": "The document was signed.",
 		"placeholders": {},
 		"comments": ["Shown after a successful digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 107]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 113]],
 		"translation": "The document was signed."
 	},
 	"cardLifecycle.limitedByDate.expired.description": {
@@ -2885,6 +2946,31 @@
 		"comments": ["Label shown above optional extra description"],
 		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 68]],
 		"translation": "The issuer provided the following:"
+	},
+	"paso.refusal.externalResourceVerificationFailed": {
+		"message": "The payee logo of this payment could not be verified.",
+		"placeholders": {},
+		"comments": [
+			"Shown when a PaSO external resource fails its integrity check"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 69]],
+		"translation": "The payee logo of this payment could not be verified."
+	},
+	"paso.refusal.payloadDoesNotConform": {
+		"message": "The payment details are not valid, so this payment cannot be authorized.",
+		"placeholders": {},
+		"comments": ["Shown when a PaSO payload does not conform to its rulebook"],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 57]],
+		"translation": "The payment details are not valid, so this payment cannot be authorized."
+	},
+	"paso.refusal.invalidCredentialMetadata": {
+		"message": "The payment details of your card could not be verified. Try again later.",
+		"placeholders": {},
+		"comments": [
+			"Shown when the signed PaSO credential metadata is missing or fails verification"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 51]],
+		"translation": "The payment details of your card could not be verified. Try again later."
 	},
 	"requestPurpose.overaskingWarning": {
 		"message": "The purpose given does not match the data requested.",
@@ -3088,6 +3174,42 @@
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 56]],
 		"translation": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked."
 	},
+	"paso.refusal.noSupportedLocale": {
+		"message": "This payment cannot be shown in a language you understand.",
+		"placeholders": {},
+		"comments": [
+			"Shown when no locale produces a complete match for the PaSO transaction data"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 63]],
+		"translation": "This payment cannot be shown in a language you understand."
+	},
+	"paso.refusal.tooComplex": {
+		"message": "This payment request is more complex than this wallet can authorize.",
+		"placeholders": {},
+		"comments": [
+			"Shown when a PaSO payment request needs features the wallet does not support"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 29]],
+		"translation": "This payment request is more complex than this wallet can authorize."
+	},
+	"paso.refusal.requestNotSigned": {
+		"message": "This payment request is not signed, so it cannot be authorized.",
+		"placeholders": {},
+		"comments": [
+			"Shown when a PaSO payment request arrives without a signature"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 20]],
+		"translation": "This payment request is not signed, so it cannot be authorized."
+	},
+	"paso.refusal.unsupported": {
+		"message": "This payment uses features this wallet does not support yet.",
+		"placeholders": {},
+		"comments": [
+			"Shown when a PaSO payment request uses an unsupported type or algorithm"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 38]],
+		"translation": "This payment uses features this wallet does not support yet."
+	},
 	"onboarding.pin.subtitle": {
 		"message": "This PIN secures your identity wallet. You enter it every time you share data.",
 		"placeholders": {},
@@ -3118,10 +3240,12 @@
 	"TSg3cu": {
 		"message": "To {0}",
 		"placeholders": {
-			"0": ["activity.transaction.payee.name"]
+			"0": [
+				"activity.transaction.type === pasoPaymentTransactionDataType\n                      ? activity.transaction.payee.value\n                      : activity.transaction.payee.name"
+			]
 		},
 		"comments": [],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 295]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 303]],
 		"translation": "To {0}"
 	},
 	"pidSetup.enableBiometrics.subtitle": {
@@ -3497,6 +3621,14 @@
 		],
 		"translation": "You did not have the required credentials to disclose."
 	},
+	"paso.refusal.noMatchingCard": {
+		"message": "You do not have a card in this wallet that can authorize this payment.",
+		"placeholders": {},
+		"comments": ["Shown when no credential satisfies the PaSO payment request"],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 50]],
+		"translation": "You do not have a card in this wallet that can authorize this payment.",
+		"obsolete": true
+	},
 	"common.someRequestedCardsMissingDescription": {
 		"message": "You don't have all of the requested cards.",
 		"placeholders": {},
@@ -3546,7 +3678,7 @@
 		"comments": [
 			"Shown in activity detail when one credential has been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 167]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 173]],
 		"translation": "You have received the following card from {0}."
 	},
 	"activity.receivedMultiple": {
@@ -3557,7 +3689,7 @@
 		"comments": [
 			"Shown in activity detail when multiple credentials have been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 161]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 167]],
 		"translation": "You have received the following cards from {0}."
 	},
 	"pidSetup.enableBiometrics.title": {

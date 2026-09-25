@@ -7,6 +7,8 @@ import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
 // The leaf rather than the barrel: the credential request UI imports this configuration too, and
 // the barrel would pull the entire SDK into its bundle.
 import { LogLevel } from '@paradym/wallet-sdk/logging/ParadymWalletSdkLogger'
+import * as Application from 'expo-application'
+import { Platform } from 'react-native'
 
 // Credo logs on every record, message and http operation, with the record or payload itself as
 // data — and the console logger serializes that data on every call. At trace level that is the
@@ -16,6 +18,9 @@ const isVerboseLoggingEnabled = __DEV__ || mmkv.getBoolean('useDevelopmentMode')
 
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   id: walletId,
+  // Goes into the `wallet_instance_version` claim of every PaSO payment proof, in the
+  // `<platform>:<application id>:<version>` shape [PaSO Core] Section 6.1 illustrates.
+  walletInstanceVersion: `${Platform.OS}:${Application.applicationId ?? walletId}:${Application.nativeApplicationVersion ?? '0.0.0'}`,
   // The wallet's own naming for well-known claims, in the user's language, for the ones no issuer
   // named. The SDK resolves the credential's own labels first and formats the key when neither says
   // anything.

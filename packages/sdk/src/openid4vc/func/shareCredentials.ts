@@ -11,11 +11,14 @@ import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
+import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'
+import { createPasoScaResponseClaims } from '../../paso/responseClaims'
+import type { PasoAuthenticationMethod } from '../../paso/types'
 import { activityStorage, storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
 import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
 import { fetchPaymentTransactionStatus } from '../paymentTransactionStatus'
-import { getFormattedTransactionData } from '../transaction'
+import { type FormattedTransactionData, resolveTransactionData } from '../transaction'
 
 export type ShareCredentialsOptions = {
   paradym: ParadymWalletSdk
@@ -23,6 +26,24 @@ export type ShareCredentialsOptions = {
   selectedCredentials: { [inputDescriptorId: string]: string }
   // FIXME: Should be a more complex structure allowing which credential to use for which entry
   acceptTransactionData?: boolean
+  /**
+   * The transaction the user was shown and consented to.
+   *
+   * Pass the value the consent screen rendered rather than letting this resolve its own: a PaSO
+   * transaction involves fetching and verifying external resources, and re-resolving could produce
+   * something other than what the user actually saw.
+   */
+  transactionData?: FormattedTransactionData
+  /**
+   * How the user released the transaction, for the `urn:paso:risk:global:amr:1` risk signal.
+   *
+   * Only reaches the proof when a risk signal profile or metadata enumeration requires that signal —
+   * see [PaSO Risk Signal Registry] Section 2.8. Report only methods that were actually used: under
+   * [PSD2] this is the evidence that two independent factor categories were involved.
+   */
+  authenticationMethods?: PasoAuthenticationMethod[]
+  /** When the user completed that authentication, which Section 2.8 makes the signal's `collected_at`. */
+  authenticatedAt?: Date
 }
 
 export const shareCredentials = async ({
@@ -30,6 +51,9 @@ export const shareCredentials = async ({
   resolvedRequest,
   selectedCredentials,
   acceptTransactionData,
+  transactionData: consentedTransactionData,
+  authenticationMethods = ['hwk'],
+  authenticatedAt = new Date(),
 }: ShareCredentialsOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')
 
@@ -79,7 +103,43 @@ export const shareCredentials = async ({
       )
     : undefined
 
-  const transactionData = getFormattedTransactionData(resolvedRequest)
+  const transactionData = consentedTransactionData ?? (await resolveTransactionData(paradym, resolvedRequest))
+
+  // [PaSO Core] Section 6.2 — the SCA response claims are top-level claims of the KB-JWT, so they go
+  // in as the presentation's additional payload. Credo merges this with the `transaction_data_hashes`
+  // it adds itself, which is why `transaction_data_hash` below agrees with it by construction.
+  if (transactionData?.type === pasoPaymentTransactionDataType && dcqlCredentials) {
+    // Resolved without a card that can authorize it, so it was only ever shown to explain why. The
+    // consent screen keeps its confirmation action out of reach in that state; reaching here anyway
+    // would mean signing a transaction against metadata that was never verified.
+    if (!transactionData.proof) {
+      throw new Error('The PaSO transaction was resolved without a credential that can authorize it')
+    }
+
+    const presentations = dcqlCredentials[transactionData.cardForTransactionId]
+    if (!presentations) {
+      throw new Error(
+        `Credential query '${transactionData.cardForTransactionId}' authorizes the PaSO transaction but is not part of the presentation`
+      )
+    }
+
+    const scaResponseClaims = createPasoScaResponseClaims({
+      proof: transactionData.proof,
+      // Safe: `resolvePasoTransactionData` rejects unsigned requests before we ever get here.
+      signedRequest: resolvedRequest.signedAuthorizationRequest?.compact as string,
+      responseMode:
+        (authorizationRequest.response_mode as string | undefined) ?? (resolvedRequest.origin ? 'dc_api' : 'fragment'),
+      authenticationMethods,
+      authenticatedAt,
+    })
+
+    for (const presentation of presentations) {
+      // Only SD-JWT VC carries a KB-JWT. The mdoc profile of [PaSO Core] Section 6.3 would need a
+      // `urn:paso:sca:1` DeviceSigned namespace, which Credo has no path to produce.
+      if (presentation.claimFormat !== ClaimFormat.SdJwtDc) continue
+      presentation.additionalPayload = { ...presentation.additionalPayload, ...scaResponseClaims }
+    }
+  }
 
   try {
     const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
@@ -127,7 +187,8 @@ export const shareCredentials = async ({
 
     if (
       storedActivity.type === 'payment' &&
-      transactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1' &&
+      (transactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1' ||
+        transactionData?.type === pasoPaymentTransactionDataType) &&
       transactionData.cardForTransactionId
     ) {
       const credentialEntry = resolvedRequest.formattedSubmission.entries.find(

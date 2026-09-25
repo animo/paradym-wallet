@@ -26,6 +26,16 @@ export { LogLevel, ParadymWalletSdkConsoleLogger, ParadymWalletSdkLogger } from 
 export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
 export type { FormattedTransactionData, FormattedTransactionDataPaymentSingle, QtspInfo } from './openid4vc/transaction'
+export { setWalletInstanceVersion } from './config/walletInstanceVersion'
+export {
+  type FormattedTransactionDataPasoPayment,
+  ParadymWalletPasoError,
+  type PasoAuthenticationMethod,
+  type PasoDisplayedClaim,
+  type PasoRefusalCode,
+  pasoPaymentTransactionDataType,
+  renewPasoCredentialMetadata,
+} from './paso'
 export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
 export {
   defaultWalletId,
@@ -119,12 +129,12 @@ export type {
 } from './config/attributeLabel'
 export type { ResolveDcApiDisplay } from './config/dcApiDisplay'
 export { activityIndexStore } from './storage/activityRecords'
-export { migrateActivities, activityStorage, type ActivityStatus, type PaymentTransactionStatusCode, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
+export { migrateActivities, activityStorage, type ActivityStatus, getPaymentTransactionStatus, type PaymentTransactionStatusCode, storeSharedActivityForCredentialsForRequest, storeReceivedActivity,storeSharedActivityForSubmission  } from './storage/activityStore'
 export { fetchPaymentTransactionStatus } from './openid4vc/paymentTransactionStatus'
 export { storeCredential, updateCredential } from './storage/credentials'
 export { type DeferredCredentialBefore } from './storage/deferredCredentialStore'
 export { getHostNameFromUrl} from './utils/url'
 export { reset } from './utils/reset'
-export { getFormattedTransactionData } from './openid4vc/transaction'
+export { getFormattedTransactionData, resolveTransactionData } from './openid4vc/transaction'
 export {deferredCredentialStorage, getDeferredCredentialNextCheckAt, useDeferredCredentials, deleteDeferredCredential } from './storage/deferredCredentialStore'
 export { fetchAndProcessDeferredCredentials } from './openid4vc/deferredCredentialRecord'

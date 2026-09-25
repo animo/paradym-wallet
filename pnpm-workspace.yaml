@@ -17,6 +17,7 @@ overrides:
   react-native: 0.85.3
 
 patchedDependencies:
+  '@credo-ts/openid4vc@0.7.1-alpha-20260917134851': patches/@credo-ts__openid4vc@0.7.1-alpha-20260917134851.patch
   '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
   # Patches required for DC API
   react-native-keychain: patches/react-native-keychain.patch
