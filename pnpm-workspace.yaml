@@ -54,7 +54,7 @@ catalog:
   query-string: ^9.4.0
   "@animo-id/eudi-wallet-functionality": 0.1.0
   "@animo-id/expo-secure-environment": 0.1.5
-  "@animo-id/expo-digital-credentials-api": 0.5.0
+  "@animo-id/expo-digital-credentials-api": 0.5.1
   expo-mdoc-data-transfer: 0.2.0
   "@owf/mdoc": ^0.8.0
   "@owf/cose": ^0.4.0
@@ -177,4 +177,4 @@ minimumReleaseAgeExclude:
   - '@openid4vc/utils@0.5.6'
   - '@sd-jwt/core@0.21.0'
   - '@sd-jwt/sd-jwt-vc@0.21.0'
-  - '@animo-id/expo-digital-credentials-api@0.5.0'
+  - '@animo-id/expo-digital-credentials-api@0.5.1'
