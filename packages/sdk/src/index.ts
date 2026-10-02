@@ -30,7 +30,10 @@ export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWa
 export {
   defaultWalletId,
   getTrustedX509Certificates,
+  type CredentialKeyOptions,
+  type ParadymWalletSdkCredentialKeyOptions,
   type ParadymWalletSdkLoggingOptions,
+  type ResolveCredentialKeyOptions,
   type ParadymWalletSdkSharedOptions,
 } from './config'
 export type { DcApiReview, ParadymDcApiSdkOptions } from './dcApi/ParadymDcApiSdk'

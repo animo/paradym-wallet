@@ -4,6 +4,7 @@
 	"main": "src/index.ts",
 	"exports": {
 		".": "./src/index.ts",
+		"./dc-api": "./src/dc-api.ts",
 		"./package.json": "./package.json",
 		"./*": "./src/*"
 	},
@@ -26,6 +27,11 @@
 				"import": "./dist/index.mjs",
 				"require": "./dist/index.mjs",
 				"types": "./dist/index.d.mts"
+			},
+			"./dc-api": {
+				"import": "./dist/dc-api.mjs",
+				"require": "./dist/dc-api.mjs",
+				"types": "./dist/dc-api.d.mts"
 			},
 			"./package.json": "./package.json"
 		}

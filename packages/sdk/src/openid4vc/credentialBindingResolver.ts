@@ -1,23 +1,24 @@
 import { DidJwk, DidKey, DidsApi, type JwkDidCreateOptions, type KeyDidCreateOptions, Kms } from '@credo-ts/core'
 import { type OpenId4VciCredentialBindingResolver, OpenId4VciCredentialFormatProfile } from '@credo-ts/openid4vc'
+import type { ResolveCredentialKeyOptions } from '../config'
 
 export function getCredentialBindingResolver({
-  pidSchemes,
+  resolveCredentialKeyOptions,
   requestBatch,
 }: {
-  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
+  resolveCredentialKeyOptions?: ResolveCredentialKeyOptions
   requestBatch?: boolean | number
 }): OpenId4VciCredentialBindingResolver {
-  return async ({
-    supportedDidMethods,
-    credentialConfiguration,
-    issuerMaxBatchSize,
-    proofTypes,
-    supportsAllDidMethods,
-    supportsJwk,
-    credentialFormat,
-    agentContext,
-  }) => {
+  return async (options) => {
+    const {
+      supportedDidMethods,
+      issuerMaxBatchSize,
+      proofTypes,
+      supportsAllDidMethods,
+      supportsJwk,
+      credentialFormat,
+      agentContext,
+    } = options
     const kms = agentContext.resolve(Kms.KeyManagementApi)
 
     // First, we try to pick a did method
@@ -36,17 +37,6 @@ export function getCredentialBindingResolver({
       didMethod = 'key'
     }
 
-    const shouldKeyBeHardwareBackedForMsoMdoc =
-      credentialConfiguration?.format === OpenId4VciCredentialFormatProfile.MsoMdoc &&
-      pidSchemes?.msoMdocDoctypes.includes(credentialConfiguration.doctype)
-
-    const shouldKeyBeHardwareBackedForSdJwtVc =
-      (credentialConfiguration?.format === 'vc+sd-jwt' || credentialConfiguration.format === 'dc+sd-jwt') &&
-      credentialConfiguration.vct &&
-      pidSchemes?.sdJwtVcVcts.includes(credentialConfiguration.vct)
-
-    const shouldKeyBeHardwareBacked = shouldKeyBeHardwareBackedForSdJwtVc || shouldKeyBeHardwareBackedForMsoMdoc
-
     // We don't want to request more than 10 credentials
     const batchSize =
       requestBatch === true
@@ -60,14 +50,24 @@ export function getCredentialBindingResolver({
       throw new Error('Unable to request credentials. Only jwt proof type without key attestations supported')
     }
 
-    const signatureAlgorithm = proofTypes.jwt.supportedSignatureAlgorithms[0]
+    const { supportedSignatureAlgorithms } = proofTypes.jwt
+    const keyOptions = await resolveCredentialKeyOptions?.(options)
+
+    // FIXME: what should happen with already existing keys created in the secure environment?
+    const backend = keyOptions?.backend ?? 'askar'
+    const signatureAlgorithm = keyOptions?.algorithm ?? supportedSignatureAlgorithms[0]
+    if (!supportedSignatureAlgorithms.includes(signatureAlgorithm)) {
+      throw new Error(
+        `Unable to request credentials. Key algorithm '${signatureAlgorithm}' is not supported by the issuer, which supports ${supportedSignatureAlgorithms.join(', ')}`
+      )
+    }
+
     const keys = await Promise.all(
       new Array(batchSize).fill(0).map(() =>
         kms
           .createKeyForSignatureAlgorithm({
             algorithm: signatureAlgorithm,
-            // FIXME: what should happen with already existing keys created in the secure environment?
-            backend: shouldKeyBeHardwareBacked ? 'secureEnvironment' : 'askar',
+            backend,
           })
           .then((key) => Kms.PublicJwk.fromUnknown(key.publicJwk))
       )

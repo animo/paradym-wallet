@@ -1,4 +1,5 @@
-import type { InitConfig, X509ModuleConfigOptions } from '@credo-ts/core'
+import type { InitConfig, Kms, X509ModuleConfigOptions } from '@credo-ts/core'
+import type { OpenId4VciCredentialBindingOptions } from '@credo-ts/openid4vc'
 import type { LogLevel, ParadymWalletSdkLogger } from '../logging'
 import type { TrustMechanismConfiguration } from '../trust/trustMechanism'
 import type { ResolveAttributeLabel } from './attributeLabel'
@@ -38,6 +39,54 @@ export type ParadymWalletSdkAttributeLabelOptions = {
  */
 export type ParadymWalletSdkDcApiDisplayOptions = {
   resolveDcApiDisplay?: ResolveDcApiDisplay
+}
+
+/**
+ *
+ * How the key a received credential is bound to is created.
+ *
+ * Every field is optional, and anything left out falls back to the default.
+ *
+ */
+export type CredentialKeyOptions = {
+  /**
+   *
+   * Key management backend the key is created in: `'secureEnvironment'` for a hardware key (Secure
+   * Enclave / Android Keystore). Defaults to `'askar'`.
+   *
+   * Hardware keys never leave the device: a credential bound to one cannot be restored from a backup.
+   *
+   */
+  backend?: string
+
+  /**
+   *
+   * JWA signature algorithm the key is created for, which decides its type: `ES256` for a P-256
+   * key, `EdDSA` for an Ed25519 key. It must be one of `proofTypes.jwt.supportedSignatureAlgorithms`
+   * in the options passed to {@link ResolveCredentialKeyOptions}, and the backend must support it.
+   * The secure environment only supports `ES256`.
+   *
+   * Defaults to the first algorithm the issuer supports.
+   *
+   */
+  algorithm?: Kms.KnownJwaSignatureAlgorithm
+}
+
+/**
+ *
+ * How the key a received credential is bound to is created — see {@link CredentialKeyOptions}.
+ *
+ * Called once per credential configuration requested over OpenID4VCI, with the options Credo hands
+ * the credential binding resolver: the credential configuration (format, `vct`, `doctype`), the
+ * issuer metadata and the proof types it accepts. Return `undefined` for the defaults.
+ *
+ */
+export type ResolveCredentialKeyOptions = (
+  options: OpenId4VciCredentialBindingOptions
+) => CredentialKeyOptions | undefined | Promise<CredentialKeyOptions | undefined>
+
+export type ParadymWalletSdkCredentialKeyOptions = {
+  resolveCredentialKeyOptions?: ResolveCredentialKeyOptions
 }
 
 export type ParadymWalletSdkLoggingOptions<T extends ParadymWalletSdkLogger = ParadymWalletSdkLogger> = {
