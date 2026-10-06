@@ -278,14 +278,12 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
   credentialConfigurationIdsToRequest,
   accessToken,
   clientId,
-  pidSchemes,
   requestBatch,
 }: {
   paradym: ParadymWalletSdk
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   credentialConfigurationIdsToRequest?: string[]
   clientId?: string
-  pidSchemes?: { sdJwtVcVcts: Array<string>; msoMdocDoctypes: Array<string> }
   requestBatch?: boolean | number
 
   // TODO: cNonce should maybe be provided separately (multiple calls can have different c_nonce values)
@@ -316,7 +314,7 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
       Kms.KnownJwaSignatureAlgorithms.EdDSA,
     ],
     credentialBindingResolver: getCredentialBindingResolver({
-      pidSchemes,
+      resolveCredentialKeyOptions: paradym.resolveCredentialKeyOptions,
       requestBatch,
     }),
   })

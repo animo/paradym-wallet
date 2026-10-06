@@ -14,6 +14,7 @@ import {
   defaultWalletId,
   getTrustedX509Certificates,
   type ParadymWalletSdkAttributeLabelOptions,
+  type ParadymWalletSdkCredentialKeyOptions,
   type ParadymWalletSdkDcApiDisplayOptions,
   type ParadymWalletSdkLocaleOptions,
   type ParadymWalletSdkSharedOptions,
@@ -82,6 +83,7 @@ export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfigur
   ParadymWalletSdkAttributeLabelOptions &
   ParadymWalletSdkDcApiDisplayOptions &
   ParadymWalletSdkWalletInstanceVersionOptions
+ParadymWalletSdkCredentialKeyOptions
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
@@ -95,6 +97,7 @@ export function assertParadymSdkType<T extends AgentType>(
 
 export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public trustMechanisms: TrustMechanismConfiguration[]
+  public readonly resolveCredentialKeyOptions: ParadymWalletSdkCredentialKeyOptions['resolveCredentialKeyOptions']
   public readonly agent: AgentForAgentType<T>
 
   public constructor(options: ParadymWalletSdkOptions) {
@@ -107,6 +110,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
     this.agent = setupAgent({ ...options, openId4VcConfiguration }) as unknown as AgentForAgentType<T>
     this.trustMechanisms = trustMechanisms
+    this.resolveCredentialKeyOptions = options.resolveCredentialKeyOptions
 
     if (options.locale) setLocale(options.locale)
     if (options.walletInstanceVersion) setWalletInstanceVersion(options.walletInstanceVersion)

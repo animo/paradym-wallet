@@ -8,7 +8,7 @@
 
 <h1 align="center"><b>Paradym Wallet SDK — TypeScript</b></h1>
 
-A React Native library enabling wallets to easily receive, store, and prove digital credentials according to the OpenID4VC and DIDComm suite of specifications.
+A React Native library for building wallets that receive, store and present digital credentials over OpenID4VC, DIDComm, the Digital Credentials API and ISO 18013-5 proximity. It supports SD-JWT VC, mdoc, W3C and AnonCreds.
 
 <h4 align="center">Powered by &nbsp;
   <picture>
@@ -30,870 +30,638 @@ A React Native library enabling wallets to easily receive, store, and prove digi
 <p align="center">
   <a href="#installation">Installation</a>
   &nbsp;|&nbsp;
-  <a href="#setup">Setup</a>
+  <a href="#quick-start">Quick start</a>
   &nbsp;|&nbsp;
-  <a href="#wallet-states">Wallet States</a>
+  <a href="#configuration">Configuration</a>
   &nbsp;|&nbsp;
-  <a href="#usage">Usage</a>
+  <a href="#key-security">Key security</a>
   &nbsp;|&nbsp;
-  <a href="#contributing">Contributing</a>
+  <a href="#internationalization">Internationalization</a>
   &nbsp;|&nbsp;
-  <a href="#license">License</a>
+  <a href="#receiving-credentials">Receiving</a>
+  &nbsp;|&nbsp;
+  <a href="#presenting-credentials">Presenting</a>
 </p>
+
+> [!WARNING]
+> The SDK is in alpha. Expect breaking changes between releases.
 
 ---
 
 ## Installation
 
 ```bash
-npm install @paradym/wallet-sdk
-# or
-yarn add @paradym/wallet-sdk
-# or
-pnpm add @paradym/wallet-sdk
+pnpm add @paradym/wallet-sdk @tanstack/react-query
 ```
 
-> [!IMPORTANT]
-> **pnpm** also requires you to approve native builds:
-> ```bash
-> pnpm approve-builds @paradym/wallet-sdk
-> ```
+The SDK ships native modules (Askar, AnonCreds, keychain, secure environment, MMKV), so it needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/). Expo Go won't work. Rebuild the app after installing:
 
-> [!IMPORTANT]
-> Rebuild your application after installation — native dependencies are added.
+```bash
+npx expo prebuild && npx expo run:ios   # or run:android
+```
+
+With pnpm, approve the native builds:
+
+```bash
+pnpm approve-builds @paradym/wallet-sdk
+```
+
+Peer dependencies: `react >= 18`, `react-native >= 0.76`, `@tanstack/react-query` 5.
 
 ---
 
-## Setup
+## Quick start
 
-Two providers are required for the SDK to work correctly:
+The SDK takes one configuration object and two providers:
 
-| Provider | Purpose |
-|---|---|
-| `ParadymWalletSdk.UnlockProvider` | Configures the SDK and manages wallet unlock state |
-| `ParadymWalletSdk.AppProvider` | Exposes the SDK and record data throughout the app |
+| Provider | Where | What it does |
+|---|---|---|
+| `ParadymWalletSdk.UnlockProvider` | App root | Holds the configuration and the lock state, and provides a `QueryClient` |
+| `ParadymWalletSdk.AppProvider` | Below the point where the wallet is unlocked | Loads credentials and records, and enables the data hooks |
 
-`UnlockProvider` must wrap `AppProvider` in the component tree.
+```tsx
+// paradym.ts
+import { LogLevel, type SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
 
-### `UnlockProvider`
+export const paradymOptions: SetupParadymWalletSdkOptions = {
+  id: 'my-wallet',
+  logging: { level: LogLevel.Warn },
+  trustMechanisms: [
+    { trustMechanism: 'x509', trustedX509Entities: [/* see Trust */] },
+    { trustMechanism: 'none', trustedEntities: [] },
+  ],
+}
+```
 
-Wrap your application (or the root of your auth flow) with `UnlockProvider`. Pass your SDK configuration and, optionally, a custom `QueryClient` from `@tanstack/react-query`.
+```tsx
+// App.tsx
+import { activityIndexStore, deferredCredentialStorage, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
+import { paradymOptions } from './paradym'
 
-```typescript
-import { ParadymWalletSdk } from '@paradym/wallet-sdk'
+// Records the activity and deferred-credential hooks read from
+const recordIds = [activityIndexStore.recordId, deferredCredentialStorage.recordId]
 
 export default function App() {
-  const sdkConfiguration = {
-    // See Configuration section below
-  }
-
   return (
-    <ParadymWalletSdk.UnlockProvider configuration={sdkConfiguration}>
-      {/* rest of the app */}
+    <ParadymWalletSdk.UnlockProvider configuration={paradymOptions}>
+      <Gate />
     </ParadymWalletSdk.UnlockProvider>
   )
 }
-```
 
-#### Bring your own QueryClient
+function Gate() {
+  const paradym = useParadym()
 
-```typescript
-import { QueryClient } from '@tanstack/react-query'
-
-const queryClient = new QueryClient()
-
-<ParadymWalletSdk.UnlockProvider configuration={sdkConfiguration} queryClient={queryClient}>
-  {/* ... */}
-</ParadymWalletSdk.UnlockProvider>
-```
-
-### Configuration
-
-The SDK is configured via the `SetupParadymWalletSdkOptions` object (equivalent to `SetupAgentOptions` plus `trustMechanisms`). All fields except `key` are part of this type — `key` is managed internally by the unlock flow.
-
-```typescript
-type SetupParadymWalletSdkOptions = {
-  /**
-   * Unique identifier for the wallet storage.
-   * Defaults to 'paradym-wallet' if not provided.
-   */
-  id?: string
-
-  /**
-   * Configure logging behaviour.
-   */
-  logging?: {
-    level: LogLevel
-    /** Enable in-memory log tracing (retrieve via `paradym.logger.loggedMessageContents`) */
-    trace?: boolean
-    traceLimit?: number
-    /** Custom logger class implementing ParadymWalletSdkLogger */
-    customLogger?: new (logLevel: LogLevel) => ParadymWalletSdkLogger
+  switch (paradym.state) {
+    case 'initializing':
+      return <Splash />
+    case 'not-configured':
+    case 'acquired-wallet-key':
+      return <Onboarding />
+    case 'locked':
+      return <UnlockScreen />
+    case 'unlocked':
+      return (
+        <ParadymWalletSdk.AppProvider recordIds={recordIds}>
+          <Wallet />
+        </ParadymWalletSdk.AppProvider>
+      )
   }
-
-  /**
-   * OpenID4VC configuration. Pass `false` to disable. Enabled by default.
-   * Accepts X.509 module options (e.g. trustedCertificates).
-   */
-  openId4VcConfiguration?: { trustedCertificates?: string[] } | false
-
-  /**
-   * DIDComm configuration. Pass `false` to disable. Disabled by default.
-   */
-  didcommConfiguration?: { label: string } | false
-
-  /**
-   * Trust mechanisms evaluated in order — first match wins.
-   */
-  trustMechanisms?: TrustMechanismConfiguration[]
 }
 ```
 
-#### Trust Mechanisms
-
-The SDK supports multiple trust mechanisms. They are evaluated in order — the first one that matches is used.
-
-Available trust mechanism types: `eudi_rp_authentication`, `x509`, `did`.
-
-```typescript
-type TrustMechanismConfiguration =
-  | { trustMechanism: 'eudi_rp_authentication'; trustList: TrustList; trustedX509Entities: TrustedX509Entity[] }
-  | { trustMechanism: 'x509'; trustedX509Entities: TrustedX509Entity[] }
-  | { trustMechanism: 'did' }
-```
-
-```typescript
-type TrustedX509Entity = {
-  name: string
-  entityId: string
-  logoUri: string
-  certificate: string  // DER-encoded certificate
-  url: string
-  demo?: boolean
-}
-```
-
-**Example: X.509 trust with verbose logging**
-
-```typescript
-import { ParadymWalletSdk, LogLevel } from '@paradym/wallet-sdk'
-
-const sdkConfiguration = {
-  logging: {
-    level: LogLevel.trace,
-    customLogger: MyCustomLogger,
-  },
-  trustMechanisms: [
-    {
-      trustMechanism: 'x509',
-      trustedX509Entities: [
-        {
-          name: 'Animo',
-          entityId: 'Animo',
-          logoUri: 'https://funke.animo.id/icon.svg?1c394fbf8b148827',
-          certificate: 'MIIBzzCC...', // your DER-encoded certificate
-          url: 'https://funke.animo.id',
-        },
-      ],
-    },
-  ],
-  openId4VcConfiguration: {
-    trustedCertificates: [],
-  },
-}
-```
-
-### Custom Logger
-
-Implement `ParadymWalletSdkLogger` to send logs to your own logging service (e.g. Sentry):
-
-```typescript
-import { ParadymWalletSdkLogger, LogData } from '@paradym/wallet-sdk'
-import { loggingApi } from '@your-package/api'
-
-export class MyCustomLogger implements ParadymWalletSdkLogger {
-  private send(message: string, data?: LogData) {
-    void loggingApi.upload(message, data)
-  }
-
-  fatal(message: string, data?: LogData) { this.send(message, data) }
-  error(message: string, data?: LogData) { this.send(message, data) }
-  warn(message: string, data?: LogData)  { this.send(message, data) }
-  info(message: string, data?: LogData)  { this.send(message, data) }
-  debug(message: string, data?: LogData) { this.send(message, data) }
-  trace(message: string, data?: LogData) { this.send(message, data) }
-}
-```
-
-To also keep console output, extend `ParadymWalletSdkConsoleLogger`:
-
-```typescript
-import { ParadymWalletSdkConsoleLogger, LogData } from '@paradym/wallet-sdk'
-
-export class MyCustomAndConsoleLogger extends ParadymWalletSdkConsoleLogger {
-  private send(message: string, data?: LogData) {
-    void loggingApi.upload(message, data)
-  }
-
-  error(message: string, data?: LogData) { this.send(message, data); super.error(message, data) }
-  // repeat for other levels...
-}
-```
-
-### `AppProvider`
-
-Place `AppProvider` inside `UnlockProvider`, at a point in the tree where the wallet is guaranteed to be in the `unlocked` state.
-
-```typescript
-import { ParadymWalletSdk } from '@paradym/wallet-sdk'
-
-export default function AuthenticatedApp() {
-  return (
-    <ParadymWalletSdk.AppProvider recordIds={[]}>
-      {/* screens that require an unlocked wallet */}
-    </ParadymWalletSdk.AppProvider>
-  )
-}
-```
+Pass `queryClient` to `UnlockProvider` if the app already has a TanStack Query client.
 
 ---
 
-## Wallet States
+## Wallet lifecycle
 
-The SDK uses a state machine with five states. Use the `useParadym()` hook to access the current state and its associated methods.
+`useParadym()` returns the current state and the actions it allows. `useParadym('<state>')` narrows the type and throws when the wallet is in another state, so use it on screens that only render in that state.
 
 ```
 initializing → not-configured → acquired-wallet-key → unlocked
-                    ↑                                      |
-                    └──────────────── locked ←─────────────┘
+               locked ─────────↗                        │
+                 ↑──────────────── lock() ──────────────┘
 ```
 
-| State | Description |
+| State | Actions |
 |---|---|
-| `initializing` | SDK is starting up; transitions automatically |
-| `not-configured` | No wallet exists yet; user must set a PIN |
-| `acquired-wallet-key` | PIN accepted, ready to create or open the wallet |
-| `locked` | Wallet exists but is locked; requires PIN or biometrics |
-| `unlocked` | Wallet is open and fully operational |
+| `initializing` | None. Moves to `not-configured` or `locked` on its own |
+| `not-configured` | `setPin(pin)` |
+| `acquired-wallet-key` | `unlock({ enableBiometrics })`, `reset()` |
+| `locked` | `unlockUsingPin(pin)`, `tryUnlockingUsingBiometrics()`, `canTryUnlockingUsingBiometrics`, `isUnlocking`, `reset()` |
+| `unlocked` | `paradym`, `lock()`, `reset()`, `enableBiometricUnlock()`, `disableBiometricUnlock()`, `unlockMethod` |
 
-### Wallet State Types
-
-The state union types are exported for use in TypeScript applications. Use `useParadym('<STATE>')` to access state-specific data — these types describe the shape of each state.
-
-```typescript
-import type {
-  SecureUnlockReturn,
-  SecureUnlockReturnInitializing,
-  SecureUnlockReturnNotConfigured,
-  SecureUnlockReturnWalletKeyAcquired,
-  SecureUnlockReturnLocked,
-  SecureUnlockReturnUnlocked,
-  SecureUnlockState,
-  UnlockMethod,
-} from '@paradym/wallet-sdk'
-
-type SecureUnlockState = 'initializing' | 'not-configured' | 'acquired-wallet-key' | 'locked' | 'unlocked'
-type UnlockMethod = 'pin' | 'biometrics'
-
-type SecureUnlockReturnInitializing = { state: 'initializing' }
-
-type SecureUnlockReturnNotConfigured = {
-  state: 'not-configured'
-  setPin: (pin: string) => Promise<void>
-  reinitialize: () => void
-}
-
-type SecureUnlockReturnWalletKeyAcquired = {
-  state: 'acquired-wallet-key'
-  unlockMethod: UnlockMethod
-  unlock: (options?: { enableBiometrics: boolean }) => Promise<ParadymWalletSdk>
-  reset: () => Promise<void>
-  reinitialize: () => void
-}
-
-type SecureUnlockReturnLocked = {
-  state: 'locked'
-  canTryUnlockingUsingBiometrics: boolean
-  isUnlocking: boolean
-  reset: () => Promise<void>
-  tryUnlockingUsingBiometrics: () => Promise<void>
-  unlockUsingPin: (pin: string) => Promise<void>
-  reinitialize: () => void
-}
-
-type SecureUnlockReturnUnlocked = {
-  state: 'unlocked'
-  paradym: ParadymWalletSdk
-  unlockMethod: UnlockMethod
-  lock: () => Promise<void>
-  reset: () => Promise<void>
-  reinitialize: () => void
-  enableBiometricUnlock: () => Promise<void>
-  disableBiometricUnlock: () => Promise<void>
-}
-
-type SecureUnlockReturn =
-  | SecureUnlockReturnInitializing
-  | SecureUnlockReturnNotConfigured
-  | SecureUnlockReturnWalletKeyAcquired
-  | SecureUnlockReturnLocked
-  | SecureUnlockReturnUnlocked
-```
-
-### Strongly-typed state hooks with `useParadym`
-
-`useParadym('<STATE_NAME>')` asserts the state and throws if it does not match, which is useful on screens that require a specific state:
-
-```typescript
-import { useParadym } from '@paradym/wallet-sdk'
-
-// Throws if the wallet is not unlocked
-const { paradym } = useParadym('unlocked')
-```
-
----
-
-## Usage
+Every state except `initializing` also has `reinitialize()`.
 
 ### Onboarding
 
-#### 1. `not-configured` — Set a PIN
+```tsx
+function Onboarding() {
+  const paradym = useParadym()
 
-```typescript
-import { useParadym } from '@paradym/wallet-sdk'
-import { useState } from 'react'
-
-export default function SetPinScreen() {
-  const { setPin } = useParadym('not-configured')
-  const [pin, setLocalPin] = useState('')
-
-  const handleSubmit = async () => {
-    if (pin.length !== 6) throw new Error('PIN must be 6 digits')
-    await setPin(pin)
-    // state transitions to 'acquired-wallet-key'
+  if (paradym.state === 'not-configured') {
+    // Derives the wallet key from the PIN. Moves to 'acquired-wallet-key'.
+    return <PinInput onSubmit={(pin) => paradym.setPin(pin)} />
   }
 
-  // render PIN input...
-}
-```
-
-#### 2. `acquired-wallet-key` — Create the wallet
-
-```typescript
-import { useParadym } from '@paradym/wallet-sdk'
-
-export default function FinishOnboardingScreen() {
-  const { unlock } = useParadym('acquired-wallet-key')
-
-  const handleUnlock = async () => {
-    await unlock({ enableBiometrics: false })
-    // state transitions to 'unlocked'
+  if (paradym.state === 'acquired-wallet-key') {
+    // Creates the wallet. Pass `enableBiometrics: true` to store the key behind biometrics
+    // and prompt for it once, so the user knows it works.
+    return <Button onPress={() => paradym.unlock({ enableBiometrics: true })} title="Finish" />
   }
 
-  // render button...
+  return null
 }
 ```
 
 ### Unlocking
 
-#### `locked` — Unlock with PIN
+```tsx
+import { ParadymWalletAuthenticationInvalidPinError, useParadym } from '@paradym/wallet-sdk'
 
-```typescript
-import { useParadym } from '@paradym/wallet-sdk'
-import { useState } from 'react'
+function UnlockScreen() {
+  const { unlockUsingPin, tryUnlockingUsingBiometrics, canTryUnlockingUsingBiometrics } = useParadym('locked')
 
-export default function UnlockScreen() {
-  const { unlockUsingPin, isUnlocking } = useParadym('locked')
-  const [pin, setPin] = useState('')
+  useEffect(() => {
+    if (canTryUnlockingUsingBiometrics) void tryUnlockingUsingBiometrics()
+  }, [])
 
-  const handleSubmit = async () => {
-    if (pin.length !== 6) throw new Error('PIN must be 6 digits')
-    await unlockUsingPin(pin)
-    // state transitions to 'unlocked'
+  return <PinInput onSubmit={(pin) => unlockUsingPin(pin)} />
+}
+```
+
+`unlockUsingPin` and `tryUnlockingUsingBiometrics` move the wallet to `acquired-wallet-key`. Call `unlock()` in that state to open the store. It throws `ParadymWalletAuthenticationInvalidPinError` when the PIN was wrong, and the wallet goes back to `locked`.
+
+Biometric unlock is turned off for the session when the user cancels the prompt or after repeated failures. Show the PIN pad when `canTryUnlockingUsingBiometrics` is `false`.
+
+### Lock, reset and biometrics
+
+```ts
+const { lock, reset, enableBiometricUnlock, disableBiometricUnlock } = useParadym('unlocked')
+
+await lock()                    // shuts down the agent, back to 'locked'
+await reset()                   // deletes all wallet data, back to 'not-configured'
+await enableBiometricUnlock()   // prompts once, then allows unlocking with biometrics
+await disableBiometricUnlock()  // removes the biometric-protected key
+```
+
+`useCanUseBiometryBackedWalletKey()` tells you whether the device supports biometric unlock. `useIsBiometricsEnabled()` tells you whether the user turned it on.
+
+---
+
+## Configuration
+
+`SetupParadymWalletSdkOptions`:
+
+| Option | Default | Description |
+|---|---|---|
+| `id` | `'paradym-wallet'` | Base id of the wallet store. Don't change it after release: existing installs are stored under it |
+| `trustMechanisms` | `[]` | How issuers and verifiers are identified and trusted. See [Trust](#trust) |
+| `openId4VcConfiguration` | enabled | Options for the X.509 module, or `false` to disable OpenID4VC |
+| `didcommConfiguration` | disabled | `{ label }` to enable DIDComm and AnonCreds |
+| `getTrustedIssuersForVerification` | — | Credo callback for trust anchors. This is the only hook mdoc reader authentication uses |
+| `logging` | console logger | See [Logging](#logging) |
+| `locale` | `'en'` | BCP 47 tag that credentials render in. See [Internationalization](#internationalization) |
+| `resolveAttributeLabel` | — | Labels for claims the issuer didn't name |
+| `resolveDcApiDisplay` | English fallbacks | Text the OS credential picker shows |
+| `resolveCredentialKeyOptions` | `askar` backend, issuer's first algorithm | Backend and key type for the key a received credential is bound to. See [Credential keys](#credential-keys) |
+
+### Trust
+
+When a credential offer or presentation request comes in, the SDK detects the mechanism it uses (`eudi_rp_authentication`, `x509`, `did`, or `none`). Then it looks up the matching entry in `trustMechanisms`. The result shows up as `trustMechanism` and `trustedEntities` on resolved offers and requests, so your UI can show who is asking and who vouches for them.
+
+If an offer or request uses a mechanism you didn't configure, resolving it throws. Add a `none` entry to accept parties the wallet can't place.
+
+```ts
+import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
+
+const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
+  // EUDI relying party registration certificates, checked against a trust list
+  { trustMechanism: 'eudi_rp_authentication', trustList, trustedX509Entities },
+
+  // Signed requests and issuer metadata with an x5c chain
+  {
+    trustMechanism: 'x509',
+    trustedX509Entities: [
+      {
+        entityId: 'https://issuer.example.com',
+        name: 'Example Issuer',
+        logoUri: 'https://issuer.example.com/logo.png',
+        url: 'https://issuer.example.com',
+        certificate: 'MIIBzzCC...', // base64 DER
+      },
+    ],
+  },
+
+  // DID-signed requests and issuer metadata
+  { trustMechanism: 'did', trustedDidEntities: [{ did: 'did:web:example.com', entityId, name, logoUri, url }] },
+
+  // Unsigned issuers, and verifiers identified only by origin or redirect_uri
+  { trustMechanism: 'none', trustedEntities: [{ issuer: 'https://issuer.example.com', entityId, name, logoUri, url }] },
+
+  // The wallet itself, listed as a trusted party where relevant
+  { walletTrustedEntity: { entityId: 'my-wallet', organizationName: 'My Wallet', logoUri, uri: 'https://example.com' } },
+]
+```
+
+The certificates in the `x509` entry also become the agent's trusted roots for credential verification. You don't need to list them again in `openId4VcConfiguration`.
+
+### Verification callbacks
+
+To decide trust per verification, rather than from a fixed root list, register a callback:
+
+```ts
+const options: SetupParadymWalletSdkOptions = {
+  openId4VcConfiguration: {
+    // X.509 chains in credentials and signed authorization requests
+    getTrustedCertificatesForVerification: (agentContext, { certificateChain, verification }) => {
+      if (verification.type === 'credential') return [myIssuerRootPem]
+      return undefined // fall back to the trusted roots
+    },
+  },
+
+  // Mdoc reader authentication (ISO 18013-7 Annex C) only reaches this callback
+  getTrustedIssuersForVerification: async (agentContext, { signer, verification }) => {
+    if (verification.type !== 'mdocReaderAuth' || signer.method !== 'x509') return undefined
+    return { trustedIssuers: [{ method: 'x509', issuance: [readerRootPem] }] }
+  },
+}
+```
+
+Return `undefined` for the cases you don't handle. The SDK then falls back to the next source.
+
+### Logging
+
+```ts
+import { LogLevel } from '@paradym/wallet-sdk'
+
+logging: {
+  level: __DEV__ ? LogLevel.Trace : LogLevel.Warn,
+  trace: true,       // keep recent messages in memory so they can be exported
+  traceLimit: 1000,  // ring buffer size
+  customLogger: MyLogger,
+}
+```
+
+Credo logs whole records and payloads at `Trace` and `Debug`, and serializing them is expensive. Keep production builds at `Warn` or above.
+
+Export traced messages, for example from a "send logs" button:
+
+```ts
+import { ParadymWalletSdkConsoleLogger } from '@paradym/wallet-sdk'
+
+if (paradym.logger instanceof ParadymWalletSdkConsoleLogger) {
+  const json = paradym.logger.loggedMessageContents // JSON array, oldest first
+}
+```
+
+To forward logs elsewhere, for example to Sentry, extend the console logger. Extending it keeps console output and tracing working:
+
+```ts
+import { type LogLevel, ParadymWalletSdkConsoleLogger } from '@paradym/wallet-sdk'
+
+export class MyLogger extends ParadymWalletSdkConsoleLogger {
+  public constructor(level: LogLevel) {
+    super(level)
   }
 
-  // render PIN input...
+  public error(message: string, data?: Record<string, unknown>) {
+    Sentry.captureMessage(message, { extra: data })
+    super.error(message, data)
+  }
 }
 ```
 
-#### `locked` — Unlock with Biometrics
+You can also implement `ParadymWalletSdkLogger` (Credo's `BaseLogger`) from scratch. A custom logger that doesn't extend the console logger doesn't support `trace`.
 
-```typescript
-const { tryUnlockingUsingBiometrics, canTryUnlockingUsingBiometrics } = useParadym('locked')
+---
 
-if (canTryUnlockingUsingBiometrics) {
-  await tryUnlockingUsingBiometrics()
+## Key security
+
+### The wallet key
+
+All wallet data (credentials, keys, activity) lives in an encrypted [Askar](https://github.com/openwallet-foundation/askar) store. The key that opens it is never stored in plain form:
+
+1. On `setPin`, the SDK generates a random 32-byte salt and keeps it in the platform keychain.
+2. It runs the PIN and salt through Argon2id with the RFC 9106 parameters (64 MiB memory, 8 iterations, parallelism 4). The resulting hash seeds the store's raw key.
+3. Opening the store is the PIN check. A wrong PIN produces a key that doesn't open the store, which the SDK reports as `ParadymWalletAuthenticationInvalidPinError`.
+
+The SDK doesn't limit PIN attempts. Add a delay or attempt limit in your unlock screen.
+
+### Biometric unlock
+
+When biometrics are enabled, the derived wallet key is stored in the keychain with these settings:
+
+- Hardware-backed storage: Secure Enclave on iOS, TEE or StrongBox on Android.
+- Only the biometrics enrolled now can read it. Enrolling a new fingerprint or face invalidates it, and the user has to unlock with their PIN.
+- No fallback to the device passcode.
+- Readable only on this device, and only while a device passcode is set.
+
+On Android this needs API 30 or higher. On older versions, `canUseBiometryBackedWalletKey()` returns `false` and the wallet uses the PIN only.
+
+### Credential keys
+
+The agent has three key management backends:
+
+| Backend | Where keys live | Used for |
+|---|---|---|
+| `askar` (default) | Inside the encrypted wallet store | Most credential binding keys, DIDs |
+| `secureEnvironment` | Secure Enclave / Android Keystore, via `@animo-id/expo-secure-environment` | Hardware-bound credentials, such as a PID |
+| RSA verification | None (verify only) | Checking RSA-signed issuer chains |
+
+By default, received credentials are bound to `askar` keys. When the issuer supports batch issuance, the SDK requests up to 10 copies of the credential, each with its own key.
+
+To choose the key yourself, set `resolveCredentialKeyOptions`. It's called once for each credential configuration the wallet requests, with the options Credo passes to its credential binding resolver: the credential configuration (`format`, `vct`, `doctype`), the issuer metadata and the accepted proof types. It returns an object, and every field in it is optional:
+
+| Field | Default | Description |
+|---|---|---|
+| `backend` | `'askar'` | Key management backend the key is created in |
+| `algorithm` | First algorithm the issuer supports | JWA signature algorithm, which sets the key type: `ES256` (P-256) or `EdDSA` (Ed25519). It must be in `proofTypes.jwt.supportedSignatureAlgorithms`. The secure environment only supports `ES256` |
+
+Return `undefined` to use the defaults.
+
+```ts
+import type { ResolveCredentialKeyOptions } from '@paradym/wallet-sdk'
+
+const hardwareBound = {
+  vcts: ['urn:eudi:pid:1'],
+  doctypes: ['eu.europa.ec.eudi.pid.1', 'org.iso.18013.5.1.mDL'],
+}
+
+const resolveCredentialKeyOptions: ResolveCredentialKeyOptions = ({ credentialConfiguration: config, proofTypes }) => {
+  const isHardwareBound =
+    config.format === 'mso_mdoc'
+      ? hardwareBound.doctypes.includes(config.doctype)
+      : (config.format === 'dc+sd-jwt' || config.format === 'vc+sd-jwt') && hardwareBound.vcts.includes(config.vct ?? '')
+
+  if (isHardwareBound) return { backend: 'secureEnvironment', algorithm: 'ES256' }
+
+  // Prefer Ed25519 keys for everything else, when the issuer accepts them
+  if (proofTypes.jwt?.supportedSignatureAlgorithms.includes('EdDSA')) return { algorithm: 'EdDSA' }
+
+  return undefined
 }
 ```
 
-> The SDK allows up to 3 failed biometric attempts before disabling this method. If the user cancels, biometric unlock is also disabled for the session.
+If the returned algorithm isn't one the issuer supports, the request fails with an error.
 
-### Managing Biometrics (Unlocked state)
+The callback may be async, for example to check whether the device has a secure element first. It applies to every OpenID4VCI flow, including `acquireCredentials` and the lower-level `receiveCredentialFromOpenId4VciOffer`.
 
-```typescript
-const { enableBiometricUnlock, disableBiometricUnlock } = useParadym('unlocked')
+Hardware keys can't be exported or backed up. When the app is uninstalled or the wallet is reset, these credentials have to be issued again.
 
-// Enable (typically called during onboarding)
-await enableBiometricUnlock()
+> [!NOTE]
+> Issuers that require key attestations aren't supported yet. Offers that require them fail with an error.
 
-// Disable
-await disableBiometricUnlock()
+---
+
+## Internationalization
+
+The SDK renders credential names, claim labels and dates in one locale per process. It defaults to `'en'`.
+
+Set the starting locale with `locale`. Update it with `paradym.setLocale` when the user changes language. Call it during render rather than in an effect, so the components below it render in the new language in that same pass:
+
+```tsx
+function useSyncSdkLocale(locale: string) {
+  const paradym = useParadym()
+  if (paradym.state === 'unlocked') paradym.paradym.setLocale(locale)
+}
 ```
 
-### Locking and Resetting
+Credential displays are cached per locale, and the hooks re-render when it changes.
 
-```typescript
-const { lock, reset } = useParadym('unlocked')
+### Claim labels
 
-// Lock the wallet (closes the agent)
-await lock()
+When an issuer supplies its own label for a claim, the SDK uses it. For claims without one, you can supply a label with `resolveAttributeLabel`. Return `undefined` to let the SDK format the key itself (`birth_date` becomes "Birth date"):
 
-// Wipe all wallet data and return to 'not-configured'
-await reset()
+```ts
+import type { ResolveAttributeLabel } from '@paradym/wallet-sdk'
+
+const resolveAttributeLabel: ResolveAttributeLabel = (context) => {
+  // context: { key, path, format, plus docType, vct, types or schemaId depending on format }
+  if (context.key === 'birth_date') return i18n.t('Date of birth')
+  if (context.format === 'mso_mdoc' && context.docType === 'org.iso.18013.5.1.mDL') return mdlLabels[context.key]
+  return undefined
+}
+```
+
+The answer is cached per credential and locale. Only branch on the `context` and the current language.
+
+### Credential picker text
+
+When the SDK registers credentials with the [Digital Credentials API](#digital-credentials-api), it needs some fallback text. `resolveDcApiDisplay` is called on every registration, so it can return translated strings:
+
+```ts
+resolveDcApiDisplay: () => ({
+  displayTitleFallback: i18n.t('Unknown card'),
+  displaySubtitle: (issuerName) => i18n.t('Issued by {issuerName}', { issuerName }),
+  displaySubtitleFallback: i18n.t('Unknown issuer'),
+}),
+```
+
+> [!NOTE]
+> The OS biometric prompt shown when unlocking is English only for now ("Unlock wallet").
+
+---
+
+## Reading data
+
+These hooks work anywhere below `AppProvider`.
+
+| Hook | Returns |
+|---|---|
+| `useCredentials({ credentialCategory?, removeCanonicalRecords? })` | `{ credentials: CredentialForDisplay[], isLoading }` |
+| `useCredentialById(id)` | One `CredentialForDisplay` |
+| `useCredentialByCategory(category)` | The main credential of a category, for example `'pid'` |
+| `useMdocRecords()` / `useSdJwtVcRecords()` | Raw Credo records |
+| `useActivities({ filters?, limit? })` | Issuance, presentation and signing history |
+| `useActivityById(id)` | One activity |
+| `useInboxNotifications()` / `useHasInboxNotifications()` | Pending DIDComm offers and requests, and deferred credentials |
+| `useRefreshedDeferredCredentials()` | Fetches deferred credentials that are due. Mount it once |
+
+`CredentialForDisplay` is the type to render: `display` (name, colors, background image, issuer), `attributes` (formatted and ordered), `metadata` (type, issuer, validity), plus the underlying `record`. Ids are prefixed by format (`sd-jwt-vc-…`, `mdoc-…`, `w3c-credential-…`, `w3c-v2-credential-…`).
+
+```ts
+await paradym.deleteCredentials({ credentialIds: [credential.id] }) // returns { success } instead of throwing
 ```
 
 ---
 
-## Hooks
+## Receiving credentials
 
-When `AppProvider` is mounted, the following hooks are available to access records and perform actions:
+OpenID4VCI goes through `paradym.openid4vc`.
 
-### `useCredentials(options?)`
+```ts
+const { paradym } = useParadym('unlocked')
 
-Returns all stored credentials as `CredentialForDisplay[]`, sorted by creation date.
+// 1. Resolve the offer from a QR code or deep link
+const offer = await paradym.openid4vc.resolveCredentialOffer({
+  offerUri,
+  authorization: { clientId: 'my-wallet', redirectUri: 'mywallet://redirect' }, // only needed for the auth flows
+})
 
-```typescript
-import { useCredentials } from '@paradym/wallet-sdk'
-
-const { credentials, isLoading } = useCredentials()
-// optionally: useCredentials({ removeCanonicalRecords: false, credentialCategory: 'pid' })
+// offer.flow: 'pre-auth' | 'pre-auth-with-tx-code' | 'auth' | 'auth-presentation-during-issuance'
+// offer.credentialDisplay, offer.issuer and offer.trustedEntities describe what's offered and by whom
 ```
 
-### `useCredentialById(id)`
+`acquireCredentials` picks the flow from the options you pass:
 
-Returns a single `CredentialForDisplay` by its `CredentialForDisplayId`.
+```ts
+// Pre-authorized, optionally with a transaction code
+const result = await paradym.openid4vc.acquireCredentials({
+  resolvedCredentialOffer: offer.resolvedCredentialOffer,
+  transactionCode, // for 'pre-auth-with-tx-code'
+})
 
-```typescript
-import { useCredentialById } from '@paradym/wallet-sdk'
+// Authorization code: open offer.resolvedAuthorizationRequest.authorizationRequestUrl in a browser,
+// then pass the code from the redirect
+const result = await paradym.openid4vc.acquireCredentials({
+  resolvedCredentialOffer: offer.resolvedCredentialOffer,
+  resolvedAuthorizationRequest: offer.resolvedAuthorizationRequest,
+  authorization: { clientId, redirectUri },
+  authorizationCode,
+})
 
-const credential = useCredentialById('sd-jwt-vc-abc123')
-```
-
-### `useCredentialByCategory(category)`
-
-Returns the primary credential for a given category.
-
-```typescript
-import { useCredentialByCategory } from '@paradym/wallet-sdk'
-
-const pidCredential = useCredentialByCategory('pid')
-```
-
-### `useActivities()`
-
-Returns the wallet activity log (issuances and presentations).
-
-```typescript
-import { useActivities } from '@paradym/wallet-sdk'
-
-const { activities, isLoading } = useActivities()
-```
-
-### `useInboxNotifications()` / `useHasInboxNotifications()`
-
-Returns pending inbox notifications (e.g. deferred credentials that are ready).
-
-```typescript
-import { useInboxNotifications, useHasInboxNotifications } from '@paradym/wallet-sdk'
-
-const { notifications } = useInboxNotifications()
-const hasNotifications = useHasInboxNotifications()
-```
-
-### `useRefreshedDeferredCredentials()`
-
-Periodically checks for and fetches deferred credentials that are now available.
-
-### DIDComm hooks
-
-```typescript
-import {
-  useDidCommConnectionActions,
-  useDidCommCredentialActions,
-  useDidCommPresentationActions,
-} from '@paradym/wallet-sdk'
-```
-
----
-
-## Key Types
-
-### `CredentialForDisplay`
-
-The primary type for rendering credentials in UI. Returned by `useCredentials()`, `useCredentialById()`, and `useCredentialByCategory()`.
-
-```typescript
-type CredentialForDisplayId =
-  | `w3c-credential-${string}`
-  | `sd-jwt-vc-${string}`
-  | `mdoc-${string}`
-  | `w3c-v2-credential-${string}`
-
-interface CredentialForDisplay {
-  id: CredentialForDisplayId
-  createdAt: Date
-  display: CredentialDisplay        // name, colors, background image, issuer info
-  attributes: FormattedAttribute[]  // display-ordered attribute list
-  rawAttributes: Record<string, unknown>
-  metadata: CredentialMetadata      // type, issuer, holder, validity dates
-  claimFormat: ClaimFormat
-  record: CredentialRecord          // underlying Credo record
-  category?: CredentialCategoryMetadata
-  hasRefreshToken: boolean
-}
-
-interface CredentialDisplay {
-  name?: string
-  description?: string
-  textColor?: string
-  backgroundColor?: string
-  backgroundImage?: DisplayImage
-  issuer: CredentialIssuerDisplay
-}
-
-interface CredentialIssuerDisplay {
-  name?: string
-  domain?: string
-  logo?: DisplayImage
-}
-```
-
-### `FormattedSubmission`
-
-Returned by `paradym.openid4vc.resolveCredentialRequest()`. Use this to render the presentation request UI.
-
-```typescript
-interface FormattedSubmission {
-  name?: string
-  purpose?: string
-  areAllSatisfied: boolean
-  entries: FormattedSubmissionEntry[]
-}
-
-type FormattedSubmissionEntry =
-  | {
-      isSatisfied: false
-      inputDescriptorId: string
-      name?: string
-      description?: string
-      requestedAttributePaths: Array<Array<string | number | null | AnonCredsRequestedPredicate>>
-    }
-  | {
-      isSatisfied: true
-      inputDescriptorId: string
-      name?: string
-      description?: string
-      credentials: FormattedSubmissionEntrySatisfiedCredential[]
-    }
-
-interface FormattedSubmissionEntrySatisfiedCredential {
-  credential: CredentialForDisplay
-  disclosed: {
-    rawAttributes: Record<string, unknown>
-    attributes: FormattedAttribute[]
-    metadata: CredentialMetadata
-    paths: (string | AnonCredsRequestedPredicate)[][]
-  }
-}
-```
-
-### `Activity`
-
-Returned by `useActivities()`. A discriminated union on `type`:
-
-```typescript
-import type {
-  Activity,
-  IssuanceActivity,
-  PresentationActivity,
-  PresentationActivityCredential,
-  PresentationActivityCredentialNotFound,
-  SignedActivity,
-} from '@paradym/wallet-sdk'
-
-type ActivityType = 'shared' | 'received' | 'signed'
-type SharingFailureReason = 'missing_credentials' | 'unknown'
-
-// Credential found in wallet and shared
-interface PresentationActivityCredential {
-  /** If not defined, it means it's 'v1'. Starting from v2 the full mdoc attributes structure is stored. */
-  version?: 'v2'
-  id: CredentialForDisplayId
-  name?: string
-  attributeNames: string[]
-  attributes: Record<string, unknown>
-  metadata: Record<string, unknown>
-}
-
-// Requested credential not found in wallet
-interface PresentationActivityCredentialNotFound {
-  name?: string
-  attributeNames: string[]
-}
-
-interface IssuanceActivity {
-  id: string
-  type: 'received'
-  status: 'success' | 'failed' | 'stopped' | 'pending'
-  date: string  // ISO 8601
-  entity: { id?: string; host?: string; name?: string; logo?: DisplayImage; backgroundColor?: string }
-  credentialIds: CredentialForDisplayId[]
-  deferredCredentials?: CredentialDisplay[]
-}
-
-interface PresentationActivity {
-  id: string
-  type: 'shared'
-  status: 'success' | 'failed' | 'stopped'
-  date: string
-  entity: { id?: string; host?: string; name?: string; logo?: DisplayImage; backgroundColor?: string }
-  request: {
-    name?: string
-    purpose?: string
-    credentials: Array<PresentationActivityCredential | PresentationActivityCredentialNotFound>
-    failureReason?: SharingFailureReason
-  }
-}
-
-interface SignedActivity extends Omit<PresentationActivity, 'type'> {
-  type: 'signed'
-  transaction: FormattedTransactionData
-}
-
-type Activity = PresentationActivity | IssuanceActivity | SignedActivity
-```
-
-### `ResolveCredentialOfferReturn`
-
-Returned by `paradym.openid4vc.resolveCredentialOffer()`. A discriminated union on `flow`:
-
-```typescript
-type ResolveCredentialOfferReturn =
-  | {
-      flow: 'pre-auth'
-      resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-      credentialDisplay: CredentialDisplay
-    }
-  | {
-      flow: 'pre-auth-with-tx-code'
-      resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-      credentialDisplay: CredentialDisplay
-      txCodeInfo: { description?: string; length?: number; input_mode?: 'numeric' | 'text' }
-    }
-  | {
-      flow: 'auth'
-      resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-      credentialDisplay: CredentialDisplay
-      resolvedAuthorizationRequest: OpenId4VciResolvedOauth2RedirectAuthorizationRequest
-    }
-  | {
-      flow: 'auth-presentation-during-issuance'
-      resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
-      credentialDisplay: CredentialDisplay
-      resolvedAuthorizationRequest: OpenId4VciResolvedAuthorizationRequest
-      credentialsForProofRequest: CredentialsForProofRequest
-    }
-```
-
----
-
-## OpenID4VC
-
-Access all OpenID4VC methods through `paradym.openid4vc`.
-
-### Receiving a Credential (QR / Deeplink)
-
-```typescript
-import { useParadym } from '@paradym/wallet-sdk'
-import { useState } from 'react'
-
-export default function ScanScreen() {
-  const { paradym } = useParadym('unlocked')
-  const [offer, setOffer] = useState()
-
-  const onScanned = async (uri: string) => {
-    const resolved = await paradym.openid4vc.resolveCredentialOffer({ offerUri: uri })
-    setOffer(resolved)
-  }
-
-  if (offer) return <AcquireCredentialScreen offer={offer.resolvedCredentialOffer} />
-  // render camera...
-}
-
-function AcquireCredentialScreen({ offer }) {
-  const { paradym } = useParadym('unlocked')
-
-  const handleAcquire = async () => {
-    const { credentials } = await paradym.openid4vc.acquireCredentials({
-      resolvedCredentialOffer: offer,
-    })
-    // credentials[0].record is available here
-    await paradym.openid4vc.completeCredentialRetrieval({
-      resolvedCredentialOffer: offer,
-      record: credentials[0].record,
-    })
-  }
-
-  // render UI...
-}
-```
-
-### Receiving a Deferred Credential
-
-For issuers that do not deliver credentials immediately:
-
-```typescript
-await paradym.openid4vc.receiveDeferredCredential({ /* options */ })
-```
-
-### Sharing a Credential (Presentation)
-
-```typescript
-const resolved = await paradym.openid4vc.resolveCredentialRequest({ uri })
-
-const response = await paradym.openid4vc.shareCredentials({
-  resolvedRequest: resolved,
-  selectedCredentials: {}, // map query keys to credential IDs
+// Presentation during issuance: the issuer asks for a credential first
+const result = await paradym.openid4vc.acquireCredentials({
+  resolvedCredentialOffer: offer.resolvedCredentialOffer,
+  resolvedAuthorizationRequest: offer.resolvedAuthorizationRequest,
+  credentialsForRequest: offer.credentialsForProofRequest,
+  authorization: { clientId, redirectUri },
 })
 ```
 
-### Declining a Credential Request
+A wrong transaction code throws `ParadymWalletInvalidTransactionCodeError`.
 
-```typescript
-await paradym.openid4vc.declineCredentialRequest({ /* options */ })
-```
+Credentials aren't stored until the user accepts them. `result` contains either `credentials` (ready to show) or `deferredCredentials` (the issuer delivers later):
 
----
-
-## Digital Credentials API (DC API)
-
-Access DC API methods through `paradym.dcApi`.
-
-```typescript
-const { paradym } = useParadym('unlocked')
-
-// Register credentials with the browser DC API
-await paradym.dcApi.registerCredentials({ /* options */ })
-
-// Resolve an incoming DC API request
-const resolved = await paradym.dcApi.resolveRequest({ /* options */ })
-
-// Respond to the request
-await paradym.dcApi.sendResponse({ /* options */ })
-
-// Send an error response
-paradym.dcApi.sendErrorResponse(/* options */)
-```
-
----
-
-## ISO/IEC 18013-5 Proximity (mDoc/mDL)
-
-Access proximity flow utilities through `paradym.proximity`.
-
-```typescript
-const { paradym } = useParadym('unlocked')
-
-const submission = await paradym.proximity.getSubmissionForMdocDocumentRequest({
-  // options
+```ts
+await paradym.openid4vc.completeCredentialRetrieval({
+  resolvedCredentialOffer: offer.resolvedCredentialOffer,
+  recordToStore: result.credentials[0] && { credentialRecord: result.credentials[0].record },
+  deferredCredential: result.deferredCredentials[0],
 })
 ```
+
+This stores the credential, adds an activity entry, and registers the credential with the Digital Credentials API. Deferred credentials are fetched later by `useRefreshedDeferredCredentials`.
+
+---
+
+## Presenting credentials
+
+### OpenID4VP
+
+```ts
+const request = await paradym.openid4vc.resolveCredentialRequest({ uri })
+
+request.verifier           // { entityId, name, logo, hostName, trustedEntities }
+request.trustMechanism     // how the verifier was identified
+request.formattedSubmission // what's asked for, and which credentials match
+request.transactionData    // set when the verifier asks to sign a transaction
+
+// The user accepts
+await paradym.openid4vc.shareCredentials({ resolvedRequest: request, selectedCredentials: {} })
+
+// The user declines (logged in the activity history)
+await paradym.openid4vc.declineCredentialRequest({ resolvedRequest: request })
+```
+
+`formattedSubmission.entries` has one entry per requested credential. Entries with `isSatisfied: true` list the matching `credentials` and the attributes that would be `disclosed`. When `areAllSatisfied` is `false`, the wallet can't answer the request. Use the [display helpers](#display-helpers) to explain what's missing.
+
+Pass `acceptTransactionData: true` when the user approved a transaction, for example a QES authorization.
+
+### Digital Credentials API
+
+The SDK registers SD-JWT VC and mdoc credentials with the OS credential manager. On Android this goes through Credential Manager. On iOS only mdocs are registered, with the identity document provider. Credentials received through `completeCredentialRetrieval` are registered automatically. To register the full set, for example on startup:
+
+```ts
+useEffect(() => {
+  void paradym.dcApi.registerCredentials({})
+}, [paradym])
+```
+
+Registration is skipped when nothing has changed, and it never throws. Errors are logged.
+
+Browsers send requests to a separate entry point: an Android activity or an iOS app extension. That entry point can't load the full SDK, so use `ParadymDcApiSdk` there, a lighter instance of the same wallet. Pass it the same options object as the app, so it trusts exactly the same parties:
+
+```ts
+import { getWalletKeyUsingPin, getWalletKeyVersion, ParadymDcApiSdk } from '@paradym/wallet-sdk/dc-api'
+
+const walletKey = await getWalletKeyUsingPin(pin, getWalletKeyVersion())
+const sdk = await ParadymDcApiSdk.initialize({ ...paradymOptions, walletKey, locale })
+
+const review = await sdk.reviewRequest(request) // request from @animo-id/expo-digital-credentials-api
+// review.verifier, review.submission, review.trustMechanism
+await review.share() // or review.decline()
+await sdk.shutdown()
+```
+
+Import from `@paradym/wallet-sdk/dc-api` rather than the package root. The root pulls in DIDComm, AnonCreds and react-query, which the extension can't load. The `dc-api` entry also exports the SDK errors, `getWalletKeyUsingBiometrics`, `getIsBiometricsEnabled`, the submission types, and the display helpers for showing what a request is missing.
+
+On iOS the store, the settings and the keychain items have to be readable by the extension. Configure the `@animo-id/expo-digital-credentials-api` config plugin with an `appGroup` and a `keychainAccessGroup`. When the shared container exists, the SDK moves the store into it on the next unlock.
+
+### Proximity (ISO 18013-5)
+
+To match an mdoc device request received over BLE or NFC against the wallet:
+
+```ts
+const submission = await paradym.proximity.getSubmissionForMdocDocumentRequest({ encodedDeviceRequest })
+```
+
+The SDK doesn't handle the transport or the session yet.
 
 ---
 
 ## DIDComm
 
-```typescript
-const { paradym } = useParadym('unlocked')
+Enable it with `didcommConfiguration: { label: 'My Wallet' }`. This adds DIDComm v1/v2 credential and proof protocols, AnonCreds, and the cheqd, did:web and did:webvh registries.
 
-const result = await paradym.resolveDidCommInvitation(invitationUrlOrObject)
+```ts
+const { paradym } = useParadym('unlocked', 'didcomm')
 
-if (result.success) {
-  // use result.outOfBandRecord, result.connectionRecord, etc.
-}
+const result = await paradym.resolveDidCommInvitation(invitationUrl)
+if (!result.success) throw new Error(result.message)
+
+result.flowType // 'issue' | 'verify' | 'connect'
 ```
 
-> `isDidCommEnabled` and `isOpenId4VcEnabled` on the SDK instance can be used to check which protocols are active.
+Then use `useDidCommConnectionActions(result)`, `useDidCommCredentialActions(credentialExchangeId)` or `useDidCommPresentationActions(proofExchangeId)` to accept or decline.
+
+`paradym.isDidCommEnabled` and `paradym.isOpenId4VcEnabled` report which protocols are active.
 
 ---
 
-## Managing Credentials
+## Errors
 
-### Delete credentials
+OpenID4VC, DC API and unlock methods throw. `resolveDidCommInvitation` and `deleteCredentials` return `{ success: true, ... } | { success: false, message }` instead.
 
-```typescript
-await paradym.deleteCredentials({
-  credentialIds: ['credential-id-1', 'credential-id-2'],
-})
-```
-
----
-
-## Error Handling
-
-The SDK exports typed error classes for handling authentication failures:
-
-```typescript
-import {
-  ParadymWalletAuthenticationInvalidPinError,
-  ParadymWalletBiometricAuthenticationError,
-  ParadymWalletBiometricAuthenticationCancelledError,
-  ParadymWalletBiometricAuthenticationNotEnabledError,
-} from '@paradym/wallet-sdk'
-
-try {
-  await unlock({ enableBiometrics: false })
-} catch (error) {
-  if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
-    // Wrong PIN — prompt retry
-  } else if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
-    // User cancelled biometric prompt
-  } else if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
-    // Biometrics not set up on device
-  }
-}
-```
-
-All error classes extend `ParadymWalletSdkError` which extends `Error`.
-
----
-
-## SDK Instance API
-
-| Property / Method | Description |
+| Error | When |
 |---|---|
-| `paradym.agent` | The underlying Credo agent instance |
-| `paradym.walletId` | The wallet's unique identifier |
-| `paradym.logger` | The configured logger |
-| `paradym.isDidCommEnabled` | Whether DIDComm is configured |
-| `paradym.isOpenId4VcEnabled` | Whether OpenID4VC is configured |
-| `paradym.initialize()` | Initialize the agent (called internally) |
-| `paradym.shutdown()` | Shut down the agent and close the wallet |
-| `paradym.reset()` | Wipe all wallet data |
+| `ParadymWalletAuthenticationInvalidPinError` | Wrong PIN; the key doesn't open the store |
+| `ParadymWalletBiometricAuthenticationError` | Biometric prompt failed |
+| `ParadymWalletBiometricAuthenticationCancelledError` | User cancelled the biometric prompt |
+| `ParadymWalletBiometricAuthenticationNotEnabledError` | No biometrics enrolled on the device |
+| `ParadymWalletInvalidTransactionCodeError` | Issuer rejected the transaction code |
+| `ParadymWalletNoStoreError` | `ParadymDcApiSdk` was opened before the app ever ran |
+| `ParadymWalletInvitation*Error` | Invitation couldn't be parsed, was already used, or uses an unsupported protocol |
+| `ParadymWalletMustBeAgentTypeError` | DIDComm or OpenID4VC method called while that protocol is disabled |
+
+All of them extend `ParadymWalletSdkError`.
 
 ---
 
-## Return Type Convention
+## Escape hatches
 
-Most SDK methods return a `ParadymWalletSdkResult<T>`:
+`paradym.agent` is the underlying [Credo](https://credo.js.org) agent, for anything the SDK doesn't wrap. Narrow its type with `useParadym('unlocked', 'openid4vc' | 'didcomm' | 'full')`.
 
-```typescript
-type ParadymWalletSdkResult<T> =
-  | ({ success: true } & T)
-  | { success: false; message: string; cause?: string }
-```
+### Display helpers
 
-Always check `result.success` before using the returned data.
+The package root also exports the building blocks the SDK uses internally, so you can build your own screens:
+
+- `getCredentialForDisplay(record)` and `getCredentialForDisplayId(record)`
+- `formatAllAttributes`, `formatAttributesAtPaths`, `pickAttributesAtPaths`
+- `getDisclosedAttributeNamesForDisplay`, `getUnsatisfiedAttributePathsForDisplay`, `hasMissingCards`, `getClosestPartialMatch`
+- `parseInvitationUrl` / `parseInvitationUrlSync`, to tell offers, requests and DIDComm invitations apart
 
 ---
 
