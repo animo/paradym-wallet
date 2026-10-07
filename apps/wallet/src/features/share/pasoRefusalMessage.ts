@@ -74,6 +74,12 @@ export function usePasoRefusalMessage() {
             message: 'The payee logo of this payment could not be verified.',
             comment: 'Shown when a PaSO external resource fails its integrity check',
           })
+        case 'credentialOnlyForPayments':
+          return t({
+            id: 'paso.refusal.credentialOnlyForPayments',
+            message: 'Your payment card can only be used to authorize a payment, and this request is not one.',
+            comment: 'Shown when a request asks for a PaSO payment card without a payment for it to authorize',
+          })
       }
     },
     [t]

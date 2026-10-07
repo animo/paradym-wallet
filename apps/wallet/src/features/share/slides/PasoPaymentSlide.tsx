@@ -32,6 +32,9 @@ interface PasoPaymentSlideProps {
   onAccept?: () => Promise<void>
   onDecline?: () => void
   isAccepting: boolean
+  /** Whether `transaction` is being resolved again for a newly picked card. */
+  isResolvingTransaction?: boolean
+  onSelectPaymentCredential?: (credentialQueryId: string, credentialId: string) => void
 }
 
 /**
@@ -57,6 +60,8 @@ export const PasoPaymentSlide = ({
   onAccept,
   onDecline,
   isAccepting,
+  isResolvingTransaction = false,
+  onSelectPaymentCredential,
 }: PasoPaymentSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const { t } = useLingui()
@@ -78,10 +83,14 @@ export const PasoPaymentSlide = ({
     comment: 'Label above the payee of a payment, when the card supplies no label of its own',
   })
 
-  const cardForPayment = submission?.entries.find(
-    (entry): entry is typeof entry & { isSatisfied: true } =>
-      entry.inputDescriptorId === transaction.cardForTransactionId && entry.isSatisfied
-  )?.credentials[0]
+  // Every card that can authorize the payment. The first is the one the transaction was resolved
+  // against and will be presented; picking another moves it to the front (`selectPasoPaymentCredential`).
+  const paymentCards =
+    submission?.entries.find(
+      (entry): entry is typeof entry & { isSatisfied: true } =>
+        entry.inputDescriptorId === transaction.cardForTransactionId && entry.isSatisfied
+    )?.credentials ?? []
+  const cardForPayment = paymentCards[0]
 
   /**
    * [PaSO Core] Section 5.3 and [PaSO View] Section 2: the claims designated for display, and the
@@ -245,17 +254,71 @@ export const PasoPaymentSlide = ({
             {cardForPayment && (
               <YStack gap="$2">
                 <Heading heading="sub2">
-                  <Trans id="paso.payment.cardHeading" comment="Heading above the card used to authorize a payment">
-                    Payment card
-                  </Trans>
+                  {paymentCards.length > 1 ? (
+                    <Trans
+                      id="paso.payment.chooseCardHeading"
+                      comment="Heading above the cards the user can choose from to authorize a payment"
+                    >
+                      Pay with
+                    </Trans>
+                  ) : (
+                    <Trans id="paso.payment.cardHeading" comment="Heading above the card used to authorize a payment">
+                      Payment card
+                    </Trans>
+                  )}
                 </Heading>
-                <MiniCardRowItem
-                  name={cardForPayment.credential.display.name ?? t(commonMessages.unknown)}
-                  backgroundImageUri={cardForPayment.credential.display.backgroundImage?.url}
-                  backgroundColor={cardForPayment.credential.display.backgroundColor ?? '$white'}
-                  issuerImageUri={cardForPayment.credential.display.issuer.logo?.url}
-                  subtitle={cardForPayment.credential.display.issuer.name ?? t(commonMessages.unknown)}
-                />
+                {paymentCards.map((card) => {
+                  // WPA Rulebook Section 4.2: the masked IBAN is how the payer tells their payment
+                  // cards apart, one per account.
+                  const maskedIban = card.credential.rawAttributes.masked_iban
+                  const cardRow = (
+                    <YStack gap="$2" f={1}>
+                      <MiniCardRowItem
+                        name={card.credential.display.name ?? t(commonMessages.unknown)}
+                        backgroundImageUri={card.credential.display.backgroundImage?.url}
+                        backgroundColor={card.credential.display.backgroundColor ?? '$white'}
+                        issuerImageUri={card.credential.display.issuer.logo?.url}
+                        subtitle={card.credential.display.issuer.name ?? t(commonMessages.unknown)}
+                      />
+                      {typeof maskedIban === 'string' && (
+                        <Paragraph variant="sub" color="$grey-700">
+                          {maskedIban}
+                        </Paragraph>
+                      )}
+                    </YStack>
+                  )
+
+                  if (paymentCards.length === 1) return <XStack key={card.credential.record.id}>{cardRow}</XStack>
+
+                  const isSelected = card === cardForPayment
+                  return (
+                    <XStack
+                      key={card.credential.record.id}
+                      ai="center"
+                      gap="$3"
+                      p="$3"
+                      br="$6"
+                      bw={1}
+                      borderColor={isSelected ? '$primary-500' : '$grey-200'}
+                      accessibilityRole="radio"
+                      aria-checked={isSelected}
+                      disabled={isProcessing || isResolvingTransaction}
+                      pressStyle={{ opacity: 0.8 }}
+                      onPress={() => {
+                        if (!isSelected) {
+                          onSelectPaymentCredential?.(transaction.cardForTransactionId, card.credential.record.id)
+                        }
+                      }}
+                    >
+                      {cardRow}
+                      {isSelected ? (
+                        <HeroIcons.CheckCircleFilled color="$primary-500" size={24} />
+                      ) : (
+                        <HeroIcons.CheckCircle color="$grey-300" size={24} />
+                      )}
+                    </XStack>
+                  )
+                })}
               </YStack>
             )}
 
@@ -285,7 +348,7 @@ export const PasoPaymentSlide = ({
               onAccept={handleAccept}
               onDecline={handleDecline}
               isLoading={isProcessing}
-              isAcceptDisabled={!hasSeenTransactionData}
+              isAcceptDisabled={!hasSeenTransactionData || isResolvingTransaction}
             />
             {!hasSeenTransactionData && (
               <Paragraph variant="annotation" ta="center">

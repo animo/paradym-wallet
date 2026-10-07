@@ -41,6 +41,8 @@ export type PasoRefusalCode =
   | 'noSupportedLocale'
   /** [PaSO Core] Section 7.4.2 step 3 — an external resource failed to resolve or verify. */
   | 'externalResourceVerificationFailed'
+  /** A PaSO Credential is requested without a PaSO transaction for it to authorize. */
+  | 'credentialOnlyForPayments'
 
 export class ParadymWalletPasoError extends ParadymWalletSdkError {
   public constructor(

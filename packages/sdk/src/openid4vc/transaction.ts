@@ -4,6 +4,7 @@ import { getPaymentsMetadata } from '../metadata/credentials'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { pasoLocalePriorityList } from '../paso/locale'
 import {
+  assertPasoCredentialsOnlyForPasoTransactions,
   type FormattedTransactionDataPasoPayment,
   hasPasoTransactionData,
   resolvePasoTransactionData,
@@ -56,6 +57,9 @@ export const resolveTransactionData = async (
   if (hasPasoTransactionData(credentialsForRequest)) {
     return resolvePasoTransactionData(paradym, credentialsForRequest, pasoLocalePriorityList(locale))
   }
+
+  // Checked here as well as when sharing, so the user hears about it before being asked to consent.
+  assertPasoCredentialsOnlyForPasoTransactions(credentialsForRequest)
 
   return getFormattedTransactionData(credentialsForRequest, locale)
 }

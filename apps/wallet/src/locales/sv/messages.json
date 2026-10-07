@@ -23,7 +23,7 @@
 			"0": ["verifier.name"]
 		},
 		"comments": ["Explanation that the user is about to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 152]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 203]],
 		"translation": "{0} vill att du godkänner en betalning."
 	},
 	"payment.description": {
@@ -43,7 +43,7 @@
 			"amountShared": ["amountShared"]
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 239]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 241]],
 		"translation": "{amountShared} kort delades."
 	},
 	"inbox.notificationType.fromLabel": {
@@ -144,7 +144,7 @@
 		"message": "1 credential was shared.",
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 244]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 246]],
 		"translation": "1 kort delades."
 	},
 	"dateFormatting.oneDay": {
@@ -272,7 +272,7 @@
 			"name": ["name"]
 		},
 		"comments": ["Shown when a new card has been added"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 142]],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 149]],
 		"translation": "Lade till {name}"
 	},
 	"common.fields.address": {
@@ -320,7 +320,7 @@
 		"comments": [
 			"Label above the amount of a payment, when the card supplies no label of its own"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 71]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 75]],
 		"translation": "Belopp"
 	},
 	"interactionError.message.connect": {
@@ -502,7 +502,7 @@
 		"placeholders": {},
 		"comments": ["Shown when authentication with PIN fails for other reasons"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 65]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 81]
 		],
 		"translation": "Autentisering misslyckades"
 	},
@@ -565,7 +565,7 @@
 		"comments": [
 			"Description that the biometric unlock feature is not supported on this device"
 		],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 166]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 190]],
 		"translation": "Biometrisk autentisering är inaktiverad eller stöds inte på den här enheten."
 	},
 	"common.biometricAuthenticationMustBeEnabledInSettings": {
@@ -586,7 +586,7 @@
 		"message": "Biometric unlock",
 		"placeholders": {},
 		"comments": ["Label for the toggle to enable biometric unlock"],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 157]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 181]],
 		"translation": "Biometrisk upplåsning"
 	},
 	"dcApi.biometricsUnavailable": {
@@ -602,7 +602,7 @@
 		"comments": [
 			"Toast shows when biometrics has successfully been disabled from settings."
 		],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 126]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 130]],
 		"translation": "Biometri inaktiverad"
 	},
 	"biometrics.enabled": {
@@ -611,7 +611,7 @@
 		"comments": [
 			"Toast shows when biometrics has successfully been enabled from settings."
 		],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 94]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 98]],
 		"translation": "Biometri aktiverad"
 	},
 	"common.fields.birthYear": {
@@ -978,7 +978,7 @@
 		"message": "Deleted credential",
 		"placeholders": {},
 		"comments": ["Shown when a credential no longer exists in the wallet"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 107]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 108]],
 		"translation": "Borttaget kort"
 	},
 	"common.demoOrganization": {
@@ -992,7 +992,7 @@
 		"message": "Development Mode",
 		"placeholders": {},
 		"comments": ["Label for the toggle to enable developer mode"],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 178]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 202]],
 		"translation": "Utvecklingsläge"
 	},
 	"nfcScanner.scanning.title": {
@@ -1187,14 +1187,14 @@
 		"message": "Export debug logs",
 		"placeholders": {},
 		"comments": ["Label for the button to export debug logs"],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 190]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 214]],
 		"translation": "Exportera felsökningsloggar"
 	},
 	"settings.exportDebugLogsDescription": {
 		"message": "Export the last 1000 debug logs from the wallet. Note that this can contain sensitive information.",
 		"placeholders": {},
 		"comments": ["Description for the feature to export debug logs"],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 199]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 229]],
 		"translation": "Exportera de senaste 1000 felsökningsloggarna från plånboken. Observera att detta kan innehålla känslig information."
 	},
 	"activity.latest.failedCard": {
@@ -1203,7 +1203,7 @@
 			"name": ["name"]
 		},
 		"comments": ["Shown when it has failed to add a new card"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 130]],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 137]],
 		"translation": "Misslyckades med att lägga till {name}"
 	},
 	"common.invitationParsingFailed": {
@@ -1583,7 +1583,7 @@
 		"message": "Language",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/menu/SettingsScreen.tsx", 65]],
+		"origin": [["src/features/menu/SettingsScreen.tsx", 69]],
 		"translation": "Språk"
 	},
 	"verifyPartySlide.hasPreviousInteractionsDescription": {
@@ -1738,7 +1738,7 @@
 			"Shown when the user tries to accept a proof but no credentials are loaded"
 		],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 53]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 69]
 		],
 		"translation": "Inga kort valda"
 	},
@@ -1746,7 +1746,7 @@
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 249]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 251]],
 		"translation": "Inga kort delades."
 	},
 	"common.noPurposeProvided": {
@@ -1893,7 +1893,7 @@
 		"comments": [
 			"Fallback label for the button that authorizes a PaSO payment"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 232]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 341]],
 		"translation": "Betala"
 	},
 	"payShare.accept": {
@@ -1903,13 +1903,22 @@
 		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 47]],
 		"translation": "Betal & dela"
 	},
+	"paso.payment.chooseCardHeading": {
+		"message": "Pay with",
+		"placeholders": {},
+		"comments": [
+			"Heading above the cards the user can choose from to authorize a payment"
+		],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 258]],
+		"translation": "Betala med"
+	},
 	"paso.payment.payeeLabel": {
 		"message": "Payee",
 		"placeholders": {},
 		"comments": [
 			"Label above the payee of a payment, when the card supplies no label of its own"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 76]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 80]],
 		"translation": "Betalningsmottagare"
 	},
 	"TKFmBL": {
@@ -1933,7 +1942,7 @@
 		"message": "Payment card",
 		"placeholders": {},
 		"comments": ["Heading above the card used to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 204]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 265]],
 		"translation": "Betalkort"
 	},
 	"payShare.cardHeading": {
@@ -2012,7 +2021,7 @@
 			"name": ["name"]
 		},
 		"comments": ["Shown when a new card is pending"],
-		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 153]],
+		"origin": [["src/features/wallet/components/LatestActivityCard.tsx", 160]],
 		"translation": "Väntande {name}"
 	},
 	"deferredCredentials.title": {
@@ -2038,7 +2047,7 @@
 		"placeholders": {},
 		"comments": ["Shown when PIN is required but not provided"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 59]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 75]
 		],
 		"translation": "PIN-autentisering misslyckades"
 	},
@@ -2228,7 +2237,7 @@
 			"0": ["activity.entity.name"]
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 145]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 146]],
 		"translation": "Det gick inte att ta emot korten från {0}."
 	},
 	"activity.receivedStopped": {
@@ -2239,7 +2248,7 @@
 		"comments": [
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 152]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 153]],
 		"translation": "Mottagningen av korten från {0} avbröts."
 	},
 	"activity.latest.title": {
@@ -2306,7 +2315,7 @@
 		"comments": [
 			"Heading shown when the request did not result in attributes being shared"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 128]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 129]],
 		"translation": "Begärd information"
 	},
 	"onboarding.resetAlert.title": {
@@ -2419,7 +2428,7 @@
 		"comments": [
 			"Shown while the user has not yet scrolled through all payment details"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 246]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 355]],
 		"translation": "Skrolla ner för att granska alla betalningsuppgifter."
 	},
 	"common.search": {
@@ -2506,7 +2515,7 @@
 		"comments": [
 			"Heading shown when attributes were successfully shared in an activity"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 123]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 124]],
 		"translation": "Delade uppgifter"
 	},
 	"activity.latest.sharedCard": {
@@ -2644,7 +2653,7 @@
 		"comments": [
 			"Shown below a document name to indicate the user signed it with a specific QTSP"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 278]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 280]],
 		"translation": "Signerar med {0}"
 	},
 	"common.simulatorEidCardActivated": {
@@ -2800,7 +2809,7 @@
 		"comments": [
 			"Shown in activity detail when the received credentials are pending"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 159]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 160]],
 		"translation": "Korten från {0} är inte redo än och kommer att hämtas senare."
 	},
 	"paso.refusal.metadataViolatesConstraints": {
@@ -2809,7 +2818,7 @@
 		"comments": [
 			"Shown when PaSO credential metadata breaks the constraints on what may be displayed"
 		],
-		"origin": [["src/features/share/pasoRefusalMessage.ts", 44]],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 43]],
 		"translation": "Betalningsuppgifterna kan inte visas säkert, så den här betalningen kan inte godkännas."
 	},
 	"onboardingWalletExplanation.slide2.subtitle": {
@@ -2823,14 +2832,14 @@
 		"message": "The document was not signed.",
 		"placeholders": {},
 		"comments": ["Shown after a failed digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 118]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 119]],
 		"translation": "Dokumentet signerades inte."
 	},
 	"activity.documentSigned": {
 		"message": "The document was signed.",
 		"placeholders": {},
 		"comments": ["Shown after a successful digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 113]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 114]],
 		"translation": "Dokumentet signerades."
 	},
 	"cardLifecycle.limitedByDate.expired.description": {
@@ -2953,14 +2962,14 @@
 		"comments": [
 			"Shown when a PaSO external resource fails its integrity check"
 		],
-		"origin": [["src/features/share/pasoRefusalMessage.ts", 69]],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 72]],
 		"translation": "Betalningsmottagarens logotyp kunde inte verifieras."
 	},
 	"paso.refusal.payloadDoesNotConform": {
 		"message": "The payment details are not valid, so this payment cannot be authorized.",
 		"placeholders": {},
 		"comments": ["Shown when a PaSO payload does not conform to its rulebook"],
-		"origin": [["src/features/share/pasoRefusalMessage.ts", 57]],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 60]],
 		"translation": "Betalningsuppgifterna är ogiltiga, så den här betalningen kan inte godkännas."
 	},
 	"paso.refusal.invalidCredentialMetadata": {
@@ -2969,7 +2978,7 @@
 		"comments": [
 			"Shown when the signed PaSO credential metadata is missing or fails verification"
 		],
-		"origin": [["src/features/share/pasoRefusalMessage.ts", 51]],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 54]],
 		"translation": "Betalningsuppgifterna för ditt kort kunde inte verifieras. Försök igen senare."
 	},
 	"requestPurpose.overaskingWarning": {
@@ -2995,7 +3004,7 @@
 			"Body text shown when a received request could not be handled at all"
 		],
 		"origin": [
-			["src/features/notifications/NotificationErrorBoundary.tsx", 11]
+			["src/features/notifications/NotificationErrorBoundary.tsx", 12]
 		],
 		"translation": "Förfrågan kunde inte hanteras. Du kan tryggt stänga detta och försöka igen."
 	},
@@ -3180,7 +3189,7 @@
 		"comments": [
 			"Shown when no locale produces a complete match for the PaSO transaction data"
 		],
-		"origin": [["src/features/share/pasoRefusalMessage.ts", 63]],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 66]],
 		"translation": "Den här betalningen kan inte visas på ett språk du förstår."
 	},
 	"paso.refusal.tooComplex": {
@@ -3207,7 +3216,7 @@
 		"comments": [
 			"Shown when a PaSO payment request uses an unsupported type or algorithm"
 		],
-		"origin": [["src/features/share/pasoRefusalMessage.ts", 38]],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 37]],
 		"translation": "Den här betalningen använder funktioner som den här plånboken inte stöder ännu."
 	},
 	"onboarding.pin.subtitle": {
@@ -3245,7 +3254,7 @@
 			]
 		},
 		"comments": [],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 303]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 305]],
 		"translation": "Kwa {0}"
 	},
 	"pidSetup.enableBiometrics.subtitle": {
@@ -3678,7 +3687,7 @@
 		"comments": [
 			"Shown in activity detail when one credential has been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 173]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 174]],
 		"translation": "Du har tagit emot följande kort från {0}."
 	},
 	"activity.receivedMultiple": {
@@ -3689,7 +3698,7 @@
 		"comments": [
 			"Shown in activity detail when multiple credentials have been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 167]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 168]],
 		"translation": "Du har tagit emot följande kort från {0}."
 	},
 	"pidSetup.enableBiometrics.title": {
@@ -3794,6 +3803,15 @@
 		"comments": ["Shown after credentials are shared (no verifier name)"],
 		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 86]],
 		"translation": "Din information har delats."
+	},
+	"paso.refusal.credentialOnlyForPayments": {
+		"message": "Your payment card can only be used to authorize a payment, and this request is not one.",
+		"placeholders": {},
+		"comments": [
+			"Shown when a request asks for a PaSO payment card without a payment for it to authorize"
+		],
+		"origin": [["src/features/share/pasoRefusalMessage.ts", 78]],
+		"translation": "Ditt betalkort kan bara användas för att godkänna en betalning, och den här begäran är ingen betalning."
 	},
 	"authenticate.pinRequiredToast": {
 		"message": "Your PIN is required to unlock the app",

@@ -33,6 +33,9 @@ interface PresentationNotificationScreenProps {
   usePin: boolean
   isAccepting: boolean
   transaction?: FormattedTransactionData
+  /** Whether `transaction` is being resolved again, e.g. after a different payment card was picked. */
+  isResolvingTransaction?: boolean
+  onSelectPaymentCredential?: (credentialQueryId: string, credentialId: string) => void
   onAccept: () => Promise<void>
   onDecline: () => void
   onCancel: () => void
@@ -55,6 +58,8 @@ export function PresentationNotificationScreen({
   trustedEntities,
   trustMechanism,
   transaction,
+  isResolvingTransaction,
+  onSelectPaymentCredential,
   errorReason,
 }: PresentationNotificationScreenProps) {
   const { t } = useLingui()
@@ -122,6 +127,8 @@ export function PresentationNotificationScreen({
                           onAccept={usePin ? undefined : onAccept}
                           onDecline={onDecline}
                           isAccepting={isAccepting}
+                          isResolvingTransaction={isResolvingTransaction}
+                          onSelectPaymentCredential={onSelectPaymentCredential}
                         />
                       ),
                     },

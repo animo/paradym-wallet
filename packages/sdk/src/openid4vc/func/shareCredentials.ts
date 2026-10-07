@@ -10,9 +10,11 @@ import {
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletBiometricAuthenticationError } from '../../error'
+import type { FormattedSubmissionEntrySatisfied } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'
 import { createPasoScaResponseClaims } from '../../paso/responseClaims'
+import { assertPasoCredentialsOnlyForPasoTransactions } from '../../paso/transactionData'
 import type { PasoAuthenticationMethod } from '../../paso/types'
 import { activityStorage, storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
 import type { CredentialRecord } from '../../storage/credentials'
@@ -103,6 +105,9 @@ export const shareCredentials = async ({
       )
     : undefined
 
+  // The consent screen already refused this, but sharing is where it has to hold.
+  assertPasoCredentialsOnlyForPasoTransactions(resolvedRequest)
+
   const transactionData = consentedTransactionData ?? (await resolveTransactionData(paradym, resolvedRequest))
 
   // [PaSO Core] Section 6.2 — the SCA response claims are top-level claims of the KB-JWT, so they go
@@ -114,6 +119,21 @@ export const shareCredentials = async ({
     // would mean signing a transaction against metadata that was never verified.
     if (!transactionData.proof) {
       throw new Error('The PaSO transaction was resolved without a credential that can authorize it')
+    }
+
+    // Present the card the transaction was resolved against: the first candidate of its entry, which
+    // the user may have picked (see `selectPasoPaymentCredential`). Credo's own selection above is not
+    // guaranteed to land on the same one, and its metadata is what `metadata_integrity` refers to.
+    const paymentCredentialEntry = resolvedRequest.formattedSubmission.entries.find(
+      (entry): entry is FormattedSubmissionEntrySatisfied =>
+        entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
+    )
+    const paymentCredentialRecordId = paymentCredentialEntry?.credentials[0]?.credential.record.id
+    if (paymentCredentialRecordId && resolvedRequest.queryResult) {
+      dcqlCredentials[transactionData.cardForTransactionId] = getSelectedCredentialsForRequest(
+        resolvedRequest.queryResult,
+        { [transactionData.cardForTransactionId]: paymentCredentialRecordId }
+      )[transactionData.cardForTransactionId]
     }
 
     const presentations = dcqlCredentials[transactionData.cardForTransactionId]

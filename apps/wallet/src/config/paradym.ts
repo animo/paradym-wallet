@@ -1,3 +1,4 @@
+import { isHardwareBoundCredentialType } from '@app/config/paymentAttestation'
 import { walletId } from '@app/config/wallet'
 import { eudiTrustList, trustedDidEntities, trustedOpenId4VciIssuerEntities, trustedX509Entities } from '@app/constants'
 import { mmkv } from '@app/storage/mmkv'
@@ -27,6 +28,12 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   resolveAttributeLabel,
   // The picker wording, so the SDK's own issuance flows can register without the app in the middle.
   resolveDcApiDisplay,
+  // A payment attestation is the possession factor of Strong Customer Authentication, so its key is
+  // created in the secure environment. The secure environment only supports P-256.
+  resolveCredentialKeyOptions: ({ credentialConfiguration }) =>
+    credentialConfiguration.format === 'dc+sd-jwt' && isHardwareBoundCredentialType(credentialConfiguration.vct)
+      ? { backend: 'secureEnvironment', algorithm: 'ES256' }
+      : undefined,
   logging: {
     level: isVerboseLoggingEnabled ? LogLevel.Trace : LogLevel.Warn,
     trace: isVerboseLoggingEnabled,

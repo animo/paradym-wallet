@@ -82,8 +82,8 @@ export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfigur
   ParadymWalletSdkLocaleOptions &
   ParadymWalletSdkAttributeLabelOptions &
   ParadymWalletSdkDcApiDisplayOptions &
-  ParadymWalletSdkWalletInstanceVersionOptions
-ParadymWalletSdkCredentialKeyOptions
+  ParadymWalletSdkWalletInstanceVersionOptions &
+  ParadymWalletSdkCredentialKeyOptions
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 

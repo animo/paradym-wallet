@@ -82,10 +82,12 @@ export {
 } from './riskSignals'
 export { computeSriIntegrity } from './sri'
 export {
+  assertPasoCredentialsOnlyForPasoTransactions,
   type FormattedTransactionDataPasoPayment,
   hasPasoTransactionData,
   type PasoDisplayedClaim,
   resolvePasoTransactionData,
+  selectPasoPaymentCredential,
 } from './transactionData'
 export {
   isPasoTransactionDataType,

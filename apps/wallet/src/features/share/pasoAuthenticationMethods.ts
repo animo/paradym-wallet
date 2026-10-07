@@ -10,32 +10,43 @@ import type { PasoAuthenticationMethod } from '@paradym/wallet-sdk'
  *
  * What is true right now:
  *
- * - **`swk`**, not `hwk`. `getCredentialBindingResolver` creates a credential's key with
- *   `backend: 'secureEnvironment'` only when the credential is one of the configured PID schemes, and
- *   `'askar'` — a software key store — for everything else. A payment card is not a PID, so its
- *   signing key is software-secured. [RFC8176] has a value for exactly that and it is not `hwk`.
+ * - **`hwk` and `bio_strong`** when the credential that authorizes the payment is bound to a key in
+ *   the secure environment. `isHardwareBoundCredentialType` decides where a credential's key is
+ *   created at issuance — today the Wero Payment Attestation — and the secure environment creates that
+ *   key so that every signature needs a strong biometric (iOS `biometryCurrentSet`, Android
+ *   `BIOMETRIC_STRONG` with no validity window). The biometric therefore releases this credential's
+ *   key for this transaction, which is what the registry asks for.
+ * - **`swk`** otherwise: everything else gets an Askar key, a software key store, and [RFC8176] has a
+ *   value for exactly that.
  * - **`pin`** when the user entered their PIN to release this transaction. That is a knowledge factor
  *   tied to this authorization, which is what SCA asks for.
  *
  * What is deliberately absent:
  *
- * - **`hwk`** until a payment credential's key is actually created in the secure environment. The
- *   decision lives in `getCredentialBindingResolver`; whoever widens it should come back here.
- * - **`bio_strong`/`bio_weak`** and the modality. The biometric unlock this wallet has protects the
- *   *wallet key* that opens the store at app launch — it does not release this credential's key for
- *   this transaction. Reporting a session unlock as though it authorized the payment is precisely
- *   the over-claim that makes an `amr` array worthless as evidence.
+ * - **A biometric value for software keys.** The biometric unlock this wallet has protects the
+ *   *wallet key* that opens the store at app launch — it does not release a software key for this
+ *   transaction. Reporting a session unlock as though it authorized the payment is precisely the
+ *   over-claim that makes an `amr` array worthless as evidence.
+ * - **The modality** (`fpt`, `face`). The platform does not say which biometric the user used.
  *
- * The consequence is worth being explicit about: where the user released a transaction without
- * entering a PIN, this reports a single factor, and an Authorizing Party enforcing [PSD2] will say so
- * rather than be told two factors it cannot verify. That is the honest failure.
+ * The consequence is worth being explicit about: where the user released a software-key transaction
+ * without entering a PIN, this reports a single factor, and an Authorizing Party enforcing [PSD2]
+ * will say so rather than be told two factors it cannot verify. That is the honest failure.
  */
 export function resolvePasoAuthenticationMethods(options: {
   /** Whether the user entered their PIN for this transaction specifically. */
   usedTransactionPin: boolean
+  /** Whether the credential that authorizes the transaction is bound to a hardware key. */
+  usedHardwareBoundKey: boolean
+  /**
+   * Whether that key only signs after a strong biometric: the device's own secure environment does,
+   * the cloud HSM fallback does not — it authenticates the user with the PIN instead.
+   */
+  usedKeyBiometric: boolean
 }): PasoAuthenticationMethod[] {
-  const methods: PasoAuthenticationMethod[] = ['swk']
+  const methods: PasoAuthenticationMethod[] = [options.usedHardwareBoundKey ? 'hwk' : 'swk']
 
+  if (options.usedHardwareBoundKey && options.usedKeyBiometric) methods.push('bio_strong')
   if (options.usedTransactionPin) methods.push('pin')
 
   return methods

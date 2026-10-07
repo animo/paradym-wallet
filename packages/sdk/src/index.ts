@@ -43,6 +43,7 @@ export {
   type PasoRefusalCode,
   pasoPaymentTransactionDataType,
   renewPasoCredentialMetadata,
+  selectPasoPaymentCredential,
 } from './paso'
 export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
 export {

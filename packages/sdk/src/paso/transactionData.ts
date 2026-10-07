@@ -147,6 +147,65 @@ export function hasPasoTransactionData(resolvedRequest: CredentialsForProofReque
 }
 
 /**
+ * The request with the user's choice of card for the PaSO transaction.
+ *
+ * WPA Rulebook Section 4.2 lets a payer hold several payment cards that match the same request — one
+ * per account — so the user has to be able to pick. The choice is expressed by moving the card to the
+ * front of its submission entry: {@link resolvePasoTransactionData} resolves against the first
+ * candidate, `shareCredentials` presents the first candidate, and the share screen shows it, so one
+ * ordering keeps what is displayed, what the metadata was verified for, and what gets signed the same.
+ */
+export function selectPasoPaymentCredential(
+  resolvedRequest: CredentialsForProofRequest,
+  credentialQueryId: string,
+  credentialRecordId: string
+): CredentialsForProofRequest {
+  return {
+    ...resolvedRequest,
+    formattedSubmission: {
+      ...resolvedRequest.formattedSubmission,
+      entries: resolvedRequest.formattedSubmission.entries.map((entry) => {
+        if (entry.inputDescriptorId !== credentialQueryId || !entry.isSatisfied) return entry
+
+        const selected = entry.credentials.find(({ credential }) => credential.record.id === credentialRecordId)
+        if (!selected) return entry
+
+        return { ...entry, credentials: [selected, ...entry.credentials.filter((candidate) => candidate !== selected)] }
+      }),
+    },
+  }
+}
+
+/**
+ * Refuses a request that would present a PaSO Credential without a PaSO transaction to authorize.
+ *
+ * A PaSO Credential — one holding signed PaSO credential metadata — exists to authorize payments,
+ * and the Wero Payment Attestation Rulebook (Section 4.3) says so outright: the WPA "SHALL be used
+ * solely to perform SCA for authorising a Wero payment". Shared on its own it would hand the payer's
+ * account identifiers to any Relying Party that asks.
+ *
+ * Every candidate counts, not just the first: the user could otherwise pick the PaSO Credential
+ * among them, and refusing up front is better than a consent screen whose only option is a card
+ * that cannot be shared.
+ */
+export function assertPasoCredentialsOnlyForPasoTransactions(resolvedRequest: CredentialsForProofRequest) {
+  if (hasPasoTransactionData(resolvedRequest)) return
+
+  const requestsPasoCredential = resolvedRequest.formattedSubmission.entries.some(
+    (entry) =>
+      entry.isSatisfied &&
+      entry.credentials.some(({ credential }) => getPasoCredentialMetadata(credential.record) !== null)
+  )
+
+  if (requestsPasoCredential) {
+    throw new ParadymWalletPasoError(
+      'credentialOnlyForPayments',
+      'This request asks for a payment card without a payment to authorize, which this wallet does not allow.'
+    )
+  }
+}
+
+/**
  * Resolves the single PaSO-targeted entry of a simple-profile request.
  *
  * Throws {@link ParadymWalletPasoError} with a user-facing reason for every case the spec says to
