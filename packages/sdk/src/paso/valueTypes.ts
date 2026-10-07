@@ -57,7 +57,53 @@ const isoCurrencyPattern = /^[A-Z]{3}$/
  * value the user consents to and the Authorizing Party re-reads from the same string, so a lenient
  * parse here is a dynamic-linking bug.
  */
-const isoCurrencyAmountPattern = /^\d+(\.\d{1,4})? [A-Z]{3}$/
+const isoCurrencyAmountPattern = /^\d+(?:\.(\d+))? ([A-Z]{3})$/
+
+/**
+ * [ISO4217] minor units of the currencies that do not use 2, which is every other one. Section 3
+ * fixes the fractional digits to exactly this number, so `42.5 EUR`, `42 EUR` and `100.00 JPY` are
+ * all non-conforming.
+ */
+const iso4217MinorUnitExceptions: Record<string, number> = {
+  ...Object.fromEntries(
+    [
+      'BIF',
+      'CLP',
+      'DJF',
+      'GNF',
+      'ISK',
+      'JPY',
+      'KMF',
+      'KRW',
+      'PYG',
+      'RWF',
+      'UGX',
+      'UYI',
+      'VND',
+      'VUV',
+      'XAF',
+      'XOF',
+      'XPF',
+    ].map((code) => [code, 0])
+  ),
+  ...Object.fromEntries(['BHD', 'IQD', 'JOD', 'KWD', 'LYD', 'OMR', 'TND'].map((code) => [code, 3])),
+  CLF: 4,
+  UYW: 4,
+}
+
+function findIsoCurrencyAmountIssue(value: string): PasoValueTypeIssue | undefined {
+  const match = isoCurrencyAmountPattern.exec(value)
+  if (!match) return { reason: `'${value}' is not an amount followed by an ISO 4217 currency code` }
+
+  const [, fraction, currency] = match
+  const minorUnits = iso4217MinorUnitExceptions[currency] ?? 2
+  // Exactly `minorUnits` fractional digits, which for 0 means no decimal point at all.
+  if ((fraction?.length ?? 0) !== minorUnits) {
+    return { reason: `'${value}' does not have the ${minorUnits} fractional digit(s) ${currency} uses` }
+  }
+
+  return undefined
+}
 
 export interface PasoValueTypeIssue {
   reason: string
@@ -153,9 +199,7 @@ export function validatePasoValue(
     case 'iso_currency':
       return isoCurrencyPattern.test(value) ? undefined : { reason: `'${value}' is not an ISO 4217 currency code` }
     case 'iso_currency_amount':
-      return isoCurrencyAmountPattern.test(value)
-        ? undefined
-        : { reason: `'${value}' is not an amount followed by an ISO 4217 currency code` }
+      return findIsoCurrencyAmountIssue(value)
     case 'url':
       // Section 3: "The URL MUST use the `https` scheme; otherwise the `transaction_data` entry is
       // not compatible."

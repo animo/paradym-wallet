@@ -31,6 +31,7 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
     level: isVerboseLoggingEnabled ? LogLevel.Trace : LogLevel.Warn,
     trace: isVerboseLoggingEnabled,
     traceLimit: 1000,
+    persist: true,
   },
   openId4VcConfiguration: {
     getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {

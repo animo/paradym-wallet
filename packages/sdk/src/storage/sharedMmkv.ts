@@ -28,7 +28,7 @@ const sharedKeys = {
  *
  * On Android the request UI runs in the app's sandbox, so the default location is already shared.
  */
-function getSharedMmkvPath() {
+export function getSharedMmkvPath() {
   if (Platform.OS !== 'ios') return undefined
 
   const containerPath = getAppGroupContainerPath()

@@ -52,7 +52,7 @@ export const shareCredentials = async ({
   selectedCredentials,
   acceptTransactionData,
   transactionData: consentedTransactionData,
-  authenticationMethods = ['hwk'],
+  authenticationMethods = ['swk'],
   authenticatedAt = new Date(),
 }: ShareCredentialsOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')

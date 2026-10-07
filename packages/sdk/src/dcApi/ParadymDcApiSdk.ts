@@ -149,7 +149,7 @@ export class ParadymDcApiSdk {
       // The app's trust callback included: it is the only hook mdoc reader authentication reaches,
       // and the request UI has to trust exactly what the app trusts.
       config: {
-        logger: createLogger(options.logging),
+        logger: createLogger(options.logging, 'dcApi'),
         getTrustedIssuersForVerification: options.getTrustedIssuersForVerification,
       },
       dependencies: agentDependencies,

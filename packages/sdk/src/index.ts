@@ -22,7 +22,15 @@ export { useSdJwtVcRecords } from './providers/SdJwtVcProvider'
 export { useCredentialByCategory, useDidCommCredentialActions, useParadym,type CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useActivityById, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
 export { InvitationQrTypes, type InvitationType } from './invitation/parser'
 export type { ResolveOutOfBandInvitationResult } from './invitation/resolver'
-export { LogLevel, ParadymWalletSdkConsoleLogger, ParadymWalletSdkLogger } from './logging'
+export {
+  clearProcessLogs,
+  type LogProcess,
+  LogLevel,
+  mergeLogEntries,
+  ParadymWalletSdkConsoleLogger,
+  ParadymWalletSdkLogger,
+  readProcessLogs,
+} from './logging'
 export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
 export type { FormattedTransactionData, FormattedTransactionDataPaymentSingle, QtspInfo } from './openid4vc/transaction'

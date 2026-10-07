@@ -133,6 +133,8 @@ export interface PasoRiskSignalContext {
   authenticationMethods: PasoAuthenticationMethod[]
   /** When the user completed authentication, which Section 2.8 makes the signal's `collected_at`. */
   authenticatedAt: Date
+  /** When the Authorization Request was processed, which Section 2.7 makes the signal's `collected_at`. */
+  requestProcessedAt: Date
 }
 
 /**
@@ -161,8 +163,13 @@ export function collectPasoRiskSignals(
     signal.maxAge === undefined || now.getTime() - collectedAt.getTime() <= signal.maxAge * 1000
 
   return required.map((signal): PasoRiskSignalEnvelope => {
-    if (signal.type === pasoResponseModeSignalType && isFresh(signal, now)) {
-      return { type: signal.type, collected_at: now.toISOString(), status: 'ok', value: context.responseMode }
+    if (signal.type === pasoResponseModeSignalType && isFresh(signal, context.requestProcessedAt)) {
+      return {
+        type: signal.type,
+        collected_at: context.requestProcessedAt.toISOString(),
+        status: 'ok',
+        value: context.responseMode,
+      }
     }
 
     if (signal.type === pasoAuthenticationMethodsSignalType && isFresh(signal, context.authenticatedAt)) {

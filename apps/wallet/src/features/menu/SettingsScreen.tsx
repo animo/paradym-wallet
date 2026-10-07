@@ -20,9 +20,13 @@ import {
   YStack,
 } from '@package/ui'
 import {
+  clearProcessLogs,
+  LogLevel,
+  mergeLogEntries,
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletSdkConsoleLogger,
+  readProcessLogs,
   useCanUseBiometryBackedWalletKey,
   useIsBiometricsEnabled,
   useParadym,
@@ -139,6 +143,26 @@ export function SettingsScreen() {
     }
   }
 
+  // The logger's level and trace buffer are fixed from the development mode flag when the agent is
+  // set up, so without this the logs are only captured after a restart — and the export button,
+  // which shows right away, would export nothing.
+  function setDevelopmentMode(isEnabled: boolean) {
+    setIsDevelopmentModeEnabled(isEnabled)
+
+    const logger = paradym.logger
+    if (__DEV__ || !(logger instanceof ParadymWalletSdkConsoleLogger)) return
+
+    if (isEnabled) {
+      logger.logLevel = LogLevel.Trace
+      logger.trackLoggedMessages(1000, 'app')
+    } else {
+      logger.logLevel = LogLevel.Warn
+      // Deletes the stored logs of both processes: nothing is kept once development mode is off.
+      logger.stopLoggedMessagesTracking()
+      clearProcessLogs('dcApi')
+    }
+  }
+
   const canUseBiometryBackedWalletKey = useCanUseBiometryBackedWalletKey()
   const biometricsType = useBiometricsType()
 
@@ -182,7 +206,7 @@ export function SettingsScreen() {
               })}
               icon={<HeroIcons.CommandLineFilled />}
               value={isDevelopmentModeEnabled ?? false}
-              onChange={setIsDevelopmentModeEnabled}
+              onChange={setDevelopmentMode}
             />
             <LocaleSelect />
             {isDevelopmentModeEnabled && paradym.logger instanceof ParadymWalletSdkConsoleLogger && (
@@ -194,7 +218,13 @@ export function SettingsScreen() {
                 })}
                 beta
                 onPress={() =>
-                  Share.share({ message: (paradym.logger as ParadymWalletSdkConsoleLogger).loggedMessageContents })
+                  Share.share({
+                    // The app's own buffer holds its earlier runs too; the request UI's comes from storage.
+                    message: mergeLogEntries(
+                      (paradym.logger as ParadymWalletSdkConsoleLogger).loggedMessageEntries,
+                      readProcessLogs('dcApi')
+                    ),
+                  })
                 }
                 description={t({
                   id: 'settings.exportDebugLogsDescription',

@@ -44,6 +44,7 @@ export async function createPasoScaResponseClaims(options: {
     responseMode,
     authenticationMethods,
     authenticatedAt,
+    requestProcessedAt: proof.requestProcessedAt,
   })
 
   return {

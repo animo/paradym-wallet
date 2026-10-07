@@ -80,6 +80,21 @@ function decodeJwt(compact: string): DecodedJwt {
   }
 }
 
+/**
+ * [RFC7515] Section 4.1.6: each `x5c` entry is the standard base64 encoding of a DER certificate.
+ *
+ * Checked before parsing because the certificate parser also takes PEM, hex and base64url, and
+ * accepting those here would hide a non-conforming Attestation Provider until it meets a stricter
+ * wallet.
+ */
+function assertBase64DerCertificates(x5c: string[]) {
+  if (!x5c.every((certificate) => /^[A-Za-z0-9+/]+={0,2}$/.test(certificate))) {
+    throw new Error(
+      "The 'x5c' header of the PaSO credential metadata JWT is not a list of base64 encoded DER certificates"
+    )
+  }
+}
+
 /** The issuer facts of an SD-JWT VC that the metadata JWT is bound against. */
 export interface PasoCredentialBinding {
   issuer: string
@@ -127,7 +142,7 @@ export function getPasoCredentialBinding(credentialRecord: CredentialRecord): Pa
 export async function fetchPasoCredentialMetadataJwt(
   credentialMetadataUri: string,
   localePriorityList: string[]
-): Promise<string> {
+): Promise<{ compact: string; retrievedFrom: string }> {
   const acceptLanguage = localePriorityList
     .map((locale, index) => (index === 0 ? locale : `${locale};q=${Math.max(0.1, 1 - index * 0.1).toFixed(1)}`))
     .join(', ')
@@ -145,7 +160,9 @@ export async function fetchPasoCredentialMetadataJwt(
     )
   }
 
-  return (await response.text()).trim()
+  // Section 8 compares `credential_metadata_uri` with the URI the JWT was retrieved from *after*
+  // redirects, which is what lets a provider relocate the endpoint. `fetch` follows them on its own.
+  return { compact: (await response.text()).trim(), retrievedFrom: response.url || credentialMetadataUri }
 }
 
 /**
@@ -217,6 +234,7 @@ export async function verifyPasoCredentialMetadataJwt(
       "PaSO credential metadata JWT does not contain an 'x5c' header. The 'kid' based issuer key set variant of [PaSO Proof Metadata] Section 4 is not supported by this wallet"
     )
   }
+  assertBase64DerCertificates(x5c)
 
   // 2. Signature, using the key of the x5c leaf certificate.
   const leafCertificate = X509Certificate.fromEncodedCertificate(x5c[0])
@@ -227,19 +245,6 @@ export async function verifyPasoCredentialMetadataJwt(
     algorithm: leafCertificate.publicJwk.signatureAlgorithm,
   })
   if (!verifyResult.verified) throw new Error('PaSO credential metadata JWT signature verification failed')
-
-  // 3. Signing key trust: the chain must terminate in the wallet's trust store.
-  //
-  // The trust store is read first and its absence is fatal. `validateCertificateChain` treats an
-  // omitted `trustedCertificates` as "verify the chain's internal structure only" and performs no
-  // trust check at all, which would accept any self-signed chain — and Credo hands back `undefined`
-  // rather than an empty array when a wallet has no trusted certificates configured, so the
-  // fail-open case is one configuration mistake away rather than hypothetical.
-  const trustedCertificates = sdk.agent.x509.config.trustedCertificates
-  if (!trustedCertificates || trustedCertificates.length === 0) {
-    throw new Error('This wallet has no trusted certificates, so PaSO credential metadata cannot be trusted')
-  }
-  await X509Service.validateCertificateChain(sdk.agent.context, { certificateChain: x5c, trustedCertificates })
 
   // 4. `iss` matches the Credential Issuer Identifier.
   if (payload.iss !== binding.issuer) {
@@ -272,10 +277,21 @@ export async function verifyPasoCredentialMetadataJwt(
     )
   }
 
-  const metadataRoot = X509Certificate.fromEncodedCertificate(x5c[x5c.length - 1])
-  const credentialRoot = X509Certificate.fromEncodedCertificate(binding.x5c[binding.x5c.length - 1])
-  if (metadataRoot.subject !== credentialRoot.subject || metadataRoot.issuer !== credentialRoot.issuer) {
-    throw new Error("PaSO credential metadata JWT 'x5c' chain does not share a root CA with the credential")
+  // Steps 3 and 6 together: the metadata JWT is trusted exactly as far as the credential is, by
+  // requiring its chain to lead to a certificate of the credential's own chain. That is a stronger
+  // binding than comparing roots — it proves the metadata was signed within the chain that signed
+  // the credential — and it leaves trust in the issuer to the credential's own verification, which
+  // is where the wallet decides it and shows it to the user. The wallet's trust store is not
+  // consulted here: an issuer the wallet does not know is shown as untrusted, not refused.
+  try {
+    await X509Service.validateCertificateChain(sdk.agent.context, {
+      certificateChain: x5c,
+      trustedCertificates: binding.x5c as [string, ...string[]],
+    })
+  } catch (error) {
+    throw new Error(
+      `PaSO credential metadata JWT 'x5c' chain does not lead to the certificate chain of the credential: ${error instanceof Error ? error.message : String(error)}`
+    )
   }
 
   const credentialLeaf = X509Certificate.fromEncodedCertificate(binding.x5c[0])
@@ -329,9 +345,10 @@ export async function storePasoCredentialMetadata(
   credentialRecord: CredentialRecord,
   credentialMetadataUri: string
 ): Promise<boolean> {
-  let compact: string
+  const localePriorityList = pasoLocalePriorityList()
+  let fetched: Awaited<ReturnType<typeof fetchPasoCredentialMetadataJwt>>
   try {
-    compact = await fetchPasoCredentialMetadataJwt(credentialMetadataUri, pasoLocalePriorityList())
+    fetched = await fetchPasoCredentialMetadataJwt(credentialMetadataUri, localePriorityList)
   } catch (error) {
     paradym.logger.debug('Could not retrieve signed PaSO credential metadata, treating credential as non-PaSO', {
       error,
@@ -339,6 +356,7 @@ export async function storePasoCredentialMetadata(
     return false
   }
 
+  const { compact, retrievedFrom } = fetched
   if (!declaresPasoTransactionDataTypes(compact)) return false
 
   const binding = getPasoCredentialBinding(credentialRecord)
@@ -348,15 +366,12 @@ export async function storePasoCredentialMetadata(
     )
   }
 
-  const verified = await verifyPasoCredentialMetadataJwt(paradym, {
-    compact,
-    binding,
-    retrievedFrom: credentialMetadataUri,
-  })
+  const verified = await verifyPasoCredentialMetadataJwt(paradym, { compact, binding, retrievedFrom })
 
   setPasoCredentialMetadata(credentialRecord, {
     signedMetadataJwts: [compact],
     credentialMetadataUri: verified.payload.credential_metadata_uri,
+    localePriorityList,
   })
 
   return true
@@ -375,16 +390,14 @@ async function refetchAndStore(
   credentialMetadataUri: string,
   binding: PasoCredentialBinding
 ): Promise<VerifiedPasoCredentialMetadata> {
-  const compact = await fetchPasoCredentialMetadataJwt(credentialMetadataUri, pasoLocalePriorityList())
-  const verified = await verifyPasoCredentialMetadataJwt(paradym, {
-    compact,
-    binding,
-    retrievedFrom: credentialMetadataUri,
-  })
+  const localePriorityList = pasoLocalePriorityList()
+  const { compact, retrievedFrom } = await fetchPasoCredentialMetadataJwt(credentialMetadataUri, localePriorityList)
+  const verified = await verifyPasoCredentialMetadataJwt(paradym, { compact, binding, retrievedFrom })
 
   setPasoCredentialMetadata(credentialRecord, {
     signedMetadataJwts: [compact],
     credentialMetadataUri: verified.payload.credential_metadata_uri,
+    localePriorityList,
   })
   await updateCredential({ paradym, credentialRecord })
 
@@ -458,8 +471,11 @@ export async function renewPasoCredentialMetadata(
     const stored = getPasoCredentialMetadata(credentialRecord)
     if (!stored) continue
 
-    const isDue = stored.signedMetadataJwts.every((compact) => getUnverifiedExpiry(compact) <= dueAt)
-    if (!isDue) continue
+    // Also due when the user's language changed since the fetch: [PaSO Proof Metadata] Section 6 has
+    // the wallet hold a JWT covering the locale it displays in before any PaSO operation.
+    const isExpiring = stored.signedMetadataJwts.every((compact) => getUnverifiedExpiry(compact) <= dueAt)
+    const isForOtherLocales = stored.localePriorityList?.join(',') !== pasoLocalePriorityList().join(',')
+    if (!isExpiring && !isForOtherLocales) continue
 
     const binding = getPasoCredentialBinding(credentialRecord)
     if (!binding) continue

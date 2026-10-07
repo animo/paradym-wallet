@@ -133,6 +133,17 @@ export type ParadymWalletSdkLoggingOptions<T extends ParadymWalletSdkLogger = Pa
 
   /**
    *
+   * Whether traced logs are also written to storage as they are logged, so they survive a crash and
+   * can be exported on the next run. Each process — the app, the DC API request UI — keeps its own
+   * store in the container both can read; see `readProcessLogs`.
+   *
+   * With `trace` off the stored logs are deleted instead.
+   *
+   */
+  persist?: boolean
+
+  /**
+   *
    * Provide a custom logger which implements the `ParadymWalletSdkLogger` interface.
    *
    */

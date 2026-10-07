@@ -120,6 +120,8 @@ export interface FormattedTransactionDataPasoPayment {
      * and Section 7.5.1 the claim takes.
      */
     riskSignalsEncryptionKey?: PasoRiskSignalsEncryptionKey
+    /** When the Authorization Request was processed, the `response_mode` signal's `collected_at`. */
+    requestProcessedAt: Date
   }
 
   /** base64url SHA-256 over the *decoded* entry — see {@link hashDecodedEntry}. */
@@ -155,6 +157,8 @@ export async function resolvePasoTransactionData(
   resolvedRequest: CredentialsForProofRequest,
   localePriorityList: string[]
 ): Promise<FormattedTransactionDataPasoPayment> {
+  const requestProcessedAt = new Date()
+
   // [PaSO Core] Section 3: "The Wallet SHALL reject unsigned PaSO presentation requests." TS 12 only
   // asked for a warning here; PaSO does not, because `request_integrity` has nothing to bind to.
   if (!resolvedRequest.signedAuthorizationRequest) {
@@ -207,6 +211,17 @@ export async function resolvePasoTransactionData(
   const [credentialQueryId] = credentialIds
 
   assertTrivialCredentialSets(resolvedRequest, credentialQueryId)
+
+  // [PaSO Proof Metadata] Section 5.3: an entry carrying ad-hoc `metadata` has to be displayed with
+  // that metadata once verified, and "SHALL NOT fall back to the stored credential metadata" when it
+  // does not verify. This wallet does not implement ad-hoc metadata, so using the stored metadata
+  // would be exactly that fallback — refused instead.
+  if ((pasoEntry.entry.transactionData as { metadata?: unknown }).metadata !== undefined) {
+    throw new ParadymWalletPasoError(
+      'invalidCredentialMetadata',
+      'This payment request carries its own payment metadata, which this wallet cannot verify.'
+    )
+  }
 
   const rulebook = getPasoRulebook(transactionDataType)
   if (!rulebook) {
@@ -396,6 +411,7 @@ export async function resolvePasoTransactionData(
       metadataIntegrity: verifiedMetadata.integrity,
       effectiveRiskSignalSet: riskSignals.signals,
       riskSignalsEncryptionKey,
+      requestProcessedAt,
     },
 
     hash: hashDecodedEntry(encodedEntry),
@@ -431,11 +447,16 @@ function assertTrivialCredentialSets(resolvedRequest: CredentialsForProofRequest
   const credentialSets = dcqlQuery?.credential_sets
   if (!credentialSets) return
 
-  for (const credentialSet of credentialSets) {
+  for (const credentialSet of credentialSets as Array<(typeof credentialSets)[number] & { required?: boolean }>) {
     const mentions = credentialSet.options.some((option) => option.includes(credentialQueryId))
     if (!mentions) continue
 
-    if (!credentialSet.options.every((option) => option.includes(credentialQueryId))) {
+    // An optional set (`required: false`) makes the card optional as a whole, even when every one of
+    // its options contains it.
+    if (
+      credentialSet.required === false ||
+      !credentialSet.options.every((option) => option.includes(credentialQueryId))
+    ) {
       throw new ParadymWalletPasoError(
         'optionalCard',
         'This payment request offers the payment card as an optional choice, which this wallet cannot authorize.'

@@ -28,9 +28,8 @@ const maxEncodedImageBytes = 512 * 1024
 /** [PaSO View] Section 3 — "decoded dimensions MUST NOT exceed 2048 pixels in either direction". */
 const maxImageDimension = 2048
 
-/** Section 3 requires a fetch timeout and at most 3 redirects; it fixes neither number. */
+/** Section 3 requires a fetch timeout; it does not fix the number. */
 const fetchTimeoutMs = 10_000
-const maxRedirects = 3
 
 export type PasoImageResult = { dataUrl: string } | { error: string }
 
@@ -142,8 +141,10 @@ export function validatePasoDataUrlImage(value: string): PasoImageResult {
  * the whole point of the `#integrity` sibling claim is that the user sees the image the Relying
  * Party committed to.
  *
- * Redirects are followed by hand because Section 3 caps them at three and the platform `fetch`
- * offers no way to observe its own redirect count.
+ * Redirects are refused outright. Section 3 caps them at three and forbids cookies, but React
+ * Native's `fetch` ignores `redirect: 'manual'`: the native layer follows every redirect itself, with
+ * no way to count them, and on iOS re-attaches stored cookies on each one. Following none is the
+ * only way to stay within both rules.
  */
 export async function resolvePasoImageUrl(url: string, integrity: string): Promise<PasoImageResult> {
   // Section 3: "If the URL is not a Data URL, it MUST use the `https` scheme".
@@ -153,29 +154,14 @@ export async function resolvePasoImageUrl(url: string, integrity: string): Promi
   const timeout = setTimeout(() => controller.abort(), fetchTimeoutMs)
 
   try {
-    let currentUrl = url
-    let response: Response | undefined
+    const response = await fetch(url, {
+      headers: { Accept: pasoImageAcceptHeader },
+      // Section 3: "SHALL NOT transmit cookies, credentials, or Wallet-identifying headers".
+      credentials: 'omit',
+      signal: controller.signal,
+    })
 
-    for (let redirects = 0; redirects <= maxRedirects; redirects++) {
-      response = await fetch(currentUrl, {
-        headers: { Accept: pasoImageAcceptHeader },
-        // Section 3: "SHALL NOT transmit cookies, credentials, or Wallet-identifying headers".
-        credentials: 'omit',
-        redirect: 'manual',
-        signal: controller.signal,
-      })
-
-      // A 3xx with a `Location` is the only case we follow; anything else is the final response.
-      const location = response.status >= 300 && response.status < 400 ? response.headers.get('location') : null
-      if (!location) break
-
-      const target = new URL(location, currentUrl)
-      if (target.protocol !== 'https:') return { error: 'the image URL redirects away from https' }
-      currentUrl = target.toString()
-      response = undefined
-    }
-
-    if (!response) return { error: `the image URL redirects more than ${maxRedirects} times` }
+    if (response.url && response.url !== url) return { error: 'the image URL redirects, which is not supported' }
     if (!response.ok) return { error: `the image URL returned status ${response.status}` }
 
     // Checked before reading the body so an oversized response is refused rather than buffered.

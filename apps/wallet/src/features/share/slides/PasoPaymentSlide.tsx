@@ -270,6 +270,9 @@ export const PasoPaymentSlide = ({
           <YStack gap="$2">
             <DualResponseButtons
               align="horizontal"
+              // [PaSO View] Section 2: the issuer's labels may not be truncated, so they wrap, and the
+              // buttons stack at full width when they do not fit side by side.
+              wrapLabels
               acceptText={
                 transaction.affirmativeActionLabel ??
                 t({

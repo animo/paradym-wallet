@@ -97,6 +97,12 @@ export interface PasoCredentialMetadataRecord {
   signedMetadataJwts: string[]
   /** The `credential_metadata_uri` of the most recently verified JWT, used for renewal (Section 7). */
   credentialMetadataUri: string
+  /**
+   * The locale priority list the JWTs were fetched for. The provider decides which locales a JWT
+   * covers from it (Section 2), so a user who switched language needs a re-fetch before the stored
+   * JWTs cover what they read. Absent on records stored before this was tracked.
+   */
+  localePriorityList?: string[]
 }
 
 export type TransactionStatusMetadata = {

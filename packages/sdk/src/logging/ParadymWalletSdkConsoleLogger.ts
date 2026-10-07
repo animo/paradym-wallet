@@ -1,5 +1,6 @@
 import { ConsoleLogger, replaceError } from '@credo-ts/core'
 import { type LogData, LogLevel, type LogMessage } from './ParadymWalletSdkLogger'
+import { type LogProcess, PersistedLogBuffer } from './persistedLogs'
 
 export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
   /**
@@ -14,30 +15,52 @@ export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
   private loggedMessages: string[] = []
   private loggedMessagesStart = 0
   private loggedMessagesLimit = 0
+  private persistedLogs?: PersistedLogBuffer
 
-  public trackLoggedMessages(messageLimit = 1000) {
+  /**
+   * Starts keeping the last `messageLimit` messages for export.
+   *
+   * With a `persistAs` process they are also written to that process's store as they are logged, and
+   * whatever a previous run left there is picked up again — so logs from before a crash can still be
+   * exported.
+   */
+  public trackLoggedMessages(messageLimit = 1000, persistAs?: LogProcess) {
     this.loggedMessagesLimit = messageLimit
-    this.resetLoggedMessages()
+    this.persistedLogs = persistAs ? new PersistedLogBuffer(persistAs, messageLimit) : undefined
+
+    if (!this.persistedLogs) {
+      this.resetLoggedMessages()
+      return
+    }
+
+    const { entries, oldestSlot } = this.persistedLogs.load()
+    this.loggedMessages = entries
+    this.loggedMessagesStart = oldestSlot
   }
 
   public resetLoggedMessages() {
     this.loggedMessages = []
     this.loggedMessagesStart = 0
+    this.persistedLogs?.clear()
   }
 
+  /** Stops keeping messages, and deletes the ones kept so far, persisted ones included. */
   public stopLoggedMessagesTracking() {
     this.loggedMessagesLimit = 0
     this.resetLoggedMessages()
+    this.persistedLogs = undefined
   }
 
-  public get loggedMessageContents() {
-    // Oldest first, matching the order the messages were logged in.
-    const ordered = [
+  /** The kept messages as serialized entries, oldest first, matching the order they were logged in. */
+  public get loggedMessageEntries() {
+    return [
       ...this.loggedMessages.slice(this.loggedMessagesStart),
       ...this.loggedMessages.slice(0, this.loggedMessagesStart),
     ]
+  }
 
-    return `[${ordered.join(',')}]`
+  public get loggedMessageContents() {
+    return `[${this.loggedMessageEntries.join(',')}]`
   }
 
   private addToLoggedMessages(level: LogLevel, message: string, data?: LogData) {
@@ -46,16 +69,21 @@ export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
     // is not logging is not serialized for the trace buffer either.
     if (!this.isEnabled(level)) return
 
-    const serialized = JSON.stringify({ level, message, data } satisfies LogMessage, replaceError)
+    const timestamp = new Date().toISOString()
+    const serialized = JSON.stringify({ timestamp, level, message, data } satisfies LogMessage, replaceError)
 
     // Overwrite the oldest entry once the buffer is full, rather than shifting every element down.
+    let slot: number
     if (this.loggedMessages.length < this.loggedMessagesLimit) {
+      slot = this.loggedMessages.length
       this.loggedMessages.push(serialized)
-      return
+    } else {
+      slot = this.loggedMessagesStart
+      this.loggedMessages[slot] = serialized
+      this.loggedMessagesStart = (this.loggedMessagesStart + 1) % this.loggedMessagesLimit
     }
 
-    this.loggedMessages[this.loggedMessagesStart] = serialized
-    this.loggedMessagesStart = (this.loggedMessagesStart + 1) % this.loggedMessagesLimit
+    this.persistedLogs?.write(slot, serialized, this.loggedMessagesStart)
   }
 
   public fatal(message: string, data?: LogData): void {
