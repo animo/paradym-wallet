@@ -35,7 +35,7 @@ pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pn
 - `packages/app` — shared screens, features, providers, hooks. Most feature code lives here, not in `apps/wallet`. Feature code goes in `packages/app/src/features/<feature-name>/` — don't add a `screens/` folder.
 - `packages/ui` — Tamagui-based UI kit.
 - `packages/scanner` — QR scanning utils.
-- `packages/translations` — Lingui setup and the `translate-all.js` script.
+- `packages/translations` — Lingui setup and the `translate-prepare.js` / `translate-finalize.js` scripts.
 - `packages/utils`, `packages/sdk` — shared helpers / SDK surface.
 
 ## Dependency rules (important, easy to get wrong)
@@ -50,8 +50,8 @@ pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pn
 
 - **Expo SDK 56**, React Native 0.85.3, React 19.2.3. Expo Router for navigation.
 - **Tamagui** for UI — has a Babel plugin; use Tamagui primitives over raw RN components where possible.
-- **Credo (`@credo-ts/*` 0.6.3)** is the SSI/agent framework. `@openid4vc/*` handles OID4VCI/VP. Askar (`@openwallet-foundation/askar-*`) is the secure storage / crypto backend.
-- **Lingui** for i18n — see the Translations section below. Do not edit non-English `.po` catalogs by hand.
+- **Credo (`@credo-ts/*` 0.7.x)** is the SSI/agent framework. `@openid4vc/*` handles OID4VCI/VP. Askar (`@openwallet-foundation/askar-*`) is the secure storage / crypto backend.
+- **Lingui** for i18n — see the Translations section below. Do not edit non-English catalogs (`apps/wallet/src/locales/*/messages.json`) by hand.
 - **Biome** with single quotes, no semicolons, 120-col, ES5 trailing commas, 2-space indent. `noUnusedImports` is an error.
 - Native development build is required when native deps change: `cd apps/wallet && pnpm prebuild && pnpm ios` (or `android`). JS-only changes only need `pnpm start` from the repo root.
 
