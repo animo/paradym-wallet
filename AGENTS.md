@@ -27,6 +27,10 @@ Fix any errors these surface before reporting the task as done. There is no ESLi
 
 Use scoped Conventional Commits for every commit (e.g. `feat(app): ...`, `chore(translations): ...`). The scope should be the affected package or area (`app`, `ui`, `translations`, `utils`, `sdk`, `scanner`, `ai`, etc.).
 
+## Issue tracking
+
+Animo contributors track work on the [FUN Jira board](https://animosprints.atlassian.net/jira/software/projects/FUN/boards/41) (project key `FUN`).
+
 ## Repo layout
 
 pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pnpm `11.7.0`.
