@@ -1,0 +1,30 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index a8b076140dd2211d7b3fde9a9a81df956aef6660..22f2ef62f57e39e43dafb71c4f7edd6872a7641f 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1843,6 +1843,12 @@ async function createAccessTokenJwt(options) {
+ 		typ: "at+jwt"
+ 	});
+ 	const now = options.now ?? /* @__PURE__ */ new Date();
++	// Awaited in its own statement: Hermes before 250829098.0.12 miscompiles `await` inside an object literal in a ternary branch (facebook/hermes#2010)
++	const dpopJkt = options.dpop ? await calculateJwkThumbprint({
++		hashAlgorithm: "sha-256",
++		hashCallback: options.callbacks.hash,
++		jwk: options.dpop.jwk
++	}) : void 0;
+ 	const payload = parseWithErrorHandling(zAccessTokenProfileJwtPayload, {
+ 		iat: dateToSeconds(now),
+ 		exp: dateToSeconds(addSecondsToDate(now, options.expiresInSeconds)),
+@@ -1852,11 +1858,7 @@ async function createAccessTokenJwt(options) {
+ 		client_id: options.clientId,
+ 		sub: options.subject,
+ 		scope: options.scope,
+-		cnf: options.dpop ? { jkt: await calculateJwkThumbprint({
+-			hashAlgorithm: "sha-256",
+-			hashCallback: options.callbacks.hash,
+-			jwk: options.dpop.jwk
+-		}) } : void 0,
++		cnf: dpopJkt ? { jkt: dpopJkt } : void 0,
+ 		...options.additionalPayload
+ 	});
+ 	const { jwt } = await options.callbacks.signJwt(options.signer, {
