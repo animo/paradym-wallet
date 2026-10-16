@@ -32,6 +32,7 @@ import {
 } from './dcApi/registerCredentials'
 import type { CredentialForDisplayId } from './display/credential'
 import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletBiometricAuthenticationError } from './error'
+import { withBiometricAuthenticationErrors } from './error/withBiometricAuthenticationErrors'
 import { useParadym } from './hooks'
 import { parseDidCommInvitation } from './invitation/parser'
 import {
@@ -60,6 +61,7 @@ import {
 } from './openid4vc/func/resolveCredentialRequest'
 import { type ShareCredentialsOptions, shareCredentials } from './openid4vc/func/shareCredentials'
 import { RecordProvider } from './providers/AgentProvider'
+import { type CreateDeviceResponseOptions, createDeviceResponse } from './proximity/createDeviceResponse'
 import {
   type GetSubmissionForMdocDocumentRequestOptions,
   getSubmissionForMdocDocumentRequest,
@@ -275,19 +277,22 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
    * `this` only when called, so the field can be initialized before the constructor body assigns
    * the agent.
    *
+   * The methods that can create or sign with a credential key in the secure environment rethrow a
+   * failed biometric prompt as a `ParadymWalletBiometricAuthenticationError`.
+   *
    */
   public readonly openid4vc = {
     resolveCredentialOffer: (options: Omit<ResolveCredentialOfferOptions, 'paradym'>) =>
       resolveCredentialOffer({ ...options, paradym: this }),
 
     acquireCredentials: (options: DistributedOmit<AcquireCredentialsOptions, 'paradym'>) =>
-      acquireCredentials({ ...options, paradym: this }),
+      withBiometricAuthenticationErrors(acquireCredentials({ ...options, paradym: this })),
 
     completeCredentialRetrieval: (options: Omit<CompleteCredentialRetrievalOptions, 'paradym'>) =>
       completeCredentialRetrieval({ ...options, paradym: this }),
 
     receiveDeferredCredential: (options: Omit<ReceiveDeferredCredentialFromOpenId4VciOfferOptions, 'paradym'>) =>
-      receiveDeferredCredentialFromOpenId4VciOffer({ ...options, paradym: this }),
+      withBiometricAuthenticationErrors(receiveDeferredCredentialFromOpenId4VciOffer({ ...options, paradym: this })),
 
     resolveCredentialRequest: (options: Omit<ResolveCredentialRequestOptions, 'paradym'>) =>
       resolveCredentialRequest({ ...options, paradym: this }),
@@ -296,7 +301,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
       declineCredentialRequest({ ...options, paradym: this }),
 
     shareCredentials: (options: Omit<ShareCredentialsOptions, 'paradym'>) =>
-      shareCredentials({ ...options, paradym: this }),
+      withBiometricAuthenticationErrors(shareCredentials({ ...options, paradym: this })),
   }
 
   /**
@@ -325,6 +330,9 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public readonly proximity = {
     getSubmissionForMdocDocumentRequest: (options: Omit<GetSubmissionForMdocDocumentRequestOptions, 'mdocApi'>) =>
       getSubmissionForMdocDocumentRequest({ ...options, mdocApi: this.agent.mdoc }),
+
+    createDeviceResponse: (options: Omit<CreateDeviceResponseOptions, 'paradym'>) =>
+      withBiometricAuthenticationErrors(createDeviceResponse({ ...options, paradym: this })),
   }
 }
 

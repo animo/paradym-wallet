@@ -9,7 +9,6 @@ import {
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
-import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import type { FormattedSubmissionEntrySatisfied } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'
@@ -162,78 +161,73 @@ export const shareCredentials = async ({
     }
   }
 
-  try {
-    const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
-      authorizationRequestPayload: authorizationRequest,
-      presentationExchange: presentationExchangeCredentials
-        ? {
-            credentials: presentationExchangeCredentials,
-          }
+  const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
+    authorizationRequestPayload: authorizationRequest,
+    presentationExchange: presentationExchangeCredentials
+      ? {
+          credentials: presentationExchangeCredentials,
+        }
+      : undefined,
+    dcql: dcqlCredentials
+      ? {
+          credentials: dcqlCredentials,
+        }
+      : undefined,
+    transactionData:
+      resolvedRequest.transactionData && acceptTransactionData && transactionData?.cardForTransactionId
+        ? [{ credentialId: transactionData.cardForTransactionId }]
         : undefined,
-      dcql: dcqlCredentials
-        ? {
-            credentials: dcqlCredentials,
-          }
-        : undefined,
-      transactionData:
-        resolvedRequest.transactionData && acceptTransactionData && transactionData?.cardForTransactionId
-          ? [{ credentialId: transactionData.cardForTransactionId }]
-          : undefined,
-      origin: resolvedRequest.origin,
-    })
+    origin: resolvedRequest.origin,
+  })
 
-    // if redirect_uri is provided, open it in the browser
-    // Even if the response returned an error, we must open this uri
-    if (result.redirectUri) {
-      await Linking.openURL(result.redirectUri)
-    }
-
-    if (result.serverResponse && (result.serverResponse.status < 200 || result.serverResponse.status > 299)) {
-      paradym.logger.error('Error while accepting authorization request', {
-        authorizationRequest,
-        response: result.authorizationResponse,
-        responsePayload: result.authorizationResponsePayload,
-      })
-      throw new Error(
-        `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
-      )
-    }
-
-    const storedActivity = await storeSharedActivityForCredentialsForRequest(
-      paradym,
-      resolvedRequest,
-      'success',
-      transactionData
-    )
-
-    if (
-      storedActivity.type === 'payment' &&
-      (transactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1' ||
-        transactionData?.type === pasoPaymentTransactionDataType) &&
-      transactionData.cardForTransactionId
-    ) {
-      const credentialEntry = resolvedRequest.formattedSubmission.entries.find(
-        (entry) => entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
-      )
-      const credentialRecord = credentialEntry?.isSatisfied
-        ? credentialEntry.credentials[0]?.credential.record
-        : undefined
-      if (credentialRecord) {
-        fetchPaymentTransactionStatus(credentialRecord, transactionData.hash)
-          .then((transactionStatus) => {
-            if (transactionStatus) {
-              return activityStorage.updateActivity(paradym.agent, storedActivity.id, { transactionStatus })
-            }
-          })
-          .catch((error) => paradym.logger.error('Failed to fetch initial payment transaction status', { error }))
-      }
-    }
-
-    return result
-  } catch (error) {
-    // Handle biometric authentication errors
-    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
+  // if redirect_uri is provided, open it in the browser
+  // Even if the response returned an error, we must open this uri
+  if (result.redirectUri) {
+    await Linking.openURL(result.redirectUri)
   }
+
+  if (result.serverResponse && (result.serverResponse.status < 200 || result.serverResponse.status > 299)) {
+    paradym.logger.error('Error while accepting authorization request', {
+      authorizationRequest,
+      response: result.authorizationResponse,
+      responsePayload: result.authorizationResponsePayload,
+    })
+    throw new Error(
+      `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
+    )
+  }
+
+  const storedActivity = await storeSharedActivityForCredentialsForRequest(
+    paradym,
+    resolvedRequest,
+    'success',
+    transactionData
+  )
+
+  if (
+    storedActivity.type === 'payment' &&
+    (transactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1' ||
+      transactionData?.type === pasoPaymentTransactionDataType) &&
+    transactionData.cardForTransactionId
+  ) {
+    const credentialEntry = resolvedRequest.formattedSubmission.entries.find(
+      (entry) => entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
+    )
+    const credentialRecord = credentialEntry?.isSatisfied
+      ? credentialEntry.credentials[0]?.credential.record
+      : undefined
+    if (credentialRecord) {
+      fetchPaymentTransactionStatus(credentialRecord, transactionData.hash)
+        .then((transactionStatus) => {
+          if (transactionStatus) {
+            return activityStorage.updateActivity(paradym.agent, storedActivity.id, { transactionStatus })
+          }
+        })
+        .catch((error) => paradym.logger.error('Failed to fetch initial payment transaction status', { error }))
+    }
+  }
+
+  return result
 }
 
 /**

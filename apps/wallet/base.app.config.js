@@ -104,6 +104,10 @@ const dcApiIncludedPackages = [
   'expo-haptics',
   // The verifier's logo and the card art on the review screen, through `@package/ui`'s `Image`.
   'expo-image',
+  // The wallet configuration the request UI opens the store with names the app version, for the
+  // `wallet_instance_version` of PaSO payment proofs. Inside the extension it reads the extension's
+  // own Info.plist, so the application id is the extension's.
+  'expo-application',
 ]
 
 /**

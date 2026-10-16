@@ -5,7 +5,6 @@ import type {
   OpenId4VciRequestTokenResponse,
 } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../../agent'
-import { ParadymWalletBiometricAuthenticationError } from '../../error'
 import {
   extractOpenId4VcCredentialMetadata,
   setBatchCredentialMetadata,
@@ -28,23 +27,16 @@ export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
   accessToken,
 }: ReceiveDeferredCredentialFromOpenId4VciOfferOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')
-  try {
-    const { credentials, deferredCredentials } = await paradym.agent.openid4vc.holder.requestDeferredCredentials({
-      ...deferredCredentialResponse,
-      ...accessToken,
-      issuerMetadata,
-      verifyCredentialStatus: false,
-    })
+  const { credentials, deferredCredentials } = await paradym.agent.openid4vc.holder.requestDeferredCredentials({
+    ...deferredCredentialResponse,
+    ...accessToken,
+    issuerMetadata,
+    verifyCredentialStatus: false,
+  })
 
-    return {
-      deferredCredentials,
-      credentials: parseCredentialResponses(credentials, issuerMetadata),
-    }
-  } catch (error) {
-    // TODO: if one biometric operation fails it will fail the whole credential receiving. We should have more control so we
-    // can retry e.g. the second credential
-    // Handle biometric authentication errors
-    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
+  return {
+    deferredCredentials,
+    credentials: parseCredentialResponses(credentials, issuerMetadata),
   }
 }
 

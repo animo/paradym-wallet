@@ -19,10 +19,10 @@ export const createLogger = (
     ? new logging.customLogger(logging.level)
     : new ParadymWalletSdkConsoleLogger(logging?.level)
 
-  if (logging?.trace && logger instanceof ParadymWalletSdkConsoleLogger) {
-    logger.trackLoggedMessages(logging.traceLimit, logging.persist ? process : undefined)
-  } else if (logging?.persist) {
-    // Tracing is off, so nothing will be written — and nothing written before should linger either.
+  if (logging?.persistForExport && logger instanceof ParadymWalletSdkConsoleLogger) {
+    logger.trackLoggedMessages(logging.persistLimit, process)
+  } else {
+    // Nothing is kept for export, so nothing will be written — and nothing written before should linger either.
     clearProcessLogs(process)
   }
 

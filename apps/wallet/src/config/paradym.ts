@@ -1,7 +1,6 @@
-import { isHardwareBoundCredentialType } from '@app/config/paymentAttestation'
+import { isHardwareBoundCredentialConfiguration } from '@app/config/paymentAttestation'
 import { walletId } from '@app/config/wallet'
 import { eudiTrustList, trustedDidEntities, trustedOpenId4VciIssuerEntities, trustedX509Entities } from '@app/constants'
-import { mmkv } from '@app/storage/mmkv'
 import { resolveDcApiDisplay } from '@app/utils/dcApiRegisterOptions'
 import { resolveAttributeLabel } from '@app/utils/resolveAttributeLabel'
 import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
@@ -15,7 +14,20 @@ import { Platform } from 'react-native'
 // data — and the console logger serializes that data on every call. At trace level that is the
 // wallet's single largest source of work at startup and on every credential read, so only a build
 // or a user that asked for the logs pays for them.
-const isVerboseLoggingEnabled = __DEV__ || mmkv.getBoolean('useDevelopmentMode') === true
+//
+// Not part of `paradymWalletSdkOptions`: every unlock sets up a new agent, and has to pass the
+// setting as it is then. With the value from app start, a wallet that locked in the background came
+// back without logging — and, with `persistForExport` off, deleted the logs captured since development
+// mode was turned on.
+export const getLoggingOptions = (isDevelopmentModeEnabled: boolean | undefined) => {
+  const isVerbose = __DEV__ || isDevelopmentModeEnabled === true
+
+  return {
+    level: isVerbose ? LogLevel.Trace : LogLevel.Warn,
+    persistForExport: isVerbose,
+    persistLimit: 1000,
+  }
+}
 
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   id: walletId,
@@ -31,15 +43,9 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   // A payment attestation is the possession factor of Strong Customer Authentication, so its key is
   // created in the secure environment. The secure environment only supports P-256.
   resolveCredentialKeyOptions: ({ credentialConfiguration }) =>
-    credentialConfiguration.format === 'dc+sd-jwt' && isHardwareBoundCredentialType(credentialConfiguration.vct)
+    isHardwareBoundCredentialConfiguration(credentialConfiguration)
       ? { backend: 'secureEnvironment', algorithm: 'ES256' }
       : undefined,
-  logging: {
-    level: isVerboseLoggingEnabled ? LogLevel.Trace : LogLevel.Warn,
-    trace: isVerboseLoggingEnabled,
-    traceLimit: 1000,
-    persist: true,
-  },
   openId4VcConfiguration: {
     getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {
       if (verification.type === 'credential') {

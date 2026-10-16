@@ -11,6 +11,7 @@ import {
   getDisclosedAttributeNamesForDisplay,
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletPasoError,
   resolveTransactionData,
   selectPasoPaymentCredential,
@@ -243,6 +244,11 @@ export function OpenIdPresentationNotificationScreen() {
         if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           return handleError({
             reason: t(commonMessages.biometricAuthenticationCancelled),
+          })
+        }
+        if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+          return handleError({
+            reason: t(commonMessages.biometricAuthenticationMustBeEnabledInSettings),
           })
         }
 

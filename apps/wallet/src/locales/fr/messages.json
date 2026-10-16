@@ -502,7 +502,7 @@
 		"placeholders": {},
 		"comments": ["Shown when authentication with PIN fails for other reasons"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 81]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 83]
 		],
 		"translation": "L'authentification a échoué"
 	},
@@ -1400,8 +1400,8 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 312],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 463]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 342],
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 501]
 		],
 		"translation": "Si vous arrêtez, la délivrance de la carte sera annulée."
 	},
@@ -1428,7 +1428,7 @@
 			"Toast shown when a wrong transaction code was entered and the user can still retry"
 		],
 		"origin": [
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 234]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 264]
 		],
 		"translation": "Code de transaction incorrect. Veuillez réessayer."
 	},
@@ -1738,7 +1738,7 @@
 			"Shown when the user tries to accept a proof but no credentials are loaded"
 		],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 69]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 71]
 		],
 		"translation": "Aucune carte sélectionnée"
 	},
@@ -2047,7 +2047,7 @@
 		"placeholders": {},
 		"comments": ["Shown when PIN is required but not provided"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 75]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 77]
 		],
 		"translation": "L'authentification par code PIN a échoué"
 	},
@@ -2470,6 +2470,15 @@
 		"origin": [["src/features/onboarding/steps.ts", 27]],
 		"translation": "Configurer la biométrie"
 	},
+	"biometricsRequiredSlide.title": {
+		"message": "Set up biometrics to add this card",
+		"placeholders": {},
+		"comments": [
+			"Heading shown when a card can only be added after biometrics are set up on the device"
+		],
+		"origin": [["src/features/receive/slides/BiometricsRequiredSlide.tsx", 40]],
+		"translation": "Configurez la biométrie pour ajouter cette carte"
+	},
 	"common.setUpLater": {
 		"message": "Set up later",
 		"placeholders": {},
@@ -2746,8 +2755,8 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 308],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 459]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 338],
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 497]
 		],
 		"translation": "Arrêter la délivrance de la carte ?"
 	},
@@ -3107,6 +3116,15 @@
 		"comments": ["About screen description text for the Paradym wallet"],
 		"origin": [["src/config/copy.ts", 6]],
 		"translation": "Cette application a été créée par Animo Solutions comme application complémentaire de Paradym. Tout le code est disponible sous Apache 2.0."
+	},
+	"biometricsRequiredSlide.description": {
+		"message": "This card can only be used after you confirm it is you with your face or fingerprint. Set up biometrics in the settings of your device, then return to the wallet to continue.",
+		"placeholders": {},
+		"comments": [
+			"Explains that biometrics must be set up on the device before this card can be added"
+		],
+		"origin": [["src/features/receive/slides/BiometricsRequiredSlide.tsx", 56]],
+		"translation": "Cette carte ne peut être utilisée qu'après avoir confirmé votre identité avec votre visage ou votre empreinte digitale. Configurez la biométrie dans les réglages de votre appareil, puis revenez dans le portefeuille pour continuer."
 	},
 	"cardLifecycle.limitedByDate.expiresIn": {
 		"message": "This card expires in {expiryDaysString}, on {0}.",

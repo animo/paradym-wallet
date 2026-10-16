@@ -2,6 +2,16 @@ import { ConsoleLogger, replaceError } from '@credo-ts/core'
 import { type LogData, LogLevel, type LogMessage } from './ParadymWalletSdkLogger'
 import { type LogProcess, PersistedLogBuffer } from './persistedLogs'
 
+// Credo's `replaceError` leaves out `cause`, which is where a wrapped error keeps what actually went
+// wrong: a `KeyManagementError: Error creating key` says nothing without the native error under it.
+// The cause goes through this same replacer, so a chain of causes is kept too.
+const replaceErrorWithCause = (key: string, value: unknown) => {
+  const replaced = replaceError(key, value)
+  if (!(value instanceof Error) || value.cause === undefined) return replaced
+
+  return { ...(replaced as object), cause: value.cause }
+}
+
 export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
   /**
    * Ring buffer of already-serialized `LogMessage` objects.
@@ -70,7 +80,7 @@ export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
     if (!this.isEnabled(level)) return
 
     const timestamp = new Date().toISOString()
-    const serialized = JSON.stringify({ timestamp, level, message, data } satisfies LogMessage, replaceError)
+    const serialized = JSON.stringify({ timestamp, level, message, data } satisfies LogMessage, replaceErrorWithCause)
 
     // Overwrite the oldest entry once the buffer is full, rather than shifting every element down.
     let slot: number
@@ -96,7 +106,7 @@ export class ParadymWalletSdkConsoleLogger extends ConsoleLogger {
     // FIXME: the error logger in React Native 0.81 changed, and it does not log the error correctly anymore
     // We print the data separately, and the message as error (to get nice stack)
     if (data && this.isEnabled(LogLevel.Error)) {
-      console.log(JSON.stringify(data, replaceError, 2))
+      console.log(JSON.stringify(data, replaceErrorWithCause, 2))
     }
     super.error(message)
   }

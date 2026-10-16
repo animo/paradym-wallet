@@ -112,7 +112,11 @@ export type ParadymWalletSdkLoggingOptions<T extends ParadymWalletSdkLogger = Pa
 
   /**
    *
-   * Whether to trace the logs. Later, this can be exported
+   * Whether to keep the last `persistLimit` messages so they can be exported. They are written to
+   * storage as they are logged, so they survive a crash, and the app can export what the DC API
+   * request UI logged in its own process; see `readProcessLogs`.
+   *
+   * With `persistForExport` off, nothing is kept and whatever an earlier run stored is deleted.
    *
    * exporting the logs can be done with the following:
    *
@@ -122,25 +126,14 @@ export type ParadymWalletSdkLoggingOptions<T extends ParadymWalletSdkLogger = Pa
    * ```
    *
    */
-  trace?: boolean
+  persistForExport?: boolean
 
   /**
    *
-   * Number of logs to be traced.
+   * Number of messages kept for export.
    *
    */
-  traceLimit?: number
-
-  /**
-   *
-   * Whether traced logs are also written to storage as they are logged, so they survive a crash and
-   * can be exported on the next run. Each process — the app, the DC API request UI — keeps its own
-   * store in the container both can read; see `readProcessLogs`.
-   *
-   * With `trace` off the stored logs are deleted instead.
-   *
-   */
-  persist?: boolean
+  persistLimit?: number
 
   /**
    *

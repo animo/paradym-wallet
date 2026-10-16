@@ -5,5 +5,6 @@ import { mmkv } from '../storage/mmkv'
 export function useDevelopmentMode() {
   const [isDevEnabled, setIsDevEnabled] = useMMKVBoolean('useDevelopmentMode', mmkv)
 
-  return [isDevEnabled, setIsDevEnabled] as const
+  // On by default in development builds, until it is turned off
+  return [isDevEnabled ?? __DEV__, setIsDevEnabled] as const
 }

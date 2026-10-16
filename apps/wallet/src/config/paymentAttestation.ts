@@ -11,3 +11,8 @@ export const weroPaymentAttestationVct = 'https://wero.epicompany.eu/payment_att
 export function isHardwareBoundCredentialType(type: string | undefined) {
   return type === weroPaymentAttestationVct
 }
+
+/** Whether the key for a credential of this configuration is created in the secure environment. */
+export function isHardwareBoundCredentialConfiguration(configuration: { format: string; vct?: string }) {
+  return configuration.format === 'dc+sd-jwt' && isHardwareBoundCredentialType(configuration.vct)
+}

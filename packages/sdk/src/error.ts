@@ -49,13 +49,19 @@ export class ParadymWalletNoStoreError extends ParadymWalletSdkError {}
 export class ParadymWalletInvalidTransactionCodeError extends ParadymWalletSdkError {}
 
 export class ParadymWalletBiometricAuthenticationError extends ParadymWalletSdkError {
+  /**
+   * Looks through the `cause` chain as well: the key management service wraps whatever the secure
+   * environment threw, so the biometric error is usually one or more levels down.
+   */
   public static tryParseFromError(error: unknown): ParadymWalletBiometricAuthenticationError | null {
-    if (ParadymWalletBiometricAuthenticationCancelledError.isBiometricAuthenticationCancelledError(error)) {
-      return new ParadymWalletBiometricAuthenticationCancelledError()
-    }
+    for (let current = error; current instanceof Error; current = current.cause) {
+      if (ParadymWalletBiometricAuthenticationCancelledError.isBiometricAuthenticationCancelledError(current)) {
+        return new ParadymWalletBiometricAuthenticationCancelledError()
+      }
 
-    if (ParadymWalletBiometricAuthenticationNotEnabledError.isBiometricAuthenticationNotEnabledError(error)) {
-      return new ParadymWalletBiometricAuthenticationNotEnabledError()
+      if (ParadymWalletBiometricAuthenticationNotEnabledError.isBiometricAuthenticationNotEnabledError(current)) {
+        return new ParadymWalletBiometricAuthenticationNotEnabledError()
+      }
     }
 
     return null
