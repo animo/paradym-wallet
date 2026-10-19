@@ -140,14 +140,16 @@ function getPartialMatches(
 }
 
 export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult): FormattedSubmission {
-  const credentialSets: NonNullable<DcqlQueryResult['credential_sets']> = dcqlQueryResult.credential_sets ?? [
-    // If no credential sets are defined we create a default one with just all the credential options
-    {
-      required: true,
-      options: [dcqlQueryResult.credentials.map((c) => c.id)],
-      matching_options: dcqlQueryResult.can_be_satisfied ? [dcqlQueryResult.credentials.map((c) => c.id)] : undefined,
-    },
-  ]
+  // Optional credential sets are not shared, matching how Credo selects the credentials
+  const credentialSets: Array<NonNullable<DcqlQueryResult['credential_sets']>[number]> =
+    dcqlQueryResult.credential_sets?.filter((credentialSet) => credentialSet.required !== false) ?? [
+      // If no credential sets are defined we create a default one with just all the credential options
+      {
+        required: true,
+        options: [dcqlQueryResult.credentials.map((c) => c.id)],
+        matching_options: dcqlQueryResult.can_be_satisfied ? [dcqlQueryResult.credentials.map((c) => c.id)] : undefined,
+      },
+    ]
 
   const entries: FormattedSubmissionEntry[] = []
   for (const credentialSet of credentialSets) {
