@@ -57,12 +57,16 @@ jobs:
 
       # Nothing cached it, so build it here: a worktree of that commit, measured with this branch's
       # script — the commit itself may predate it, and a changed script has to measure both sides.
+      # Its own TMPDIR keeps Metro's cache apart: the babel aliases are absolute paths, so files the
+      # branch shares with the baseline would otherwise import from the removed worktree.
       - name: Measure the baseline
         if: github.event_name == 'pull_request' && steps.restore-baseline.outputs.cache-hit != 'true'
         env:
           BUNDLE_SIZE_ROOT: ../bundle-size-baseline
           BUNDLE_SIZE_OUTPUT: bundle-size-main.json
+          TMPDIR: ${{ runner.temp }}/bundle-size-baseline
         run: |
+          mkdir -p "$TMPDIR"
           git worktree add ../bundle-size-baseline ${{ steps.baseline.outputs.sha }}
           pnpm --dir ../bundle-size-baseline install
           node scripts/measure-bundle-size.mjs
