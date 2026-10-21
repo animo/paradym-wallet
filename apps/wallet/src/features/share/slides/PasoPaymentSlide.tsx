@@ -21,7 +21,7 @@ import {
   type FormattedTransactionDataPasoPayment,
   hasMissingCards,
 } from '@paradym/wallet-sdk'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
@@ -65,7 +65,6 @@ export const PasoPaymentSlide = ({
 }: PasoPaymentSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const { t } = useLingui()
-  const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [hasSeenTransactionData, setHasSeenTransactionData] = useState(false)
   const [isProcessing, setIsProcessing] = useState(isAccepting)
@@ -128,10 +127,6 @@ export const PasoPaymentSlide = ({
     }
   }, [])
 
-  useEffect(() => {
-    if (scrollViewHeight > 0) markSeen(scrollViewHeight)
-  }, [scrollViewHeight, markSeen])
-
   const onTransactionDataLayout = (event: LayoutChangeEvent) => {
     const { y, height } = event.nativeEvent.layout
     transactionDataEnd.current = y + height
@@ -159,16 +154,16 @@ export const PasoPaymentSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$4" fg={1}>
+      {/* Sized by flex rather than a measured max height: the bottom bar shrinks once the scroll hint
+          goes away, and a height measured before that would leave a gap above the buttons. */}
+      <YStack gap="$4" f={1}>
         <Heading>{transaction.transactionTitle ?? t(commonMessages.paymentHeading)}</Heading>
 
         <YStack
-          fg={1}
+          f={1}
           px="$4"
           mx="$-4"
-          onLayout={(event) => {
-            if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
-          }}
+          onLayout={(event) => markSeen(event.nativeEvent.layout.height)}
           btw="$0.5"
           borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
         >
@@ -180,7 +175,6 @@ export const PasoPaymentSlide = ({
             px="$4"
             mx="$-4"
             py="$4"
-            maxHeight={scrollViewHeight}
           >
             {/* Everything PaSO requires to have been displayed, measured as one block. */}
             <YStack gap="$4" onLayout={onTransactionDataLayout}>
