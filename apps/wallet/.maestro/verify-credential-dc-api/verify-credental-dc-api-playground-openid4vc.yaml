@@ -3,7 +3,7 @@ tags:
   - verification
   - authorization-none
   - openid4vc
-  - sd-jwt
+  - mdoc
   - x5c
   - digital-credentials-api
   - playground
@@ -22,65 +22,59 @@ tags:
     env:
       deeplink: ${output.deeplink}
 
-- launchApp: com.android.chrome
+# Start the request from the playground in the browser. iOS (26+) only supports the
+# org-iso-mdoc protocol, Android uses OpenID4VP.
 - runFlow:
     when:
-      visible: Chrome notifications make things easier
-    commands:
-      - tapOn: No thanks
-
-# Enable Digital Credentials API
-- tapOn:
-    id: url_bar|search_box_text
-- inputText: chrome://flags
-- pressKey: Enter
-- inputText: Digital
+      platform: iOS
+    file: dc-api-request-ios.yaml
 - runFlow:
     when:
-      notVisible: Enabled without dialog
-    commands:
-      - tapOn: Default
-      - tapOn: Enabled without dialog
-      - tapOn: Relaunch
+      platform: Android
+    file: dc-api-request-android.yaml
 
-# Initiate DC API Request
-- tapOn:
-    id: url_bar
-- inputText: "playground.animo.id"
-- pressKey: Enter
-- scrollUntilVisible:
-    element: "mDL (mdoc) - Names"
-- tapOn: "mDL (mdoc) - Names"
-- tapOn: "EUDI PID (sd-jwt-vc) - Names"
-- scrollUntilVisible:
-    element:
-      text: Digital Credentials API
-      index: 1
-- tapOn:
-    text: Digital Credentials API
-    index: 1
-- scrollUntilVisible:
-    element:
-      text: Verify Credential
-- tapOn: Verify Credential
-
-# Accept DC API Request
-- assertVisible: Share info with playground.animo.id?
-- assertVisible: EUDI PID
-- assertVisible: Issued by Bundesdruckerei
-- tapOn: Agree and continue
-
-# Enter PIN
-- tapOn: Enter PIN to share data
+# Unlock the wallet and share from the wallet's request UI
+- extendedWaitUntil:
+    visible: Unlock your wallet
+    timeout: 30000
+# On iOS 27 Maestro loses the request UI after the first tap. The pin pad then covers the
+# screen, so the key is tapped by position. One tap per iteration: position first, then label.
 - repeat:
     times: 6
     commands:
-      - tapOn: "Pin number 1"
+      - runFlow:
+          when:
+            notVisible: "Pin number 1"
+            platform: iOS
+          commands:
+            - tapOn:
+                point: 14%,69%
+      - runFlow:
+          when:
+            visible: "Pin number 1"
+          commands:
+            - tapOn: "Pin number 1"
+- extendedWaitUntil:
+    visible: Do you trust Animo Playground\?
+    timeout: 15000
+    optional: true
+# Same as the pin pad: on iOS 27 Share is tapped by position, position first, then label
+- runFlow:
+    when:
+      notVisible: Do you trust Animo Playground\?
+      platform: iOS
+    commands:
+      - tapOn:
+          point: 74%,93%
+- runFlow:
+    when:
+      visible: Do you trust Animo Playground\?
+    commands:
+      - assertVisible: Given name
+      - assertVisible: Family name
+      - tapOn: Share
 
-- waitForAnimationToEnd:
-    timeout: 10000
-
-# It's a bit slow when running witht Maestro
+# It's a bit slow when running with Maestro
 - extendedWaitUntil:
     visible: "Verification Successful"
     timeout: 100000

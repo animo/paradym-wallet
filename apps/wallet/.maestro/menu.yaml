@@ -11,9 +11,8 @@ tags:
 - tapOn: .*Issued on.*
 - assertVisible: Card details
 - tapOn: Card is active. No actions required
-- assertVisible: Bottom Sheet
-- tapOn:
-    point: 50%,90%
+- assertVisible: The validity period of this card.*
+- tapOn: Got it
 
 - tapOn: Card attributes. View attributes of the card
 - assertVisible: Card attributes

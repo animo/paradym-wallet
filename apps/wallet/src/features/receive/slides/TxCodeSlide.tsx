@@ -85,7 +85,7 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
           </Heading>
           <Input
             secureTextEntry
-            autoFocus
+            autoFocusNative
             value={txCodeEntry}
             disabled={isVerifying}
             onSubmitEditing={onSubmit}

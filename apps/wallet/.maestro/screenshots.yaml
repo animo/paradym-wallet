@@ -51,13 +51,14 @@ tags:
     times: 6
     commands:
       - tapOn: "Pin number 1"
-- assertVisible: "Is the information correct?"
-- assertVisible: "Credential"
+- assertVisible: "Do you want to store this card?"
 - assertVisible: "Decline"
 - tapOn: "Accept"
 - extendedWaitUntil:
-    visible: "Success!"
+    visible: "Success!|.*for Identity Verification\\?"
     timeout: 120000
+- runFlow: ./common/allow-identity-verification.yaml
+- assertVisible: "Success!"
 - takeScreenshot: IssuanceSuccessScreen
 
 # Issue Tax ID (without screenshots)

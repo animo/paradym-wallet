@@ -205,10 +205,10 @@ const PLAYGROUND_CONFIG = {
   },
   verification: {
     'mdl-mdoc': {
-      presentationDefinitionId: '8caaebcc-d48c-471b-86b0-a534e15c4774__0',
+      credential: { id: 'mdl', formats: ['mso_mdoc'], attributes: ['given_name', 'family_name'] },
     },
     'eudi-pid-sd-jwt': {
-      presentationDefinitionId: '8caaebcc-d48c-471b-86b0-a534e15c4774__1',
+      credential: { id: 'eudi-pid', formats: ['dc+sd-jwt'], attributes: ['given_name', 'family_name'] },
     },
   },
 }
@@ -235,7 +235,7 @@ function request() {
   } else if (issuerBackend === 'playground') {
     result = callPlaygroundBackend(action)
   } else {
-    throw new Error(`Unknown ISSUER_BACKEND: ${scriptPath}`)
+    throw new Error(`Unknown ISSUER_BACKEND: ${issuerBackend}`)
   }
 
   if (!result?.deeplink) {
@@ -530,18 +530,14 @@ function buildVerificationRequest(baseUrl, action) {
     throw new Error(`No Playground verification config found for requestType: ${requestType}`)
   }
 
-  const presentationDefinitionId = verificationConfig.presentationDefinitionId
-
   return {
     url: `${baseUrl}requests/create`,
     body: JSON.stringify({
-      presentationDefinitionId,
+      request: { credentials: [verificationConfig.credential], combination: 'all' },
       requestScheme: 'openid4vp://',
       responseMode: 'direct_post.jwt',
       requestSignerType: requestSignerType,
       transactionAuthorizationType: 'none',
-      version: 'v1',
-      queryLanguage: 'dcql',
     }),
   }
 }

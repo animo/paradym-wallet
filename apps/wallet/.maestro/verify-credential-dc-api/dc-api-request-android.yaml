@@ -1,0 +1,19 @@
+appId: com.android.chrome
+---
+- launchApp: com.android.chrome
+- runFlow:
+    when:
+      visible: Use without an account
+    commands:
+      - tapOn: Use without an account
+- runFlow:
+    when:
+      visible: Chrome notifications make things easier
+    commands:
+      - tapOn: No thanks
+
+- openLink: https://playground.animo.id/?tab=verify&responseMode=dc_api&requestSignerType=x5c&transactionAuthorizationType=none&request=%7B%22credentials%22%3A%5B%7B%22id%22%3A%22mdl%22%2C%22formats%22%3A%5B%22mso_mdoc%22%5D%2C%22attributes%22%3A%5B%22given_name%22%2C%22family_name%22%5D%7D%5D%2C%22combination%22%3A%22all%22%7D&dcApiProtocol=openid4vp
+- scrollUntilVisible:
+    element: Verify Credential
+    timeout: 60000
+- tapOn: Verify Credential

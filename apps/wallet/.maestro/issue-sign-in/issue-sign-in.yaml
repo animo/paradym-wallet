@@ -40,6 +40,16 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
+# Depending on the device, Chrome shows its first run screen before the sign-in page
+- extendedWaitUntil:
+    visible: Enter any login|the client is asking you to confirm previously given authorization|Make Chrome your own
+    timeout: 15000
+- runFlow:
+    when:
+      visible: Make Chrome your own
+    commands:
+      - tapOn: Use without an account
+
 # Ensure text for conditional flow is visible
 - extendedWaitUntil:
     visible: Enter any login|the client is asking you to confirm previously given authorization
@@ -59,6 +69,7 @@ appId: id.paradym.wallet.preview
       visible: Enter any login
 
     commands:
+      - tapOn: Enter any login
       - inputText: "username"
       - tapOn: and password
       - inputText: "password"
@@ -79,13 +90,6 @@ appId: id.paradym.wallet.preview
     commands:
       - waitForAnimationToEnd:
           timeout: 15000
-      # Depending on the device running the tests, an initial Chrome setup screen may appear.
-      # If the screen does not appear, this step is skipped.
-      - runFlow:
-          when:
-            visible: Make Chrome your own
-          commands:
-            - tapOn: Use without an account
 
       - extendedWaitUntil:
           visible: "Sign-in"
@@ -133,17 +137,27 @@ appId: id.paradym.wallet.preview
 
       - tapOn: Continue
 
+# The wallet opens directly, or the browser shows a page to go back to it
+- extendedWaitUntil:
+    visible: "Go back to Paradym Wallet|Do you want to store this card\\?"
+    timeout: 15000
 - runFlow:
     when:
       visible: "Go back to Paradym Wallet"
     commands:
+      # The page can still be loading when the heading shows up
+      - extendedWaitUntil:
+          visible:
+            text: Go back to Paradym Wallet
+            below: It seems you were not automatically redirected.*
+          timeout: 15000
       - tapOn:
           text: Go back to Paradym Wallet
-          index: 1
+          below: It seems you were not automatically redirected.*
 
 - extendedWaitUntil:
-    visible: "Is the information correct?"
-    timeout: 5000
+    visible: "Do you want to store this card\\?"
+    timeout: 15000
 
 - tapOn: Accept
 - assertVisible: Success!
