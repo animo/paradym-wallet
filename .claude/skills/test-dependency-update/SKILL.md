@@ -1,16 +1,16 @@
 ---
 name: test-dependency-update
 description: Test a dependency update branch in the running app on an iOS simulator or Android emulator with Argent - decide what the updates can affect, test that, fix or revert updates that break the app, and report on the PR. Use in the Dependency Updates workflow after a deps/* branch was pushed, or when asked to test a dependency update in the app.
-allowed-tools: Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, Skill, Bash(pnpm:*), Bash(git:*), Bash(gh pr:*), Bash(curl:*), Bash(xcrun:*), Bash(adb:*), Bash(emulator:*), Bash(lsof:*), mcp__argent
+allowed-tools: Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, Skill, Bash, mcp__argent
 ---
 
 # Test a dependency update
 
-The arguments name the platform (`ios` or `android`), the branch, the results directory and the workflow run URL. The branch is checked out and its dependencies are installed.
+The arguments name the platform (`ios` or `android`), the device, the branch, the results directory and the workflow run URL. The branch is checked out, its dependencies are installed, and the device (an iOS simulator UDID or an Android emulator serial) is booted.
 
 The goal is to find out whether the updates on this branch break the app, and to keep the updates that work. Decide yourself what to test: the checks below are a starting point, not a script.
 
-Read "Building, running and testing the app" in `AGENTS.md` first. It explains the build, the onboarding PIN and how to create playground offers and requests. Read the matching `argent-*` skill before using its tools. You are the only user of this machine, so you can boot and use any simulator or emulator.
+Read "Building, running and testing the app" in `AGENTS.md` first. It explains the build, the onboarding PIN and how to create playground offers and requests. Read the matching `argent-*` skill before using its tools. You are the only user of this machine: use the booted device from the arguments.
 
 ## 1. Find out what changed
 
@@ -51,10 +51,12 @@ Can't be tested on a simulator or emulator: the camera QR scanner, Bluetooth pro
 
 From `apps/wallet`, following `AGENTS.md`:
 
-- iOS: `pnpm prebuild`, then `pnpm ios --device <simulator> --no-bundler`. Boot an iOS 26 simulator first.
-- Android: boot the `wallet` emulator, then `pnpm prebuild` and `pnpm android --device <serial> --no-bundler`.
+- iOS: `pnpm prebuild`, then `pnpm ios --device <device> --no-bundler`.
+- Android: `pnpm prebuild`, then `pnpm android --device <device> --no-bundler`, then `adb -s <device> reverse tcp:8081 tcp:8081`.
 
-Start Metro with `pnpm start` in the background and connect the dev launcher to it. A build that fails is a test failure: handle it like one.
+Start Metro with `pnpm start` in the background and connect the dev launcher to it. A build that fails because of an update is a test failure: handle it like one.
+
+A problem with this machine is not a reason to stop: work around it. When an Argent tool fails, read `argent server logs`, retry once, and otherwise drive and check the app another way: `xcrun simctl` or `adb` for launching, deep links (`xcrun simctl openurl`, `adb shell am start -d`) and screenshots (`xcrun simctl io <device> screenshot`, `adb exec-out screencap -p`), and the Metro output for JS errors.
 
 Save screenshots of what you tested in the results directory. The workflow uploads it.
 
@@ -77,6 +79,7 @@ Comment on the PR (`gh pr comment`), one comment per platform:
 - **Tested**: what you tested and why, and the result of each.
 - **Fixed or reverted**: what broke and what you did.
 - **Not tested**: what the updates touch but couldn't be tested here, and why.
+- **Environment**: any tool or command that was denied or didn't work on this machine, so the workflow can be fixed.
 - A link to the workflow run, where the screenshots are.
 
 Keep it short. A test that passed needs one line.

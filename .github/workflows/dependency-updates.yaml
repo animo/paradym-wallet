@@ -49,6 +49,7 @@ jobs:
 
       # Without `github_token` the action pushes and opens PRs as the Claude GitHub App, so CI runs on the PRs
       - name: 🤖 Update dependencies
+        id: claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -57,9 +58,18 @@ jobs:
           plugin_marketplaces: https://github.com/anthropics/claude-plugins-official.git
           plugins: expo@claude-plugins-official
           display_report: true
+          # Pushes can only reach deps/* branches: main requires a reviewed PR
           claude_args: |
+            --model claude-opus-5-5
             --max-turns 500
-            --allowedTools "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Skill,Bash(pnpm:*),Bash(git:*),Bash(gh pr:*),Bash(gh label:*)"
+            --allowedTools "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Skill,Bash"
+
+      # The action skips itself, and passes, when this file differs from the one on main
+      - name: ✅ Check that Claude ran
+        if: ${{ !steps.claude.outputs.session_id }}
+        run: |
+          echo "::error::Claude didn't run"
+          exit 1
 
       - name: 🔎 Find pushed branches
         id: pushed
@@ -110,15 +120,21 @@ jobs:
       - uses: pnpm/action-setup@v6
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          mkdir -p "$RESULTS_DIR"
 
-      - name: 🍎 Select Xcode
+      # The default Xcode, which has simulator runtimes installed for it
+      - name: 🍎 Boot iOS simulator
+        id: ios
         if: ${{ matrix.platform == 'ios' }}
         run: |
-          # Same Xcode as the EAS builds, e.g. macos-tahoe-26.4-xcode-26.4
-          version=$(node -p "require('./apps/wallet/eas.json').build.base.ios.image.match(/xcode-([0-9.]+)/)[1]")
-          sudo xcode-select -s "/Applications/Xcode_${version}.app"
           xcodebuild -version
+          # The newest iPhone Pro on the newest iOS runtime
+          udid=$(xcrun simctl list devices available --json | jq -r '[.devices | to_entries[] | select(.key | test("iOS-[0-9]")) | { v: (.key | capture("iOS-(?<major>[0-9]+)-(?<minor>[0-9]+)") | [(.major | tonumber), (.minor | tonumber)]), d: .value[] } | select(.d.name | test("^iPhone [0-9]+ Pro$"))] | sort_by(.v) | last | .d.udid')
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          echo "device=$udid" >> "$GITHUB_OUTPUT"
 
       - name: ☕ Setup Java
         if: ${{ matrix.platform == 'android' }}
@@ -127,37 +143,80 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: 🤖 Create Android emulator
+      - name: 🤖 Boot Android emulator
+        id: android
         if: ${{ matrix.platform == 'android' }}
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-          image='system-images;android-36;google_apis;x86_64'
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" emulator platform-tools "$image" > /dev/null
-          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --name wallet --package "$image" --device pixel_9
+          export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
           echo "$ANDROID_HOME/emulator" >> "$GITHUB_PATH"
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+          # avdmanager and the emulator can disagree on the default AVD folder
+          export ANDROID_AVD_HOME="$HOME/.android/avd"
+          echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
+          mkdir -p "$ANDROID_AVD_HOME"
+          image='system-images;android-36;google_apis;x86_64'
+          yes | sdkmanager emulator platform-tools "$image" > /dev/null
+          # The newest Pixel profile this avdmanager knows
+          profile=$(avdmanager list device -c | grep -E '^pixel_[0-9]+$' | sort -t_ -k2 -n | tail -1)
+          echo no | avdmanager create avd --name wallet --package "$image" --device "$profile"
+          emulator -list-avds
+          nohup emulator -avd wallet -no-window -no-audio -no-boot-anim -no-snapshot-save -gpu swiftshader_indirect -memory 4096 > "$RESULTS_DIR/emulator.log" 2>&1 &
+          booted=false
+          if timeout 300 adb wait-for-device; then
+            for _ in $(seq 120); do
+              [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && booted=true && break
+              sleep 5
+            done
+          fi
+          if [ "$booted" != true ]; then
+            echo "::error::The Android emulator didn't boot"
+            cat "$RESULTS_DIR/emulator.log"
+            exit 1
+          fi
+          echo "device=$(adb devices | awk 'NR==2 { print $1 }')" >> "$GITHUB_OUTPUT"
 
-      - name: 📱 Install Argent
+      # The MCP server connects to this tool server. Starting it here shows startup problems in this step
+      - name: 📱 Start Argent
         run: |
           npm install --global @swmansion/argent@0.30.1
-          mkdir -p ~/.claude/skills "$RESULTS_DIR"
+          mkdir -p ~/.claude/skills
           cp -R "$(npm root --global)/@swmansion/argent/skills/." ~/.claude/skills/
           echo '{"mcpServers":{"argent":{"command":"argent","args":["mcp"]}}}' > /tmp/argent-mcp.json
+          argent server start --detach
+          for _ in $(seq 60); do
+            argent server status | grep -q 'health: *ok' && break
+            sleep 2
+          done
+          argent server status | grep -q 'health: *ok' || { argent server logs; exit 1; }
 
       - name: 🤖 Test in the app
+        id: claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          prompt: /test-dependency-update platform=${{ matrix.platform }} branch=${{ matrix.branch }} results=/tmp/test-results run=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          prompt: /test-dependency-update platform=${{ matrix.platform }} device=${{ steps.ios.outputs.device || steps.android.outputs.device }} branch=${{ matrix.branch }} results=/tmp/test-results run=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           plugin_marketplaces: https://github.com/anthropics/claude-plugins-official.git
           plugins: expo@claude-plugins-official
           display_report: true
           claude_args: |
+            --model claude-opus-5-5
             --max-turns 500
             --mcp-config /tmp/argent-mcp.json
-            --allowedTools "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Skill,Bash(pnpm:*),Bash(git:*),Bash(gh pr:*),Bash(curl:*),Bash(xcrun:*),Bash(adb:*),Bash(emulator:*),Bash(lsof:*),mcp__argent"
+            --add-dir /tmp/test-results
+            --allowedTools "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Skill,Bash,mcp__argent"
+
+      - name: ✅ Check that Claude ran
+        if: ${{ !steps.claude.outputs.session_id }}
+        run: |
+          echo "::error::Claude didn't run"
+          exit 1
+
+      - name: 🪵 Save Argent log
+        if: ${{ always() }}
+        run: argent server logs > "$RESULTS_DIR/argent-server.log" 2>&1 || true
 
       - name: 📸 Upload test results
         if: ${{ always() }}
