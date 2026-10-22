@@ -15,6 +15,9 @@ overrides:
   # Pin exactly: react-native 0.86 exists and open-ended peer ranges (tamagui, askar,
   # masked-view, wallet-sdk) would otherwise hoist it over the SDK 56 version.
   react-native: 0.85.3
+  # Keep a single @owf/mdoc + @owf/cose copy. @owf/mdoc 0.8.3 moved to @owf/cose 0.5, while
+  # Credo 0.7 uses @owf/cose ^0.4.1: two cose copies break mdoc decoding (DataItem instanceof).
+  '@owf/mdoc': 'catalog:'
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.7.3-alpha-20261021163643': patches/@credo-ts__openid4vc@0.7.3-alpha-20261021163643.patch
@@ -58,8 +61,8 @@ catalog:
   "@animo-id/expo-secure-environment": 0.1.5
   "@animo-id/expo-digital-credentials-api": 0.5.1
   expo-mdoc-data-transfer: 0.2.0
-  "@owf/mdoc": ^0.8.3
-  "@owf/cose": ^0.4.0
+  "@owf/mdoc": 0.8.2
+  "@owf/cose": ^0.4.2
   "@owf/eudi-sca": ^0.4.0
   "@openid4vc/oauth2": ^0.6.0
   "@openid4vc/openid4vp": ^0.6.0

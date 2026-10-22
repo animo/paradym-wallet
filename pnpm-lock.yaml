@@ -73,14 +73,11 @@ catalogs:
       specifier: 0.6.1-alpha-20260609123727
       version: 0.6.1-alpha-20260609123727
     '@owf/cose':
-      specifier: ^0.4.0
-      version: 0.4.0
+      specifier: ^0.4.2
+      version: 0.4.2
     '@owf/eudi-sca':
       specifier: ^0.4.0
       version: 0.4.0
-    '@owf/mdoc':
-      specifier: ^0.8.3
-      version: 0.8.3
     '@react-native-community/blur':
       specifier: ^4.4.1
       version: 4.4.1
@@ -282,6 +279,7 @@ overrides:
   react: 19.2.3
   react-dom: 19.2.3
   react-native: 0.85.3
+  '@owf/mdoc': 0.8.2
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.7.3-alpha-20261021163643': 45c43442205badc53f14811de24280a9ffda3a68545f54332cc54bef291b5df5
@@ -335,10 +333,10 @@ importers:
         version: 0.6.1-alpha-20260609123727(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       '@owf/cose':
         specifier: 'catalog:'
-        version: 0.4.0
+        version: 0.4.2
       '@owf/mdoc':
-        specifier: 'catalog:'
-        version: 0.8.3
+        specifier: 0.8.2
+        version: 0.8.2
       '@package/app':
         specifier: workspace:*
         version: link:../../packages/app
@@ -2249,14 +2247,8 @@ packages:
   '@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727':
     resolution: {integrity: sha512-tbbf2rMHf2pKfFgoHYUf8cZ5XNCigLxiT6o6vFA8cG8Xkbc1hFE30zamLOGOOJ5Oh94JXzjViTlIzpTB7cjoTg==}
 
-  '@owf/cose@0.4.0':
-    resolution: {integrity: sha512-bN06KEB2kXWBskcapRGt3giVHvVRNds3NLc8nInXh6PbbbzPrsK+hMpYxIULDa89HJhK7sJKthttepYslu3aYw==}
-
   '@owf/cose@0.4.2':
     resolution: {integrity: sha512-ISjH/NFxgI2p0jiCY462JdL5m2bHg850iehvYj8sL9dHra06sJy0RTO1dwx78xqpCkFc/4h9Oo8XXLQD1eyLMg==}
-
-  '@owf/cose@0.5.0':
-    resolution: {integrity: sha512-QYTZP1pHJzraX9GVx3MvRs0DWVnYDho5fWyyElBNvr0axG3xHOmaK1v3EFFABHkxRhD8xbFC/YwnWqw+1MQHZw==}
 
   '@owf/crypto@0.4.0':
     resolution: {integrity: sha512-YBbF17Lo3t6CqgEMxTWi1piOG2TBwyrMFbm5WWTbl0jKNivTqx+lpcnNabYS0vMyjYYymdTSpgS744kNo3De1w==}
@@ -2270,17 +2262,11 @@ packages:
   '@owf/identity-common@0.4.2':
     resolution: {integrity: sha512-z+iFDpBYo2Z2uVnE5UytKlAHPaKHReijHaVXl45Yb9LbeR12hGg5CdfzfY0Tfm5m/Dr8iClfAiFizA9JYuUJ0Q==}
 
-  '@owf/identity-common@0.5.0':
-    resolution: {integrity: sha512-h8lto+C1h6wYLe9HwF3C7NaZyB0wydstmdkgrGrpWhfCyyX+XfBZtIC494reAaj19pQTXIdEsNC91Gheo25T+Q==}
-
-  '@owf/mdoc@0.8.3':
-    resolution: {integrity: sha512-hNakQwZByOaEvrJL3/lv9ld64zcff34T+RpOsoFeFofzLZ1HLpakvIqsybZ4s9AYYEXpR7QkXPvzzNL0041MlA==}
+  '@owf/mdoc@0.8.2':
+    resolution: {integrity: sha512-Mmn8a7Xy2duwoX5x3LeNkzOeOIjrjInygfPWi43Xy6DnNQprXSymB1KTwHWDGvBoTcopg7APDL41oTgSWri0ZA==}
 
   '@owf/token-status-list@0.4.2':
     resolution: {integrity: sha512-vBIpSRvfgRTWq1pjs7ERafdEjKpkRRcPdMRpKM1BEsKp1mwB6p6cinf95oWOgXKWq8s3l0I4yTzZ1SdIM8/z0Q==}
-
-  '@owf/token-status-list@0.5.0':
-    resolution: {integrity: sha512-sM3WsYsCdwlUUrRekCOwslIhS8QfBDON/WErUzqHRt0ubgX4IDgLdlJXxOAjmK6LOW4spOSLf02GJIJOrefb4A==}
 
   '@oxc-project/types@0.137.0':
     resolution: {integrity: sha512-WT+Gb24i8hmvo85AIv2oEYouEXkRlKAlT9WaCa3TfLgNCN+GhrJOGZuIlMouAh38Qe4QOx26eUOVsq70qXrywA==}
@@ -7911,7 +7897,7 @@ snapshots:
       '@noble/curves': 2.3.0
       '@noble/hashes': 2.4.0
       '@owf/cose': 0.4.2
-      '@owf/mdoc': 0.8.3
+      '@owf/mdoc': 0.8.2
       '@owf/token-status-list': 0.4.2
       '@peculiar/asn1-ecc': 2.8.0
       '@peculiar/asn1-rsa': 2.8.0
@@ -9078,23 +9064,9 @@ snapshots:
       buffer: 6.0.3
       tar: 7.5.16
 
-  '@owf/cose@0.4.0':
-    dependencies:
-      '@owf/identity-common': 0.4.0
-      cbor-x: 1.6.6
-      zod: 4.6.5
-      zod-validation-error: 5.0.0(zod@4.6.5)
-
   '@owf/cose@0.4.2':
     dependencies:
       '@owf/identity-common': 0.4.2
-      cbor-x: 1.6.6
-      zod: 4.6.5
-      zod-validation-error: 5.0.0(zod@4.6.5)
-
-  '@owf/cose@0.5.0':
-    dependencies:
-      '@owf/identity-common': 0.5.0
       cbor-x: 1.6.6
       zod: 4.6.5
       zod-validation-error: 5.0.0(zod@4.6.5)
@@ -9109,7 +9081,7 @@ snapshots:
       '@openid4vc/openid4vci': 0.5.6
       '@owf/crypto': 0.4.0
       '@owf/identity-common': 0.4.0
-      '@owf/mdoc': 0.8.3
+      '@owf/mdoc': 0.8.2
       '@sd-jwt/core': 0.21.0
       zod: 4.6.5
 
@@ -9117,27 +9089,17 @@ snapshots:
 
   '@owf/identity-common@0.4.2': {}
 
-  '@owf/identity-common@0.5.0': {}
-
-  '@owf/mdoc@0.8.3':
+  '@owf/mdoc@0.8.2':
     dependencies:
-      '@owf/cose': 0.5.0
-      '@owf/identity-common': 0.5.0
-      '@owf/token-status-list': 0.5.0
+      '@owf/cose': 0.4.2
+      '@owf/identity-common': 0.4.2
+      '@owf/token-status-list': 0.4.2
       zod: 4.6.5
 
   '@owf/token-status-list@0.4.2':
     dependencies:
       '@owf/cose': 0.4.2
       '@owf/identity-common': 0.4.2
-      cbor-x: 1.6.6
-      pako: 3.0.2
-      zod: 4.6.5
-
-  '@owf/token-status-list@0.5.0':
-    dependencies:
-      '@owf/cose': 0.5.0
-      '@owf/identity-common': 0.5.0
       cbor-x: 1.6.6
       pako: 3.0.2
       zod: 4.6.5
