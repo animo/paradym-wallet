@@ -132,7 +132,7 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
     headerImage = raw.picture ?? headerImage
   } else if (isPidMdoc) {
     const raw = (
-      credential?.rawAttributes as {
+      credential.rawAttributes as {
         'eu.europa.ec.eudi.pid.1': PidMdocAttributes
       }
     )['eu.europa.ec.eudi.pid.1']

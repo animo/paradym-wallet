@@ -18,7 +18,6 @@ overrides:
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.7.1-alpha-20260917134851': patches/@credo-ts__openid4vc@0.7.1-alpha-20260917134851.patch
-  '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
   '@openid4vc/oauth2@0.5.6': patches/@openid4vc__oauth2@0.5.6.patch
   # Patches required for DC API
   react-native-keychain: patches/react-native-keychain.patch
@@ -37,12 +36,12 @@ allowBuilds:
   secp256k1: false
 
 catalog:
-  expo: ^56.0.0
+  expo: ^56.0.24
   react-native: 0.85.3
   react: 19.2.3
   "@types/react": ~19.2.17
   typescript: ~6.0.3
-  "@tanstack/react-query": ^5.101.1
+  "@tanstack/react-query": ^5.104.5
   tsdown: ^0.22.3
 
   # Babel
@@ -58,7 +57,7 @@ catalog:
   "@animo-id/expo-secure-environment": 0.1.5
   "@animo-id/expo-digital-credentials-api": 0.5.1
   expo-mdoc-data-transfer: 0.2.0
-  "@owf/mdoc": ^0.8.0
+  "@owf/mdoc": ^0.8.3
   "@owf/cose": ^0.4.0
   "@owf/eudi-sca": ^0.4.0
   "@openid4vc/oauth2": ^0.5.6
@@ -74,10 +73,10 @@ catalog:
   "@credo-ts/react-native": 0.7.1-alpha-20260917134851
   "@credo-ts/didcomm": 0.7.1-alpha-20260917134851
   "@credo-ts/webvh": 0.7.1-alpha-20260917134851
-  "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
-  "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
-  "@openwallet-foundation/askar-react-native": 0.6.1-alpha-20260609123727
-  "@openwallet-foundation/askar-shared": 0.6.1-alpha-20260609123727
+  "@hyperledger/anoncreds-react-native": 0.4.1
+  "@hyperledger/anoncreds-shared": 0.4.1
+  "@openwallet-foundation/askar-react-native": 0.6.1
+  "@openwallet-foundation/askar-shared": 0.6.1
   buffer: 6.0.3
   "@astronautlabs/jsonpath": ^1.1.2
 
@@ -90,30 +89,30 @@ catalog:
   react-native-gesture-handler: ~2.31.1
   react-native-reanimated: 4.3.1
   react-native-safe-area-context: ~5.7.0
-  react-native-screens: 4.25.2
+  react-native-screens: 4.26.0
   react-native-svg: 15.15.4
   # React Native FS is not maintained, and doesn't support new Arch
   # this seems to be the best maintained fork. We might want to switch
   # to Expo FileSystem, but Credo depends on react-native-fs
-  "react-native-fs": "npm:@dr.pogodin/react-native-fs@^2.36.1"
+  "react-native-fs": "npm:@dr.pogodin/react-native-fs@^2.40.4"
   react-native-mmkv: ^4.3.2
-  react-native-qrcode-svg: ^6.3.21
+  react-native-qrcode-svg: ^6.3.27
   react-native-reanimated-carousel: ^4.0.3
   react-native-nitro-modules: ^0.35.10
   # OpenSSL through Nitro. Only used for RSA signature verification: askar and the secure
   # environment are both EC-only, so without it an issuer chaining up to an RSA CA cannot be
   # verified at all. react-native-quick-base64 is its peer dependency.
-  react-native-quick-crypto: ^1.1.7
+  react-native-quick-crypto: ^1.1.8
   react-native-quick-base64: ^3.0.0
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.4.1
-  react-native-edge-to-edge: ^1.8.1
+  react-native-edge-to-edge: ^1.8.2
   '@shopify/react-native-skia': 2.6.9
 
   # Lingui (i18n)
-  "@lingui/babel-plugin-lingui-macro": ^6.4.0
-  "@lingui/cli": ^6.4.0
-  "@lingui/format-json": ^6.4.0
+  "@lingui/babel-plugin-lingui-macro": ^6.10.0
+  "@lingui/cli": ^6.10.0
+  "@lingui/format-json": ^6.10.0
 
   # Expo (SDK 56 uses unified 56.x versioning across expo-* packages)
   # Versions aligned with Expo SDK 56 bundledNativeModules.
@@ -121,10 +120,10 @@ catalog:
   expo-camera: ~56.0.8
   expo-network: ~56.0.5
   expo-application: ~56.0.3
-  expo-asset: ~56.0.17
-  expo-blur: ~56.0.3
-  expo-constants: ~56.0.18
-  expo-dev-client: ~56.0.20
+  expo-asset: ~56.0.25
+  expo-blur: ~56.0.4
+  expo-constants: ~56.0.27
+  expo-dev-client: ~56.0.28
   expo-device: ~56.0.4
   expo-file-system: ~56.0.8
   expo-font: ~56.0.7
@@ -132,30 +131,30 @@ catalog:
   expo-image: ~56.0.11
   expo-image-manipulator: ~56.0.19
   expo-linear-gradient: ~56.0.4
-  expo-linking: ~56.0.14
-  expo-router: ~56.2.11
+  expo-linking: ~56.0.19
+  expo-router: ~56.2.22
   expo-secure-store: ~56.0.4
-  expo-splash-screen: ~56.0.10
+  expo-splash-screen: ~56.0.16
   expo-system-ui: ~56.0.5
-  expo-updates: ~56.0.19
-  expo-web-browser: ~56.0.5
-  expo-build-properties: ~56.0.19
+  expo-updates: ~56.0.28
+  expo-web-browser: ~56.0.6
+  expo-build-properties: ~56.0.27
   expo-build-disk-cache: ^0.8.0
   expo-localization: ~56.0.6
   "@expo-google-fonts/open-sans": ^0.4.2
   "@expo-google-fonts/raleway": ^0.4.2
 
   # Tamagui
-  "@tamagui/animations-react-native": 2.3.3
-  "@tamagui/font-inter": 2.3.3
-  "@tamagui/shorthands": 2.3.3
-  "@tamagui/themes": 2.3.3
-  "@tamagui/toast": 2.3.3
-  "@tamagui/react-native-media-driver": 2.3.3
-  "@tamagui/colors": 2.3.3
-  "@tamagui/lucide-icons-2": 2.3.3
-  "@tamagui/babel-plugin": 2.3.3
-  tamagui: 2.3.3
+  "@tamagui/animations-react-native": 2.7.7
+  "@tamagui/font-inter": 2.7.7
+  "@tamagui/shorthands": 2.7.7
+  "@tamagui/themes": 2.7.7
+  "@tamagui/toast": 2.7.7
+  "@tamagui/react-native-media-driver": 2.7.7
+  "@tamagui/colors": 2.7.7
+  "@tamagui/lucide-icons-2": 2.7.7
+  "@tamagui/babel-plugin": 2.7.7
+  tamagui: 2.7.7
 
 minimumReleaseAgeExclude:
   - '@credo-ts/anoncreds@0.7.1-alpha-20260917134851'
