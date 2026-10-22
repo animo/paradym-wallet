@@ -85,7 +85,7 @@ This is what Argent's `argent-environment-inspector` subagent would find, so it 
 ### Build and run
 
 1. Check whether port 8081 is free (`lsof -i :8081`), then start Metro in the background: `pnpm start`. If another workspace's Metro has 8081, don't stop it: use `pnpm start --port 8082`, pass that port to Argent's debugger tools, and enter `http://localhost:8082` in the dev launcher.
-2. Install a fresh development build when there's none on the device, when native code, a native dependency, a config plugin or `app.config.js` changed, or when the app shows `Property 'MessageQueue' doesn't exist` (the installed build is older than the JS):
+2. Install the development build at the start of every test session and after anything native may have changed (a pull, a rebase, a dependency, a config plugin, `app.config.js`). Don't try to judge whether the installed build is still current: a native build older than the JS fails in unclear ways.
 
    ```sh
    export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8  # CocoaPods fails with "Unicode Normalization not appropriate for ASCII-8BIT" without it
@@ -93,8 +93,8 @@ This is what Argent's `argent-environment-inspector` subagent would find, so it 
    pnpm ios --device <udid or name> --no-bundler    # or: pnpm android --device <serial> --no-bundler
    ```
 
-   A first iOS build takes 10 to 20 minutes. A physical iPhone also needs code signing: if the build fails on signing, ask the user.
-3. Open the app with Argent's `launch-app` and `id.paradym.wallet.dev`. The first time, tap `http://localhost:8081` in the dev launcher. After that it reconnects to the last server by itself. Don't open `exp+paradym-wallet://` links: the preview build registers the same scheme and iOS asks whether to open "Paradym Wallet (Preview)". `pnpm ios` opens one such link after installing, so cancel that dialog.
+   `pnpm ios` and `pnpm android` compute the native fingerprint and reuse a cached build with the same fingerprint (`expo-build-disk-cache`, set up in `base.app.config.js`). The cache is shared by all worktrees on the machine. A cache hit takes about a minute including prebuild. A miss builds and caches the result: 10 to 20 minutes for a first iOS build. On iOS only simulator builds are cached, so a physical iPhone always builds and needs code signing: if signing fails, ask the user.
+3. `pnpm ios` opens a link into the app after installing, and iOS asks whether to open it in "Paradym Wallet (Dev)" or "(Preview)". Cancel that dialog. Open the app with Argent's `launch-app` and `id.paradym.wallet.dev` instead, then tap the Metro server in the dev launcher, or "Enter URL manually" with `http://localhost:8081`. After the first time it reconnects by itself. Don't open `exp+paradym-wallet://` links yourself: the preview build registers the same scheme.
 4. After JS changes, Fast Refresh usually picks them up. Otherwise reload with `debugger-reload-metro` or `restart-app`.
 
 ### Test wallet flows

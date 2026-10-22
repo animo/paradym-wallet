@@ -76,6 +76,7 @@
 		"@lingui/format-json": "catalog:",
 		"@tamagui/babel-plugin": "catalog:",
 		"babel-plugin-syntax-hermes-parser": "catalog:",
+		"expo-build-disk-cache": "catalog:",
 		"expo-build-properties": "catalog:",
 		"typescript": "catalog:"
 	},

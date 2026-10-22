@@ -140,6 +140,7 @@ catalog:
   expo-updates: ~56.0.19
   expo-web-browser: ~56.0.5
   expo-build-properties: ~56.0.19
+  expo-build-disk-cache: ^0.8.0
   expo-localization: ~56.0.6
   "@expo-google-fonts/open-sans": ^0.4.2
   "@expo-google-fonts/raleway": ^0.4.2
