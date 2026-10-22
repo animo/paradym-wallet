@@ -4,7 +4,7 @@ name: Build or repack, then Maestro tests
 defaults:
   tools:
     node: 22.21.1
-    pnpm: 9.15.9
+    pnpm: 11.7.0
 
 on:
   workflow_dispatch:
@@ -42,6 +42,8 @@ jobs:
     params:
       fingerprint_hash: ${{ needs.fingerprint.outputs.ios_fingerprint_hash }}
       platform: ios
+      # Only reuse e2e-test builds, other profiles with the same fingerprint can be device builds
+      profile: e2e-test
 
   ios_repack:
     needs: [ios_get_build]
@@ -55,7 +57,6 @@ jobs:
     needs: [ios_get_build]
     id: ios_build
     if: ${{ !needs.ios_get_build.outputs.build_id }}
-    image: latest
     type: build
     params:
       platform: ios
@@ -97,6 +98,5 @@ jobs:
       flow_path: '.maestro'
       exclude_tags:
         - didcomm
-        - digital-credentials-api
         - screenshots
       record_screen: ${{ inputs.enable_recording }}

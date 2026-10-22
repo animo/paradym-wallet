@@ -1,0 +1,23 @@
+appId: com.apple.mobilesafari
+---
+- launchApp: com.apple.mobilesafari
+- openLink: https://playground.animo.id/?tab=verify&responseMode=dc_api&requestSignerType=x5c&transactionAuthorizationType=none&request=%7B%22credentials%22%3A%5B%7B%22id%22%3A%22mdl%22%2C%22formats%22%3A%5B%22mso_mdoc%22%5D%2C%22attributes%22%3A%5B%22given_name%22%2C%22family_name%22%5D%7D%5D%2C%22combination%22%3A%22all%22%7D&dcApiProtocol=mdoc
+
+# Safari shows a tip on first launch that covers the page
+- runFlow:
+    when:
+      visible: View Bookmarks.*
+    commands:
+      - tapOn: dismiss popup
+
+- scrollUntilVisible:
+    element: Verify Credential
+    timeout: 60000
+- tapOn: Verify Credential
+
+# Pick the wallet in the system sheet
+- extendedWaitUntil:
+    visible: Identity Verification
+    timeout: 30000
+- tapOn: Paradym Wallet.*
+- tapOn: Continue

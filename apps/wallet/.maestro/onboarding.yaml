@@ -5,7 +5,7 @@ tags:
 - launchApp:
     clearState: true
 
-- assertVisible: Paradym Wallet
+- assertVisible: "Paradym Wallet.*"
 - tapOn: Get Started
 
 - assertVisible: Choose a 6-digit PIN
@@ -15,6 +15,8 @@ tags:
       - tapOn: "Pin number 1"
 
 - assertVisible: Repeat your PIN
+- waitForAnimationToEnd:
+    timeout: 5000
 - repeat:
     times: 6
     commands:

@@ -37,8 +37,7 @@ appId: id.paradym.wallet.preview
 - waitForAnimationToEnd:
     timeout: 5000
 
-- assertVisible: "Is the information correct?"
-- assertVisible: "Credential"
+- assertVisible: "Do you want to store this card?"
 - assertVisible: "Decline"
 - tapOn: "Accept"
 
@@ -46,13 +45,16 @@ appId: id.paradym.wallet.preview
     timeout: 30000
 
 - extendedWaitUntil:
-    visible: "Success!"
+    visible: "Success!|.*for Identity Verification\\?"
     timeout: 120000
+- runFlow: ../common/allow-identity-verification.yaml
+- assertVisible: "Success!"
 
 - waitForAnimationToEnd:
     timeout: 30000
-- assertVisible: "Card successfully added to your wallet!"
-- assertVisible: "Credential"
+- extendedWaitUntil:
+    visible: "Card successfully added to your wallet!"
+    timeout: 10000
 
 # On Android the button is "Go to wallet" (without space), while on iOS a trailing space is required.
 - runFlow:

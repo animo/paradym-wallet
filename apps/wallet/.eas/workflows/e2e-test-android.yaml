@@ -4,7 +4,7 @@ name: Build or repack, then Maestro tests
 defaults:
   tools:
     node: 22.21.1
-    pnpm: 9.15.9
+    pnpm: 11.7.0
 
 on:
   workflow_dispatch:
@@ -42,6 +42,8 @@ jobs:
     params:
       fingerprint_hash: ${{ needs.fingerprint.outputs.android_fingerprint_hash }}
       platform: android
+      # Only reuse e2e-test builds, other profiles with the same fingerprint can be device builds
+      profile: e2e-test
 
   android_repack:
     needs: [android_get_build]
@@ -74,7 +76,7 @@ jobs:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
-      android_system_image_package: system-images;android-36.1;google_apis_playstore;x86_64
+      android_system_image_package: system-images;android-36.1;google_apis;x86_64
       # Paradym only supports no authorization during issuance
       exclude_tags:
         - authorization-code-flow
@@ -97,7 +99,7 @@ jobs:
       build_id: ${{ needs.android_repack.outputs.build_id || needs.android_build.outputs.build_id }}
       flow_path: '.maestro'
       device_identifier: 'pixel_9'
-      android_system_image_package: system-images;android-36.1;google_apis_playstore;x86_64
+      android_system_image_package: system-images;android-36.1;google_apis;x86_64
       exclude_tags:
         - didcomm
         - digital-credentials-api

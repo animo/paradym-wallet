@@ -1,0 +1,17 @@
+appId: id.paradym.wallet.preview
+---
+# Since iOS 26 the system asks to allow the wallet for identity verification once the first
+# mdoc is registered for the Digital Credentials API. The alert hides the app from Maestro.
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - extendedWaitUntil:
+          visible: ".*for Identity Verification\\?"
+          timeout: 5000
+          optional: true
+      - runFlow:
+          when:
+            visible: ".*for Identity Verification\\?"
+          commands:
+            - tapOn: Allow
