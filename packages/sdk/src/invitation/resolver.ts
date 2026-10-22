@@ -1,4 +1,3 @@
-import { DidCommRequestPresentationV1Message, V1OfferCredentialMessage } from '@credo-ts/anoncreds'
 import { CredoError, Kms } from '@credo-ts/core'
 import {
   type DidCommConnectionRecord,
@@ -416,13 +415,11 @@ export async function resolveOutOfBandInvitation(
   else {
     const requestMessage = requestMessages[0] as DidCommPlaintextMessage
     const parsedMessageType = parseMessageType(requestMessage['@type'])
-    const isValidOfferMessage =
-      supportsIncomingMessageType(parsedMessageType, V1OfferCredentialMessage.type) ||
-      supportsIncomingMessageType(parsedMessageType, DidCommOfferCredentialV2Message.type)
-
-    const isValidRequestMessage =
-      supportsIncomingMessageType(parsedMessageType, DidCommRequestPresentationV1Message.type) ||
-      supportsIncomingMessageType(parsedMessageType, DidCommRequestPresentationV2Message.type)
+    const isValidOfferMessage = supportsIncomingMessageType(parsedMessageType, DidCommOfferCredentialV2Message.type)
+    const isValidRequestMessage = supportsIncomingMessageType(
+      parsedMessageType,
+      DidCommRequestPresentationV2Message.type
+    )
 
     if (isValidRequestMessage) {
       flowType = 'verify'
