@@ -3,7 +3,7 @@ diff --git a/React/Base/RCTUtils.mm b/React/Base/RCTUtils.mm
 index ba4e930..8622e31 100644
 --- a/React/Base/RCTUtils.mm
 +++ b/React/Base/RCTUtils.mm
-@@ -384,7 +384,21 @@ CGFloat RCTFontSizeMultiplier(void)
+@@ -373,7 +373,21 @@ CGFloat RCTFontSizeMultiplier(void)
      };
    });
  

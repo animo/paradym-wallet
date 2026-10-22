@@ -1,5 +1,4 @@
 import { createAnimations } from '@tamagui/animations-react-native'
-import type { ComplexAnimationBuilder } from 'react-native-reanimated'
 
 export const animations = createAnimations({
   bouncy: {
@@ -40,7 +39,18 @@ export const springConfig = {
   restSpeedThreshold: 0.05,
 }
 
-export const useSpringify = <T extends ComplexAnimationBuilder>(AnimationClass: new () => T, delay = 0): T => {
+// Reanimated keeps these modifiers on a base class it doesn't export, shared by entering/exiting animations and
+// layout transitions.
+type SpringAnimationBuilder<T> = {
+  springify(): T
+  damping(damping: number): T
+  mass(mass: number): T
+  stiffness(stiffness: number): T
+  restSpeedThreshold(restSpeedThreshold: number): T
+  delay(delay: number): T
+}
+
+export const useSpringify = <T extends SpringAnimationBuilder<T>>(AnimationClass: new () => T, delay = 0): T => {
   const animation = new AnimationClass()
   return animation
     .springify()
