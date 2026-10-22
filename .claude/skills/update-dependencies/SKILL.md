@@ -1,7 +1,7 @@
 ---
 name: update-dependencies
 description: Update the monorepo's npm dependencies where feasible and open grouped PRs - patch, minor and Expo-compatible updates in one PR, an Expo SDK upgrade and each major update in their own PR, skipping what doesn't work. Use for the weekly dependency update run, or when asked to update dependencies or fix vulnerable dependencies.
-allowed-tools: Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, Skill, Bash(pnpm:*), Bash(git:*), Bash(gh pr:*), Bash(gh label:*)
+allowed-tools: Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, Skill, Bash
 ---
 
 # Update dependencies
@@ -20,7 +20,7 @@ Each group gets its own branch from the latest `origin/main` and its own PR:
 | Expo SDK | `deps/expo-sdk-<version>` | An Expo SDK upgrade, with React, React Native and every Expo-managed package that comes with it |
 | Major | `deps/<name>-<major>` | One major update, or one package family that is released together (`@credo-ts/*`, `@openid4vc/*`, `tamagui` and `@tamagui/*`, `@openwallet-foundation/askar-*`) |
 
-Open at most 3 new major PRs per run, most important first: security fixes, then the Expo SDK, then packages this repo depends on most.
+Every run works through all groups: the Updates group, then the Expo SDK group when a newer SDK exists, then the majors. Don't end the run after the Updates group. Open at most 3 new major PRs per run, most important first: security fixes, then packages this repo depends on most.
 
 ## 1. Check what's already open
 
@@ -42,6 +42,8 @@ pnpm audit --json
 pnpm --filter paradym-wallet exec expo install --check
 pnpm view expo dist-tags --json
 ```
+
+`pnpm audit` can take several minutes: run it with a 10 minute timeout.
 
 - Versions shared across packages live in the `catalog:` of `pnpm-workspace.yaml`. Update the catalog entry, not the packages that reference it.
 - Packages that `expo install --check` lists are Expo-managed. Outside the Expo SDK group they only move to the versions the current SDK expects. `--check` exits with 1 while any are behind. Don't use `--fix`: it writes versions into `apps/wallet/package.json`, also for packages that use `catalog:`. Set the expected versions yourself, in the catalog where the package uses it.
@@ -95,4 +97,4 @@ Keep it short and factual:
 
 ## 5. Finish
 
-End with a summary of every group: the PR link, or why there's no PR. Nothing to update is a valid result. Don't open an empty PR.
+End with a summary of every group: the PR link, or why there's no PR. Nothing to update is a valid result. Don't open an empty PR. Name any tool or command that was denied, so the workflow can allow it.
