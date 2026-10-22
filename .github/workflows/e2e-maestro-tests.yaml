@@ -28,10 +28,13 @@ on:
         default: false
 
 jobs:
-  build:
+  e2e:
+    name: E2E (${{ matrix.platform }})
     runs-on: ubuntu-latest
-    env:
-      APP_PROFILE: ${{ github.event.inputs.app }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJSON(github.event.inputs.platform == 'all' && '["android", "ios"]' || format('["{0}"]', github.event.inputs.platform)) }}
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v7
@@ -55,12 +58,7 @@ jobs:
       - name: 🚀 Build
         run: pnpm build
 
-      - name: EAS Workflow Android
-        if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' }}
+      # Waits for the EAS workflow so this run fails when the build or a Maestro flow fails
+      - name: 🧪 EAS Workflow
         working-directory: apps/wallet
-        run: eas workflow:run .eas/workflows/e2e-test-android.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }} -F enable_recording=${{ github.event.inputs.enable_recording }}
-      
-      - name: EAS Workflow iOS
-        if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' }}
-        working-directory: apps/wallet
-        run: eas workflow:run .eas/workflows/e2e-test-ios.yaml --non-interactive --no-wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }} -F enable_recording=${{ github.event.inputs.enable_recording }}
+        run: eas workflow:run .eas/workflows/e2e-test-${{ matrix.platform }}.yaml --non-interactive --wait -F issuer_backend=${{ github.event.inputs.issuer_backend }} -F paradym_api_key=${{ secrets.PARADYM_API_KEY }} -F enable_recording=${{ github.event.inputs.enable_recording }}
