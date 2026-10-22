@@ -1,52 +1,6 @@
 version: 2
 updates:
-  # NPM dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: Europe/Amsterdam
-    open-pull-requests-limit: 10
-    ignore:
-       - dependency-name: "react-native-*"
-       - dependency-name: react-native
-       - dependency-name: react
-       - dependency-name: "react*"
-       - dependency-name: "expo*"
-       - dependency-name: "*expo"
-       - dependency-name: expo
-       - dependency-name: "@react-native*"
-       - dependency-name: "@expo*"
-    # Group updates
-    groups:
-      # Group patch updates together
-      patch-updates:
-        patterns:
-          - "*"
-        update-types:
-          - "patch"
-      # Group minor updates together
-      minor-updates:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-
-    # Enable version updates for all severity levels
-    allow:
-      - dependency-type: "all"
-    # Labels for PRs
-    labels:
-      - "dependencies"
-      - "npm"
-
-    # Commit message configuration
-    commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
-      include: "scope"
+  # npm dependencies are updated by the Dependency Updates workflow (.github/workflows/dependency-updates.yaml)
 
   # GitHub Actions dependencies
   - package-ecosystem: "github-actions"

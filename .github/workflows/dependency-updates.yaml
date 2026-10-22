@@ -1,0 +1,168 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Mondays at 05:00 UTC
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      test_branch:
+        type: string
+        required: false
+        description: 'Only test this deps/* branch in the app, without updating dependencies'
+
+concurrency:
+  group: dependency-updates
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: ${{ !inputs.test_branch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    outputs:
+      branches: ${{ steps.pushed.outputs.branches }}
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+
+      - uses: pnpm/action-setup@v6
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 📌 Record update branches
+        run: git ls-remote origin 'refs/heads/deps/*' | sort > "$RUNNER_TEMP/deps-before.txt"
+
+      # Without `github_token` the action pushes and opens PRs as the Claude GitHub App, so CI runs on the PRs
+      - name: 🤖 Update dependencies
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: /update-dependencies
+          # The expo plugin brings the expo-upgrade skill for SDK upgrades
+          plugin_marketplaces: https://github.com/anthropics/claude-plugins-official.git
+          plugins: expo@claude-plugins-official
+          display_report: true
+          claude_args: |
+            --max-turns 500
+            --allowedTools "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Skill,Bash(pnpm:*),Bash(git:*),Bash(gh pr:*),Bash(gh label:*)"
+
+      - name: 🔎 Find pushed branches
+        id: pushed
+        run: |
+          git ls-remote origin 'refs/heads/deps/*' | sort > "$RUNNER_TEMP/deps-after.txt"
+          branches=$(comm -13 "$RUNNER_TEMP/deps-before.txt" "$RUNNER_TEMP/deps-after.txt" | awk '{ sub("refs/heads/", "", $2); print $2 }' | jq -R . | jq -sc .)
+          echo "branches=$branches" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: update
+    if: ${{ always() && (inputs.test_branch || (needs.update.result == 'success' && needs.update.outputs.branches != '[]')) }}
+    name: Test ${{ matrix.branch }} (${{ matrix.platform }})
+    runs-on: ${{ matrix.platform == 'ios' && 'macos-26' || 'ubuntu-24.04' }}
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: ${{ fromJSON(inputs.test_branch && format('["{0}"]', inputs.test_branch) || needs.update.outputs.branches) }}
+        platform: [ios, android]
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+      actions: read
+    env:
+      # CocoaPods fails with "Unicode Normalization not appropriate for ASCII-8BIT" without it
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      DO_NOT_TRACK: '1'
+      ARGENT_EMULATOR_NO_WINDOW: '1'
+      RESULTS_DIR: /tmp/test-results
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0
+
+      - name: 🧹 Free disk space
+        if: ${{ matrix.platform == 'android' }}
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/lib/node_modules/@angular
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+
+      - uses: pnpm/action-setup@v6
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🍎 Select Xcode
+        if: ${{ matrix.platform == 'ios' }}
+        run: |
+          # Same Xcode as the EAS builds, e.g. macos-tahoe-26.4-xcode-26.4
+          version=$(node -p "require('./apps/wallet/eas.json').build.base.ios.image.match(/xcode-([0-9.]+)/)[1]")
+          sudo xcode-select -s "/Applications/Xcode_${version}.app"
+          xcodebuild -version
+
+      - name: ☕ Setup Java
+        if: ${{ matrix.platform == 'android' }}
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: 🤖 Create Android emulator
+        if: ${{ matrix.platform == 'android' }}
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          image='system-images;android-36;google_apis;x86_64'
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" emulator platform-tools "$image" > /dev/null
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --name wallet --package "$image" --device pixel_9
+          echo "$ANDROID_HOME/emulator" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+
+      - name: 📱 Install Argent
+        run: |
+          npm install --global @swmansion/argent@0.30.1
+          mkdir -p ~/.claude/skills "$RESULTS_DIR"
+          cp -R "$(npm root --global)/@swmansion/argent/skills/." ~/.claude/skills/
+          echo '{"mcpServers":{"argent":{"command":"argent","args":["mcp"]}}}' > /tmp/argent-mcp.json
+
+      - name: 🤖 Test in the app
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: /test-dependency-update platform=${{ matrix.platform }} branch=${{ matrix.branch }} results=/tmp/test-results run=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          plugin_marketplaces: https://github.com/anthropics/claude-plugins-official.git
+          plugins: expo@claude-plugins-official
+          display_report: true
+          claude_args: |
+            --max-turns 500
+            --mcp-config /tmp/argent-mcp.json
+            --allowedTools "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch,Skill,Bash(pnpm:*),Bash(git:*),Bash(gh pr:*),Bash(curl:*),Bash(xcrun:*),Bash(adb:*),Bash(emulator:*),Bash(lsof:*),mcp__argent"
+
+      - name: 📸 Upload test results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ matrix.platform }}-${{ strategy.job-index }}
+          path: /tmp/test-results
+          if-no-files-found: ignore
