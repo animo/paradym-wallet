@@ -1,14 +1,13 @@
+import { AnonCredsModule } from '@credo-ts/anoncreds'
 import {
   AnonCredsDidCommCredentialFormatService,
   AnonCredsDidCommProofFormatService,
-  AnonCredsModule,
-  DidCommCredentialV1Protocol,
-  DidCommProofV1Protocol,
   LegacyIndyDidCommCredentialFormatService,
   LegacyIndyDidCommProofFormatService,
-} from '@credo-ts/anoncreds'
+} from '@credo-ts/anoncreds/didcomm'
 import { AskarKeyManagementService, AskarModule } from '@credo-ts/askar'
-import { CheqdAnonCredsRegistry, CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
+import { CheqdModule, CheqdModuleConfig } from '@credo-ts/cheqd'
+import { CheqdAnonCredsRegistry } from '@credo-ts/cheqd/anoncreds'
 import {
   Agent,
   DidsModule,
@@ -33,7 +32,8 @@ import {
 } from '@credo-ts/didcomm'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
-import { WebVhAnonCredsRegistry, WebVhDidResolver, WebVhModule } from '@credo-ts/webvh'
+import { WebVhDidResolver, WebVhModule } from '@credo-ts/webvh'
+import { WebVhAnonCredsRegistry } from '@credo-ts/webvh/anoncreds'
 import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
@@ -195,9 +195,6 @@ const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['did
     credentials: {
       autoAcceptCredentials: DidCommAutoAcceptCredential.ContentApproved,
       credentialProtocols: [
-        new DidCommCredentialV1Protocol({
-          indyCredentialFormat: new LegacyIndyDidCommCredentialFormatService(),
-        }),
         new DidCommCredentialV2Protocol({
           credentialFormats: [
             new LegacyIndyDidCommCredentialFormatService(),
@@ -209,9 +206,6 @@ const getDidCommModules = (_didcommConfiguration: Exclude<SetupAgentOptions['did
     proofs: {
       autoAcceptProofs: DidCommAutoAcceptProof.ContentApproved,
       proofProtocols: [
-        new DidCommProofV1Protocol({
-          indyProofFormat: new LegacyIndyDidCommProofFormatService(),
-        }),
         new DidCommProofV2Protocol({
           proofFormats: [new LegacyIndyDidCommProofFormatService(), new AnonCredsDidCommProofFormatService()],
         }),

@@ -67,8 +67,8 @@ function isBaselineEncryptionKey(jwk: PasoPublishedJwk): jwk is PasoRiskSignalsE
  * `ECDH-ES` with a per-transaction ephemeral key, which is what makes the derived content encryption
  * key unique per proof: the same signals encrypted twice produce unrelated ciphertexts, so an
  * intermediary cannot tell from the bytes alone that two transactions carry the same measurements.
- * The ephemeral private key is deleted immediately — it has no use after the derivation and keeping
- * it in the store would be the one copy that could decrypt what the wallet just sent.
+ * The key management service creates the ephemeral key itself and never stores it, so there is no
+ * copy left that could decrypt what the wallet just sent.
  */
 export async function encryptPasoRiskSignals(
   paradym: ParadymWalletSdk,
@@ -80,56 +80,54 @@ export async function encryptPasoRiskSignals(
   const { riskSignals, encryptionKey } = options
   const { kms } = paradym.agent
 
-  const ephemeralKey = await kms.createKey({ type: { kty: 'EC', crv: 'P-256' } })
-
-  try {
-    // Section 7.5.1 requires `alg`, `enc` and `kid`; `epk` is what [RFC7518] Section 4.6 requires for
-    // ECDH-ES and is what the issuer derives the same key from. Only the four members of the
-    // ephemeral public key go in — the `kid` the key store gave it is ours, and means nothing to the
-    // issuer.
-    const encodedHeader = JsonEncoder.toBase64Url({
-      alg: keyManagementAlgorithm,
-      enc: contentEncryptionAlgorithm,
-      kid: encryptionKey.kid,
-      epk: { kty: 'EC', crv: 'P-256', x: ephemeralKey.publicJwk.x, y: ephemeralKey.publicJwk.y },
-    })
-
-    const encrypted = await kms.encrypt({
-      key: {
-        keyAgreement: {
-          keyId: ephemeralKey.keyId,
-          algorithm: keyManagementAlgorithm,
-          externalPublicJwk: {
-            kty: encryptionKey.kty,
-            crv: encryptionKey.crv,
-            x: encryptionKey.x,
-            y: encryptionKey.y,
-          },
+  let encodedHeader: string | undefined
+  const encrypted = await kms.encrypt({
+    key: {
+      keyAgreement: {
+        algorithm: keyManagementAlgorithm,
+        externalPublicJwk: {
+          kty: encryptionKey.kty,
+          crv: encryptionKey.crv,
+          x: encryptionKey.x,
+          y: encryptionKey.y,
         },
       },
-      // Section 7.4 step 1 — the plaintext array of Section 2.2, serialised as it would have been
-      // carried unencrypted.
-      data: TypedArrayEncoder.fromUtf8String(JSON.stringify(riskSignals)),
-      encryption: {
-        algorithm: contentEncryptionAlgorithm,
-        aad: TypedArrayEncoder.fromUtf8String(encodedHeader),
+    },
+    // Section 7.4 step 1 — the plaintext array of Section 2.2, serialised as it would have been
+    // carried unencrypted.
+    data: TypedArrayEncoder.fromUtf8String(JSON.stringify(riskSignals)),
+    encryption: {
+      algorithm: contentEncryptionAlgorithm,
+      // Section 7.5.1 requires `alg`, `enc` and `kid`; `epk` is what [RFC7518] Section 4.6 requires for
+      // ECDH-ES and is what the issuer derives the same key from. Only the four members of the
+      // ephemeral public key go in.
+      aad: ({ ephemeralPublicJwk }) => {
+        if (ephemeralPublicJwk.kty !== 'EC') {
+          throw new Error('Expected an EC ephemeral key for encrypting the PaSO risk signals')
+        }
+
+        encodedHeader = JsonEncoder.toBase64Url({
+          alg: keyManagementAlgorithm,
+          enc: contentEncryptionAlgorithm,
+          kid: encryptionKey.kid,
+          epk: { kty: 'EC', crv: ephemeralPublicJwk.crv, x: ephemeralPublicJwk.x, y: ephemeralPublicJwk.y },
+        })
+        return TypedArrayEncoder.fromUtf8String(encodedHeader)
       },
-    })
+    },
+  })
 
-    if (!encrypted.iv || !encrypted.tag) {
-      throw new Error('Encrypting the PaSO risk signals did not produce an iv and an authentication tag')
-    }
-
-    // The encrypted key segment is empty: ECDH-ES derives the content encryption key directly rather
-    // than wrapping one, per [RFC7518] Section 4.6.
-    return [
-      encodedHeader,
-      '',
-      TypedArrayEncoder.toBase64Url(encrypted.iv),
-      TypedArrayEncoder.toBase64Url(encrypted.encrypted),
-      TypedArrayEncoder.toBase64Url(encrypted.tag),
-    ].join('.')
-  } finally {
-    await kms.deleteKey({ keyId: ephemeralKey.keyId })
+  if (!encodedHeader || !encrypted.iv || !encrypted.tag) {
+    throw new Error('Encrypting the PaSO risk signals did not produce a header, an iv and an authentication tag')
   }
+
+  // The encrypted key segment is empty: ECDH-ES derives the content encryption key directly rather
+  // than wrapping one, per [RFC7518] Section 4.6.
+  return [
+    encodedHeader,
+    '',
+    TypedArrayEncoder.toBase64Url(encrypted.iv),
+    TypedArrayEncoder.toBase64Url(encrypted.encrypted),
+    TypedArrayEncoder.toBase64Url(encrypted.tag),
+  ].join('.')
 }
