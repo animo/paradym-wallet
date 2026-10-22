@@ -9,12 +9,12 @@ overrides:
   # Keep a single React/React Native copy. Several native modules (askar, masked-view)
   # and the wallet-sdk declare open-ended react-native peer ranges, and react-dom
   # (via react-native-web/tamagui) would otherwise drag in newer react than the
-  # catalog-pinned native one. Pin everything to the SDK 56 versions.
+  # catalog-pinned native one. Pin everything to the SDK 58 versions.
   react: 'catalog:'
-  react-dom: 19.2.3
-  # Pin exactly: react-native 0.86 exists and open-ended peer ranges (tamagui, askar,
-  # masked-view, wallet-sdk) would otherwise hoist it over the SDK 56 version.
-  react-native: 0.85.3
+  react-dom: 19.3.0
+  # Pin exactly: newer react-native releases exist and open-ended peer ranges (tamagui, askar,
+  # masked-view, wallet-sdk) would otherwise hoist it over the SDK 58 version.
+  react-native: 0.88.0
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.7.1-alpha-20260917134851': patches/@credo-ts__openid4vc@0.7.1-alpha-20260917134851.patch
@@ -22,7 +22,7 @@ patchedDependencies:
   '@openid4vc/oauth2@0.5.6': patches/@openid4vc__oauth2@0.5.6.patch
   # Patches required for DC API
   react-native-keychain: patches/react-native-keychain.patch
-  react-native@0.85.3: patches/react-native@0.85.3.patch
+  react-native@0.88.0: patches/react-native@0.88.0.patch
 
 allowBuilds:
   '@hyperledger/anoncreds-react-native': true
@@ -37,10 +37,10 @@ allowBuilds:
   secp256k1: false
 
 catalog:
-  expo: ^56.0.0
-  react-native: 0.85.3
-  react: 19.2.3
-  "@types/react": ~19.2.17
+  expo: ^58.0.17
+  react-native: 0.88.0
+  react: 19.3.0
+  "@types/react": ~19.3.0
   typescript: ~6.0.3
   "@tanstack/react-query": ^5.101.1
   tsdown: ^0.22.3
@@ -87,11 +87,12 @@ catalog:
   "@react-native-picker/picker": 2.11.4
   react-native-keychain: ^10.0.0
   react-native-get-random-values: ^2.0.0
-  react-native-gesture-handler: ~2.31.1
-  react-native-reanimated: 4.3.1
-  react-native-safe-area-context: ~5.7.0
-  react-native-screens: 4.25.2
-  react-native-svg: 15.15.4
+  react-native-gesture-handler: ~3.3.0
+  react-native-reanimated: 4.7.1
+  react-native-worklets: 0.13.0
+  react-native-safe-area-context: ~5.10.1
+  react-native-screens: 4.30.0
+  react-native-svg: 15.16.0
   # React Native FS is not maintained, and doesn't support new Arch
   # this seems to be the best maintained fork. We might want to switch
   # to Expo FileSystem, but Credo depends on react-native-fs
@@ -108,40 +109,40 @@ catalog:
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.4.1
   react-native-edge-to-edge: ^1.8.1
-  '@shopify/react-native-skia': 2.6.9
+  '@shopify/react-native-skia': 2.14.0
 
   # Lingui (i18n)
   "@lingui/babel-plugin-lingui-macro": ^6.4.0
   "@lingui/cli": ^6.4.0
   "@lingui/format-json": ^6.4.0
 
-  # Expo (SDK 56 uses unified 56.x versioning across expo-* packages)
-  # Versions aligned with Expo SDK 56 bundledNativeModules.
-  expo-crypto: ~56.0.4
-  expo-camera: ~56.0.8
-  expo-network: ~56.0.5
-  expo-application: ~56.0.3
-  expo-asset: ~56.0.17
-  expo-blur: ~56.0.3
-  expo-constants: ~56.0.18
-  expo-dev-client: ~56.0.20
-  expo-device: ~56.0.4
-  expo-file-system: ~56.0.8
-  expo-font: ~56.0.7
-  expo-haptics: ~56.0.3
-  expo-image: ~56.0.11
-  expo-image-manipulator: ~56.0.19
-  expo-linear-gradient: ~56.0.4
-  expo-linking: ~56.0.14
-  expo-router: ~56.2.11
-  expo-secure-store: ~56.0.4
-  expo-splash-screen: ~56.0.10
-  expo-system-ui: ~56.0.5
-  expo-updates: ~56.0.19
-  expo-web-browser: ~56.0.5
-  expo-build-properties: ~56.0.19
+  # Expo (SDK 58 uses unified 58.x versioning across expo-* packages)
+  # Versions aligned with Expo SDK 58 bundledNativeModules.
+  expo-crypto: ~58.0.7
+  expo-camera: ~58.0.12
+  expo-network: ~58.0.4
+  expo-application: ~58.1.2
+  expo-asset: ~58.0.18
+  expo-blur: ~58.0.5
+  expo-constants: ~58.0.13
+  expo-dev-client: ~58.0.14
+  expo-device: ~58.0.5
+  expo-file-system: ~58.0.10
+  expo-font: ~58.0.9
+  expo-haptics: ~58.0.7
+  expo-image: ~58.0.16
+  expo-image-manipulator: ~58.0.15
+  expo-linear-gradient: ~58.0.3
+  expo-linking: ~58.0.14
+  expo-router: ~58.0.25
+  expo-secure-store: ~58.0.2
+  expo-splash-screen: ~58.0.11
+  expo-system-ui: ~58.0.6
+  expo-updates: ~58.0.18
+  expo-web-browser: ~58.0.6
+  expo-build-properties: ~58.0.11
   expo-build-disk-cache: ^0.8.0
-  expo-localization: ~56.0.6
+  expo-localization: ~58.0.5
   "@expo-google-fonts/open-sans": ^0.4.2
   "@expo-google-fonts/raleway": ^0.4.2
 

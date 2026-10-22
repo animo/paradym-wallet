@@ -54,7 +54,7 @@ pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pn
 
 ## Stack specifics
 
-- **Expo SDK 56**, React Native 0.85.3, React 19.2.3. Expo Router for navigation. docs.expo.dev and the Expo skills describe the latest SDK, not 56: for API references use `https://docs.expo.dev/versions/v56.0.0/`.
+- **Expo SDK 58**, React Native 0.88.0, React 19.3.0. Expo Router for navigation. docs.expo.dev and the Expo skills describe the latest SDK, which can be newer than 58: for API references use `https://docs.expo.dev/versions/v58.0.0/`.
 - **Tamagui 2** (2.3.3) for UI — has a Babel plugin; use Tamagui primitives over raw RN components where possible. tamagui.dev, its `llms.txt` and Tamagui's agent skill now describe v3 (bare token names, flat conditional values, no `hoverStyle`), which doesn't work here. Write v2: `$` tokens (`bg="$grey-100"`) and `pressStyle`/`hoverStyle` props. Follow the existing `packages/ui` components and check the types in `node_modules/tamagui` when unsure.
 - **Credo (`@credo-ts/*` 0.7 alpha)** is the SSI/agent framework. `@openid4vc/*` handles OID4VCI/VP. Askar (`@openwallet-foundation/askar-*`) is the secure storage / crypto backend.
 - **Lingui** for i18n — see the Translations section below. Catalogs are `apps/wallet/src/locales/<locale>/messages.json`; do not edit non-English catalogs by hand.

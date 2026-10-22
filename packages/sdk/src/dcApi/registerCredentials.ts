@@ -119,7 +119,7 @@ async function readSvgSource(uri: string): Promise<string | undefined> {
   const file = new File(uri)
   const handle = file.open()
   try {
-    const header = new TextDecoder().decode(handle.readBytes(50))
+    const header = new TextDecoder().decode(await handle.readBytes(50))
     if (!header.startsWith('<?xml') && !header.startsWith('<svg')) return undefined
   } finally {
     handle.close()
