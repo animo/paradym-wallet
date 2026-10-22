@@ -245,13 +245,16 @@ const createBaseConfig = (appSpecific) => {
             minSdkVersion: 26,
             compileSdkVersion: 36,
             useLegacyPackaging: true,
+            // SDK 58 turns on R8 for release builds by default. Keep it off until release builds are
+            // verified with the native credential modules (askar, anoncreds, mdoc, DC API).
+            enableMinifyInReleaseBuilds: false,
             extraMavenRepos: ['https://s01.oss.sonatype.org/content/repositories/snapshots/'],
           },
           ios: {
             deploymentTarget: '16.4',
             useFrameworks: 'dynamic',
             // until https://github.com/facebook/react-native/pull/54952 lands:
-            // the credential request UI needs the `react-native@0.85.3` patch, which fixes
+            // the credential request UI needs the `react-native@0.88.0` patch, which fixes
             // `RCTFontSizeMultiplier()` returning 0 inside an app extension — every named font is
             // sized to zero there, so all text that asks for a `fontFamily` draws nothing. The
             // patch is in the React Core sources, and those are only compiled when React Native is
