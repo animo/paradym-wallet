@@ -1,0 +1,82 @@
+diff --git a/build/openid4vc-holder/OpenId4VciHolderService.mjs b/build/openid4vc-holder/OpenId4VciHolderService.mjs
+index 80fe6fe501cce0692a67ca23b4d6dacb3e784988..c1cc7b28c5653670fee4dd7d24f15cff5503ed7a 100644
+--- a/build/openid4vc-holder/OpenId4VciHolderService.mjs
++++ b/build/openid4vc-holder/OpenId4VciHolderService.mjs
+@@ -449,12 +449,17 @@ let OpenId4VciHolderService = class OpenId4VciHolderService {
+ 			const { publicJwk: firstKey } = await dids.resolveVerificationMethodFromCreatedDidRecord(firstDid.didUrl);
+ 			const algorithm = proofTypes.jwt.supportedSignatureAlgorithms.find((algorithm) => firstKey.supportedSignatureAlgorithms.includes(algorithm));
+ 			if (!algorithm) throw new CredoError(`Credential binding returned did url that points to key '${firstKey.jwkTypeHumanDescription}' that supports signature algorithms ${firstKey.supportedSignatureAlgorithms.join(", ")}, but one of '${proofTypes.jwt.supportedSignatureAlgorithms.join(", ")}' was expected`);
+-			const keys = await Promise.all(credentialBinding.didUrls.map(async (didUrl, index) => index === 0 ? {
+-				jwk: firstKey,
+-				didUrl: firstDid.didUrl
+-			} : {
+-				jwk: (await dids.resolveVerificationMethodFromCreatedDidRecord(didUrl)).publicJwk,
+-				didUrl
++			const keys = await Promise.all(credentialBinding.didUrls.map(async (didUrl, index) => {
++				if (index === 0) return {
++					jwk: firstKey,
++					didUrl: firstDid.didUrl
++				};
++				// Awaited in its own statement: Hermes before 250829098.0.12 miscompiles `await` inside an object literal in a ternary branch (facebook/hermes#2010)
++				const { publicJwk } = await dids.resolveVerificationMethodFromCreatedDidRecord(didUrl);
++				return {
++					jwk: publicJwk,
++					didUrl
++				};
+ 			}));
+ 			if (!keys.every((key) => Kms.asymmetricJwkKeyTypeMatches(key.jwk.toJson(), firstKey.toJson()))) throw new CredoError("Expected all did urls to point to the same key type");
+ 			return { proofs: { jwt: await Promise.all(keys.map((key) => client.createCredentialRequestJwtProof({
+diff --git a/build/openid4vc-holder/OpenId4vpHolderService.mjs b/build/openid4vc-holder/OpenId4vpHolderService.mjs
+index d10ae9ca5333afb30747ea282e814240d34597d5..c5b501f79eda808b8bf4c9a9a959a99aa6d0e3b9 100644
+--- a/build/openid4vc-holder/OpenId4vpHolderService.mjs
++++ b/build/openid4vc-holder/OpenId4vpHolderService.mjs
+@@ -66,6 +66,7 @@ let OpenId4VpHolderService = class OpenId4VpHolderService {
+ 			origin: options?.origin,
+ 			signedAuthorizationRequest: verifiedAuthorizationRequest.jar ? {
+ 				signer: verifiedAuthorizationRequest.jar?.signer,
++				compact: verifiedAuthorizationRequest.jar.jwt.compact,
+ 				payload: verifiedAuthorizationRequest.jar.jwt.payload,
+ 				header: verifiedAuthorizationRequest.jar.jwt.header
+ 			} : void 0
+diff --git a/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts b/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts
+index e1e33a1cb5d9caa03d771e53672eabf1d6c4abed..5932820163e1e2111f761385982700c5ef76f98b 100644
+--- a/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts
++++ b/build/openid4vc-holder/OpenId4vpHolderServiceOptions.d.mts
+@@ -51,6 +51,7 @@ interface OpenId4VpResolvedAuthorizationRequest {
+    */
+   signedAuthorizationRequest?: {
+     signer: VerifiedJarRequest['signer'];
++    compact: VerifiedJarRequest['jwt']['compact'];
+     payload: VerifiedJarRequest['jwt']['payload'];
+     header: VerifiedJarRequest['jwt']['header'];
+   };
+diff --git a/build/openid4vc-issuer/OpenId4VcIssuerService.mjs b/build/openid4vc-issuer/OpenId4VcIssuerService.mjs
+index e51001e2742ae4a2e5824b6ee326e00627d11f5a..a5e871ee24c01b6fe24613295fd817a125fdda25 100644
+--- a/build/openid4vc-issuer/OpenId4VcIssuerService.mjs
++++ b/build/openid4vc-issuer/OpenId4VcIssuerService.mjs
+@@ -912,6 +912,12 @@ let OpenId4VcIssuerService = class OpenId4VcIssuerService {
+ 		const expiresInSeconds = this.openId4VcIssuerConfig.refreshTokenExpiresInSeconds;
+ 		const expiresAt = utils.addSecondsToDate(/* @__PURE__ */ new Date(), expiresInSeconds);
+ 		const key = issuer.resolvedAccessTokenPublicJwk;
++		// Awaited in its own statement: Hermes before 250829098.0.12 miscompiles `await` inside an object literal in a ternary branch (facebook/hermes#2010)
++		const dpopJkt = options.dpop ? await calculateJwkThumbprint({
++			hashAlgorithm: HashAlgorithm.Sha256,
++			hashCallback: getOid4vcCallbacks(agentContext).hash,
++			jwk: options.dpop.jwk
++		}) : void 0;
+ 		return await jwsService.createJwsCompact(agentContext, {
+ 			keyId: key.keyId,
+ 			payload: JwtPayload.fromJson({
+@@ -920,11 +926,7 @@ let OpenId4VcIssuerService = class OpenId4VcIssuerService {
+ 				exp: utils.dateToSeconds(expiresAt),
+ 				issuer_state: options.issuerState,
+ 				"pre-authorized_code": options.preAuthorizedCode,
+-				cnf: options.dpop ? { jkt: await calculateJwkThumbprint({
+-					hashAlgorithm: HashAlgorithm.Sha256,
+-					hashCallback: getOid4vcCallbacks(agentContext).hash,
+-					jwk: options.dpop.jwk
+-				}) } : void 0
++				cnf: dpopJkt ? { jkt: dpopJkt } : void 0
+ 			}),
+ 			protectedHeaderOptions: {
+ 				typ: "credo+refresh_token",

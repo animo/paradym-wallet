@@ -2,6 +2,7 @@ import {
   activityStorage,
   fetchPaymentTransactionStatus,
   getTransactionStatusMetadata,
+  pasoPaymentTransactionDataType,
   useActivities,
   useCredentials,
   useParadym,
@@ -22,9 +23,15 @@ export function useRefreshPaymentTransactionStatuses() {
     const credentialRecord = credentials.find((c) => getTransactionStatusMetadata(c.record) !== null)?.record
     if (!credentialRecord) return
 
+    // The status backchannel is a TS 12 extension, so a PaSO payment has nothing to poll. Without
+    // this it would be polled anyway — against whichever credential happens to carry the metadata,
+    // which is not even the card that authorized it.
     const pendingPayments = activities.filter(
       (a): a is PaymentActivity =>
-        a.type === 'payment' && a.transactionStatus !== 'ACSC' && a.transactionStatus !== 'RJCT'
+        a.type === 'payment' &&
+        a.transaction.type !== pasoPaymentTransactionDataType &&
+        a.transactionStatus !== 'ACSC' &&
+        a.transactionStatus !== 'RJCT'
     )
     if (pendingPayments.length === 0) return
 

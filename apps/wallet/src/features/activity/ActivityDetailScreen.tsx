@@ -13,7 +13,14 @@ import type {
   PresentationActivityCredential,
   SignedActivity,
 } from '@paradym/wallet-sdk'
-import { formatAttributesAtPaths, getLabelsForAttributes, useActivityById, useCredentials } from '@paradym/wallet-sdk'
+import {
+  formatAttributesAtPaths,
+  getLabelsForAttributes,
+  getPaymentTransactionStatus,
+  pasoPaymentTransactionDataType,
+  useActivityById,
+  useCredentials,
+} from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { usePaymentTransactionStatus } from '../../hooks/usePaymentTransactionStatus'
@@ -226,6 +233,7 @@ export function SharedActivityDetailSection({
 
   const amountShared = activity.request.credentials?.length ?? 0
   const { t } = useLingui()
+  const paymentTransactionStatus = getPaymentTransactionStatus(activity)
 
   const description =
     activity.status === 'success'
@@ -289,11 +297,37 @@ export function SharedActivityDetailSection({
             <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
               <YStack f={1} gap="$2" ai="center">
                 <Heading textTransform="none" color="$grey-800">
-                  {activity.transaction.amount}
+                  {activity.transaction.type === pasoPaymentTransactionDataType
+                    ? activity.transaction.amount.value
+                    : activity.transaction.amount}
                 </Heading>
                 <Paragraph variant="sub" size="$2">
-                  <Trans>To {activity.transaction.payee.name}</Trans>
+                  <Trans>
+                    To{' '}
+                    {activity.transaction.type === pasoPaymentTransactionDataType
+                      ? activity.transaction.payee.value
+                      : activity.transaction.payee.name}
+                  </Trans>
                 </Paragraph>
+                {/*
+                 * The same answer the activity list renders. Leaving it out is what let this screen
+                 * report a payment as successful while the list reported it as pending: the two were
+                 * describing different things, and only one of them said so.
+                 */}
+                {paymentTransactionStatus && paymentTransactionStatus !== 'ACSC' && (
+                  <Paragraph
+                    variant="sub"
+                    size="$2"
+                    fontWeight="$medium"
+                    color={paymentTransactionStatus === 'RJCT' ? '$danger-500' : '$warning-600'}
+                  >
+                    {t(
+                      paymentTransactionStatus === 'RJCT'
+                        ? commonMessages.paymentRejected
+                        : commonMessages.paymentPending
+                    )}
+                  </Paragraph>
+                )}
               </YStack>
             </XStack>
           </YStack>

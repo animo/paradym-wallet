@@ -10,6 +10,8 @@ import type {
   FormattedTransactionDataPaymentSingle,
   FormattedTransactionDataQesAuthorization,
 } from '../openid4vc/transaction'
+import { pasoPaymentTransactionDataType } from '../paso/paymentRulebook'
+import type { FormattedTransactionDataPasoPayment } from '../paso/transactionData'
 import {
   deleteActivityRecord,
   getActivityRecordById,
@@ -105,11 +107,40 @@ export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
 export interface PaymentActivity extends Omit<PresentationActivity, 'type'> {
   type: 'payment'
   status: Exclude<ActivityStatus, 'pending'>
-  transaction: FormattedTransactionDataPaymentSingle
+  /** A TS 12 `payment:single:1` or a PaSO `global:payment:1` transaction. */
+  transaction: FormattedTransactionDataPaymentSingle | FormattedTransactionDataPasoPayment
   transactionStatus?: PaymentTransactionStatusCode
 }
 
 export type Activity = PresentationActivity | IssuanceActivity | SignedActivity | PaymentActivity
+
+/**
+ * The settlement status to show for an activity, where the wallet has one to show.
+ *
+ * Two different things get called the status of a payment, and they are not interchangeable:
+ * `activity.status` is whether the *sharing* succeeded, which the wallet witnessed, while
+ * `transactionStatus` is whether the *payment* settled, which only the Attestation Provider knows and
+ * only tells us through the TS 12 status backchannel.
+ *
+ * PaSO defines no such backchannel, so for a PaSO payment the wallet has no way to learn it and
+ * returns `undefined` rather than a guess. Older PaSO activities may still carry a `PDNG` that an
+ * earlier version wrote at creation time — nothing can ever move it off pending, so it is not shown.
+ *
+ * Every surface that displays a payment reads this, so the list and the detail screen cannot drift
+ * apart on what the same activity means.
+ */
+export function getPaymentTransactionStatus(activity: Activity): PaymentTransactionStatusCode | undefined {
+  if (activity.type !== 'payment') return undefined
+
+  // A share that did not complete never reached the Relying Party, so there is nothing to settle and
+  // nothing to report. Declining a TS 12 payment still records the `PDNG` its activity was created
+  // with, which would otherwise show a payment the user refused as pending forever.
+  if (activity.status !== 'success') return undefined
+
+  if (activity.transaction.type === pasoPaymentTransactionDataType) return undefined
+
+  return activity.transactionStatus
+}
 
 /**
  * What writing an activity needs.
@@ -220,10 +251,7 @@ export const storeSharedOrSignedActivity = async (
     | Omit<PaymentActivity, 'type' | 'date' | 'id'>
 ): Promise<Activity> => {
   if ('transaction' in input && input.transaction) {
-    const transaction =
-      input.transaction.type === 'qes_authorization'
-        ? (input.transaction as FormattedTransactionDataQesAuthorization)
-        : (input.transaction as FormattedTransactionDataPaymentSingle)
+    const transaction = input.transaction
     if (transaction.type === 'qes_authorization') {
       return activityStorage.addActivity(paradym.agent, {
         ...input,
@@ -234,7 +262,13 @@ export const storeSharedOrSignedActivity = async (
       })
     }
     return activityStorage.addActivity(paradym.agent, {
-      transactionStatus: 'PDNG',
+      // Only TS 12 defines a transaction status backchannel, so only a TS 12 payment starts out
+      // "pending". A PaSO payment whose Attestation Provider happens to offer the same extension
+      // picks up its first status from the poll that follows; one that does not would otherwise show
+      // as pending forever, which is a claim about the payment that nothing can ever settle.
+      ...(transaction.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1'
+        ? { transactionStatus: 'PDNG' as const }
+        : {}),
       ...input,
       transaction,
       id: utils.uuid(),

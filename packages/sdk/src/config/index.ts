@@ -25,6 +25,19 @@ export type ParadymWalletSdkLocaleOptions = {
 
 /**
  *
+ * Identifier of this wallet build, for the PaSO `wallet_instance_version` proof claim.
+ *
+ * [PaSO Core] Section 6.1 requires it in every PaSO presentation; its examples use
+ * `<platform>:<application id>:<version>`, e.g. `android:com.example.wallet:4.1.2`. It comes from a
+ * native module, so the app supplies it rather than the SDK reading it.
+ *
+ */
+export type ParadymWalletSdkWalletInstanceVersionOptions = {
+  walletInstanceVersion?: string
+}
+
+/**
+ *
  * How the wallet names claims the credential did not name — see {@link ResolveAttributeLabel}.
  *
  */
@@ -99,7 +112,11 @@ export type ParadymWalletSdkLoggingOptions<T extends ParadymWalletSdkLogger = Pa
 
   /**
    *
-   * Whether to trace the logs. Later, this can be exported
+   * Whether to keep the last `persistLimit` messages so they can be exported. They are written to
+   * storage as they are logged, so they survive a crash, and the app can export what the DC API
+   * request UI logged in its own process; see `readProcessLogs`.
+   *
+   * With `persistForExport` off, nothing is kept and whatever an earlier run stored is deleted.
    *
    * exporting the logs can be done with the following:
    *
@@ -109,14 +126,14 @@ export type ParadymWalletSdkLoggingOptions<T extends ParadymWalletSdkLogger = Pa
    * ```
    *
    */
-  trace?: boolean
+  persistForExport?: boolean
 
   /**
    *
-   * Number of logs to be traced.
+   * Number of messages kept for export.
    *
    */
-  traceLimit?: number
+  persistLimit?: number
 
   /**
    *

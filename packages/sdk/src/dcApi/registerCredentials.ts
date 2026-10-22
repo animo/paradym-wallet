@@ -32,6 +32,7 @@ import {
   resolveAttributeLabelForPath,
   resolveClaimsWithRecordMetadata,
 } from '../format/attributes'
+import { getPasoCredentialMetadata } from '../metadata/credentials'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type { CredentialRecord } from '../storage/credentials'
 import { getSharedMmkv } from '../storage/sharedMmkv'
@@ -347,7 +348,14 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
 
     const mdocRecords = records?.mdoc ?? (await paradym.agent.mdoc.getAll())
     // iOS only matches ISO 18013-7 mdocs, so building the sd-jwt entries would be wasted work.
-    const sdJwtVcRecords = Platform.OS === 'ios' ? [] : (records?.sdJwtVc ?? (await paradym.agent.sdJwtVc.getAll()))
+    // PaSO Credentials stay out: they may only be presented to authorize a PaSO transaction, and PaSO
+    // over the Digital Credentials API is not implemented — see `assertPasoCredentialsOnlyForPasoTransactions`.
+    const sdJwtVcRecords =
+      Platform.OS === 'ios'
+        ? []
+        : (records?.sdJwtVc ?? (await paradym.agent.sdJwtVc.getAll())).filter(
+            (record) => getPasoCredentialMetadata(record) === null
+          )
 
     // Reading the records is cheap; everything after this is not. Registering an unchanged set
     // rebuilds it for no reason, and the wallet did that on every unlock.

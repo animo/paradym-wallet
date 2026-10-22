@@ -22,6 +22,7 @@ import { hasMissingCards } from '@paradym/wallet-sdk/display/common'
 import {
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletNoStoreError,
 } from '@paradym/wallet-sdk/error'
 import { getIsBiometricsEnabled } from '@paradym/wallet-sdk/storage/sharedMmkv'
@@ -68,9 +69,10 @@ type Phase =
   // Terminal: the wallet was already open when this failed, so there is nothing left for the user
   // to retry — the request is declined when they close the screen. `reason` is the underlying
   // error, which goes to the OS as the decline reason and is only shown with development mode
-  // enabled. `stage` only picks which sentence is shown: whether the request could not be read at
-  // all, or the card could not be sent after it was approved.
-  | { name: 'failed'; stage: 'review' | 'share'; reason: string }
+  // enabled. `description` is the sentence the user sees: that the request could not be read at
+  // all, that the card could not be sent after it was approved, or what to do about it when the
+  // user can do something.
+  | { name: 'failed'; description: string; reason: string }
 
 /**
  * Credential request UI, on both platforms.
@@ -145,13 +147,18 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           return
         }
 
-        // The app's own configuration, unchanged: the request UI has to trust exactly what the app
+        // The app's own configuration and logging: the request UI has to trust exactly what the app
         // trusts, down to the `getTrustedCertificatesForVerification` callback.
-        const [{ ParadymDcApiSdk }, { paradymWalletSdkOptions }] = await Promise.all([
+        const [{ ParadymDcApiSdk }, { paradymWalletSdkOptions, getLoggingOptions }] = await Promise.all([
           dcApiSdk(),
           paradymConfiguration(),
         ])
-        sdk = await ParadymDcApiSdk.initialize({ ...paradymWalletSdkOptions, walletKey: key, locale: i18n.locale })
+        sdk = await ParadymDcApiSdk.initialize({
+          ...paradymWalletSdkOptions,
+          logging: getLoggingOptions(isDevelopmentModeEnabled),
+          walletKey: key,
+          locale: i18n.locale,
+        })
         sdkRef.current = sdk
       } catch (unlockError) {
         isUnlockingRef.current = false
@@ -176,10 +183,10 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         setPhase({ name: 'review', review })
       } catch (reviewError) {
         console.error('Error reviewing request', reviewError)
-        setPhase({ name: 'failed', stage: 'review', reason: message(reviewError) })
+        setPhase({ name: 'failed', description: t(messages.requestFailed), reason: message(reviewError) })
       }
     },
-    [request, t]
+    [request, t, isDevelopmentModeEnabled]
   )
 
   const unlockUsingPin = useCallback(
@@ -202,20 +209,39 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
     if (getIsBiometricsEnabled()) void unlockUsingBiometrics()
   }, [unlockUsingBiometrics])
 
-  const share = useCallback(async (review: DcApiReview) => {
-    setError(undefined)
-    setPhase({ name: 'sharing', review })
+  const share = useCallback(
+    async (review: DcApiReview) => {
+      setError(undefined)
+      setPhase({ name: 'sharing', review })
 
-    try {
-      await review.share()
-    } catch (shareError) {
-      console.error('Error sharing credentials', shareError)
-      // On iOS `approve()` has already released the request by the time most failures happen, so
-      // there is nothing to retry. The request is declined from the failure screen rather than
-      // here: declining takes the UI down with it, and the user would never see what went wrong.
-      setPhase({ name: 'failed', stage: 'share', reason: message(shareError) })
-    }
-  }, [])
+      try {
+        await review.share()
+      } catch (shareError) {
+        console.error('Error sharing credentials', shareError)
+        // A dismissed biometric prompt sent nothing, so the request is still open: back to the
+        // review, where sharing prompts again.
+        if (shareError instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+          setPhase({ name: 'review', review })
+          setError(t(commonMessages.biometricAuthenticationCancelled))
+          return
+        }
+
+        // On iOS `approve()` has already released the request by the time most failures happen, so
+        // there is nothing to retry. The request is declined from the failure screen rather than
+        // here: declining takes the UI down with it, and the user would never see what went wrong.
+        setPhase({
+          name: 'failed',
+          description: t(
+            shareError instanceof ParadymWalletBiometricAuthenticationNotEnabledError
+              ? commonMessages.biometricAuthenticationMustBeEnabledInSettings
+              : messages.shareFailed
+          ),
+          reason: message(shareError),
+        })
+      }
+    },
+    [t]
+  )
 
   return (
     <YStack
@@ -303,7 +329,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
               <HeroIcons.NoSymbol color="$grey-800" size={32} />
             </XStack>
           </Stack>
-          <Paragraph>{t(phase.stage === 'review' ? messages.requestFailed : messages.shareFailed)}</Paragraph>
+          <Paragraph>{phase.description}</Paragraph>
 
           {/* The error itself says nothing a user can act on, so it is kept for the people who can:
               the same development mode setting the app shows its own errors behind. */}

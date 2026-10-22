@@ -19,7 +19,12 @@ import {
 } from '../config'
 import { setResolveAttributeLabel } from '../config/attributeLabel'
 import { setLocale } from '../config/locale'
-import { ParadymWalletAuthenticationInvalidPinError, ParadymWalletNoStoreError } from '../error'
+import {
+  ParadymWalletAuthenticationInvalidPinError,
+  ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletNoStoreError,
+} from '../error'
+import { withBiometricAuthenticationErrors } from '../error/withBiometricAuthenticationErrors'
 import { type FormattedSubmission, getFormattedSubmission } from '../format/submission'
 import { createLogger } from '../logging'
 import { getSubmissionForMdocDocumentRequest } from '../proximity/getSubmissionForMdocDocumentRequest'
@@ -83,6 +88,10 @@ export type DcApiReview = {
   /**
    * Answers the request. Everything platform- and protocol-specific was decided while building the
    * review, so the caller only has to call this once the user approved.
+   *
+   * Throws a `ParadymWalletBiometricAuthenticationCancelledError` when the user dismissed the
+   * biometric prompt of a key in the secure environment. Nothing was sent then, so this can be
+   * called again, or the request declined.
    */
   share: () => Promise<void>
 
@@ -149,7 +158,7 @@ export class ParadymDcApiSdk {
       // The app's trust callback included: it is the only hook mdoc reader authentication reaches,
       // and the request UI has to trust exactly what the app trusts.
       config: {
-        logger: createLogger(options.logging),
+        logger: createLogger(options.logging, 'dcApi'),
         getTrustedIssuersForVerification: options.getTrustedIssuersForVerification,
       },
       dependencies: agentDependencies,
@@ -207,7 +216,8 @@ export class ParadymDcApiSdk {
    *
    * Wrapped here rather than in each of the three review paths, so a request answered through the
    * OS credential picker lands in the log exactly like one answered from a link, a QR code or in
-   * person. The store is the one the app reads, shared between the two processes.
+   * person. The store is the one the app reads, shared between the two processes. A failed
+   * biometric prompt of the secure environment is mapped here once for the same reason.
    */
   private recordingSharedActivity(review: ResolvedReview, request: DcApiRequest): DcApiReview {
     let declining: Promise<void> | undefined
@@ -216,9 +226,13 @@ export class ParadymDcApiSdk {
       ...review,
       share: async () => {
         try {
-          await review.share()
+          await withBiometricAuthenticationErrors(review.share())
         } catch (error) {
-          await this.storeSharedActivity(review, 'failed')
+          // The request is still open after a cancelled prompt: whatever the user does next is what
+          // gets recorded.
+          if (!(error instanceof ParadymWalletBiometricAuthenticationCancelledError)) {
+            await this.storeSharedActivity(review, 'failed')
+          }
           throw error
         }
 
@@ -354,6 +368,10 @@ export class ParadymDcApiSdk {
    * summary the OS parsed and the wallet's own mdocs — matching on document type and element
    * identifiers, which is what the OS matched on too. The real request is resolved inside `share`,
    * after `approve()`.
+   *
+   * `approve()` releases the raw request only once, but iOS keeps the request open until the
+   * response is sent. So a `share` retried after a cancelled biometric prompt answers the request
+   * approved the first time, rather than approving again.
    */
   private async reviewIosRequest(request: IosDcApiRequest): Promise<ResolvedReview> {
     // iOS presents several document requests as alternative document request sets, which is how the
@@ -379,38 +397,46 @@ export class ParadymDcApiSdk {
         }
       : undefined
 
+    const approve = async () => {
+      // The point of no return: iOS releases the raw request only once the wallet commits to
+      // answering it.
+      const [isoMdoc] = await request.approve()
+      if (!isoMdoc) throw new Error('The request carries no org-iso-mdoc request')
+
+      const resolved = await this.agent.mdoc.resolveDcApiRequest({
+        request: isoMdoc.data,
+        // Must come from the OS, never from the request payload (ISO 18013-7 C.5).
+        origin: request.origin,
+        treatAmbiguousMultipleDocRequestsAsAlternatives: true,
+      })
+
+      // Only what the user reviewed: the raw request carries every alternative, and answering each
+      // one that matches would disclose cards nobody approved.
+      if (!reviewed) throw new Error('No stored card matches the request')
+      const docRequest = resolved.docRequests.find(
+        ({ docType, validCredentials }) =>
+          docType === reviewed.docType && validCredentials.some(({ record }) => record.id === reviewed.record.id)
+      )
+      if (!docRequest) {
+        throw new Error(`The card reviewed for '${reviewed.docType}' does not answer the request`)
+      }
+
+      return { resolved, docRequestIndex: docRequest.docRequestIndex, record: reviewed.record }
+    }
+    let approved: ReturnType<typeof approve> | undefined
+
     return {
       submission,
       // The OS parses reader authentication out for us, so the verifier is known before the raw
       // request is released — the same trust the Android mdoc path establishes.
       ...(await this.getMdocVerifier(request.readerAuthentications[0]?.certificateChain, request.origin)),
       share: async () => {
-        // The point of no return: iOS releases the raw request only once the wallet commits to
-        // answering it.
-        const [isoMdoc] = await request.approve()
-        if (!isoMdoc) throw new Error('The request carries no org-iso-mdoc request')
-
-        const resolved = await this.agent.mdoc.resolveDcApiRequest({
-          request: isoMdoc.data,
-          // Must come from the OS, never from the request payload (ISO 18013-7 C.5).
-          origin: request.origin,
-          treatAmbiguousMultipleDocRequestsAsAlternatives: true,
-        })
-
-        // Only what the user reviewed: the raw request carries every alternative, and answering each
-        // one that matches would disclose cards nobody approved.
-        if (!reviewed) throw new Error('No stored card matches the request')
-        const docRequest = resolved.docRequests.find(
-          ({ docType, validCredentials }) =>
-            docType === reviewed.docType && validCredentials.some(({ record }) => record.id === reviewed.record.id)
-        )
-        if (!docRequest) {
-          throw new Error(`The card reviewed for '${reviewed.docType}' does not answer the request`)
-        }
+        approved ??= approve()
+        const { resolved, docRequestIndex, record } = await approved
 
         const { response } = await this.agent.mdoc.createDcApiResponse({
           resolvedRequest: resolved,
-          credentials: [{ docRequestIndex: docRequest.docRequestIndex, record: reviewed.record }],
+          credentials: [{ docRequestIndex, record }],
         })
         await request.respond({ protocol: 'org-iso-mdoc', data: { response } })
       },

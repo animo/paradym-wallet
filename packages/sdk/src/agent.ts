@@ -106,7 +106,7 @@ export const setupAgent = (options: SetupAgentOptions) => {
 
   const didcommConfiguration = options.didcommConfiguration ?? false
 
-  const logger = createLogger(options.logging)
+  const logger = createLogger(options.logging, 'app')
 
   const modules = {
     ...getBaseModules(options),

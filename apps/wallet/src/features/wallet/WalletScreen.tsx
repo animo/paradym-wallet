@@ -19,6 +19,7 @@ import {
 import { useRefreshedDeferredCredentials } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { FadeIn } from 'react-native-reanimated'
+import { usePasoRenewCredentialMetadata } from '../../hooks/usePasoRenewCredentialMetadata'
 import { useRefreshPaymentTransactionStatuses } from '../../hooks/useRefreshPaymentTransactionStatuses'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
@@ -38,6 +39,7 @@ export function WalletScreen() {
 
   useRefreshedDeferredCredentials()
   useRefreshPaymentTransactionStatuses()
+  usePasoRenewCredentialMetadata()
 
   return (
     <YStack pos="relative" fg={1} bg="$background">

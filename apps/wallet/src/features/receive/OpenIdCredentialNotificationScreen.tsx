@@ -1,3 +1,4 @@
+import { isHardwareBoundCredentialConfiguration } from '@app/config/paymentAttestation'
 import { walletClient } from '@app/constants'
 import { useDevelopmentMode } from '@app/hooks'
 import { dcApiRegisterOptions } from '@app/utils/dcApiRegisterOptions'
@@ -9,6 +10,7 @@ import type { CredentialForDisplay, DeferredCredentialBefore, ResolveCredentialO
 import {
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletInvalidTransactionCodeError,
   useParadym,
 } from '@paradym/wallet-sdk'
@@ -19,6 +21,7 @@ import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPres
 import { type OnPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
+import { BiometricsRequiredSlide, canCreateHardwareBoundKey } from './slides/BiometricsRequiredSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
 import { CredentialRetrievalSlide } from './slides/CredentialRetrievalSlide'
 import { InteractionErrorSlide } from './slides/InteractionErrorSlide'
@@ -47,6 +50,7 @@ export function CredentialNotificationScreen() {
   const maxTxCodeAttempts = 3
 
   const [resolvedCredentialOffer, setResolvedCredentialOffer] = useState<ResolveCredentialOfferReturn>()
+  const [isBiometricsSetupRequired, setIsBiometricsSetupRequired] = useState(false)
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
   const [deferredCredential, setDeferredCredential] = useState<DeferredCredentialBefore>()
   const [receivedCredential, setReceivedCredential] = useState<CredentialForDisplay>()
@@ -71,6 +75,21 @@ export function CredentialNotificationScreen() {
     [isDevelopmentModeEnabled]
   )
 
+  // A hardware bound card needs a biometric to create its key and sign with it, and saying so is more
+  // useful than the generic reason.
+  const setIssuanceErrorReason = useCallback(
+    (error: unknown) => {
+      if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+        setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
+      } else if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+        setErrorReason(t(commonMessages.biometricAuthenticationMustBeEnabledInSettings))
+      } else {
+        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
+      }
+    },
+    [setErrorReasonWithError, t]
+  )
+
   // The authorization challenge / presentation request_uri the issuer hands us during
   // resolve is one-shot on the server side, so re-firing this effect would 404 the second call.
   const resolvingOfferUriRef = useRef<string | undefined>(undefined)
@@ -83,7 +102,14 @@ export function CredentialNotificationScreen() {
         offerUri: params.uri,
         authorization: walletClient,
       })
-      .then((result) => {
+      .then(async (result) => {
+        // Checked up front: otherwise the user goes through the whole issuer flow, only for the key to
+        // fail to be created once the card is requested.
+        const credentialConfiguration = Object.values(result.resolvedCredentialOffer.offeredCredentialConfigurations)[0]
+        if (credentialConfiguration && isHardwareBoundCredentialConfiguration(credentialConfiguration)) {
+          setIsBiometricsSetupRequired(!(await canCreateHardwareBoundKey()))
+        }
+
         setResolvedCredentialOffer(result)
       })
       .catch((error) => {
@@ -137,6 +163,10 @@ export function CredentialNotificationScreen() {
       } catch (error) {
         if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
           setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
+          return
+        }
+        if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+          setErrorReason(t(commonMessages.biometricAuthenticationMustBeEnabledInSettings))
           return
         }
         if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
@@ -195,10 +225,10 @@ export function CredentialNotificationScreen() {
         paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
-        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
+        setIssuanceErrorReason(error)
       }
     },
-    [paradym, setErrorReasonWithError, t, resolvedCredentialOffer]
+    [paradym, setIssuanceErrorReason, t, resolvedCredentialOffer]
   )
 
   const acquireCredentialsPreAuth = useCallback(
@@ -240,11 +270,11 @@ export function CredentialNotificationScreen() {
           )
           return false
         }
-        setErrorReasonWithError(t(commonMessages.errorWhileRetrievingCredentials), error)
+        setIssuanceErrorReason(error)
         return true
       }
     },
-    [paradym, setErrorReasonWithError, t, resolvedCredentialOffer, txCodeAttempts, toast.show]
+    [paradym, setIssuanceErrorReason, t, resolvedCredentialOffer, txCodeAttempts, toast.show]
   )
 
   const onCompleteCredentialRetrieval = async () => {
@@ -328,6 +358,14 @@ export function CredentialNotificationScreen() {
             <LoadingRequestSlide key="loading-request" isLoading={!resolvedCredentialOffer} isError={!!errorReason} />
           ),
         },
+        isBiometricsSetupRequired
+          ? {
+              step: 'biometrics-required',
+              progress: 25,
+              backIsCancel: true,
+              screen: <BiometricsRequiredSlide key="biometrics-required" />,
+            }
+          : undefined,
         {
           step: 'verify-issuer',
           progress: 33,

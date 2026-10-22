@@ -1,6 +1,7 @@
 import { DcApiCredentialRegistration } from '@app/features/dc-api/DcApiCredentialRegistration'
 import { useHasFinishedOnboarding } from '@app/features/onboarding'
 import { useFeatureFlag } from '@app/hooks/useFeatureFlag'
+import { useLogDeviceInformation } from '@app/hooks/useLogDeviceInformation'
 import { useResetWalletDevMenu } from '@app/hooks/useResetWalletDevMenu'
 import { useSyncSdkLocale } from '@app/hooks/useSyncSdkLocale'
 import { TypedArrayEncoder } from '@credo-ts/core'
@@ -30,6 +31,7 @@ export const credentialDataHandlerOptions = {
 export default function AppLayout() {
   useSyncSdkLocale()
   useResetWalletDevMenu()
+  useLogDeviceInformation()
 
   const paradym = useParadym()
 

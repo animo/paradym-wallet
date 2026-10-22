@@ -10,6 +10,7 @@ import {
   type ActivityStatus,
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
+  ParadymWalletBiometricAuthenticationNotEnabledError,
   storeSharedActivityForCredentialsForRequest,
   useParadym,
 } from '@paradym/wallet-sdk'
@@ -124,6 +125,12 @@ export function MdocOfflineSharingScreen({ sessionTranscript, deviceRequest }: M
       }
 
       await addActivity('failed')
+      if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+        return handleError({
+          reason: t(commonMessages.biometricAuthenticationMustBeEnabledInSettings),
+          redirect: true,
+        })
+      }
       return handleError({
         reason: t({
           id: 'mdoc.error.sharing',

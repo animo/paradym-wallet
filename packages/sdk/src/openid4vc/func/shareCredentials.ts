@@ -9,13 +9,17 @@ import {
 } from '@credo-ts/core'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
-import { ParadymWalletBiometricAuthenticationError } from '../../error'
+import type { FormattedSubmissionEntrySatisfied } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
+import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'
+import { createPasoScaResponseClaims } from '../../paso/responseClaims'
+import { assertPasoCredentialsOnlyForPasoTransactions } from '../../paso/transactionData'
+import type { PasoAuthenticationMethod } from '../../paso/types'
 import { activityStorage, storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
 import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
 import { fetchPaymentTransactionStatus } from '../paymentTransactionStatus'
-import { getFormattedTransactionData } from '../transaction'
+import { type FormattedTransactionData, resolveTransactionData } from '../transaction'
 
 export type ShareCredentialsOptions = {
   paradym: ParadymWalletSdk
@@ -23,6 +27,24 @@ export type ShareCredentialsOptions = {
   selectedCredentials: { [inputDescriptorId: string]: string }
   // FIXME: Should be a more complex structure allowing which credential to use for which entry
   acceptTransactionData?: boolean
+  /**
+   * The transaction the user was shown and consented to.
+   *
+   * Pass the value the consent screen rendered rather than letting this resolve its own: a PaSO
+   * transaction involves fetching and verifying external resources, and re-resolving could produce
+   * something other than what the user actually saw.
+   */
+  transactionData?: FormattedTransactionData
+  /**
+   * How the user released the transaction, for the `urn:paso:risk:global:amr:1` risk signal.
+   *
+   * Only reaches the proof when a risk signal profile or metadata enumeration requires that signal —
+   * see [PaSO Risk Signal Registry] Section 2.8. Report only methods that were actually used: under
+   * [PSD2] this is the evidence that two independent factor categories were involved.
+   */
+  authenticationMethods?: PasoAuthenticationMethod[]
+  /** When the user completed that authentication, which Section 2.8 makes the signal's `collected_at`. */
+  authenticatedAt?: Date
 }
 
 export const shareCredentials = async ({
@@ -30,6 +52,9 @@ export const shareCredentials = async ({
   resolvedRequest,
   selectedCredentials,
   acceptTransactionData,
+  transactionData: consentedTransactionData,
+  authenticationMethods = ['swk'],
+  authenticatedAt = new Date(),
 }: ShareCredentialsOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')
 
@@ -79,79 +104,130 @@ export const shareCredentials = async ({
       )
     : undefined
 
-  const transactionData = getFormattedTransactionData(resolvedRequest)
+  // The consent screen already refused this, but sharing is where it has to hold.
+  assertPasoCredentialsOnlyForPasoTransactions(resolvedRequest)
 
-  try {
-    const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
-      authorizationRequestPayload: authorizationRequest,
-      presentationExchange: presentationExchangeCredentials
-        ? {
-            credentials: presentationExchangeCredentials,
-          }
-        : undefined,
-      dcql: dcqlCredentials
-        ? {
-            credentials: dcqlCredentials,
-          }
-        : undefined,
-      transactionData:
-        resolvedRequest.transactionData && acceptTransactionData && transactionData?.cardForTransactionId
-          ? [{ credentialId: transactionData.cardForTransactionId }]
-          : undefined,
-      origin: resolvedRequest.origin,
+  const transactionData = consentedTransactionData ?? (await resolveTransactionData(paradym, resolvedRequest))
+
+  // [PaSO Core] Section 6.2 — the SCA response claims are top-level claims of the KB-JWT, so they go
+  // in as the presentation's additional payload. Credo merges this with the `transaction_data_hashes`
+  // it adds itself, which is why `transaction_data_hash` below agrees with it by construction.
+  if (transactionData?.type === pasoPaymentTransactionDataType && dcqlCredentials) {
+    // Resolved without a card that can authorize it, so it was only ever shown to explain why. The
+    // consent screen keeps its confirmation action out of reach in that state; reaching here anyway
+    // would mean signing a transaction against metadata that was never verified.
+    if (!transactionData.proof) {
+      throw new Error('The PaSO transaction was resolved without a credential that can authorize it')
+    }
+
+    // Present the card the transaction was resolved against: the first candidate of its entry, which
+    // the user may have picked (see `selectPasoPaymentCredential`). Credo's own selection above is not
+    // guaranteed to land on the same one, and its metadata is what `metadata_integrity` refers to.
+    const paymentCredentialEntry = resolvedRequest.formattedSubmission.entries.find(
+      (entry): entry is FormattedSubmissionEntrySatisfied =>
+        entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
+    )
+    const paymentCredentialRecordId = paymentCredentialEntry?.credentials[0]?.credential.record.id
+    if (paymentCredentialRecordId && resolvedRequest.queryResult) {
+      dcqlCredentials[transactionData.cardForTransactionId] = getSelectedCredentialsForRequest(
+        resolvedRequest.queryResult,
+        { [transactionData.cardForTransactionId]: paymentCredentialRecordId }
+      )[transactionData.cardForTransactionId]
+    }
+
+    const presentations = dcqlCredentials[transactionData.cardForTransactionId]
+    if (!presentations) {
+      throw new Error(
+        `Credential query '${transactionData.cardForTransactionId}' authorizes the PaSO transaction but is not part of the presentation`
+      )
+    }
+
+    const scaResponseClaims = await createPasoScaResponseClaims({
+      paradym,
+      proof: transactionData.proof,
+      // Safe: `resolvePasoTransactionData` rejects unsigned requests before we ever get here.
+      signedRequest: resolvedRequest.signedAuthorizationRequest?.compact as string,
+      responseMode:
+        (authorizationRequest.response_mode as string | undefined) ?? (resolvedRequest.origin ? 'dc_api' : 'fragment'),
+      authenticationMethods,
+      authenticatedAt,
     })
 
-    // if redirect_uri is provided, open it in the browser
-    // Even if the response returned an error, we must open this uri
-    if (result.redirectUri) {
-      await Linking.openURL(result.redirectUri)
+    for (const presentation of presentations) {
+      // Only SD-JWT VC carries a KB-JWT. The mdoc profile of [PaSO Core] Section 6.3 would need a
+      // `urn:paso:sca:1` DeviceSigned namespace, which Credo has no path to produce.
+      if (presentation.claimFormat !== ClaimFormat.SdJwtDc) continue
+      presentation.additionalPayload = { ...presentation.additionalPayload, ...scaResponseClaims }
     }
-
-    if (result.serverResponse && (result.serverResponse.status < 200 || result.serverResponse.status > 299)) {
-      paradym.logger.error('Error while accepting authorization request', {
-        authorizationRequest,
-        response: result.authorizationResponse,
-        responsePayload: result.authorizationResponsePayload,
-      })
-      throw new Error(
-        `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
-      )
-    }
-
-    const storedActivity = await storeSharedActivityForCredentialsForRequest(
-      paradym,
-      resolvedRequest,
-      'success',
-      transactionData
-    )
-
-    if (
-      storedActivity.type === 'payment' &&
-      transactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1' &&
-      transactionData.cardForTransactionId
-    ) {
-      const credentialEntry = resolvedRequest.formattedSubmission.entries.find(
-        (entry) => entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
-      )
-      const credentialRecord = credentialEntry?.isSatisfied
-        ? credentialEntry.credentials[0]?.credential.record
-        : undefined
-      if (credentialRecord) {
-        fetchPaymentTransactionStatus(credentialRecord, transactionData.hash)
-          .then((transactionStatus) => {
-            if (transactionStatus) {
-              return activityStorage.updateActivity(paradym.agent, storedActivity.id, { transactionStatus })
-            }
-          })
-          .catch((error) => paradym.logger.error('Failed to fetch initial payment transaction status', { error }))
-      }
-    }
-
-    return result
-  } catch (error) {
-    // Handle biometric authentication errors
-    throw ParadymWalletBiometricAuthenticationError.tryParseFromError(error) ?? error
   }
+
+  const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
+    authorizationRequestPayload: authorizationRequest,
+    presentationExchange: presentationExchangeCredentials
+      ? {
+          credentials: presentationExchangeCredentials,
+        }
+      : undefined,
+    dcql: dcqlCredentials
+      ? {
+          credentials: dcqlCredentials,
+        }
+      : undefined,
+    transactionData:
+      resolvedRequest.transactionData && acceptTransactionData && transactionData?.cardForTransactionId
+        ? [{ credentialId: transactionData.cardForTransactionId }]
+        : undefined,
+    origin: resolvedRequest.origin,
+  })
+
+  // if redirect_uri is provided, open it in the browser
+  // Even if the response returned an error, we must open this uri
+  if (result.redirectUri) {
+    await Linking.openURL(result.redirectUri)
+  }
+
+  if (result.serverResponse && (result.serverResponse.status < 200 || result.serverResponse.status > 299)) {
+    paradym.logger.error('Error while accepting authorization request', {
+      authorizationRequest,
+      response: result.authorizationResponse,
+      responsePayload: result.authorizationResponsePayload,
+    })
+    throw new Error(
+      `Error while accepting authorization request. ${JSON.stringify(result.serverResponse.body, null, 2)}`
+    )
+  }
+
+  const storedActivity = await storeSharedActivityForCredentialsForRequest(
+    paradym,
+    resolvedRequest,
+    'success',
+    transactionData
+  )
+
+  if (
+    storedActivity.type === 'payment' &&
+    (transactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1' ||
+      transactionData?.type === pasoPaymentTransactionDataType) &&
+    transactionData.cardForTransactionId
+  ) {
+    const credentialEntry = resolvedRequest.formattedSubmission.entries.find(
+      (entry) => entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
+    )
+    const credentialRecord = credentialEntry?.isSatisfied
+      ? credentialEntry.credentials[0]?.credential.record
+      : undefined
+    if (credentialRecord) {
+      fetchPaymentTransactionStatus(credentialRecord, transactionData.hash)
+        .then((transactionStatus) => {
+          if (transactionStatus) {
+            return activityStorage.updateActivity(paradym.agent, storedActivity.id, { transactionStatus })
+          }
+        })
+        .catch((error) => paradym.logger.error('Failed to fetch initial payment transaction status', { error }))
+    }
+  }
+
+  return result
 }
 
 /**

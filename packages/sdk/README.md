@@ -298,15 +298,15 @@ import { LogLevel } from '@paradym/wallet-sdk'
 
 logging: {
   level: __DEV__ ? LogLevel.Trace : LogLevel.Warn,
-  trace: true,       // keep recent messages in memory so they can be exported
-  traceLimit: 1000,  // ring buffer size
+  persistForExport: true,  // keep recent messages on disk so they can be exported
+  persistLimit: 1000,      // ring buffer size
   customLogger: MyLogger,
 }
 ```
 
 Credo logs whole records and payloads at `Trace` and `Debug`, and serializing them is expensive. Keep production builds at `Warn` or above.
 
-Export traced messages, for example from a "send logs" button:
+Export the kept messages, for example from a "send logs" button:
 
 ```ts
 import { ParadymWalletSdkConsoleLogger } from '@paradym/wallet-sdk'
@@ -316,7 +316,7 @@ if (paradym.logger instanceof ParadymWalletSdkConsoleLogger) {
 }
 ```
 
-To forward logs elsewhere, for example to Sentry, extend the console logger. Extending it keeps console output and tracing working:
+To forward logs elsewhere, for example to Sentry, extend the console logger. Extending it keeps console output and `persistForExport` working:
 
 ```ts
 import { type LogLevel, ParadymWalletSdkConsoleLogger } from '@paradym/wallet-sdk'
@@ -333,7 +333,7 @@ export class MyLogger extends ParadymWalletSdkConsoleLogger {
 }
 ```
 
-You can also implement `ParadymWalletSdkLogger` (Credo's `BaseLogger`) from scratch. A custom logger that doesn't extend the console logger doesn't support `trace`.
+You can also implement `ParadymWalletSdkLogger` (Credo's `BaseLogger`) from scratch. A custom logger that doesn't extend the console logger doesn't support `persistForExport`.
 
 ---
 
@@ -606,6 +606,12 @@ To match an mdoc device request received over BLE or NFC against the wallet:
 
 ```ts
 const submission = await paradym.proximity.getSubmissionForMdocDocumentRequest({ encodedDeviceRequest })
+```
+
+Once the user approves, create the encoded device response and send it over your transport:
+
+```ts
+const deviceResponse = await paradym.proximity.createDeviceResponse({ deviceRequest, sessionTranscript, submission })
 ```
 
 The SDK doesn't handle the transport or the session yet.

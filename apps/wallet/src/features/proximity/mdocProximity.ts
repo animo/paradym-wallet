@@ -1,12 +1,4 @@
-import {
-  CredentialMultiInstanceUseMode,
-  type Mdoc,
-  type MdocRecord,
-  MdocService,
-  useInstanceFromCredentialRecord,
-} from '@credo-ts/core'
 import { cborDecode, cborEncode, DataItem } from '@owf/cose'
-import { DeviceRequest } from '@owf/mdoc'
 import type { FormattedSubmission, ParadymWalletSdk } from '@paradym/wallet-sdk'
 import { mdocDataTransfer } from 'expo-mdoc-data-transfer'
 import { PermissionsAndroid, Platform } from 'react-native'
@@ -73,50 +65,14 @@ export const waitForDeviceRequest = async () => {
  * 1. Allow the user to pick which specific mdoc is being used
  */
 export const shareDeviceResponse = async (options: ShareDeviceResponseOptions) => {
-  // if (!options.submission.areAllSatisfied) {
-  //   throw new Error('Not all requirements are satisfied')
-  // }
-
-  const mdocs = await Promise.all(
-    options.submission.entries.map(async (e) => {
-      if (!e.isSatisfied) throw new Error(`Requirement for doctype ${e.inputDescriptorId} not satisfied`)
-
-      const credentialRecord = e.credentials[0].credential.record as MdocRecord
-
-      // Optionally handle batch issuance
-      const { credentialInstance } = await useInstanceFromCredentialRecord({
-        credentialRecord,
-        agentContext: options.paradym.agent.context,
-        // FIXME: we currently allow re-sharing if we don't have new instances anymore
-        // we should make this configurable maybe? Or dependant on credential type?
-        useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-      })
-
-      return credentialInstance
-    })
-  )
-
-  const mdocService = options.paradym.agent.dependencyManager.resolve(MdocService)
-
-  const deviceResponse = await mdocService.createDeviceResponse(options.paradym.agent.context, {
-    documentRequests: DeviceRequest.decode(options.deviceRequest).docRequests.map((d) => ({
-      docType: d.itemsRequest.docType,
-      nameSpaces: Object.fromEntries(
-        Array.from(d.itemsRequest.namespaces.entries()).map(([namespace, entry]) => [
-          namespace,
-          Object.fromEntries(Array.from(entry.entries())),
-        ])
-      ),
-    })),
-    mdocs: mdocs as [Mdoc, ...Mdoc[]],
-    sessionTranscriptOptions: {
-      type: 'sessionTranscriptBytes',
-      sessionTranscriptBytes: options.sessionTranscript,
-    },
+  const deviceResponse = await options.paradym.proximity.createDeviceResponse({
+    deviceRequest: options.deviceRequest,
+    sessionTranscript: options.sessionTranscript,
+    submission: options.submission,
   })
 
   const mdt = mdocDataTransfer.instance()
-  await mdt.sendDeviceResponse(deviceResponse.deviceResponse.encode())
+  await mdt.sendDeviceResponse(deviceResponse)
 }
 
 export const shutdownDataTransfer = () => {

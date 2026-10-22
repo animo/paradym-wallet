@@ -14,7 +14,7 @@ import {
   YStack,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { Activity, ActivityType } from '@paradym/wallet-sdk'
+import { type Activity, type ActivityType, getPaymentTransactionStatus } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'
@@ -121,8 +121,12 @@ const paymentTransactionStatusInteractions: Record<'PDNG' | 'RJCT', ActivityInte
 }
 
 export const getActivityInteraction = (activity: Activity) => {
-  if (activity.type === 'payment' && activity.transactionStatus && activity.transactionStatus !== 'ACSC') {
-    return paymentTransactionStatusInteractions[activity.transactionStatus]
+  // A payment that has not settled is shown as such rather than as a successful share, but only
+  // where the wallet actually knows — `getPaymentTransactionStatus` is what decides that, and the
+  // detail screen reads the same answer so the two cannot disagree about one activity.
+  const paymentTransactionStatus = getPaymentTransactionStatus(activity)
+  if (paymentTransactionStatus && paymentTransactionStatus !== 'ACSC') {
+    return paymentTransactionStatusInteractions[paymentTransactionStatus]
   }
 
   const byType = activityInteractions[activity.type] as {
