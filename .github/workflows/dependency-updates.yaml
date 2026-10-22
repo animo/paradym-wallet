@@ -163,7 +163,7 @@ jobs:
           profile=$(avdmanager list device -c | grep -E '^pixel_[0-9]+$' | sort -t_ -k2 -n | tail -1)
           echo no | avdmanager create avd --name wallet --package "$image" --device "$profile"
           emulator -list-avds
-          nohup emulator -avd wallet -no-window -no-audio -no-boot-anim -no-snapshot-save -gpu swiftshader_indirect -memory 4096 > "$RESULTS_DIR/emulator.log" 2>&1 &
+          nohup emulator -avd wallet -no-window -no-audio -no-boot-anim -no-snapshot-save -gpu swiftshader_indirect -memory 3072 > "$RESULTS_DIR/emulator.log" 2>&1 &
           booted=false
           if timeout 300 adb wait-for-device; then
             for _ in $(seq 120); do
@@ -185,8 +185,9 @@ jobs:
           mkdir -p ~/.claude/skills
           cp -R "$(npm root --global)/@swmansion/argent/skills/." ~/.claude/skills/
           echo '{"mcpServers":{"argent":{"command":"argent","args":["mcp"]}}}' > /tmp/argent-mcp.json
-          argent server start --detach
-          for _ in $(seq 60); do
+          # Foreground mode in the background: --detach gives up when the server isn't ready within 15 seconds
+          nohup argent server start > "$RESULTS_DIR/argent-server-start.log" 2>&1 &
+          for _ in $(seq 90); do
             argent server status | grep -q 'health: *ok' && break
             sleep 2
           done

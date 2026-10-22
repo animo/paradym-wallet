@@ -52,9 +52,11 @@ Can't be tested on a simulator or emulator: the camera QR scanner, Bluetooth pro
 From `apps/wallet`, following `AGENTS.md`:
 
 - iOS: `pnpm prebuild`, then `pnpm ios --device <device> --no-bundler`.
-- Android: `pnpm prebuild`, then `pnpm android --device <device> --no-bundler`, then `adb -s <device> reverse tcp:8081 tcp:8081`.
+- Android: `pnpm prebuild`, then set `org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1g` in `android/gradle.properties`: the default 2 GB heap runs out next to the emulator. Then `pnpm android --device wallet --no-bundler`: Expo takes the AVD name, adb takes the serial from the arguments. Then `adb -s <device> reverse tcp:8081 tcp:8081`.
 
-Start Metro with `pnpm start` in the background and connect the dev launcher to it. A build that fails because of an update is a test failure: handle it like one.
+Start Metro with `CI=false pnpm start` in the background. With `CI=true`, which GitHub sets, Metro doesn't watch files, so it misses your fixes. Connect the dev launcher to Metro. On Android, open `exp+paradym-wallet://expo-development-client/?url=http://localhost:8081` with `adb shell am start -a android.intent.action.VIEW -d <url> id.paradym.wallet.dev` instead of typing the URL. A build that fails because of an update is a test failure: handle it like one.
+
+The development build doesn't receive `https://paradymwallet.app` links: the App Links and universal links only cover the release builds. After the browser sign-in, open the redirect URL in the app yourself (`adb shell am start -a android.intent.action.VIEW -d <url> id.paradym.wallet.dev`, or `xcrun simctl openurl <device> <url>`).
 
 A problem with this machine is not a reason to stop: work around it. When an Argent tool fails, read `argent server logs`, retry once, and otherwise drive and check the app another way: `xcrun simctl` or `adb` for launching, deep links (`xcrun simctl openurl`, `adb shell am start -d`) and screenshots (`xcrun simctl io <device> screenshot`, `adb exec-out screencap -p`), and the Metro output for JS errors.
 
