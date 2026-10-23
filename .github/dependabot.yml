@@ -1,7 +1,5 @@
 version: 2
 updates:
-  # npm dependencies are updated by the Dependency Updates workflow (.github/workflows/dependency-updates.yaml)
-
   # GitHub Actions dependencies
   - package-ecosystem: "github-actions"
     directory: "/"

@@ -50,7 +50,7 @@ pnpm monorepo (workspace defined in `pnpm-workspace.yaml`). Node `>=22.21.1`, pn
 - **Native deps (any native code)** → install in `apps/wallet`. If you also need autoimport from `packages/app` (or another package), install in both with the *exact* same version, otherwise the duplicate copies cause hard-to-debug runtime issues.
 - React, react-dom, and react-native are pinned via `overrides` in `pnpm-workspace.yaml` to keep a single copy across all native modules. Don't loosen these.
 - After any dependency change, run `pnpm install` from the repo root.
-- For dependency updates, use the `update-dependencies` skill (`.claude/skills/update-dependencies/SKILL.md`). The [Dependency Updates](https://github.com/animo/paradym-wallet/actions/workflows/dependency-updates.yaml) workflow runs it every Monday, opens the PRs, and then tests each PR in the app on iOS and Android with the `test-dependency-update` skill.
+- For dependency updates, use the `update-dependencies` skill (`.claude/skills/update-dependencies/SKILL.md`), then test each update branch in the app with the `test-dependency-update` skill.
 
 ## Stack specifics
 
