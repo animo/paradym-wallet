@@ -243,7 +243,7 @@ const createBaseConfig = (appSpecific) => {
         {
           android: {
             minSdkVersion: 26,
-            compileSdkVersion: 36,
+            compileSdkVersion: 37,
             useLegacyPackaging: true,
             // SDK 58 turns on R8 for release builds by default. Keep it off until release builds are
             // verified with the native credential modules (askar, anoncreds, mdoc, DC API).
