@@ -25,6 +25,8 @@ patchedDependencies:
   # Patches required for DC API
   react-native-keychain: patches/react-native-keychain.patch
   react-native@0.88.0: patches/react-native@0.88.0.patch
+  # Android layout animation fixes from Reanimated main (#10808, #10811, #10812, #10817), not released yet
+  react-native-reanimated@4.7.1: patches/react-native-reanimated@4.7.1.patch
 
 allowBuilds:
   '@hyperledger/anoncreds-react-native': true
