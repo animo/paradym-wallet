@@ -24,7 +24,6 @@ patchedDependencies:
   '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727': patches/@openwallet-foundation__askar-react-native@0.6.1-alpha-20260609123727.patch
   # Patches required for DC API
   react-native-keychain: patches/react-native-keychain.patch
-  react-native-nitro-modules@0.35.10: patches/react-native-nitro-modules@0.35.10.patch
   react-native@0.88.0: patches/react-native@0.88.0.patch
 
 allowBuilds:
@@ -103,7 +102,7 @@ catalog:
   react-native-mmkv: ^4.3.2
   react-native-qrcode-svg: ^6.3.21
   react-native-reanimated-carousel: ^5.2.0
-  react-native-nitro-modules: ^0.35.10
+  react-native-nitro-modules: ^0.37.1
   # OpenSSL through Nitro. Only used for RSA signature verification: askar and the secure
   # environment are both EC-only, so without it an issuer chaining up to an RSA CA cannot be
   # verified at all. react-native-quick-base64 is its peer dependency.
