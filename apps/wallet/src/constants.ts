@@ -127,6 +127,30 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
     entityId: 'playground.paradym.id',
     demo: true,
   },
+  {
+    entityId: 'stormcatch.com',
+    name: 'Stormcatch',
+    certificate: `-----BEGIN CERTIFICATE-----
+MIICsjCCAlmgAwIBAgIUL+lLx4KJ8HYhebBukcvgtMhS0FQwCgYIKoZIzj0EAwIw
+OzEXMBUGA1UEAwwOR2xvYmFsIFJvb3QgQ0ExEzARBgNVBAoMClN0b3JtY2F0Y2gx
+CzAJBgNVBAYTAk5MMB4XDTI2MTAyMDA5MjgzNloXDTMxMTAxOTA5MjgzNlowPzEb
+MBkGA1UEAwwSQ3JlZGVudGlhbCBSb290IENBMRMwEQYDVQQKDApTdG9ybWNhdGNo
+MQswCQYDVQQGEwJOTDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABOrJi/KVbG6T
+J3L0hNZcD27Xr3HF1eZ2ySwMERP37jFusavpuTjqiLxbZQQJvVjEXHRiR2z/2eHA
+QVKJrBW8xSmjggE1MIIBMTASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQE
+AwIBBjAdBgNVHQ4EFgQUYej2IMrC/b6lf1o9/jd+j5JhM60wHwYDVR0jBBgwFoAU
+pREKjKuIZgQqV5CcLCgDAGt9yIwwGAYDVR0gBBEwDzANBgsrBgEEAYH9WQEABDA6
+BgNVHR8EMzAxMC+gLaArhilodHRwOi8vcGtpLnN0b3JtY2F0Y2gubG9jYWwvL2Ny
+bC9yb290LmNybDB1BggrBgEFBQcBAQRpMGcwLgYIKwYBBQUHMAGGImh0dHA6Ly9w
+a2kuc3Rvcm1jYXRjaC5sb2NhbC8vb2NzcC8wNQYIKwYBBQUHMAKGKWh0dHA6Ly9w
+a2kuc3Rvcm1jYXRjaC5sb2NhbC8vYWlhL3Jvb3QuZGVyMAoGCCqGSM49BAMCA0cA
+MEQCIFYmjy3kAWEaPsLu5TG6Kr8B7E0NOHU+9v6LfEw93tOqAiBpXEKnQPcLvZ7s
+IXEEiTahju1+SB5KLhzx9IZruyJpCw==
+-----END CERTIFICATE-----`,
+    url: 'https://stormcatch.com',
+    logoUri: 'https://assets.stormcatch.dev/logo/v1/stormcatch-icon-wordmark-v1-512.png',
+    demo: true,
+  },
 ] satisfies Array<TrustedX509Entity>
 
 export const trustedDidEntities = [
@@ -195,6 +219,14 @@ export const trustedOpenId4VciIssuerEntities = [
     logoUri: 'https://playground.paradym.id/logo.png',
     name: 'Paradym Playground',
     url: 'https://playground.paradym.id',
+    demo: true,
+  },
+  {
+    entityId: 'https://stormcatch.com',
+    issuer: 'https://agent.paradym.id/oid4vci/d57f3334-51aa-4b8d-abad-46174e544824',
+    logoUri: 'https://assets.stormcatch.dev/logo/v1/stormcatch-icon-wordmark-v1-512.png',
+    name: 'Stormcatch',
+    url: 'https://stormcatch.com',
     demo: true,
   },
 ] satisfies Array<TrustedOpenId4VciEntity>
