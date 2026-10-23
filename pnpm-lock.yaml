@@ -70,8 +70,8 @@ catalogs:
       specifier: ^0.5.6
       version: 0.5.6
     '@openwallet-foundation/askar-react-native':
-      specifier: 0.6.1-alpha-20260609123727
-      version: 0.6.1-alpha-20260609123727
+      specifier: 0.7.0-alpha-20261023221824
+      version: 0.7.0-alpha-20261023221824
     '@owf/cose':
       specifier: ^0.4.0
       version: 0.4.0
@@ -285,13 +285,13 @@ overrides:
   react: 19.3.0
   react-dom: 19.3.0
   react-native: 0.88.0
+  '@openwallet-foundation/askar-shared': 0.7.0-alpha-20261023221824
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.7.1-alpha-20260917134851': f97f7689def1c36c61cd80fb9ad8a0a6201dbfa79f7c692cd1adb186c1e5f48d
   '@dr.pogodin/react-native-fs': 269b0f78f92528892d71ccd81c8eb877b24c6bc790ad3a302c46031345c8cf9b
   '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260609124337': 71d82651628afd4c905e00bd126c2afe886be93581bd6f5f9c8b61af5f2928d3
   '@openid4vc/oauth2@0.5.6': ec679348e2298f26f44e59a36c47a3f3ccc3d12f983b8a07f45bb0215a4ab07a
-  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727': cd7ce2ac09e39f8d0e7a4a2a0972c0a65ea54ed733958f20447542508770623e
   react-native-keychain: 1caef95597578385ec3aa04b5f6178a5b828aeab51bd1740e454366ab68a6cbe
   react-native-reanimated@4.7.1: 365de53a012d135c07f5991e03dea87912a2a7a74bb1792d0ae6db9646cc79ae
   react-native@0.88.0: fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275
@@ -320,7 +320,7 @@ importers:
         version: 0.5.1(expo@58.0.17)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@credo-ts/askar':
         specifier: 'catalog:'
-        version: 0.7.1-alpha-20260917134851(@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727)(typescript@6.0.3)
+        version: 0.7.1-alpha-20260917134851(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)
       '@credo-ts/core':
         specifier: 'catalog:'
         version: 0.7.1-alpha-20260917134851(typescript@6.0.3)
@@ -338,7 +338,7 @@ importers:
         version: 6.4.0
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.6.1-alpha-20260609123727(patch_hash=cd7ce2ac09e39f8d0e7a4a2a0972c0a65ea54ed733958f20447542508770623e)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.7.0-alpha-20261023221824(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@owf/cose':
         specifier: 'catalog:'
         version: 0.4.0
@@ -613,7 +613,7 @@ importers:
         version: 0.7.1-alpha-20260917134851(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)
       '@credo-ts/askar':
         specifier: 'catalog:'
-        version: 0.7.1-alpha-20260917134851(@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727)(typescript@6.0.3)
+        version: 0.7.1-alpha-20260917134851(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)
       '@credo-ts/cheqd':
         specifier: 'catalog:'
         version: 0.7.1-alpha-20260917134851(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)
@@ -643,7 +643,7 @@ importers:
         version: 0.5.6
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.6.1-alpha-20260609123727(patch_hash=cd7ce2ac09e39f8d0e7a4a2a0972c0a65ea54ed733958f20447542508770623e)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.7.0-alpha-20261023221824(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@owf/eudi-sca':
         specifier: 'catalog:'
         version: 0.4.0
@@ -1438,7 +1438,7 @@ packages:
   '@credo-ts/askar@0.7.1-alpha-20260917134851':
     resolution: {integrity: sha512-fB06iDpgLx8U0l3zI8RdxkPGRVoNgENEh4Bqn1WwMUIk/FkdOXCaWDXqZtFZwnV6pNrzDZZKF5ZRZwogGpCwRQ==}
     peerDependencies:
-      '@openwallet-foundation/askar-shared': ^0.4.3 || ^0.5.0 || ^0.6.0
+      '@openwallet-foundation/askar-shared': 0.7.0-alpha-20261023221824
 
   '@credo-ts/cheqd@0.7.1-alpha-20260917134851':
     resolution: {integrity: sha512-mFIpRPFa6IJIVw4vQec0EXxByhR8zsnzxO8RtGoYUhjFvzXXiws6mmPFCpage9wyrL3WhF1fT1YAca/5rJF49Q==}
@@ -2315,14 +2315,14 @@ packages:
   '@openid4vc/utils@0.5.6':
     resolution: {integrity: sha512-LIKYEH+vioseeNDZ4zqM37tGLPuE803YwQIIv6SPI4ZeXqDwAJZs5acIxp0nzpDkk/AaxXUIEiH8eQd0MZL6kw==}
 
-  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727':
-    resolution: {integrity: sha512-LQMyP95RQN2MBm4Ok9PQtI7gpFa8IhxmuQahs4jwzUjk4rd8d/kwtnR6qID5vT5PhXZGhsbJBduhpRFrCkWTWw==}
+  '@openwallet-foundation/askar-react-native@0.7.0-alpha-20261023221824':
+    resolution: {integrity: sha512-o5tvSLphzmxelzxFeeMSb4cvi4w9+ye4SKGw2UwVYBQ9SoASX/MejM0DUdnyV4lWXUjpH5Afe/EZ+EHKwQpq0Q==}
     peerDependencies:
       react: 19.3.0
       react-native: 0.88.0
 
-  '@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727':
-    resolution: {integrity: sha512-tbbf2rMHf2pKfFgoHYUf8cZ5XNCigLxiT6o6vFA8cG8Xkbc1hFE30zamLOGOOJ5Oh94JXzjViTlIzpTB7cjoTg==}
+  '@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824':
+    resolution: {integrity: sha512-xOs2B2UfU5NDSHNZ/PrZlbdQUP4KDBR/xUOjiAfW55zdZS+KOrv+Om9imq9NRvqEELLyoaeZNLANRBubMp66VQ==}
 
   '@owf/cose@0.4.0':
     resolution: {integrity: sha512-bN06KEB2kXWBskcapRGt3giVHvVRNds3NLc8nInXh6PbbbzPrsK+hMpYxIULDa89HJhK7sJKthttepYslu3aYw==}
@@ -7653,10 +7653,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/askar@0.7.1-alpha-20260917134851(@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727)(typescript@6.0.3)':
+  '@credo-ts/askar@0.7.1-alpha-20260917134851(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)':
     dependencies:
       '@credo-ts/core': 0.7.1-alpha-20260917134851(typescript@6.0.3)
-      '@openwallet-foundation/askar-shared': 0.6.1-alpha-20260609123727
+      '@openwallet-foundation/askar-shared': 0.7.0-alpha-20261023221824
       '@panva/hpke-noble': 1.1.4(hpke@1.1.4)
       class-transformer: 0.5.1
       class-validator: 0.14.4
@@ -8716,13 +8716,13 @@ snapshots:
       zod: 4.6.5
       zod-validation-error: 5.0.0(zod@4.6.5)
 
-  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727(patch_hash=cd7ce2ac09e39f8d0e7a4a2a0972c0a65ea54ed733958f20447542508770623e)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
+  '@openwallet-foundation/askar-react-native@0.7.0-alpha-20261023221824(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@openwallet-foundation/askar-shared': 0.6.1-alpha-20260609123727
+      '@openwallet-foundation/askar-shared': 0.7.0-alpha-20261023221824
       react: 19.3.0
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
 
-  '@openwallet-foundation/askar-shared@0.6.1-alpha-20260609123727':
+  '@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824':
     dependencies:
       buffer: 6.0.3
       tar: 7.5.16
