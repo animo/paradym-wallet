@@ -1,0 +1,29 @@
+diff --git a/ios/Anoncreds.mm b/ios/Anoncreds.mm
+index e0b1c269cadcfba100ff5519f5a259e0a0c6f0c2..f4c0380622b02db18fa65f75b3f461fa2514bd2b 100644
+--- a/ios/Anoncreds.mm
++++ b/ios/Anoncreds.mm
+@@ -39,20 +39,10 @@ - (void)installJSIBindingsWithRuntime:(jsi::Runtime &)runtime
+ 
+ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
+ {
+-    // New Architecture: the JSI bindings are installed via
+-    // installJSIBindingsWithRuntime:callInvoker: when this TurboModule is
+-    // created, so there is nothing to do here.
+-    //
+-    // Old Architecture (legacy bridge present): install using the bridge
+-    // runtime so this keeps working for non-bridgeless apps.
+-    RCTBridge* bridge = [RCTBridge currentBridge];
+-    RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
+-    if (cxxBridge != nil) {
+-        jsi::Runtime* jsiRuntime = (jsi::Runtime*) cxxBridge.runtime;
+-        if (jsiRuntime != nil) {
+-            anoncredsTurboModuleUtility::registerTurboModule(*jsiRuntime, bridge.jsCallInvoker);
+-        }
+-    }
++    // The JSI bindings are installed via installJSIBindingsWithRuntime:callInvoker:
++    // when this TurboModule is created, so there is nothing to do here. React
++    // Native 0.88 removed the legacy bridge (RCTCxxBridge) this used to install
++    // through on the old architecture.
+     return @true;
+ }
+ 

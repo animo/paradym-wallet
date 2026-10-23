@@ -289,8 +289,11 @@ overrides:
 patchedDependencies:
   '@credo-ts/openid4vc@0.7.1-alpha-20260917134851': f97f7689def1c36c61cd80fb9ad8a0a6201dbfa79f7c692cd1adb186c1e5f48d
   '@dr.pogodin/react-native-fs': 269b0f78f92528892d71ccd81c8eb877b24c6bc790ad3a302c46031345c8cf9b
+  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260609124337': d1e865447774064f30c42516f1f67cce1968dfb953d1bc8c12e97a91a09a33e9
   '@openid4vc/oauth2@0.5.6': ec679348e2298f26f44e59a36c47a3f3ccc3d12f983b8a07f45bb0215a4ab07a
+  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727': bf3044e558d9c55b6546f40cbe2e67bf27b3c810a19e0e562f32f66657698bc1
   react-native-keychain: 1caef95597578385ec3aa04b5f6178a5b828aeab51bd1740e454366ab68a6cbe
+  react-native-nitro-modules@0.35.10: d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1
   react-native@0.88.0: fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275
 
 importers:
@@ -335,7 +338,7 @@ importers:
         version: 6.4.0
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.6.1-alpha-20260609123727(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.6.1-alpha-20260609123727(patch_hash=bf3044e558d9c55b6546f40cbe2e67bf27b3c810a19e0e562f32f66657698bc1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@owf/cose':
         specifier: 'catalog:'
         version: 0.4.0
@@ -452,7 +455,7 @@ importers:
         version: 3.3.0(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-nitro-modules:
         specifier: 'catalog:'
-        version: 0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-qrcode-svg:
         specifier: 'catalog:'
         version: 6.3.21(react-native-svg@15.16.0(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
@@ -461,7 +464,7 @@ importers:
         version: 3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-quick-crypto:
         specifier: 'catalog:'
-        version: 1.1.7(expo@58.0.17)(react-native-nitro-modules@0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native-quick-base64@3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 1.1.7(expo@58.0.17)(react-native-nitro-modules@0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native-quick-base64@3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-reanimated:
         specifier: 'catalog:'
         version: 4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
@@ -631,7 +634,7 @@ importers:
         version: 0.7.1-alpha-20260917134851(@hyperledger/anoncreds-shared@0.4.1-alpha-20260609124337)(typescript@6.0.3)
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
-        version: 0.4.1-alpha-20260609124337(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.4.1-alpha-20260609124337(patch_hash=d1e865447774064f30c42516f1f67cce1968dfb953d1bc8c12e97a91a09a33e9)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@openid4vc/oauth2':
         specifier: 'catalog:'
         version: 0.5.6(patch_hash=ec679348e2298f26f44e59a36c47a3f3ccc3d12f983b8a07f45bb0215a4ab07a)
@@ -640,7 +643,7 @@ importers:
         version: 0.5.6
       '@openwallet-foundation/askar-react-native':
         specifier: 'catalog:'
-        version: 0.6.1-alpha-20260609123727(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.6.1-alpha-20260609123727(patch_hash=bf3044e558d9c55b6546f40cbe2e67bf27b3c810a19e0e562f32f66657698bc1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@owf/eudi-sca':
         specifier: 'catalog:'
         version: 0.4.0
@@ -685,13 +688,13 @@ importers:
         version: 10.0.0(patch_hash=1caef95597578385ec3aa04b5f6178a5b828aeab51bd1740e454366ab68a6cbe)
       react-native-mmkv:
         specifier: 'catalog:'
-        version: 4.3.2(react-native-nitro-modules@0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 4.3.2(react-native-nitro-modules@0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-quick-base64:
         specifier: 'catalog:'
         version: 3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-quick-crypto:
         specifier: 'catalog:'
-        version: 1.1.7(expo@58.0.17)(react-native-nitro-modules@0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native-quick-base64@3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 1.1.7(expo@58.0.17)(react-native-nitro-modules@0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native-quick-base64@3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
     devDependencies:
       tsdown:
         specifier: 'catalog:'
@@ -8460,7 +8463,7 @@ snapshots:
     dependencies:
       '@formatjs/fast-memoize': 3.1.6
 
-  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260609124337(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
+  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260609124337(patch_hash=d1e865447774064f30c42516f1f67cce1968dfb953d1bc8c12e97a91a09a33e9)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@hyperledger/anoncreds-shared': 0.4.1-alpha-20260609124337
       react: 19.3.0
@@ -8713,7 +8716,7 @@ snapshots:
       zod: 4.6.5
       zod-validation-error: 5.0.0(zod@4.6.5)
 
-  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
+  '@openwallet-foundation/askar-react-native@0.6.1-alpha-20260609123727(patch_hash=bf3044e558d9c55b6546f40cbe2e67bf27b3c810a19e0e562f32f66657698bc1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@openwallet-foundation/askar-shared': 0.6.1-alpha-20260609123727
       react: 19.3.0
@@ -13057,13 +13060,13 @@ snapshots:
 
   react-native-keychain@10.0.0(patch_hash=1caef95597578385ec3aa04b5f6178a5b828aeab51bd1740e454366ab68a6cbe): {}
 
-  react-native-mmkv@4.3.2(react-native-nitro-modules@0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0):
+  react-native-mmkv@4.3.2(react-native-nitro-modules@0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0):
     dependencies:
       react: 19.3.0
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
-      react-native-nitro-modules: 0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+      react-native-nitro-modules: 0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
 
-  react-native-nitro-modules@0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0):
+  react-native-nitro-modules@0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0):
     dependencies:
       react: 19.3.0
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
@@ -13082,13 +13085,13 @@ snapshots:
       react: 19.3.0
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
 
-  react-native-quick-crypto@1.1.7(expo@58.0.17)(react-native-nitro-modules@0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native-quick-base64@3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0):
+  react-native-quick-crypto@1.1.7(expo@58.0.17)(react-native-nitro-modules@0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native-quick-base64@3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0):
     dependencies:
       '@craftzdog/react-native-buffer': 6.1.2(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       events: 3.3.0
       react: 19.3.0
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
-      react-native-nitro-modules: 0.35.10(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+      react-native-nitro-modules: 0.35.10(patch_hash=d3e0a987c3e44d713264c4c66c1f5a2250dd15696f406a741f3aa7cb130feec1)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-quick-base64: 3.0.1(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       readable-stream: 4.7.0
       safe-buffer: 5.2.1

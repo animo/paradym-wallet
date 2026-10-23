@@ -1,0 +1,29 @@
+diff --git a/ios/Askar.mm b/ios/Askar.mm
+index d7deed13cff8d63c2d7a2508cea71885f12448ad..36cd8e2eba529c8e9aab4751a03c2360b8f3a380 100644
+--- a/ios/Askar.mm
++++ b/ios/Askar.mm
+@@ -39,20 +39,10 @@ - (void)installJSIBindingsWithRuntime:(jsi::Runtime &)runtime
+ 
+ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
+ {
+-    // New Architecture: the JSI bindings are installed via
+-    // installJSIBindingsWithRuntime:callInvoker: when this TurboModule is
+-    // created, so there is nothing to do here.
+-    //
+-    // Old Architecture (legacy bridge present): install using the bridge
+-    // runtime so this keeps working for non-bridgeless apps.
+-    RCTBridge* bridge = [RCTBridge currentBridge];
+-    RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
+-    if (cxxBridge != nil) {
+-        jsi::Runtime* jsiRuntime = (jsi::Runtime*) cxxBridge.runtime;
+-        if (jsiRuntime != nil) {
+-            askarTurboModuleUtility::registerTurboModule(*jsiRuntime, bridge.jsCallInvoker);
+-        }
+-    }
++    // The JSI bindings are installed via installJSIBindingsWithRuntime:callInvoker:
++    // when this TurboModule is created, so there is nothing to do here. React
++    // Native 0.88 removed the legacy bridge (RCTCxxBridge) this used to install
++    // through on the old architecture.
+     return @true;
+ }
+ 
