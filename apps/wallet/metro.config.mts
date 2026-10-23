@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { getDefaultConfig } from '@expo/metro-config'
+import { getDefaultConfig, type MetroConfig } from '@expo/metro-config'
 
 const projectRoot = import.meta.dirname
 const workspaceRoot = path.resolve(projectRoot, '../..')
@@ -22,5 +22,22 @@ export default {
     // Needed to import cheqd
     unstable_enablePackageExports: true,
     unstable_conditionNames: ['require', 'react-native', 'browser', 'default'],
+
+    // expo-router exports its web route context under the `browser` condition, which leaves `+native-intent`
+    // out on native. Resolve it without that condition there.
+    resolveRequest: ((context, moduleName, platform) => {
+      if (moduleName === 'expo-router/_ctx' && platform !== 'web') {
+        return context.resolveRequest(
+          {
+            ...context,
+            unstable_conditionNames: context.unstable_conditionNames.filter((condition) => condition !== 'browser'),
+          },
+          moduleName,
+          platform
+        )
+      }
+
+      return context.resolveRequest(context, moduleName, platform)
+    }) satisfies NonNullable<MetroConfig['resolver']>['resolveRequest'],
   },
 }
