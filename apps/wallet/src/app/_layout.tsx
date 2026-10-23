@@ -14,7 +14,7 @@ void SplashScreen.preventAutoHideAsync()
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`
-  initialRouteName: '/(app)/index',
+  anchor: '(app)',
 }
 
 export default function RootLayout() {
