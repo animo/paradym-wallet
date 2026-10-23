@@ -98,7 +98,7 @@ catalog:
   "react-native-fs": "npm:@dr.pogodin/react-native-fs@^2.36.1"
   react-native-mmkv: ^4.3.2
   react-native-qrcode-svg: ^6.3.21
-  react-native-reanimated-carousel: ^4.0.3
+  react-native-reanimated-carousel: ^5.2.0
   react-native-nitro-modules: ^0.35.10
   # OpenSSL through Nitro. Only used for RSA signature verification: askar and the secure
   # environment are both EC-only, so without it an issuer chaining up to an RSA CA cannot be

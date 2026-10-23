@@ -5,8 +5,7 @@ import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, useSpringify, XSt
 import { useRef, useState } from 'react'
 import { Dimensions } from 'react-native'
 import { LinearTransition } from 'react-native-reanimated'
-import type { ICarouselInstance } from 'react-native-reanimated-carousel'
-import Carousel from 'react-native-reanimated-carousel'
+import { Carousel, type CarouselRef } from 'react-native-reanimated-carousel'
 import { WalletExplanation } from './assets/WalletExplanation'
 import { WalletHowItWorks } from './assets/WalletHowItWorks'
 import { WalletStoring } from './assets/WalletStoring'
@@ -20,7 +19,7 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
   const { t } = useLingui()
   const [currentSlide, setCurrentSlide] = useState(0)
   const { width } = Dimensions.get('window')
-  const carouselRef = useRef<ICarouselInstance>(null)
+  const carouselRef = useRef<CarouselRef>(null)
   const { height, onLayout } = useImageScaler()
 
   const slides = [
@@ -88,14 +87,13 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
         <Carousel
           ref={carouselRef}
           loop={false}
-          width={width}
+          itemSize={width}
           data={slides}
-          pagingEnabled={true}
-          snapEnabled={true}
-          containerStyle={{ width: '100%', flex: 1 }}
-          onProgressChange={(_, absoluteProgress) => {
+          snapMode="page"
+          style={{ width: '100%', flex: 1 }}
+          onProgressChange={(progress) => {
             // Snap to item on 50% progress
-            const nextIndex = Math.round(absoluteProgress)
+            const nextIndex = Math.round(progress)
             if (nextIndex !== currentSlide) {
               setCurrentSlide(nextIndex)
             }

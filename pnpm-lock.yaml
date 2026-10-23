@@ -256,8 +256,8 @@ catalogs:
       specifier: 4.3.1
       version: 4.3.1
     react-native-reanimated-carousel:
-      specifier: ^4.0.3
-      version: 4.0.3
+      specifier: ^5.2.0
+      version: 5.2.0
     react-native-safe-area-context:
       specifier: ~5.7.0
       version: 5.7.0
@@ -464,7 +464,7 @@ importers:
         version: 4.3.1(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       react-native-reanimated-carousel:
         specifier: 'catalog:'
-        version: 4.0.3(b4030b04ccdd7b0a8f127e2ebabb1054)
+        version: 5.2.0(a2c808eded0aa5e7985ebfdd222cc02f)
       react-native-safe-area-context:
         specifier: 'catalog:'
         version: 5.7.0(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
@@ -5983,13 +5983,15 @@ packages:
       expo:
         optional: true
 
-  react-native-reanimated-carousel@4.0.3:
-    resolution: {integrity: sha512-YZXlvZNghR5shFcI9hTA7h7bEhh97pfUSLZvLBAshpbkuYwJDKmQXejO/199T6hqGq0wCRwR0CWf2P4Vs6A4Fw==}
+  react-native-reanimated-carousel@5.2.0:
+    resolution: {integrity: sha512-LGsBY8PBCgdDNNk7PfVokcwlWjSFCCBAzHCvOzqrTk80TBG0R4AxCHD8gJPo2MhTLnJz5x+hsMJsQbPx8ULaKg==}
+    hasBin: true
     peerDependencies:
       react: 19.2.3
       react-native: 0.85.3
-      react-native-gesture-handler: '>=2.9.0'
-      react-native-reanimated: '>=3.0.0'
+      react-native-gesture-handler: '>=2.9.0 <4.0.0'
+      react-native-reanimated: '>=4.1.0'
+      react-native-worklets: '>=0.5.0'
 
   react-native-reanimated@4.3.1:
     resolution: {integrity: sha512-KhGsS0YkCA+gusgyzlf9hnqzVPIR398KTpqXyqq/+yYJJPAvyEEPKcxlB0xtOOXSMrR2A9uRKVARVQhZwrOh+Q==}
@@ -13963,12 +13965,13 @@ snapshots:
     optionalDependencies:
       expo: 56.0.12(@babel/core@7.29.7)(@expo/dom-webview@56.0.5)(@expo/metro-runtime@56.0.15)(expo-router@56.2.11)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
 
-  react-native-reanimated-carousel@4.0.3(b4030b04ccdd7b0a8f127e2ebabb1054):
+  react-native-reanimated-carousel@5.2.0(a2c808eded0aa5e7985ebfdd222cc02f):
     dependencies:
       react: 19.2.3
       react-native: 0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
       react-native-gesture-handler: 2.31.2(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       react-native-reanimated: 4.3.1(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
+      react-native-worklets: 0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
 
   react-native-reanimated@4.3.1(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.85.3(patch_hash=e96d26119c3eef23d0130eabb6bf8a23c6d9182ebc2e59b1b3e1e45bbc1ffc8f)(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3):
     dependencies:
