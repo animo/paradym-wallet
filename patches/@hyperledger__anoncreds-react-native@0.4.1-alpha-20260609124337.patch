@@ -1,29 +1,128 @@
+diff --git a/android/build.gradle b/android/build.gradle
+index 80f036ecb14c387b44d8bdede1a6cacacbb2dff6..1fa32d12f19cde71a89ecf7d8b73738447436da2 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -1,17 +1,9 @@
+ import org.apache.tools.ant.filters.ReplaceTokens
+ import java.nio.file.Paths
+ 
+-buildscript {
+-  repositories {
+-    google()
+-    mavenCentral()
+-  }
+-
+-  dependencies {
+-    classpath 'com.android.tools.build:gradle:4.2.2'
+-    classpath 'de.undercouch:gradle-download-task:4.1.2'
+-  }
+-}
++// NOTE: no `buildscript` block here on purpose. The Android Gradle Plugin is taken from
++// the consuming app's root project (as with every other React Native library), so we do
++// not pin a version that conflicts with it. React Native 0.87 ships Gradle 9 / AGP 9.
+ 
+ static def findNodeModules(baseDir) {
+   def basePath = baseDir.toPath().normalize()
+@@ -51,7 +43,6 @@ file("$nodeModules/react-native/ReactAndroid/gradle.properties").withInputStream
+ def REACT_NATIVE_VERSION = reactProperties.getProperty("VERSION_NAME").split("\\.")[1].toInteger()
+ 
+ apply plugin: 'com.android.library'
+-apply plugin: 'de.undercouch.download'
+ 
+ def getExt(name) {
+   return rootProject.ext.get(name)
+@@ -126,11 +117,6 @@ android {
+     targetCompatibility JavaVersion.VERSION_1_8
+   }
+ 
+-  configurations {
+-    extractHeaders
+-    extractJNI
+-  }
+-
+   sourceSets {
+     main {
+       jniLibs.srcDirs = ['../native/mobile/android']
+@@ -212,50 +198,3 @@ repositories {
+ dependencies {
+   implementation "com.facebook.react:react-android:"
+ }
+-
+-def downloadsDir = new File("$buildDir/downloads")
+-
+-task createNativeDepsDirectories {
+-  doLast {
+-    downloadsDir.mkdirs()
+-  }
+-}
+-
+-
+-task extractAARHeaders {
+-  doLast {
+-    configurations.extractHeaders.files.each {
+-      def file = it.absoluteFile
+-      copy {
+-        from zipTree(file)
+-        into "$buildDir/$file.name"
+-        include "**/*.h"
+-      }
+-    }
+-  }
+-}
+-
+-extractAARHeaders.mustRunAfter createNativeDepsDirectories
+-
+-task extractJNIFiles {
+-  doLast {
+-    configurations.extractJNI.files.each {
+-      def file = it.absoluteFile
+-
+-      copy {
+-        from zipTree(file)
+-        into "$buildDir/$file.name"
+-        include "jni/**/*"
+-      }
+-    }
+-  }
+-}
+-
+-extractJNIFiles.mustRunAfter extractAARHeaders
+-
+-tasks.whenTaskAdded { task ->
+-  if (!task.name.contains('Clean') && (task.name.contains('externalNative') || task.name.contains('CMake'))) {
+-    task.dependsOn(extractAARHeaders)
+-    task.dependsOn(extractJNIFiles)
+-  }
+-}
 diff --git a/ios/Anoncreds.mm b/ios/Anoncreds.mm
-index e0b1c269cadcfba100ff5519f5a259e0a0c6f0c2..f4c0380622b02db18fa65f75b3f461fa2514bd2b 100644
+index e0b1c269cadcfba100ff5519f5a259e0a0c6f0c2..1d7b8d91f81f23060b87fad0772c2fc2d74d205f 100644
 --- a/ios/Anoncreds.mm
 +++ b/ios/Anoncreds.mm
-@@ -39,20 +39,10 @@ - (void)installJSIBindingsWithRuntime:(jsi::Runtime &)runtime
+@@ -10,6 +10,15 @@
  
- RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install)
- {
--    // New Architecture: the JSI bindings are installed via
--    // installJSIBindingsWithRuntime:callInvoker: when this TurboModule is
--    // created, so there is nothing to do here.
--    //
--    // Old Architecture (legacy bridge present): install using the bridge
--    // runtime so this keeps working for non-bridgeless apps.
--    RCTBridge* bridge = [RCTBridge currentBridge];
+ using namespace facebook;
+ 
++// React Native 0.87 removed the legacy bridge, so `RCTCxxBridge` no longer exists and
++// cannot be named. Re-declare just the `runtime` accessor we need and probe for it at
++// runtime instead: only the legacy bridge responds to it, and on 0.87+
++// `+[RCTBridge currentBridge]` is hardcoded to return nil, so the branch is never taken.
++// (`jsCallInvoker` is already declared on RCTBridge by <ReactCommon/RCTTurboModule.h>.)
++@interface RCTBridge (AnoncredsLegacyBridge)
++- (void *)runtime;
++@end
++
+ @interface Anoncreds () <RCTTurboModule, RCTTurboModuleWithJSIBindings>
+ @end
+ 
+@@ -46,9 +55,8 @@ - (void)installJSIBindingsWithRuntime:(jsi::Runtime &)runtime
+     // Old Architecture (legacy bridge present): install using the bridge
+     // runtime so this keeps working for non-bridgeless apps.
+     RCTBridge* bridge = [RCTBridge currentBridge];
 -    RCTCxxBridge* cxxBridge = (RCTCxxBridge*)bridge;
 -    if (cxxBridge != nil) {
 -        jsi::Runtime* jsiRuntime = (jsi::Runtime*) cxxBridge.runtime;
--        if (jsiRuntime != nil) {
--            anoncredsTurboModuleUtility::registerTurboModule(*jsiRuntime, bridge.jsCallInvoker);
--        }
--    }
-+    // The JSI bindings are installed via installJSIBindingsWithRuntime:callInvoker:
-+    // when this TurboModule is created, so there is nothing to do here. React
-+    // Native 0.88 removed the legacy bridge (RCTCxxBridge) this used to install
-+    // through on the old architecture.
-     return @true;
- }
- 
++    if ([bridge respondsToSelector:@selector(runtime)]) {
++        jsi::Runtime* jsiRuntime = (jsi::Runtime*) [bridge runtime];
+         if (jsiRuntime != nil) {
+             anoncredsTurboModuleUtility::registerTurboModule(*jsiRuntime, bridge.jsCallInvoker);
+         }
