@@ -149,46 +149,55 @@ function decodeSegment(segment) {
  */
 function attributeBytes(bundlePath, sourcemapPath, jsBytes) {
   const sourcemap = JSON.parse(fs.readFileSync(sourcemapPath, 'utf8'))
+  // Since Expo SDK 58, Metro writes an indexed map: a section per module, each with its own sources
+  // and mappings, starting at the line it is placed at. Metro starts every section at column 0.
+  const sections = sourcemap.sections ?? [{ offset: { line: 0, column: 0 }, map: sourcemap }]
+  const sources = sections.flatMap((section) => section.map.sources)
   const lines = fs.readFileSync(bundlePath, 'utf8').split('\n')
-  const bytesPerSource = new Array(sourcemap.sources.length).fill(0)
+  const bytesPerSource = new Array(sources.length).fill(0)
 
   // The bundle is not minified, so whole lines — comments, blank lines — carry no mapping of their
   // own. They belong to the module around them, which is the last source something mapped to.
-  let sourceIndex = 0
   let lastSourceIndex = null
   const attribute = (index, bytes) => {
     if (index !== null) bytesPerSource[index] += Math.max(bytes, 0)
   }
 
-  sourcemap.mappings.split(';').forEach((line, lineNumber) => {
-    const lineLength = lines[lineNumber]?.length ?? 0
-    if (!line) {
-      attribute(lastSourceIndex, lineLength)
-      return
-    }
-
-    const segments = line.split(',').map(decodeSegment)
-    let column = 0
-    for (const [index, fields] of segments.entries()) {
-      // Whatever precedes the first segment is still the previous line's source.
-      if (index === 0) attribute(lastSourceIndex, fields[0])
-
-      column += fields[0]
-      // The segment covers the output up to the next one, or to the end of the line.
-      const length = (index + 1 < segments.length ? column + segments[index + 1][0] : lineLength) - column
-      if (fields.length > 1) {
-        sourceIndex += fields[1]
-        lastSourceIndex = sourceIndex
+  let firstSourceIndex = 0
+  for (const { offset, map } of sections) {
+    // Source indices in a section's mappings count from that section's own sources.
+    let sourceIndex = firstSourceIndex
+    map.mappings.split(';').forEach((line, sectionLineNumber) => {
+      const lineLength = lines[offset.line + sectionLineNumber]?.length ?? 0
+      if (!line) {
+        attribute(lastSourceIndex, lineLength)
+        return
       }
-      attribute(lastSourceIndex, length)
-    }
-  })
+
+      const segments = line.split(',').map(decodeSegment)
+      let column = 0
+      for (const [index, fields] of segments.entries()) {
+        // Whatever precedes the first segment is still the previous line's source.
+        if (index === 0) attribute(lastSourceIndex, fields[0])
+
+        column += fields[0]
+        // The segment covers the output up to the next one, or to the end of the line.
+        const length = (index + 1 < segments.length ? column + segments[index + 1][0] : lineLength) - column
+        if (fields.length > 1) {
+          sourceIndex += fields[1]
+          lastSourceIndex = sourceIndex
+        }
+        attribute(lastSourceIndex, length)
+      }
+    })
+    firstSourceIndex += map.sources.length
+  }
 
   const packages = {}
   let attributed = 0
   for (const [index, bytes] of bytesPerSource.entries()) {
     if (bytes === 0) continue
-    const name = packageOf(sourcemap.sources[index])
+    const name = packageOf(sources[index])
     packages[name] = (packages[name] ?? 0) + bytes
     attributed += bytes
   }
@@ -196,7 +205,7 @@ function attributeBytes(bundlePath, sourcemapPath, jsBytes) {
   packages['(runtime and newlines)'] = jsBytes - attributed
 
   return {
-    moduleCount: sourcemap.sources.length,
+    moduleCount: sources.length,
     packages: Object.fromEntries(Object.entries(packages).sort(([, a], [, b]) => b - a)),
   }
 }
