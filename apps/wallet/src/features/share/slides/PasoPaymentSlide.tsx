@@ -2,19 +2,7 @@ import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
-import {
-  Button,
-  Circle,
-  Heading,
-  HeroIcons,
-  Image,
-  MiniCardRowItem,
-  Paragraph,
-  ScrollView,
-  Spacer,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { Button, Circle, Heading, HeroIcons, Image, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import {
   type DisplayImage,
   type FormattedSubmission,
@@ -23,6 +11,7 @@ import {
 } from '@paradym/wallet-sdk'
 import { useCallback, useRef, useState } from 'react'
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
+import { PaymentCardRow, PaymentCardSheet } from '../components/PaymentCardSheet'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface PasoPaymentSlideProps {
@@ -68,6 +57,7 @@ export const PasoPaymentSlide = ({
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [hasSeenTransactionData, setHasSeenTransactionData] = useState(false)
   const [isProcessing, setIsProcessing] = useState(isAccepting)
+  const [isCardSheetOpen, setIsCardSheetOpen] = useState(false)
 
   // The Attestation Provider's labels normally name these claims, in the locale the proof reports.
   // The fallbacks are for the one case where there is no card and so no metadata to read them from.
@@ -90,6 +80,17 @@ export const PasoPaymentSlide = ({
         entry.inputDescriptorId === transaction.cardForTransactionId && entry.isSatisfied
     )?.credentials ?? []
   const cardForPayment = paymentCards[0]
+
+  // The payment card has its own section above, so it is left out of the requested cards. When there
+  // is no card for the payment, its entry stays there to say which card is missing.
+  const otherEntries =
+    submission?.entries.filter(
+      (entry) => !cardForPayment || entry.inputDescriptorId !== transaction.cardForTransactionId
+    ) ?? []
+
+  // The header names who asks for the payment. For a merchant asking to be paid itself that is the
+  // payee shown right below it, so the header is left out rather than naming them twice.
+  const showVerifierHeader = verifier.name.trim().toLowerCase() !== transaction.payee.value.trim().toLowerCase()
 
   /**
    * [PaSO Core] Section 5.3 and [PaSO View] Section 2: the claims designated for display, and the
@@ -154,54 +155,61 @@ export const PasoPaymentSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      {/* Sized by flex rather than a measured max height: the bottom bar shrinks once the scroll hint
-          goes away, and a height measured before that would leave a gap above the buttons. */}
-      <YStack gap="$4" f={1}>
+      <YStack gap="$4" fg={1}>
         <Heading>{transaction.transactionTitle ?? t(commonMessages.paymentHeading)}</Heading>
 
+        {/* The slide sits in the wizard's own scroll view, where a flex child grows with its content
+            instead of being capped. The scroll view is laid over the space the flex area is given
+            rather than inside it, so its content can't push the buttons off the screen. */}
         <YStack
-          f={1}
-          px="$4"
+          fg={1}
           mx="$-4"
+          pos="relative"
           onLayout={(event) => markSeen(event.nativeEvent.layout.height)}
           btw="$0.5"
           borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
         >
           <ScrollView
+            pos="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
             onScroll={onScroll}
             onLayout={onScrollViewLayout}
             scrollEventThrottle={scrollEventThrottle}
             contentContainerStyle={{ gap: '$6' }}
             px="$4"
-            mx="$-4"
             py="$4"
           >
             {/* Everything PaSO requires to have been displayed, measured as one block. */}
             <YStack gap="$4" onLayout={onTransactionDataLayout}>
-              <XStack ai="center" px="$6" jc="center" flexDirection="column">
-                <Circle size={88} bw="$0.5" borderColor="$grey-100" bg="$white">
-                  {verifier.logo?.url ? (
-                    <Image
-                      circle
-                      src={verifier.logo.url}
-                      alt={verifier.logo.altText}
-                      width="100%"
-                      height="100%"
-                      contentFit="contain"
-                    />
-                  ) : (
-                    <HeroIcons.BuildingOffice color="$grey-800" size={36} />
-                  )}
-                </Circle>
-                <Paragraph variant="sub" ta="center">
-                  <Trans
-                    id="paso.payment.description"
-                    comment="Explanation that the user is about to authorize a payment"
-                  >
-                    {verifier.name} wants you to authorize a payment.
-                  </Trans>
-                </Paragraph>
-              </XStack>
+              {showVerifierHeader && (
+                <XStack ai="center" px="$6" jc="center" flexDirection="column">
+                  <Circle size={88} bw="$0.5" borderColor="$grey-100" bg="$white">
+                    {verifier.logo?.url ? (
+                      <Image
+                        circle
+                        src={verifier.logo.url}
+                        alt={verifier.logo.altText}
+                        width="100%"
+                        height="100%"
+                        contentFit="contain"
+                      />
+                    ) : (
+                      <HeroIcons.BuildingOffice color="$grey-800" size={36} />
+                    )}
+                  </Circle>
+                  <Paragraph variant="sub" ta="center">
+                    <Trans
+                      id="paso.payment.description"
+                      comment="Explanation that the user is about to authorize a payment"
+                    >
+                      {verifier.name} wants you to authorize a payment.
+                    </Trans>
+                  </Paragraph>
+                </XStack>
+              )}
 
               {/* The rulebook claims, in the normative claim order: amount, payee, payee logo. */}
               <YStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
@@ -247,76 +255,40 @@ export const PasoPaymentSlide = ({
             {/* Below here is context, not transaction data: which card pays, and what else is asked. */}
             {cardForPayment && (
               <YStack gap="$2">
-                <Heading heading="sub2">
-                  {paymentCards.length > 1 ? (
-                    <Trans
-                      id="paso.payment.chooseCardHeading"
-                      comment="Heading above the cards the user can choose from to authorize a payment"
-                    >
-                      Pay with
-                    </Trans>
-                  ) : (
+                <XStack ai="center" jc="space-between" gap="$2">
+                  <Heading heading="sub2">
                     <Trans id="paso.payment.cardHeading" comment="Heading above the card used to authorize a payment">
                       Payment card
                     </Trans>
-                  )}
-                </Heading>
-                {paymentCards.map((card) => {
-                  // WPA Rulebook Section 4.2: the masked IBAN is how the payer tells their payment
-                  // cards apart, one per account.
-                  const maskedIban = card.credential.rawAttributes.masked_iban
-                  const cardRow = (
-                    <YStack gap="$2" f={1}>
-                      <MiniCardRowItem
-                        name={card.credential.display.name ?? t(commonMessages.unknown)}
-                        backgroundImageUri={card.credential.display.backgroundImage?.url}
-                        backgroundColor={card.credential.display.backgroundColor ?? '$white'}
-                        issuerImageUri={card.credential.display.issuer.logo?.url}
-                        subtitle={card.credential.display.issuer.name ?? t(commonMessages.unknown)}
-                      />
-                      {typeof maskedIban === 'string' && (
-                        <Paragraph variant="sub" color="$grey-700">
-                          {maskedIban}
-                        </Paragraph>
-                      )}
-                    </YStack>
-                  )
-
-                  if (paymentCards.length === 1) return <XStack key={card.credential.record.id}>{cardRow}</XStack>
-
-                  const isSelected = card === cardForPayment
-                  return (
-                    <XStack
-                      key={card.credential.record.id}
-                      ai="center"
-                      gap="$3"
-                      p="$3"
-                      br="$6"
-                      bw={1}
-                      borderColor={isSelected ? '$primary-500' : '$grey-200'}
-                      accessibilityRole="radio"
-                      aria-checked={isSelected}
+                  </Heading>
+                  {paymentCards.length > 1 && (
+                    <Button.Solid
+                      h="$3"
+                      px="$3.5"
+                      br="$12"
+                      bg="$grey-100"
+                      color="$grey-900"
+                      fontSize="$2"
                       disabled={isProcessing || isResolvingTransaction}
-                      pressStyle={{ opacity: 0.8 }}
-                      onPress={() => {
-                        if (!isSelected) {
-                          onSelectPaymentCredential?.(transaction.cardForTransactionId, card.credential.record.id)
-                        }
-                      }}
+                      onPress={() => setIsCardSheetOpen(true)}
                     >
-                      {cardRow}
-                      {isSelected ? (
-                        <HeroIcons.CheckCircleFilled color="$primary-500" size={24} />
-                      ) : (
-                        <HeroIcons.CheckCircle color="$grey-300" size={24} />
-                      )}
-                    </XStack>
-                  )
-                })}
+                      {t({
+                        id: 'paso.payment.switchCard',
+                        message: 'Switch',
+                        comment: 'Button that opens the other cards the user can authorize the payment with',
+                      })}
+                    </Button.Solid>
+                  )}
+                </XStack>
+                <XStack p="$3" br="$6" bw={1} borderColor="$grey-200">
+                  <PaymentCardRow card={cardForPayment} />
+                </XStack>
               </YStack>
             )}
 
-            {submission && <RequestedAttributesSection submission={submission} />}
+            {submission && otherEntries.length > 0 && (
+              <RequestedAttributesSection submission={{ ...submission, entries: otherEntries }} />
+            )}
             <Spacer />
           </ScrollView>
         </YStack>
@@ -368,6 +340,18 @@ export const PasoPaymentSlide = ({
           </YStack>
         )}
       </YStack>
+
+      {cardForPayment && (
+        <PaymentCardSheet
+          isOpen={isCardSheetOpen}
+          setIsOpen={setIsCardSheetOpen}
+          cards={paymentCards}
+          selectedCardId={cardForPayment.credential.record.id}
+          onSelect={(credentialRecordId) =>
+            onSelectPaymentCredential?.(transaction.cardForTransactionId, credentialRecordId)
+          }
+        />
+      )}
     </YStack>
   )
 }
