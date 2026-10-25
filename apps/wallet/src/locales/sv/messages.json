@@ -23,7 +23,7 @@
 			"0": ["verifier.name"]
 		},
 		"comments": ["Explanation that the user is about to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 203]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 204]],
 		"translation": "{0} vill att du godkänner en betalning."
 	},
 	"payment.description": {
@@ -256,14 +256,14 @@
 		"message": "Add digital cards with your information, and  share them easily with others. It’s like having your wallet on your phone.",
 		"placeholders": {},
 		"comments": ["Subtitle for first slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 30]],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 29]],
 		"translation": "Lägg till digitala kort med din information och dela dem enkelt med andra. Det är som att ha din plånbok i telefonen."
 	},
 	"onboardingWalletExplanation.slide3.subtitle": {
 		"message": "Add your cards and documents by scanning QR codes. When organizations request your data, you can review and share with a tap in the app. Your information is always secure with your PIN or fingerprint.",
 		"placeholders": {},
 		"comments": ["Subtitle for third slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 58]],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 57]],
 		"translation": "Lägg till dina kort och dokument genom att skanna QR-koder. När organisationer begär dina uppgifter kan du granska och dela med ett knapptryck i appen. Din information är alltid säker med din PIN-kod eller fingeravtryck."
 	},
 	"activity.latest.addedCard": {
@@ -320,7 +320,7 @@
 		"comments": [
 			"Label above the amount of a payment, when the card supplies no label of its own"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 75]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 64]],
 		"translation": "Belopp"
 	},
 	"interactionError.message.connect": {
@@ -494,7 +494,7 @@
 		"comments": [
 			"Shown when there is a general auth error during offline flow"
 		],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 96]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 97]],
 		"translation": "Autentiseringsfel"
 	},
 	"presentation.authFailed": {
@@ -502,7 +502,7 @@
 		"placeholders": {},
 		"comments": ["Shown when authentication with PIN fails for other reasons"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 83]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 84]
 		],
 		"translation": "Autentisering misslyckades"
 	},
@@ -821,6 +821,15 @@
 		"origin": [["src/features/onboarding/screens/introduction-steps.tsx", 30]],
 		"translation": "Välj en 6-siffrig PIN-kod och ställ in biometri för att säkra plånboken."
 	},
+	"paso.payment.chooseCardTitle": {
+		"message": "Choose a payment card",
+		"placeholders": {},
+		"comments": [
+			"Title of the sheet where the user picks the card to authorize a payment with"
+		],
+		"origin": [["src/features/share/components/PaymentCardSheet.tsx", 57]],
+		"translation": "Välj betalkort"
+	},
 	"common.fields.city": {
 		"message": "City",
 		"placeholders": {},
@@ -876,7 +885,7 @@
 		"message": "Could not share device response",
 		"placeholders": {},
 		"comments": ["Shown when shareDeviceResponse fails"],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 128]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 135]],
 		"translation": "Kunde inte dela enhetsresponsen"
 	},
 	"common.fields.country": {
@@ -1367,7 +1376,7 @@
 		"message": "How does it work?",
 		"placeholders": {},
 		"comments": ["Title for third slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 53]],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 52]],
 		"translation": "Hur fungerar det?"
 	},
 	"didcommCancelFlow.issuance.description": {
@@ -1738,7 +1747,7 @@
 			"Shown when the user tries to accept a proof but no credentials are loaded"
 		],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 71]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 72]
 		],
 		"translation": "Inga kort valda"
 	},
@@ -1893,7 +1902,7 @@
 		"comments": [
 			"Fallback label for the button that authorizes a PaSO payment"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 341]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 307]],
 		"translation": "Betala"
 	},
 	"payShare.accept": {
@@ -1910,7 +1919,8 @@
 			"Heading above the cards the user can choose from to authorize a payment"
 		],
 		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 258]],
-		"translation": "Betala med"
+		"translation": "Betala med",
+		"obsolete": true
 	},
 	"paso.payment.payeeLabel": {
 		"message": "Payee",
@@ -1918,7 +1928,7 @@
 		"comments": [
 			"Label above the payee of a payment, when the card supplies no label of its own"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 80]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 69]],
 		"translation": "Betalningsmottagare"
 	},
 	"TKFmBL": {
@@ -1942,7 +1952,7 @@
 		"message": "Payment card",
 		"placeholders": {},
 		"comments": ["Heading above the card used to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 265]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 260]],
 		"translation": "Betalkort"
 	},
 	"payShare.cardHeading": {
@@ -2047,7 +2057,7 @@
 		"placeholders": {},
 		"comments": ["Shown when PIN is required but not provided"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 77]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 78]
 		],
 		"translation": "PIN-autentisering misslyckades"
 	},
@@ -2177,7 +2187,7 @@
 		"message": "Proof has been declined",
 		"placeholders": {},
 		"comments": ["Shown when user declines sharing proof"],
-		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 153]],
+		"origin": [["src/features/share/MdocOfflineSharingScreen.tsx", 160]],
 		"translation": "Bevis har avvisats"
 	},
 	"pidSetup.dataProtection.title": {
@@ -2428,7 +2438,7 @@
 		"comments": [
 			"Shown while the user has not yet scrolled through all payment details"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 355]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 321]],
 		"translation": "Skrolla ner för att granska alla betalningsuppgifter."
 	},
 	"common.search": {
@@ -2676,7 +2686,7 @@
 		"message": "Skip explanation",
 		"placeholders": {},
 		"comments": ["Button label to skip wallet explanation slides"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 69]],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 68]],
 		"translation": "Hoppa över förklaring"
 	},
 	"common.mismatchedAttributesDescription": {
@@ -2790,6 +2800,15 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 43]],
 		"translation": "Klart!"
 	},
+	"paso.payment.switchCard": {
+		"message": "Switch",
+		"placeholders": {},
+		"comments": [
+			"Button that opens the other cards the user can authorize the payment with"
+		],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 275]],
+		"translation": "Byt"
+	},
 	"common.tapToView": {
 		"message": "Tap to view",
 		"placeholders": {},
@@ -2834,7 +2853,7 @@
 		"message": "The digital wallet stores your important information all in one place on your phone. It’s a secure and easy way to carry everything you need without using a physical wallet.",
 		"placeholders": {},
 		"comments": ["Subtitle for second slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 44]],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 43]],
 		"translation": "Den digitala plånboken lagrar all din viktiga information på ett ställe i telefonen. Det är ett säkert och enkelt sätt att ha med dig allt du behöver utan att använda en fysisk plånbok."
 	},
 	"activity.documentNotSigned": {
@@ -3529,7 +3548,7 @@
 		"message": "What is it for?",
 		"placeholders": {},
 		"comments": ["Title for second slide of wallet onboarding"],
-		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 39]],
+		"origin": [["src/features/onboarding/screens/wallet-explanation.tsx", 38]],
 		"translation": "Vad är det till för?"
 	},
 	"cardLifecycle.limitedByDate.notYetActive.description": {
