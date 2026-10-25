@@ -1,8 +1,19 @@
 diff --git a/dist/index.mjs b/dist/index.mjs
-index a8b076140dd2211d7b3fde9a9a81df956aef6660..22f2ef62f57e39e43dafb71c4f7edd6872a7641f 100644
+index a8b076140dd2211d7b3fde9a9a81df956aef6660..a03611f55f89bfceef830d4e4e7eeed50f652480 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
-@@ -1843,6 +1843,12 @@ async function createAccessTokenJwt(options) {
+@@ -1741,7 +1741,9 @@ async function createJarAuthorizationRequest(options) {
+ * @throws {Error} if parsing json from response fails
+ */
+ async function fetchWellKnownMetadata(wellKnownMetadataUrl, schema, options) {
+-	const { result, response } = await createZodFetcher(options?.fetch)(schema, options?.acceptedContentType ?? [ContentType.Json], wellKnownMetadataUrl);
++	const acceptedContentType = options?.acceptedContentType ?? [ContentType.Json];
++	// Send the accepted content types as Accept header, so issuers return signed metadata (application/jwt) when the caller can verify it
++	const { result, response } = await createZodFetcher(options?.fetch)(schema, acceptedContentType, wellKnownMetadataUrl, { headers: { Accept: acceptedContentType.join(", ") } });
+ 	if (response.status === 404) return null;
+ 	if (!response.ok) throw new InvalidFetchResponseError$1(`Fetching well known metadata from '${wellKnownMetadataUrl}' resulted in an unsuccessful response with status '${response.status}'.`, await response.clone().text(), response);
+ 	if (!result?.success) throw new ValidationError(`Validation of metadata from '${wellKnownMetadataUrl}' failed`, result?.error);
+@@ -1843,6 +1845,12 @@ async function createAccessTokenJwt(options) {
  		typ: "at+jwt"
  	});
  	const now = options.now ?? /* @__PURE__ */ new Date();
@@ -15,7 +26,7 @@ index a8b076140dd2211d7b3fde9a9a81df956aef6660..22f2ef62f57e39e43dafb71c4f7edd68
  	const payload = parseWithErrorHandling(zAccessTokenProfileJwtPayload, {
  		iat: dateToSeconds(now),
  		exp: dateToSeconds(addSecondsToDate(now, options.expiresInSeconds)),
-@@ -1852,11 +1858,7 @@ async function createAccessTokenJwt(options) {
+@@ -1852,11 +1860,7 @@ async function createAccessTokenJwt(options) {
  		client_id: options.clientId,
  		sub: options.subject,
  		scope: options.scope,
