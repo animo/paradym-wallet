@@ -194,9 +194,18 @@ export function ActivityRowItem({ activity }: ActivityRowItemProps) {
           </Stack>
         </Stack>
         <YStack gap="$0.5" jc="space-between" fg={1} w="75%">
-          <XStack jc="space-between">
-            <Paragraph>{Title}</Paragraph>
-            <Paragraph variant="annotation" color="$grey-500" fontWeight="$regular">
+          <XStack jc="space-between" gap="$2">
+            <Paragraph flexShrink={1} numberOfLines={1}>
+              {Title}
+            </Paragraph>
+            <Paragraph
+              variant="annotation"
+              color="$grey-500"
+              fontWeight="$regular"
+              flexShrink={0}
+              // Android's default 'highQuality' strategy under-measures some fonts (e.g. on Samsung), clipping the last letters
+              textBreakStrategy="simple"
+            >
               {formatRelativeDate(date)}
             </Paragraph>
           </XStack>
