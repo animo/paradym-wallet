@@ -159,7 +159,7 @@ export function OnboardingContextProvider({
     return Linking.openSettings().then(() => setCurrentStepName('biometrics'))
   }
 
-  const onEnableBiometrics = async () => {
+  const onEnableBiometrics = async (enableBiometrics: boolean) => {
     if (paradym.state !== 'acquired-wallet-key') {
       await reset({
         resetToStep: 'pin',
@@ -168,7 +168,7 @@ export function OnboardingContextProvider({
     }
 
     try {
-      const sdk = await paradym.unlock({ enableBiometrics: true })
+      const sdk = await paradym.unlock({ enableBiometrics })
       await setupWalletServiceProvider(sdk, true)
 
       goToNextStep()
