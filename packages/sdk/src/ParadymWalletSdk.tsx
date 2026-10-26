@@ -16,6 +16,7 @@ import {
   type ParadymWalletSdkAttributeLabelOptions,
   type ParadymWalletSdkCredentialKeyOptions,
   type ParadymWalletSdkDcApiDisplayOptions,
+  type ParadymWalletSdkLegacyIdsOptions,
   type ParadymWalletSdkLocaleOptions,
   type ParadymWalletSdkSharedOptions,
   type ParadymWalletSdkWalletInstanceVersionOptions,
@@ -70,7 +71,7 @@ import { getIsBiometricsEnabled, secureWalletKey, setIsBiometricsEnabled } from 
 import { KeychainError } from './secure/error/KeychainError'
 import { migrateActivities } from './storage/activityStore'
 import { type CredentialRecord, deleteCredential } from './storage/credentials'
-import { getWalletStoreId, setupAppGroupStore } from './storage/walletStore'
+import { getWalletStoreId, moveLegacyStore, setupAppGroupStore } from './storage/walletStore'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
 import { reset } from './utils/reset'
@@ -85,7 +86,8 @@ export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfigur
   ParadymWalletSdkAttributeLabelOptions &
   ParadymWalletSdkDcApiDisplayOptions &
   ParadymWalletSdkWalletInstanceVersionOptions &
-  ParadymWalletSdkCredentialKeyOptions
+  ParadymWalletSdkCredentialKeyOptions &
+  ParadymWalletSdkLegacyIdsOptions
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
@@ -101,6 +103,8 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
   public trustMechanisms: TrustMechanismConfiguration[]
   public readonly resolveCredentialKeyOptions: ParadymWalletSdkCredentialKeyOptions['resolveCredentialKeyOptions']
   public readonly agent: AgentForAgentType<T>
+  /** Store ids the wallet's store had before, which a reset removes as well. */
+  public readonly legacyWalletIds: string[]
 
   public constructor(options: ParadymWalletSdkOptions) {
     const trustMechanisms = options.trustMechanisms ?? []
@@ -112,6 +116,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
     this.agent = setupAgent({ ...options, openId4VcConfiguration }) as unknown as AgentForAgentType<T>
     this.trustMechanisms = trustMechanisms
+    this.legacyWalletIds = (options.legacyIds ?? []).map((legacyId) => getWalletStoreId(legacyId))
     this.resolveCredentialKeyOptions = options.resolveCredentialKeyOptions
 
     if (options.locale) setLocale(options.locale)
@@ -410,6 +415,11 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
           const id = configuration.id ?? defaultWalletId
           const key = walletKey
 
+          const legacyStoreId = await moveLegacyStore(
+            getWalletStoreId(id),
+            (configuration.legacyIds ?? []).map((legacyId) => getWalletStoreId(legacyId))
+          )
+
           // Must happen before the store is opened: on iOS the store lives in the shared container
           // so the identity document provider extension can open it too.
           const storePath = await setupAppGroupStore(getWalletStoreId(id))
@@ -420,6 +430,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             key,
             storePath,
           })
+          if (legacyStoreId) pws.logger.info('Moved the wallet store from its legacy id', { legacyStoreId, id })
           await pws.agent.initialize()
 
           // Only once the store has actually opened with this key.

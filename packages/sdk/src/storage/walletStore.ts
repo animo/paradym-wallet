@@ -106,17 +106,7 @@ export async function setupAppGroupStore(
 
     if (!appGroupStoreExists && defaultStoreExists) {
       logger?.info('Migrating askar store into the shared container', { defaultDirectory, appGroupDirectory })
-
-      // Credo's `createDirectory` takes a file path and creates the directory holding it.
-      await fs.createDirectory(storePath)
-      for (const fileName of storeFileNames) {
-        if (!(await fs.exists(`${defaultDirectory}/${fileName}`))) continue
-        await fs.copyFile(`${defaultDirectory}/${fileName}`, `${appGroupDirectory}/${fileName}`)
-      }
-
-      // Only remove the old store once every file arrived, so a failure halfway through leaves the
-      // existing installation untouched.
-      await fs.delete(defaultDirectory)
+      await moveStoreFiles(defaultDirectory, appGroupDirectory)
     }
   } catch (error) {
     logger?.error('Could not migrate the askar store into the shared container', { error })
@@ -124,4 +114,66 @@ export async function setupAppGroupStore(
   }
 
   return storePath
+}
+
+/**
+ * The directory a store's files are in, or `undefined` when it has not been created.
+ */
+async function findWalletStoreDirectory(storeId: string) {
+  const fs = new agentDependencies.FileSystem()
+
+  for (const directory of getWalletStoreDirectories(storeId)) {
+    if (await fs.exists(`${directory}/sqlite.db`)) return directory
+  }
+
+  return undefined
+}
+
+/**
+ * Move the store an earlier version created under another id to `storeId`, when there is no store
+ * under `storeId` yet. The first legacy id with a store wins.
+ *
+ * Must run before the store is opened: Credo provisions a store it cannot find, which would leave the
+ * user with an empty wallet. Moved into the default directory, from where {@link setupAppGroupStore}
+ * moves it into the shared container on iOS.
+ *
+ * Returns the legacy id the store was moved from, if any.
+ */
+export async function moveLegacyStore(storeId: string, legacyStoreIds: string[]) {
+  if (await findWalletStoreDirectory(storeId)) return undefined
+
+  for (const legacyStoreId of legacyStoreIds) {
+    const directory = await findWalletStoreDirectory(legacyStoreId)
+    if (!directory) continue
+
+    await moveStoreFiles(directory, getDefaultStoreDirectory(storeId))
+    return legacyStoreId
+  }
+
+  return undefined
+}
+
+/**
+ * Move a store's files to another directory.
+ *
+ * Copied rather than renamed, as the shared container can be on another volume. The source is only
+ * removed once every file arrived, so a failure halfway through leaves the existing store untouched,
+ * and the partial copy is removed so it is never opened as the store.
+ */
+async function moveStoreFiles(fromDirectory: string, toDirectory: string) {
+  const fs = new agentDependencies.FileSystem()
+
+  try {
+    // Credo's `createDirectory` takes a file path and creates the directory holding it.
+    await fs.createDirectory(`${toDirectory}/sqlite.db`)
+    for (const fileName of storeFileNames) {
+      if (!(await fs.exists(`${fromDirectory}/${fileName}`))) continue
+      await fs.copyFile(`${fromDirectory}/${fileName}`, `${toDirectory}/${fileName}`)
+    }
+  } catch (error) {
+    if (await fs.exists(toDirectory)) await fs.delete(toDirectory)
+    throw error
+  }
+
+  await fs.delete(fromDirectory)
 }

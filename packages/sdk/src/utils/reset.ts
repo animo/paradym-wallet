@@ -21,8 +21,9 @@ export const reset = async (paradym?: ParadymWalletSdk) => {
 
   if (paradym) {
     // `walletId` is the composed store id, so this covers both the shared container on iOS builds
-    // with the digital credentials API config plugin and the app's own data path.
-    const walletDirectories = getWalletStoreDirectories(paradym.walletId)
+    // with the digital credentials API config plugin and the app's own data path. Legacy stores go
+    // too: a store left under a legacy id would be moved back in on the next unlock.
+    const walletDirectories = [paradym.walletId, ...paradym.legacyWalletIds].flatMap(getWalletStoreDirectories)
 
     for (const walletDirectory of walletDirectories) {
       const walletDirectoryExists = await fs.exists(walletDirectory)
