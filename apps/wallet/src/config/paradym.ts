@@ -1,5 +1,5 @@
 import { isHardwareBoundCredentialConfiguration } from '@app/config/paymentAttestation'
-import { walletId } from '@app/config/wallet'
+import { legacyWalletIds, walletId } from '@app/config/wallet'
 import { eudiTrustList, trustedDidEntities, trustedOpenId4VciIssuerEntities, trustedX509Entities } from '@app/constants'
 import { resolveDcApiDisplay } from '@app/utils/dcApiRegisterOptions'
 import { resolveAttributeLabel } from '@app/utils/resolveAttributeLabel'
@@ -31,6 +31,7 @@ export const getLoggingOptions = (isDevelopmentModeEnabled: boolean | undefined)
 
 export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   id: walletId,
+  legacyIds: legacyWalletIds,
   // Goes into the `wallet_instance_version` claim of every PaSO payment proof, in the
   // `<platform>:<application id>:<version>` shape [PaSO Core] Section 6.1 illustrates.
   walletInstanceVersion: `${Platform.OS}:${Application.applicationId ?? walletId}:${Application.nativeApplicationVersion ?? '0.0.0'}`,
