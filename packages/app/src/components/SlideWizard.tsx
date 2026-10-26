@@ -74,7 +74,12 @@ export const SlideWizard = forwardRef(
     const [currentStepIndex, setCurrentStepIndex] = useState(0)
     const [isCompleted, setIsCompleted] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
-    const [isNavigating, setIsNavigating] = useState(false)
+    // A ref, not state: a slide can call `onNext` from an async handler (e.g. after a request),
+    // and a closure from before the last transition ended would otherwise still see `true`.
+    const isNavigating = useRef(false)
+    const setIsNavigating = useCallback((value: boolean) => {
+      isNavigating.current = value
+    }, [])
 
     const [progress, setProgress] = useState(steps[currentStepIndex].progress)
 
@@ -173,7 +178,7 @@ export const SlideWizard = forwardRef(
 
     const onBack = withHaptics(
       useCallback(() => {
-        if (isNavigating) return
+        if (isNavigating.current) return
         if (isCompleted || isError || currentStepIndex === 0 || steps[currentStepIndex].backIsCancel) {
           handleCancel()
         } else {
@@ -181,20 +186,30 @@ export const SlideWizard = forwardRef(
           direction.value = 'backward'
           animateTransition(false)
         }
-      }, [currentStepIndex, animateTransition, direction, handleCancel, steps, isCompleted, isNavigating, isError])
+      }, [
+        currentStepIndex,
+        animateTransition,
+        direction,
+        handleCancel,
+        steps,
+        isCompleted,
+        isNavigating,
+        isError,
+        setIsNavigating,
+      ])
     )
 
     const onNext = withHaptics(
       useCallback(
         (slide?: string) => {
-          if (isNavigating) return
+          if (isNavigating.current) return
           if (currentStepIndex < steps.length - 1 || willResume) {
             setIsNavigating(true)
             direction.value = 'forward'
             animateTransition(true, slide)
           }
         },
-        [currentStepIndex, steps.length, animateTransition, direction, isNavigating, willResume]
+        [currentStepIndex, steps.length, animateTransition, direction, isNavigating, willResume, setIsNavigating]
       )
     )
 
