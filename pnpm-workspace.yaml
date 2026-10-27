@@ -15,14 +15,15 @@ overrides:
   # Pin exactly: newer react-native releases exist and open-ended peer ranges (tamagui, askar,
   # masked-view, wallet-sdk) would otherwise hoist it over the SDK 58 version.
   react-native: 0.88.0
-  # 0.7 alpha supports React Native 0.87+ (RCTCxxBridge is gone). Credo's peer range
-  # stops at ^0.6.0, so pin askar-shared for all of them.
+  # The askar 0.7 and anoncreds 0.5 alphas support React Native 0.87+ (RCTCxxBridge is gone).
+  # Credo's peer ranges stop at askar-shared ^0.6.0 and anoncreds-shared ^0.4.0, so pin the
+  # shared packages for all of them.
   '@openwallet-foundation/askar-shared': 'catalog:'
+  '@hyperledger/anoncreds-shared': 'catalog:'
 
 patchedDependencies:
   '@credo-ts/openid4vc@0.7.1-alpha-20260917134851': patches/@credo-ts__openid4vc@0.7.1-alpha-20260917134851.patch
   '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
-  '@hyperledger/anoncreds-react-native@0.4.1-alpha-20260609124337': patches/@hyperledger__anoncreds-react-native@0.4.1-alpha-20260609124337.patch
   '@openid4vc/oauth2@0.5.6': patches/@openid4vc__oauth2@0.5.6.patch
   # Patches required for DC API
   react-native-keychain: patches/react-native-keychain.patch
@@ -80,8 +81,8 @@ catalog:
   "@credo-ts/react-native": 0.7.1-alpha-20260917134851
   "@credo-ts/didcomm": 0.7.1-alpha-20260917134851
   "@credo-ts/webvh": 0.7.1-alpha-20260917134851
-  "@hyperledger/anoncreds-react-native": 0.4.1-alpha-20260609124337
-  "@hyperledger/anoncreds-shared": 0.4.1-alpha-20260609124337
+  "@hyperledger/anoncreds-react-native": 0.5.0-alpha-20261027094647
+  "@hyperledger/anoncreds-shared": 0.5.0-alpha-20261027094647
   "@openwallet-foundation/askar-react-native": 0.7.0-alpha-20261023221824
   "@openwallet-foundation/askar-shared": 0.7.0-alpha-20261023221824
   buffer: 6.0.3
@@ -165,6 +166,8 @@ catalog:
   tamagui: 2.3.3
 
 minimumReleaseAgeExclude:
+  - '@hyperledger/anoncreds-react-native@0.5.0-alpha-20261027094647'
+  - '@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647'
   - '@openwallet-foundation/askar-react-native@0.7.0-alpha-20261023221824'
   - '@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824'
   - '@credo-ts/anoncreds@0.7.1-alpha-20260917134851'
