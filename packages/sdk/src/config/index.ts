@@ -38,6 +38,18 @@ export type ParadymWalletSdkWalletInstanceVersionOptions = {
 
 /**
  *
+ * Base ids the wallet's store had before `id`, newest first.
+ *
+ * On unlock, when there is no store under `id` yet, the store under the first of these that has one
+ * is moved to `id`, so changing the id does not leave the user with an empty wallet.
+ *
+ */
+export type ParadymWalletSdkLegacyIdsOptions = {
+  legacyIds?: string[]
+}
+
+/**
+ *
  * How the wallet names claims the credential did not name — see {@link ResolveAttributeLabel}.
  *
  */

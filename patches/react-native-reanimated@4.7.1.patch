@@ -1,0 +1,275 @@
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp
+index c0825bb47a6fac02331138b5e0a0e5bbb52df0fa..6fc1939c25e8942e97f8a34f7ec897e1bb306a45 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.cpp
+@@ -240,6 +240,9 @@ std::optional<MountingTransaction> LayoutAnimationsProxy::pullTransaction(
+     keepTransitioningViewsHidden(filteredMutations, propsParserContext);
+   }
+ 
++#ifdef ANDROID
++  holdFramesUntilBatchIsQueued(filteredMutations);
++#endif
+   return MountingTransaction{surfaceId, transactionNumber, std::move(filteredMutations), telemetry};
+ }
+ 
+@@ -844,6 +847,9 @@ void LayoutAnimationsProxy::addOngoingAnimations(ShadowViewMutationList &mutatio
+       // https://github.com/software-mansion/react-native-reanimated/issues/7493
+       continue;
+     }
++    if (unqueuedBatchTags_.contains(tag)) {
++      continue;
++    }
+ #endif
+ 
+     auto layoutAnimationIt = layoutAnimations_.find(tag);
+@@ -864,11 +870,16 @@ void LayoutAnimationsProxy::addOngoingAnimations(ShadowViewMutationList &mutatio
+     mutations.push_back(
+         ShadowViewMutation::UpdateMutation(layoutAnimation.currentView, newView, layoutAnimation.parentTag));
+     layoutAnimation.currentView = newView;
+-    if (layoutAnimation.opacity && getViewProps(newView).opacity == *layoutAnimation.opacity) {
++    if (layoutAnimation.opacity &&
++        (updateValues.animatesOpacity || getViewProps(newView).opacity == *layoutAnimation.opacity)) {
+       layoutAnimation.opacity.reset();
+     }
+   }
++#ifdef ANDROID
++  std::erase_if(updateMap_, [this](const auto &update) { return !unqueuedBatchTags_.contains(update.first); });
++#else
+   updateMap_.clear();
++#endif
+ }
+ 
+ void LayoutAnimationsProxy::endAnimationsRecursively(
+@@ -1011,6 +1022,7 @@ void LayoutAnimationsProxy::clearSurfaceState() const {
+   }
+ #ifdef ANDROID
+   cleanupPullScheduled_ = false;
++  unqueuedBatchTags_.clear();
+ #endif
+ }
+ 
+@@ -1057,6 +1069,11 @@ void LayoutAnimationsProxy::cleanupAnimations(
+     const bool flushStructuralMutations) const {
+   ReanimatedSystraceSection s("cleanupAnimations");
+   std::unordered_set<Tag> preservedContainerTags;
++#ifdef ANDROID
++  for (const auto &[tag, _] : unqueuedBatchTags_) {
++    preservedContainerTags.insert(tag);
++  }
++#endif
+   if constexpr (StaticFeatureFlags::getFlag("ENABLE_SHARED_ELEMENT_TRANSITIONS")) {
+     for (const auto &[tag, _] : completedAnimations_) {
+       if (hasPendingLayoutAnimation(tag)) {
+@@ -1097,6 +1114,54 @@ void LayoutAnimationsProxy::maybeScheduleCleanupPull(const bool flushedStructura
+     scheduleCleanupPull();
+   }
+ }
++
++// The push model queues the batch after the pull returns, in the same JS task. A frame that the UI thread pulls
++// in between mounts before the batch, so the frames of its views wait for the next JS task.
++// https://github.com/facebook/react-native/blob/v0.88.0-rc.3/packages/react-native/ReactCommon/react/renderer/runtimescheduler/RuntimeScheduler_Modern.cpp#L315-L346
++void LayoutAnimationsProxy::holdFramesUntilBatchIsQueued(const ShadowViewMutationList &mutations) const {
++  if (mutations.empty() || isMountingCoordinatorPullModelEnabled() || worklets::isOnUIThread(uiScheduler_)) {
++    return;
++  }
++  std::vector<Tag> tags;
++  for (const auto &mutation : mutations) {
++    const auto isRemoval = mutation.type == ShadowViewMutation::Remove || mutation.type == ShadowViewMutation::Delete;
++    const auto tag = (isRemoval ? mutation.oldChildShadowView : mutation.newChildShadowView).tag;
++    const auto hasRecord =
++        layoutAnimations_.contains(tag) || completedAnimations_.contains(tag) || hasPendingLayoutAnimation(tag);
++    if (hasRecord) {
++      tags.push_back(tag);
++      unqueuedBatchTags_[tag]++;
++    }
++  }
++  if (tags.empty()) {
++    return;
++  }
++  jsInvoker_->invokeAsync([this, weakThis = weak_from_this(), tags = std::move(tags)](jsi::Runtime &) {
++    if (const auto strongThis = weakThis.lock()) {
++      releaseFramesOfQueuedBatch(tags);
++    }
++  });
++}
++
++void LayoutAnimationsProxy::releaseFramesOfQueuedBatch(const std::vector<Tag> &tags) const {
++  const auto lock = std::unique_lock<std::recursive_mutex>(mutex);
++  bool hasHeldFrame = false;
++  for (const auto tag : tags) {
++    const auto it = unqueuedBatchTags_.find(tag);
++    if (it == unqueuedBatchTags_.end()) {
++      continue;
++    }
++    if (--it->second == 0) {
++      unqueuedBatchTags_.erase(it);
++    }
++    const auto completedIt = completedAnimations_.find(tag);
++    const auto waitsForCleanup = completedIt != completedAnimations_.end() && !completedIt->second.shouldRemove;
++    hasHeldFrame = hasHeldFrame || updateMap_.contains(tag) || waitsForCleanup;
++  }
++  if (hasHeldFrame) {
++    schedulePullOnNextFrame();
++  }
++}
+ #endif
+ 
+ // MARK: Start Animation
+@@ -1109,10 +1174,11 @@ void LayoutAnimationsProxy::startEnteringAnimation(
+   const auto opacity = getViewProps(newChildShadowView).opacity;
+   const auto &parent = node->parent.lock();
+   react_native_assert(parent && "Parent node is nullptr");
++  const PropsParserContext propsParserContext{surfaceId_, *contextContainer_};
+   enqueueLayoutAnimation(ManagedLayoutAnimationStart{
+       .tag = newChildShadowView.tag,
+       .type = LayoutAnimationType::ENTERING,
+-      .before = newChildShadowView,
++      .before = cloneViewWithoutOpacity(newChildShadowView, propsParserContext),
+       .after = newChildShadowView,
+       .parentTag = parent->current.tag,
+       .opacity = opacity,
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
+index ed4df225d5a496087fbb0b6364dbd0c86beadb6a..db6cb2ee1263068628f7be59bcf3fdd7260c54a6 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy.h
+@@ -105,6 +105,8 @@ struct LayoutAnimationsProxy : public LayoutAnimationsProxyCommon {
+   mutable bool surfaceToRemove_ = false;
+ #ifdef ANDROID
+   mutable bool cleanupPullScheduled_ = false;
++  // tags of JS-thread batches that are not in the mount queue yet
++  mutable std::unordered_map<Tag, int> unqueuedBatchTags_;
+ #endif
+ 
+ #ifdef __APPLE__
+@@ -180,6 +182,8 @@ struct LayoutAnimationsProxy : public LayoutAnimationsProxyCommon {
+ #ifdef ANDROID
+   bool hasPendingStructuralCleanup() const;
+   void maybeScheduleCleanupPull(bool flushedStructuralMutations) const;
++  void holdFramesUntilBatchIsQueued(const ShadowViewMutationList &mutations) const;
++  void releaseFramesOfQueuedBatch(const std::vector<Tag> &tags) const;
+ #endif
+ 
+   void hideTransitioningViews(
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp
+index 0742d063666ac5579232b2f53e4117f427b7177d..c7bfc88ca4fb8ddf2635d128c9d4bd34967f34ce 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxyCommon.cpp
+@@ -80,12 +80,10 @@ std::optional<SurfaceId> LayoutAnimationsProxyCommon::progressLayoutAnimation(
+   }
+ 
+   auto &layoutAnimation = layoutAnimationIt->second;
+-  if (newStyle.hasProperty(uiRuntime_, "opacity")) {
+-    layoutAnimation.opacity.reset();
+-  }
++  const bool animatesOpacity = newStyle.hasProperty(uiRuntime_, "opacity");
+ 
+   auto rawProps = std::make_shared<RawProps>(uiRuntime_, jsi::Value(uiRuntime_, newStyle));
+-  if (layoutAnimation.opacity) {
++  if (layoutAnimation.opacity && !animatesOpacity) {
+     auto props = (folly::dynamic)*rawProps;
+     props["opacity"] = *layoutAnimation.opacity;
+     rawProps = std::make_shared<RawProps>(std::move(props));
+@@ -97,7 +95,7 @@ std::optional<SurfaceId> LayoutAnimationsProxyCommon::progressLayoutAnimation(
+ #endif
+   auto newProps = componentDescriptorRegistry_->at(layoutAnimation.finalView.componentHandle)
+                       .cloneProps(propsParserContext, layoutAnimation.finalView.props, std::move(*rawProps));
+-  updateMap_.insert_or_assign(tag, UpdateValues{newProps, Frame(uiRuntime_, newStyle)});
++  updateMap_.insert_or_assign(tag, UpdateValues{newProps, Frame(uiRuntime_, newStyle), animatesOpacity});
+ 
+   return surfaceId_;
+ }
+@@ -264,13 +262,12 @@ ShadowView LayoutAnimationsProxyCommon::materializeLayoutAnimation(
+     const std::shared_ptr<Serializable> &config) const {
+   auto currentView = before;
+   const auto activeAnimationIt = layoutAnimations_.find(tag);
+-  if (type == LayoutAnimationType::ENTERING) {
+-    currentView = after;
+-  } else if (activeAnimationIt != layoutAnimations_.end()) {
+-    currentView = activeAnimationIt->second.currentView;
+-  } else if (const auto completedAnimationIt = completedAnimations_.find(tag);
+-             completedAnimationIt != completedAnimations_.end()) {
+-    if (!completedAnimationIt->second.shouldRemove) {
++  // An entering view starts from the view that the Insert mounted.
++  if (type != LayoutAnimationType::ENTERING) {
++    if (activeAnimationIt != layoutAnimations_.end()) {
++      currentView = activeAnimationIt->second.currentView;
++    } else if (const auto completedAnimationIt = completedAnimations_.find(tag);
++               completedAnimationIt != completedAnimations_.end() && !completedAnimationIt->second.shouldRemove) {
+       currentView = completedAnimationIt->second.animation.currentView;
+     }
+   }
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.cpp b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.cpp
+index 969f2aa2b84d8041fda0bf7600e5e67d80744e72..70b9179c05ca86be701fb3e77420a3a75fbd3c48 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.cpp
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.cpp
+@@ -364,11 +364,10 @@ void LayoutAnimationsProxy_Legacy::handleUpdatesAndEnterings(
+           continue;
+         }
+ 
+-        startEnteringAnimation(tag, mutation, enteringConfig);
+-        filteredMutations.push_back(mutation);
+-
+         // temporarily set opacity to 0 to prevent flickering on android
+         std::shared_ptr<ShadowView> newView = cloneViewWithoutOpacity(mutation, propsParserContext);
++        startEnteringAnimation(tag, mutation, *newView, enteringConfig);
++        filteredMutations.push_back(mutation);
+ 
+         filteredMutations.push_back(
+             ShadowViewMutation::UpdateMutation(mutation.newChildShadowView, *newView, parentTag));
+@@ -471,7 +470,8 @@ void LayoutAnimationsProxy_Legacy::addOngoingAnimations(ShadowViewMutationList &
+     mutations.push_back(
+         ShadowViewMutation::UpdateMutation(layoutAnimation.currentView, newView, layoutAnimation.parentTag));
+     layoutAnimation.currentView = newView;
+-    if (layoutAnimation.opacity && getViewProps(newView).opacity == *layoutAnimation.opacity) {
++    if (layoutAnimation.opacity &&
++        (updateValues.animatesOpacity || getViewProps(newView).opacity == *layoutAnimation.opacity)) {
+       layoutAnimation.opacity.reset();
+     }
+   }
+@@ -650,6 +650,7 @@ bool LayoutAnimationsProxy_Legacy::shouldOverridePullTransaction() const {
+ void LayoutAnimationsProxy_Legacy::startEnteringAnimation(
+     const int tag,
+     ShadowViewMutation &mutation,
++    const ShadowView &hiddenView,
+     const std::shared_ptr<Serializable> &config) const {
+ #ifdef LAYOUT_ANIMATIONS_LOGS
+   LOG(INFO) << "start entering animation for tag " << tag << std::endl;
+@@ -657,7 +658,7 @@ void LayoutAnimationsProxy_Legacy::startEnteringAnimation(
+   enqueueLayoutAnimation(ManagedLayoutAnimationStart{
+       .tag = tag,
+       .type = LayoutAnimationType::ENTERING,
+-      .before = mutation.newChildShadowView,
++      .before = hiddenView,
+       .after = mutation.newChildShadowView,
+       .parentTag = mutation.parentTag,
+       .opacity = getViewProps(mutation.newChildShadowView).opacity,
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.h b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.h
+index 8194c73be25ffa3beab5493072c6cc6ff4a2a539..eb6597c6ef9b1ce34f0c9ebbece29899bf20ec77 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.h
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsProxy_Legacy.h
+@@ -111,8 +111,11 @@ struct LayoutAnimationsProxy_Legacy : public LayoutAnimationsProxyCommon {
+   LayoutAnimationsProxy_Legacy(const SurfaceId surfaceId, const LayoutAnimationsProxyDependencies &dependencies)
+       : LayoutAnimationsProxyCommon(surfaceId, dependencies) {}
+ 
+-  void startEnteringAnimation(const int tag, ShadowViewMutation &mutation, const std::shared_ptr<Serializable> &config)
+-      const;
++  void startEnteringAnimation(
++      const int tag,
++      ShadowViewMutation &mutation,
++      const ShadowView &hiddenView,
++      const std::shared_ptr<Serializable> &config) const;
+   void startExitingAnimation(const int tag, ShadowViewMutation &mutation, const std::shared_ptr<Serializable> &config)
+       const;
+   void startLayoutAnimation(
+diff --git a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsUtils.h b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsUtils.h
+index 675b1b7d890971d0c43522f59106f1cf20b0fe1a..4e81be4b8215dd0fa9632ad9ee6b7c22177f5a52 100644
+--- a/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsUtils.h
++++ b/Common/cpp/reanimated/LayoutAnimations/LayoutAnimationsUtils.h
+@@ -44,6 +44,7 @@ struct Frame {
+ struct UpdateValues {
+   Props::Shared newProps;
+   Frame frame;
++  bool animatesOpacity = false;
+ };
+ 
+ struct Snapshot {

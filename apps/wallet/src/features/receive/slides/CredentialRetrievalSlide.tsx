@@ -97,13 +97,13 @@ export const CredentialRetrievalSlide = ({
     return {
       transform: [{ scale: scale.value }],
     }
-  }, [])
+  })
 
   const animatedTextStyle = useAnimatedStyle(() => {
     return {
       opacity: textOpacity.value,
     }
-  }, [])
+  })
 
   // Haptic feedback for storing and completion states
   useEffect(() => {

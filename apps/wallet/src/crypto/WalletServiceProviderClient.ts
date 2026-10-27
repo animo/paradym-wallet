@@ -22,6 +22,7 @@ import type { AnyAgent, ParadymWalletSdk } from '@paradym/wallet-sdk'
 import {
   getWalletStoreDatabaseConfig,
   getWalletStoreDirectories,
+  moveLegacyStore,
   ParadymWalletAuthenticationInvalidPinError,
   secureWalletKey,
   setupAppGroupStore,
@@ -34,8 +35,8 @@ let __pin: Array<number> | undefined
 // Validation askar store id. Sits next to the main wallet
 // (`${paradymWalletSdkOptions.id}-${walletKeyVersion}`) on disk and must use a
 // different id so the two stores never conflict.
-const getValidationStoreId = (walletKeyVersion: number) =>
-  `${paradymWalletSdkOptions.id}-pin-validation-${walletKeyVersion}`
+const getValidationStoreId = (walletKeyVersion: number, id = paradymWalletSdkOptions.id) =>
+  `${id}-pin-validation-${walletKeyVersion}`
 
 // The validation store created by `setWalletServiceProviderPin` lives in its own
 // askar wallet directory. It must be wiped alongside the main wallet during a
@@ -45,12 +46,15 @@ export const resetWalletServiceProviderState = async () => {
   __pin = undefined
   const fs = new agentDependencies.FileSystem()
   const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-  const validationStoreId = getValidationStoreId(walletKeyVersion)
+  const validationStoreIds = [paradymWalletSdkOptions.id, ...(paradymWalletSdkOptions.legacyIds ?? [])].map((id) =>
+    getValidationStoreId(walletKeyVersion, id)
+  )
 
   const paths = [
-    ...getWalletStoreDirectories(validationStoreId),
-    // Legacy store id used before the rename — keep cleaning up so existing
-    // installs don't leave an orphan directory behind on reset.
+    // Legacy ones too: one left behind would be moved back in on the next PIN entry.
+    ...validationStoreIds.flatMap(getWalletStoreDirectories),
+    // The wallet's own store in Credo's default directory. The SDK's reset only
+    // removes it while the wallet is unlocked; onboarding also resets a locked one.
     `${fs.dataPath}/wallet/paradym-wallet-${walletKeyVersion}`,
   ]
   for (const p of paths) {
@@ -64,6 +68,13 @@ export const setWalletServiceProviderPin = async (pin: Array<number>, validatePi
     const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
     const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
     const validationStoreId = getValidationStoreId(walletKeyVersion)
+
+    // Moved along with the wallet's own store when its id changed: a missing one would be
+    // provisioned with whatever PIN is typed here, right or wrong.
+    await moveLegacyStore(
+      validationStoreId,
+      (paradymWalletSdkOptions.legacyIds ?? []).map((legacyId) => getValidationStoreId(walletKeyVersion, legacyId))
+    )
 
     // On iOS this store lives in the container shared with the identity document provider
     // extension, so the request UI validates a PIN against the same store the app does. Existing

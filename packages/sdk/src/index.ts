@@ -6,7 +6,12 @@ export { assertAgentType } from './agent'
 export { RsaVerificationKeyManagementService } from './kms/RsaVerificationKeyManagementService'
 export { type DcApiRegisterCredentialsOptions} from './dcApi/registerCredentials'
 export { getAppGroupContainerPath } from './dcApi/appGroup'
-export { getWalletStoreDatabaseConfig, getWalletStoreDirectories, setupAppGroupStore } from './storage/walletStore'
+export {
+  getWalletStoreDatabaseConfig,
+  getWalletStoreDirectories,
+  moveLegacyStore,
+  setupAppGroupStore,
+} from './storage/walletStore'
 export { getSharedMmkv } from './storage/sharedMmkv'
 export type { CredentialForDisplay, DisplayImage, CredentialIssuerDisplay, CredentialDisplay, CredentialMetadata } from './display/credential'
 export * from './error'

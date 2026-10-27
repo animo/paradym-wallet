@@ -243,6 +243,19 @@ export const getTrustedEntitiesForOpenId4Vci = async (
     throw new Error(`Found '${trustMechanism}', but without any configuration`)
   }
 
+  // A signed issuer that matches no trusted x509 or did entity can still be a trusted issuer by its URL
+  const fallbackMechanismConfiguration = options.trustMechanisms.find(
+    (tm): tm is FallbackMechanismConfiguration => 'trustMechanism' in tm && tm.trustMechanism === 'none'
+  )
+  const getTrustedEntitiesForFallback = async () =>
+    fallbackMechanismConfiguration
+      ? getTrustedEntitiesForFallbackForOpenId4Vci({
+          ...options,
+          walletTrustedEntity,
+          trustMechanismConfiguration: fallbackMechanismConfiguration,
+        })
+      : undefined
+
   let trustedEntity: TrustedIssuerEntity | undefined
   switch (trustMechanism) {
     case 'x509':
@@ -251,12 +264,7 @@ export const getTrustedEntitiesForOpenId4Vci = async (
           ...options,
           walletTrustedEntity,
           trustMechanismConfiguration: trustMechanismConfiguration as X509TrustMechanismConfiguration,
-        })) ??
-        (await getTrustedEntitiesForFallbackForOpenId4Vci({
-          ...options,
-          walletTrustedEntity,
-          trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
-        }))
+        })) ?? (await getTrustedEntitiesForFallback())
       break
     case 'did':
       trustedEntity =
@@ -264,19 +272,10 @@ export const getTrustedEntitiesForOpenId4Vci = async (
           ...options,
           walletTrustedEntity,
           trustMechanismConfiguration: trustMechanismConfiguration as DidTrustMechanismConfiguration,
-        }) ??
-        (await getTrustedEntitiesForFallbackForOpenId4Vci({
-          ...options,
-          walletTrustedEntity,
-          trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
-        }))
+        }) ?? (await getTrustedEntitiesForFallback())
       break
     case 'none':
-      trustedEntity = await getTrustedEntitiesForFallbackForOpenId4Vci({
-        ...options,
-        walletTrustedEntity,
-        trustMechanismConfiguration: trustMechanismConfiguration as FallbackMechanismConfiguration,
-      })
+      trustedEntity = await getTrustedEntitiesForFallback()
       break
     default:
       throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
