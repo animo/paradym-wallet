@@ -441,6 +441,8 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
           // which is exactly what it would look like from then on.
           try {
             const isBiometricsEnabled = options?.enableBiometrics ?? getIsBiometricsEnabled()
+            // Biometrics count as enabled until set, so a later unlock would store the wallet key for biometrics.
+            if (options?.enableBiometrics === false) setIsBiometricsEnabled(false)
             if (canUseBiometrics && isBiometricsEnabled) {
               const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
               await secureWalletKey.storeWalletKey(walletKey, walletKeyVersion)

@@ -2,6 +2,9 @@
 	"extends": "expo/tsconfig.base",
 	"compilerOptions": {
 		"strict": true,
+		// React Native 0.87 made the strict TypeScript API the default. Keep the legacy types until the code and
+		// dependencies (tamagui, masked-view) are migrated: the opt-out is removed after React Native 0.89.
+		"customConditions": ["react-native", "react-native-legacy-deep-imports"],
 		"noEmitOnError": true,
 		"types": ["png"],
 		"skipLibCheck": true,

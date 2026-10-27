@@ -68,7 +68,8 @@
 		"react-native-reanimated-carousel": "catalog:",
 		"react-native-safe-area-context": "catalog:",
 		"react-native-screens": "catalog:",
-		"react-native-svg": "catalog:"
+		"react-native-svg": "catalog:",
+		"react-native-worklets": "catalog:"
 	},
 	"devDependencies": {
 		"@babel/core": "catalog:",

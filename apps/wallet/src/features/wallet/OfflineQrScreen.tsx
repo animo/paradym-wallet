@@ -198,7 +198,7 @@ export function OfflineQrScreen() {
             bg="$grey-100"
             color="$grey-900"
             flexDirection="row"
-            onPress={back}
+            onPress={() => back()}
             scaleOnPress
             alignSelf="center"
           >
