@@ -4,7 +4,7 @@ import { createAnimations } from '@tamagui/animations-react-native'
 // so it falls back to the JS driver. That calls `setNativeProps` from the JS thread every frame, which on RN < 0.86.1
 // races with main-thread commits (e.g. react-native-screens during a modal presentation) and crashes in
 // `ShadowNode::clone`. Only animate props on RN's native driver allowlist (opacity, transforms, colors, ...).
-export const animations = createAnimations(
+const driver = createAnimations(
   {
     bouncy: {
       type: 'spring',
@@ -38,6 +38,36 @@ export const animations = createAnimations(
   },
   { useNativeDriver: true }
 )
+
+// Tamagui also animates border widths by default, which aren't on RN's native driver allowlist: every animated
+// component with a border width logged "Style property 'borderWidth' is not supported by native animated module".
+// Components without their own `animateOnly` get the keys the native driver supports, the rest is applied directly.
+const nativeDriverStyleKeys = [
+  'transform',
+  'opacity',
+  'backgroundColor',
+  'color',
+  'borderColor',
+  'borderLeftColor',
+  'borderRightColor',
+  'borderTopColor',
+  'borderBottomColor',
+  'borderRadius',
+  'borderTopLeftRadius',
+  'borderTopRightRadius',
+  'borderBottomLeftRadius',
+  'borderBottomRightRadius',
+]
+
+export const animations: typeof driver = {
+  ...driver,
+  useAnimations: (animationProps) =>
+    driver.useAnimations(
+      animationProps.props.animateOnly
+        ? animationProps
+        : { ...animationProps, props: { ...animationProps.props, animateOnly: nativeDriverStyleKeys } }
+    ),
+}
 
 export const springConfig = {
   damping: 24,
