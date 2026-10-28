@@ -370,6 +370,7 @@ export function CredentialNotificationScreen() {
           step: 'verify-issuer',
           progress: 33,
           backIsCancel: true,
+          combineWithNext: true,
           screen: (
             <VerifyPartySlide
               key="verify-issuer"
@@ -471,12 +472,14 @@ export function CredentialNotificationScreen() {
           step: 'retrieve-credential',
           progress: 82.5,
           backIsCancel: true,
+          ownsWideLayout: true,
           screen: (
             <CredentialRetrievalSlide
               key="retrieve-credential"
               onGoToWallet={onGoToWallet}
               display={resolvedCredentialOffer.credentialDisplay}
               attributes={receivedCredential?.attributes ?? []}
+              credential={receivedCredential}
               deferred={deferredCredential !== undefined}
               isCompleted={isCompleted}
               onAccept={onCompleteCredentialRetrieval}

@@ -1,6 +1,6 @@
 import { useDevelopmentMode } from '@app/hooks'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { TextBackButton, useScrollViewPosition } from '@package/app'
+import { BackFooter, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   Circle,
@@ -163,9 +163,7 @@ export function TrustDetailScreen({
         </YStack>
       </ScrollView>
 
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
-        <TextBackButton />
-      </YStack>
+      <BackFooter />
     </FlexPage>
   )
 }

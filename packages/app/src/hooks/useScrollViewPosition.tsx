@@ -1,8 +1,13 @@
 import { useCallback, useState } from 'react'
-import { Dimensions, type LayoutChangeEvent, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native'
+import {
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  useWindowDimensions,
+} from 'react-native'
 
 export const useScrollViewPosition = (offset?: number) => {
-  const height = Dimensions.get('window').height
+  const { height } = useWindowDimensions()
 
   const scrollEventThrottle = 48
   const [isScrolledByOffset, setIsScrolledByOffset] = useState(false)

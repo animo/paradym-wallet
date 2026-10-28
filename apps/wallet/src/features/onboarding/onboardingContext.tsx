@@ -1,3 +1,4 @@
+import { paradymWalletSdkOptions } from '@app/config/paradym'
 import {
   resetWalletServiceProviderState,
   setupWalletServiceProvider,
@@ -13,6 +14,8 @@ import { sleep } from '@package/utils'
 import {
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
+  type ParadymWalletSdk,
+  reset as resetWalletStore,
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
@@ -40,6 +43,8 @@ export function OnboardingContextProvider({
 }>) {
   const paradym = useParadym()
   const hasResetStaleWallet = useRef(false)
+  // Setting the PIN waits for it, as the reset ends by removing the salt that setting the PIN creates
+  const staleWalletReset = useRef<Promise<unknown>>(undefined)
 
   useEffect(() => {
     // Onboarding requires a fresh, unconfigured wallet. If we mount with stale
@@ -50,11 +55,17 @@ export function OnboardingContextProvider({
     if (hasResetStaleWallet.current) return
     if (paradym.state === 'initializing') return
     hasResetStaleWallet.current = true
-    if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
-      paradym.reset()
-      resetWalletServiceProviderState()
-      resetAppState()
-    }
+    const hasStaleState =
+      paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key'
+    staleWalletReset.current = Promise.all([
+      hasStaleState
+        ? paradym.reset()
+        : // Without a salt no PIN opens a store, so one left behind (e.g. by an interrupted onboarding
+          // in an earlier version) would make the unlock after the PIN step fail.
+          resetWalletStore(undefined, paradymWalletSdkOptions),
+      resetWalletServiceProviderState(),
+    ]).catch((error) => console.error('Resetting the stale wallet failed', error))
+    if (hasStaleState) resetAppState()
   }, [paradym])
 
   const { successHaptic, lightHaptic } = useHaptics()
@@ -146,6 +157,7 @@ export function OnboardingContextProvider({
     }
 
     try {
+      await staleWalletReset.current
       await paradym.setPin(walletPin as string)
       await setWalletServiceProviderPin((walletPin as string).split('').map(Number))
       goToNextStep()
@@ -167,8 +179,9 @@ export function OnboardingContextProvider({
       return
     }
 
+    let sdk: ParadymWalletSdk | undefined
     try {
-      const sdk = await paradym.unlock({ enableBiometrics })
+      sdk = await paradym.unlock({ enableBiometrics })
       await setupWalletServiceProvider(sdk, true)
 
       goToNextStep()
@@ -184,6 +197,9 @@ export function OnboardingContextProvider({
         throw error
       }
 
+      // The store is open now, and `paradym` is still the state from before the unlock, so its
+      // reset can't close it.
+      await sdk?.reset()
       await reset({
         resetToStep: 'pin',
         error,
@@ -218,6 +234,8 @@ export function OnboardingContextProvider({
       if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
         await paradym.reset()
       }
+      // Otherwise the new PIN can't open the validation store the previous one created.
+      await resetWalletServiceProviderState()
 
       if (paradym.state !== 'initializing') {
         paradym.reinitialize()

@@ -48,7 +48,6 @@ export function OnboardingIdCardRequestedAttributes({
               comment: 'Shown as the name of the credential card when requested attributes from eID card are shown',
             })}
             issuerImage={{ url: bdrPidIssuerDisplay.logo }}
-            backgroundImage={{ url: bdrPidCredentialDisplay.backgroundImage }}
             backgroundColor={bdrPidCredentialDisplay.backgroundColor}
             textColor={bdrPidCredentialDisplay.textColor}
             formattedDisclosedAttributes={requestedAttributes.map((a) => sanitizeString(a))}

@@ -36,9 +36,9 @@ export const Heading = styled(THeading, {
     heading: {
       h1: {
         name: 'H1',
-        size: '$7',
+        size: '$6',
         fontWeight: '$semiBold',
-        lineHeight: '$6',
+        lineHeight: '$5',
         letterSpacing: '$4',
         ml: -2,
       },

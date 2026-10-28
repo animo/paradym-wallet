@@ -52,7 +52,7 @@ const useContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
 
 export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCardSlideProps) => {
   const { t } = useLingui()
-  const { onNext, onCancel } = useWizard()
+  const { onNext, onCancel, isContinuing } = useWizard()
 
   const content = useContentType(type, display.issuer.name ?? t(commonMessages.unknown))
 
@@ -75,13 +75,14 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
           backgroundColor={display.backgroundColor ?? '$grey-900'}
         />
       </YStack>
-      <Stack btw={1} borderColor="$grey-100" p="$4" mx="$-4">
+      <Stack btw={1} borderColor="$grey-100" px="$4" py="$3" mx="$-4">
         <DualResponseButtons
           align="horizontal"
           onAccept={goToNextSlide}
           onDecline={onCancel}
           acceptText={t(commonMessages.continue)}
           declineText={t(commonMessages.stop)}
+          isLoading={isContinuing}
         />
       </Stack>
     </YStack>

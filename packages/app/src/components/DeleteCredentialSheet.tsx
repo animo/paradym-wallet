@@ -13,9 +13,11 @@ interface DeleteCredentialSheetProps {
   setIsSheetOpen: (isOpen: boolean) => void
   id: CredentialId
   name: string
+  // Called once the card is deleted or deleting failed. Goes back by default.
+  onDone?: () => void
 }
 
-export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }: DeleteCredentialSheetProps) {
+export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name, onDone }: DeleteCredentialSheetProps) {
   const { paradym } = useParadym('unlocked')
   const toast = useToastController()
   const navigation = useNavigation()
@@ -39,7 +41,8 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name }:
       })
       errorHaptic()
     }
-    navigation.goBack()
+    if (onDone) onDone()
+    else navigation.goBack()
   }
 
   const onCancel = withHaptics(() => setIsSheetOpen(false))

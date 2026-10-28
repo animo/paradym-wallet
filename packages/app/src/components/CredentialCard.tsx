@@ -69,6 +69,9 @@ export function CredentialCard({
       borderColor="$borderTranslucent"
       position="relative"
       f={1}
+      w="100%"
+      maxWidth={360}
+      als="center"
       style={pressStyle}
     >
       <Card

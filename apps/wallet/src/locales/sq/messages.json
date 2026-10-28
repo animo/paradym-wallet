@@ -43,7 +43,7 @@
 			"amountShared": ["amountShared"]
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 241]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 247]],
 		"translation": "{amountShared} kredenciale u ndanë."
 	},
 	"inbox.notificationType.fromLabel": {
@@ -103,7 +103,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 161]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 167]],
 		"translation": "{name} dëshiron të lidhet me ty."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -112,7 +112,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 139]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
 		"translation": "{name} dëshiron të bashkëveprojë për të krijuar një nënshkrim dixhital për një dokument."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -121,7 +121,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 129]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
 		"translation": "{name} dëshiron të të ofrojë një kartë."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -130,7 +130,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 151]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 157]],
 		"translation": "{name} dëshiron të kërkojë informacion nga ti."
 	},
 	"credentials.totalLabel": {
@@ -144,7 +144,7 @@
 		"message": "1 credential was shared.",
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 246]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 252]],
 		"translation": "1 kredencial u nda."
 	},
 	"dateFormatting.oneDay": {
@@ -186,7 +186,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/wallet/components/CustomCredentialAttributes.tsx", 356]
+			["src/features/wallet/components/CustomCredentialAttributes.tsx", 361]
 		],
 		"translation": "Rreth kartës"
 	},
@@ -224,7 +224,7 @@
 		"message": "Activate Biometrics",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 261]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 279]],
 		"translation": "Aktivizo biometrikën"
 	},
 	"onboarding.biometrics.subtitle": {
@@ -249,7 +249,7 @@
 		"comments": [
 			"Shown below the empty activity title to explain why the list is empty"
 		],
-		"origin": [["src/features/activity/ActivityScreen.tsx", 25]],
+		"origin": [["src/features/activity/ActivityScreen.tsx", 28]],
 		"translation": "Aktiviteti do të shfaqet këtu pasi të ndash ose marrësh kredenciale."
 	},
 	"onboardingWalletExplanation.slide1.subtitle": {
@@ -384,28 +384,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 163]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 169]],
 		"translation": "Një organizatë e panjohur dëshiron të lidhet me ty."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 149]],
 		"translation": "Një organizatë e panjohur dëshiron të bashkëveprojë për të krijuar një nënshkrim dixhital për një dokument."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 137]],
 		"translation": "Një organizatë e panjohur dëshiron të të ofrojë një kartë."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 159]],
 		"translation": "Një organizatë e panjohur dëshiron të kërkojë informacion nga ti."
 	},
 	"menu.section.app": {
@@ -668,8 +668,8 @@
 			"Title shown in header for the credential detail attributes screen"
 		],
 		"origin": [
-			["src/features/wallet/CredentialDetailAttributesScreen.tsx", 95],
-			["src/features/wallet/CredentialDetailScreen.tsx", 102]
+			["src/features/wallet/components/CredentialDetail.tsx", 90],
+			["src/features/wallet/components/CredentialDetailAttributes.tsx", 73]
 		],
 		"translation": "Atributet e kartës"
 	},
@@ -677,7 +677,7 @@
 		"message": "Card details",
 		"placeholders": {},
 		"comments": ["Title of the credential details screen"],
-		"origin": [["src/features/wallet/CredentialDetailScreen.tsx", 84]],
+		"origin": [["src/features/wallet/components/CredentialDetail.tsx", 71]],
 		"translation": "Detajet e kartës"
 	},
 	"cardLifecycle.limitedByDate.expired.title": {
@@ -701,7 +701,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 170]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 180]
 		],
 		"translation": "Karta ende nuk është gati"
 	},
@@ -776,7 +776,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 189]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 199]
 		],
 		"translation": "Karta u shtua me sukses në portofolin tënd!"
 	},
@@ -936,7 +936,7 @@
 		"message": "Credentials will appear here once you receive them.",
 		"placeholders": {},
 		"comments": ["Subtext explaining that credentials will appear later"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 64]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 112]],
 		"translation": "Kredencialet do të shfaqen këtu pasi t'i marrësh."
 	},
 	"noContentWallet.message": {
@@ -987,7 +987,7 @@
 		"message": "Deleted credential",
 		"placeholders": {},
 		"comments": ["Shown when a credential no longer exists in the wallet"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 108]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 114]],
 		"translation": "Kredencial i fshirë"
 	},
 	"common.demoOrganization": {
@@ -1034,7 +1034,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 174]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 184]
 		],
 		"translation": "Dëshiron ta ruash këtë kartë?"
 	},
@@ -1146,7 +1146,7 @@
 		"message": "Error occurred during onboarding",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 233]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 251]],
 		"translation": "Ndodhi gabim gjatë regjistrimit"
 	},
 	"notification.errorParsingInvitation": {
@@ -1256,7 +1256,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 209]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 215]],
 		"translation": "Bashkëveprimi i parë"
 	},
 	"aboutScreen.contactIntro": {
@@ -1342,7 +1342,7 @@
 		"message": "Hello!",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 61]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 63]],
 		"translation": "Përshëndetje!"
 	},
 	"common.hideMetadataAttributes": {
@@ -1359,7 +1359,7 @@
 			"Button label that toggles visibility of shareable attributes"
 		],
 		"origin": [
-			["src/features/wallet/CredentialDetailAttributesScreen.tsx", 157]
+			["src/features/wallet/components/CredentialDetailAttributes.tsx", 131]
 		],
 		"translation": "Fshih atributet e ndarshme"
 	},
@@ -1410,7 +1410,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 342],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 501]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 504]
 		],
 		"translation": "Nëse ndalon, oferta e kartës do të anulohet."
 	},
@@ -1536,12 +1536,21 @@
 	"common.issuedBy": {
 		"message": "Issued by {0}.",
 		"placeholders": {
-			"0": ["credential.display.issuer.name", "credentialDisplay.issuer.name"]
+			"0": [
+				"credential.display.issuer.name",
+				"credentialDisplay.issuer.name",
+				"display.issuer.name"
+			]
 		},
-		"comments": ["Prefix before issuer name", "Prefix before issuer name"],
+		"comments": [
+			"Prefix before issuer name",
+			"Prefix before issuer name",
+			"Prefix before issuer name"
+		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 107],
-			["src/features/wallet/CredentialDetailScreen.tsx", 89]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 330],
+			["src/features/wallet/components/CredentialDetail.tsx", 76]
 		],
 		"translation": "Lëshuar nga {0}."
 	},
@@ -1562,7 +1571,7 @@
 			"0": ["formatDate(issuedAt, { includeTime: false })"]
 		},
 		"comments": ["Label before the date a credential was issued"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 186]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 235]],
 		"translation": "Lëshuar më {0}"
 	},
 	"common.fields.issuer": {
@@ -1601,7 +1610,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 216]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 222]],
 		"translation": "Bashkëveprimi i fundit: {0}"
 	},
 	"predicate.lessThan": {
@@ -1718,7 +1727,7 @@
 		"placeholders": {},
 		"comments": ["Error toast when a credential has no displayable attributes"],
 		"origin": [
-			["src/features/wallet/CredentialDetailAttributesScreen.tsx", 75]
+			["src/features/wallet/CredentialDetailAttributesScreen.tsx", 18]
 		],
 		"translation": "Nuk u gjetën atribute"
 	},
@@ -1728,7 +1737,7 @@
 			"searchQuery": ["searchQuery"]
 		},
 		"comments": ["Shown when search yields no results; includes query string"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 119]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 166]],
 		"translation": "Nuk u gjetën karta për \"{searchQuery}\""
 	},
 	"credentials.noCardsMessage": {
@@ -1755,7 +1764,7 @@
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 251]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 257]],
 		"translation": "Nuk u ndanë kredenciale."
 	},
 	"common.noPurposeProvided": {
@@ -1818,7 +1827,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 220]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 226]],
 		"translation": "Nuk u gjetën bashkëveprime të mëparshme"
 	},
 	"onboardingDataProtection.toast.secureDevice": {
@@ -1895,6 +1904,15 @@
 		],
 		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 50]],
 		"translation": "U zbulua kërkesë e tepërt"
+	},
+	"presentationSuccess.paidTo": {
+		"message": "Paid to {0}",
+		"placeholders": {
+			"0": ["payment.payee"]
+		},
+		"comments": ["Shown below the amount of a completed payment"],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 131]],
+		"translation": "Paguar te {0}"
 	},
 	"paso.payment.accept": {
 		"message": "Pay",
@@ -2065,7 +2083,7 @@
 		"message": "Pin entries do not match",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 123]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 134]],
 		"translation": "Hyrjet e PIN-it nuk përputhen"
 	},
 	"common.pinRequiredToAcceptPresentation": {
@@ -2148,7 +2166,7 @@
 		"message": "Present In-person",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 77]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 79]],
 		"translation": "Paraqit personalisht"
 	},
 	"common.presentationCouldNotBeShared": {
@@ -2173,7 +2191,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 205]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 211]],
 		"translation": "Bashkëveprime të mëparshme"
 	},
 	"aboutScreen.privacyPolicyTitle": {
@@ -2238,7 +2256,7 @@
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 64]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 66]],
 		"translation": "Merr ose nda nga portofoli yt"
 	},
 	"activity.receivedFailed": {
@@ -2247,7 +2265,7 @@
 			"0": ["activity.entity.name"]
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 146]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 152]],
 		"translation": "Marrja e kartave nga {0} dështoi."
 	},
 	"activity.receivedStopped": {
@@ -2258,7 +2276,7 @@
 		"comments": [
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 153]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 159]],
 		"translation": "Marrja e kartave nga {0} u anulua."
 	},
 	"activity.latest.title": {
@@ -2325,7 +2343,7 @@
 		"comments": [
 			"Heading shown when the request did not result in attributes being shared"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 129]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 135]],
 		"translation": "Informacion i kërkuar"
 	},
 	"onboarding.resetAlert.title": {
@@ -2392,7 +2410,7 @@
 		"message": "Scan QR-code",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 71]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 73]],
 		"translation": "Skano kodin QR"
 	},
 	"nfcScanner.complete.title": {
@@ -2445,7 +2463,7 @@
 		"message": "Search cards",
 		"placeholders": {},
 		"comments": ["Placeholder for search input in credentials list"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 85]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 133]],
 		"translation": "Kërko karta"
 	},
 	"onboardingIntroduction.step1.title": {
@@ -2524,7 +2542,7 @@
 		"placeholders": {},
 		"comments": ["Header for attributes that can be shared with a verifier"],
 		"origin": [
-			["src/features/wallet/CredentialDetailAttributesScreen.tsx", 113]
+			["src/features/wallet/components/CredentialDetailAttributes.tsx", 91]
 		],
 		"translation": "Atribute të ndarshme"
 	},
@@ -2532,9 +2550,13 @@
 		"message": "Shared attributes",
 		"placeholders": {},
 		"comments": [
+			"Heading shown when attributes were successfully shared in an activity",
 			"Heading shown when attributes were successfully shared in an activity"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 124]],
+		"origin": [
+			["src/features/activity/ActivityDetailScreen.tsx", 130],
+			["src/features/share/components/RequestedAttributesSection.tsx", 139]
+		],
 		"translation": "Atribute të ndara"
 	},
 	"activity.latest.sharedCard": {
@@ -2593,7 +2615,7 @@
 			"Button label that toggles visibility of shareable attributes"
 		],
 		"origin": [
-			["src/features/wallet/CredentialDetailAttributesScreen.tsx", 162]
+			["src/features/wallet/components/CredentialDetailAttributes.tsx", 136]
 		],
 		"translation": "Shfaq atributet e ndarshme"
 	},
@@ -2672,7 +2694,7 @@
 		"comments": [
 			"Shown below a document name to indicate the user signed it with a specific QTSP"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 280]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 286]],
 		"translation": "Duke nënshkruar me {0}"
 	},
 	"common.simulatorEidCardActivated": {
@@ -2766,7 +2788,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 338],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 497]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 500]
 		],
 		"translation": "Ndal ofertën e kartës?"
 	},
@@ -2825,7 +2847,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 195]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 205]
 		],
 		"translation": "Karta do të merret sapo të jetë e disponueshme."
 	},
@@ -2837,7 +2859,7 @@
 		"comments": [
 			"Shown in activity detail when the received credentials are pending"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 160]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 166]],
 		"translation": "Kartat nga {0} ende nuk janë gati dhe do të merren më vonë."
 	},
 	"paso.refusal.metadataViolatesConstraints": {
@@ -2860,14 +2882,14 @@
 		"message": "The document was not signed.",
 		"placeholders": {},
 		"comments": ["Shown after a failed digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 119]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 125]],
 		"translation": "Dokumenti nuk u nënshkrua."
 	},
 	"activity.documentSigned": {
 		"message": "The document was signed.",
 		"placeholders": {},
 		"comments": ["Shown after a successful digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 114]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 120]],
 		"translation": "Dokumenti u nënshkrua."
 	},
 	"cardLifecycle.limitedByDate.expired.description": {
@@ -3291,7 +3313,7 @@
 			]
 		},
 		"comments": [],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 305]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 311]],
 		"translation": "Për {0}"
 	},
 	"pidSetup.enableBiometrics.subtitle": {
@@ -3513,7 +3535,7 @@
 		"message": "View attributes of the card",
 		"placeholders": {},
 		"comments": ["Description text for the attributes button"],
-		"origin": [["src/features/wallet/CredentialDetailScreen.tsx", 107]],
+		"origin": [["src/features/wallet/components/CredentialDetail.tsx", 95]],
 		"translation": "Shiko atributet e kartës"
 	},
 	"menu.section.wallet": {
@@ -3653,7 +3675,7 @@
 		"message": "You can now return to the previous app.",
 		"placeholders": {},
 		"comments": ["Instruction shown after presentation is completed"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 97]],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 106]],
 		"translation": "Tani mund të kthehesh te aplikacioni i mëparshëm."
 	},
 	"sharing.failed.missingCredentials": {
@@ -3724,7 +3746,7 @@
 		"comments": [
 			"Shown in activity detail when one credential has been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 174]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 180]],
 		"translation": "Ke marrë kartën e mëposhtme nga {0}."
 	},
 	"activity.receivedMultiple": {
@@ -3735,7 +3757,7 @@
 		"comments": [
 			"Shown in activity detail when multiple credentials have been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 168]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 174]],
 		"translation": "Ke marrë kartat e mëposhtme nga {0}."
 	},
 	"pidSetup.enableBiometrics.title": {
@@ -3791,7 +3813,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 246]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 260]
 		],
 		"translation": "Kartat e tua ende nuk janë gati. Do të kontrollojmë herë pas here në sfond dhe do t'i marrim kartat sapo të jenë gati."
 	},
@@ -3831,14 +3853,14 @@
 			"verifierName": ["verifierName"]
 		},
 		"comments": ["Shown after credentials are shared with a specific verifier"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 79]],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 88]],
 		"translation": "Informacioni yt është ndarë me <0>{verifierName}</0>."
 	},
 	"presentationSuccess.message": {
 		"message": "Your information has been shared.",
 		"placeholders": {},
 		"comments": ["Shown after credentials are shared (no verifier name)"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 86]],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 95]],
 		"translation": "Informacioni yt është ndarë."
 	},
 	"paso.refusal.credentialOnlyForPayments": {

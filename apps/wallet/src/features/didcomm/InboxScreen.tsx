@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro'
-import { InboxNotificationRowCard, TextBackButton, useScrollViewPosition } from '@package/app'
+import { BackFooter, InboxNotificationRowCard, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
 import { fetchAndProcessDeferredCredentials, useInboxNotifications, useParadym } from '@paradym/wallet-sdk'
@@ -132,9 +132,7 @@ export function InboxScreen() {
           </YStack>
         )}
       </ScrollView>
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
-        <TextBackButton />
-      </YStack>
+      <BackFooter />
     </FlexPage>
   )
 }

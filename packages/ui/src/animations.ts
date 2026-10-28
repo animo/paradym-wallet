@@ -59,8 +59,11 @@ const nativeDriverStyleKeys = [
   'borderBottomRightRadius',
 ]
 
+// Without re-renders, Tamagui applies press and media styles through a path that ignores `animateOnly`. It then animates
+// layout keys such as height and switches a node that is already on the native driver to the JS driver, which throws.
 export const animations: typeof driver = {
   ...driver,
+  avoidReRenders: false,
   useAnimations: (animationProps) =>
     driver.useAnimations(
       animationProps.props.animateOnly
