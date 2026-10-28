@@ -22,12 +22,12 @@ export function NestedAttributeScreen({ item, parentName }: NestedAttributeScree
         title={item.label ?? parentName}
         subtitle={item.label ? parentName : undefined}
       />
-      <ScrollView ref={scrollViewRef} pt="$4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack px="$4" gap="$4" marginBottom={bottom}>
+      <ScrollView ref={scrollViewRef} pt="4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <YStack px="4" gap="4" marginBottom={bottom}>
           <CredentialAttributes attributes={item.value} scrollRef={scrollViewRef} />
         </YStack>
       </ScrollView>
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
         <TextBackButton />
       </YStack>
     </FlexPage>

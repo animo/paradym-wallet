@@ -18,8 +18,8 @@ export function TextBackButton() {
   }
 
   return (
-    <Button.Text color="$primary-500" fontWeight="$semiBold" onPress={withHaptics(handleBack)} scaleOnPress>
-      <HeroIcons.ArrowLeft mr={-4} color="$primary-500" strokeWidth={2} size={20} /> {t(commonMessages.backButton)}
+    <Button.Text color="primary-500" fontWeight="semiBold" onPress={withHaptics(handleBack)} scaleOnPress>
+      <HeroIcons.ArrowLeft mr={-4} color="primary-500" strokeWidth={2} size={20} /> {t(commonMessages.backButton)}
     </Button.Text>
   )
 }

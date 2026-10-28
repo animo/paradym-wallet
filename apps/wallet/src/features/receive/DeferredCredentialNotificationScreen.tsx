@@ -75,13 +75,13 @@ export function DeferredCredentialNotificationScreen() {
         <YStack
           w="100%"
           top={0}
-          p="$4"
-          borderBottomWidth="$0.5"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+          p="4"
+          borderBottomWidth="0-5"
+          borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
         />
         <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack ai="center" gap="$6" p="$4" marginBottom={bottom}>
-            <AnimatedStack width="100%" mt="$-3" mb="$-5" scale={0.75}>
+          <YStack ai="center" gap="6" p="4" marginBottom={bottom}>
+            <AnimatedStack width="100%" mt="-3" mb="-5" scale={0.75}>
               <CredentialCard
                 issuerImage={{
                   url: credentialDisplay.issuer.logo?.url,
@@ -94,10 +94,10 @@ export function DeferredCredentialNotificationScreen() {
                   altText: credentialDisplay.backgroundImage?.altText,
                 }}
                 isLoading={true}
-                bgColor={credentialDisplay.backgroundColor ?? '$grey-900'}
+                bgColor={credentialDisplay.backgroundColor ?? 'grey-900'}
               />
             </AnimatedStack>
-            <Stack gap="$2">
+            <Stack gap="2">
               <Heading ta="center" heading="h1">
                 <Trans id="deferredCredentials.title" comment="Title of the pending credential notification screen">
                   Pending card
@@ -109,7 +109,7 @@ export function DeferredCredentialNotificationScreen() {
                 </Trans>
               </Paragraph>
             </Stack>
-            <YStack w="100%" gap="$2">
+            <YStack w="100%" gap="2">
               {deferredCredential.lastErroredAt && (
                 <InfoButton
                   variant="danger"
@@ -188,7 +188,7 @@ export function DeferredCredentialNotificationScreen() {
             </YStack>
           </YStack>
         </ScrollView>
-        <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
           <TextBackButton />
         </YStack>
       </FlexPage>

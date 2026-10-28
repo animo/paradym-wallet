@@ -1,43 +1,35 @@
-import { ToastContainer, YStack } from '@package/ui'
-import { Toast, useToastState } from '@tamagui/toast'
-import { useEffect, useRef } from 'react'
-import { AccessibilityInfo, findNodeHandle } from 'react-native'
+import { Toast, ToastContainer, type ToastItemRenderProps, type ToastPreset, YStack } from '@package/ui'
+import { useEffect } from 'react'
+import { AccessibilityInfo } from 'react-native'
 
-export const CustomToast = () => {
-  const currentToast = useToastState()
-  const viewRef = useRef(null)
+export const CustomToast = ({ toast, index, handleClose }: ToastItemRenderProps) => {
+  const title = String(typeof toast.title === 'function' ? toast.title() : toast.title)
+  const message = typeof toast.description === 'string' ? toast.description : undefined
 
   useEffect(() => {
-    if (currentToast) {
-      // Add a small delay to ensure the view is mounted
-      setTimeout(() => {
-        const handle = findNodeHandle(viewRef.current)
-        if (handle) {
-          AccessibilityInfo.announceForAccessibility(currentToast.title)
-        }
-      }, 100)
-    }
-  }, [currentToast])
-
-  if (!currentToast || currentToast.isHandledNatively) {
-    return null
-  }
+    AccessibilityInfo.announceForAccessibility(title)
+  }, [title])
 
   return (
-    <Toast
-      key={currentToast.id}
-      duration={currentToast.duration}
-      viewportName={currentToast.viewportName}
-      p="$4"
+    <Toast.Item
+      toast={toast}
+      index={index}
+      p="4"
+      my="1"
       width="100%"
+      // The shadow v2's toast frame had (`elevation="$3"`)
+      shadowColor="black"
+      shadowRadius={20}
+      shadowOffset={{ width: 0, height: 10 }}
     >
-      <YStack ref={viewRef} accessible={true} role="alert" aria-label={currentToast.title}>
+      <YStack accessible={true} role="alert" aria-label={title}>
         <ToastContainer
-          title={currentToast.title}
-          message={currentToast.message}
-          variant={currentToast.customData?.preset}
+          title={title}
+          message={message}
+          variant={toast.data?.preset as ToastPreset | undefined}
+          onClose={handleClose}
         />
       </YStack>
-    </Toast>
+    </Toast.Item>
   )
 }

@@ -75,11 +75,11 @@ export function CardInfoLifecycle({ validUntil, validFrom, isRevoked, hasRefresh
   return (
     <>
       {isRefreshTokenExpired && (
-        <Stack pb="$4">
+        <Stack pb="4">
           {/* TODO: what is this screen? the button press just redirects to the pid setup */}
-          <Button.Solid bg="$grey-50" bw="$0.5" borderColor="$grey-200" color="$grey-900" disabled>
+          <Button.Solid bg="grey-50" bw="0-5" borderColor="grey-200" color="grey-900" disabled>
             <Trans id="cardLifecycle.refreshCardButton">Refresh card</Trans>{' '}
-            <HeroIcons.ArrowPath ml="$-2" size={20} color="$grey-700" />
+            <HeroIcons.ArrowPath ml="-2" size={20} color="grey-700" />
           </Button.Solid>
         </Stack>
       )}

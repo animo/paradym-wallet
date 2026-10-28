@@ -5,24 +5,23 @@ import { SizableText, styled } from 'tamagui'
 export const Paragraph = styled(SizableText, {
   name: 'Paragraph',
   accessibilityRole: 'text',
-  userSelect: 'auto',
-  color: '$grey-700',
-  fontFamily: '$default',
-  fontWeight: '$regular',
+  color: 'grey-700',
+  fontFamily: 'default',
+  fontWeight: 'regular',
   variants: {
     light: {
       true: {
-        color: '$grey-700',
+        color: 'grey-700',
       },
     },
     dark: {
       true: {
-        color: '$grey-200',
+        color: 'grey-200',
       },
     },
     secondary: {
       true: {
-        color: '$grey-600',
+        color: 'grey-600',
       },
     },
     center: {
@@ -32,31 +31,31 @@ export const Paragraph = styled(SizableText, {
     },
     emphasis: {
       true: {
-        fontWeight: '$bold',
-        color: '$grey-900',
+        fontWeight: 'bold',
+        color: 'grey-900',
       },
     },
     variant: {
       normal: {
-        size: '$3',
-        lineHeight: '$5',
-        letterSpacing: '$8',
+        size: '3',
+        lineHeight: '5',
+        letterSpacing: '8',
       },
       sub: {
-        size: '$2',
-        lineHeight: '$3',
-        letterSpacing: '$8',
+        size: '2',
+        lineHeight: '3',
+        letterSpacing: '8',
       },
       annotation: {
-        size: '$2',
-        lineHeight: '$5',
-        letterSpacing: '$8',
+        size: '2',
+        lineHeight: '5',
+        letterSpacing: '8',
       },
       caption: {
-        size: '$2',
-        lineHeight: '$5',
-        letterSpacing: '$2',
-        fontWeight: '$semiBold',
+        size: '2',
+        lineHeight: '5',
+        letterSpacing: '2',
+        fontWeight: 'semiBold',
       },
     },
   } as const,

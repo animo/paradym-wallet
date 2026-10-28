@@ -1,16 +1,15 @@
-import { AlertOctagon } from '@tamagui/lucide-icons-2/icons/AlertOctagon'
-import { ArrowLeft } from '@tamagui/lucide-icons-2/icons/ArrowLeft'
-import { CornerDownRight } from '@tamagui/lucide-icons-2/icons/CornerDownRight'
-import { Dot } from '@tamagui/lucide-icons-2/icons/Dot'
-import { FileBadge } from '@tamagui/lucide-icons-2/icons/FileBadge'
-import { History } from '@tamagui/lucide-icons-2/icons/History'
-import { Inbox } from '@tamagui/lucide-icons-2/icons/Inbox'
-import { ListFilter } from '@tamagui/lucide-icons-2/icons/ListFilter'
-import { RefreshCw } from '@tamagui/lucide-icons-2/icons/RefreshCw'
-import { Scan } from '@tamagui/lucide-icons-2/icons/Scan'
-import { Trash2 } from '@tamagui/lucide-icons-2/icons/Trash2'
-import { X } from '@tamagui/lucide-icons-2/icons/X'
-import { forwardRef } from 'react'
+import ArrowLeft from 'lucide-react-native/icons/arrow-left'
+import CornerDownRight from 'lucide-react-native/icons/corner-down-right'
+import Dot from 'lucide-react-native/icons/dot'
+import FileBadge from 'lucide-react-native/icons/file-badge'
+import Inbox from 'lucide-react-native/icons/inbox'
+import ListFilter from 'lucide-react-native/icons/list-filter'
+import AlertOctagon from 'lucide-react-native/icons/octagon-alert'
+import RefreshCw from 'lucide-react-native/icons/refresh-cw'
+import History from 'lucide-react-native/icons/rotate-ccw-clock'
+import Scan from 'lucide-react-native/icons/scan'
+import Trash2 from 'lucide-react-native/icons/trash'
+import X from 'lucide-react-native/icons/x'
 import ArrowLeftIcon from 'react-native-heroicons/outline/ArrowLeftIcon'
 import ArrowPathIcon from 'react-native-heroicons/outline/ArrowPathIcon'
 import ArrowRightIcon from 'react-native-heroicons/outline/ArrowRightIcon'
@@ -84,7 +83,7 @@ import { default as ShieldCheckFilledIcon } from 'react-native-heroicons/solid/S
 import { default as TrashFilledIcon } from 'react-native-heroicons/solid/TrashIcon'
 import type { NumberProp, SvgProps } from 'react-native-svg'
 
-import { styled } from 'tamagui'
+import { type ColorTokens, styled, useTheme } from 'tamagui'
 import { ConnectIcon } from '../assets/Connect'
 import { ExclamationIcon } from '../assets/Exclamation'
 import { FaceIdIcon } from '../assets/FaceId'
@@ -92,112 +91,139 @@ import { PeopleIcon } from '../assets/People'
 import { QrIcon } from '../assets/Qr'
 
 export const LucideIcons = {
-  Trash2,
-  ArrowLeft,
-  ListFilter,
-  Scan,
-  FileBadge,
-  CornerDownRight,
-  Dot,
-  AlertOctagon,
-  Inbox,
-  X,
-  RefreshCw,
-  History,
+  Trash2: wrapIcon(Trash2),
+  ArrowLeft: wrapIcon(ArrowLeft),
+  ListFilter: wrapIcon(ListFilter),
+  Scan: wrapIcon(Scan),
+  FileBadge: wrapIcon(FileBadge),
+  CornerDownRight: wrapIcon(CornerDownRight),
+  Dot: wrapIcon(Dot),
+  AlertOctagon: wrapIcon(AlertOctagon),
+  Inbox: wrapIcon(Inbox),
+  X: wrapIcon(X),
+  RefreshCw: wrapIcon(RefreshCw),
+  History: wrapIcon(History),
 }
 
 export interface HeroIconProps extends SvgProps {
   size?: NumberProp
 }
 
-function wrapHeroIcon(Icon: React.FunctionComponent<HeroIconProps>) {
-  return styled(
-    forwardRef((props: HeroIconProps, _ref) => <Icon {...props} />),
-    {},
-    {
-      accept: {
-        color: 'color',
-      },
+export type IconColorProps = {
+  color?: ColorTokens | (string & {})
+}
+
+type SvgPaintProps = Pick<SvgProps, 'fill' | 'stroke' | 'strokeWidth'>
+
+// styled() lets the icons take style props such as `ml` and `position`, but it drops `color` and takes the other SVG
+// paint props into `style`, so those reach the icon under their own names. v3 dropped styled()'s `accept`, which
+// resolved theme colors before, so that happens here as well.
+function wrapIcon<Props extends SvgProps>(Icon: React.ComponentType<Props>) {
+  const StyledIcon = styled(
+    ({ svgColor, svgPaint, ...props }: Omit<Props, 'color'> & { svgColor?: string; svgPaint?: SvgPaintProps }) => {
+      const theme = useTheme()
+      const color = svgColor ? (theme[svgColor]?.get() ?? svgColor) : undefined
+
+      return <Icon {...(props as Props)} {...svgPaint} color={color} />
     }
+  )
+
+  return ({
+    color,
+    fill,
+    stroke,
+    strokeWidth,
+    ...props
+  }: Omit<React.ComponentProps<typeof StyledIcon>, 'svgColor' | 'svgPaint' | 'color'> &
+    IconColorProps &
+    SvgPaintProps) => (
+    <StyledIcon
+      {...(props as React.ComponentProps<typeof StyledIcon>)}
+      svgColor={color}
+      // Only what's set: an explicit undefined would replace the icon's own default
+      svgPaint={Object.fromEntries(
+        Object.entries({ fill, stroke, strokeWidth }).filter(([, value]) => value !== undefined)
+      )}
+    />
   )
 }
 
-export type HeroIcon = ReturnType<typeof wrapHeroIcon>
+export type HeroIcon = ReturnType<typeof wrapIcon<HeroIconProps>>
 export const HeroIcons = {
-  Bell: wrapHeroIcon(BellIcon),
-  Langugae: wrapHeroIcon(LanguageIcon),
-  BellFilled: wrapHeroIcon(BellFilledIcon),
-  Plus: wrapHeroIcon(PlusIcon),
-  Share: wrapHeroIcon(ArrowUpOnSquareStackIcon),
-  Trash: wrapHeroIcon(TrashIcon),
-  TrashFilled: wrapHeroIcon(TrashFilledIcon),
-  ArchiveBoxXMarkFilled: wrapHeroIcon(ArchiveBoxXMarkFilledIcon),
-  ClockFilled: wrapHeroIcon(ClockFilledIcon),
-  BuildingOffice: wrapHeroIcon(BuildingOfficeIcon),
-  GlobeAlt: wrapHeroIcon(GlobeAltIcon),
-  Key: wrapHeroIcon(KeyIcon),
-  Identification: wrapHeroIcon(IdentificationIcon),
-  Star: wrapHeroIcon(StarIcon),
-  Bolt: wrapHeroIcon(BoltFilledIcon),
-  ShieldCheck: wrapHeroIcon(ShieldCheckIcon),
-  ArrowPath: wrapHeroIcon(ArrowPathIcon),
-  LockClosed: wrapHeroIcon(LockClosedIcon),
-  ArrowRight: wrapHeroIcon(ArrowRightIcon),
-  ArrowLeft: wrapHeroIcon(ArrowLeftIcon),
-  Backspace: wrapHeroIcon(BackspaceIcon),
-  ExclamationCircle: wrapHeroIcon(ExclamationCircleIcon),
-  CheckCircle: wrapHeroIcon(CheckCircleIcon),
-  Scan: wrapHeroIcon(QrCodeIcon),
-  CreditCard: wrapHeroIcon(CreditCardIcon),
-  CreditCardFilled: wrapHeroIcon(CreditCardFilledIcon),
-  DevicePhoneMobile: wrapHeroIcon(DevicePhoneMobileIcon),
-  HandRaised: wrapHeroIcon(HandRaisedIcon),
-  HandRaisedFilled: wrapHeroIcon(HandRaisedFilledIcon),
-  XCircle: wrapHeroIcon(XCircleIcon),
-  InformationCircle: wrapHeroIcon(InformationCircleIcon),
-  CircleStack: wrapHeroIcon(CircleStackIcon),
-  CircleStackFilled: wrapHeroIcon(CircleStackFilledIcon),
-  X: wrapHeroIcon(XMarkIcon),
-  QrCode: wrapHeroIcon(QrCodeIcon),
-  QuestionMarkCircle: wrapHeroIcon(QuestionMarkCircleIcon),
-  FingerPrint: wrapHeroIcon(FingerPrintIcon),
-  User: wrapHeroIcon(UserIcon),
-  Bars3: wrapHeroIcon(Bars3Icon),
-  EllipsisVertical: wrapHeroIcon(EllipsisVerticalIcon),
-  EllipsisHorizontal: wrapHeroIcon(EllipsisHorizontalIcon),
-  Eye: wrapHeroIcon(EyeFilledIcon),
-  EyeSlash: wrapHeroIcon(EyeSlashFilledIcon),
-  QueueList: wrapHeroIcon(QueueListIcon),
-  Activity: wrapHeroIcon(QueueListIcon),
-  Settings: wrapHeroIcon(Cog8ToothIcon),
-  Feedback: wrapHeroIcon(ChatBubbleBottomCenterTextIcon),
-  ChevronDown: wrapHeroIcon(ChevronDownIcon),
-  ChevronUp: wrapHeroIcon(ChevronUpIcon),
-  ChevronRight: wrapHeroIcon(ChevronRightIcon),
-  Menu: wrapHeroIcon(Bars3Icon),
-  Interaction: wrapHeroIcon(ArrowsRightLeftIcon),
-  ExclamationCircleFilled: wrapHeroIcon(ExclamationCircleFilledIcon),
-  ExclamationTriangleFilled: wrapHeroIcon(ExclamationTriangleFilledIcon),
-  NoSymbol: wrapHeroIcon(NoSymbolIcon),
-  ShieldCheckFilled: wrapHeroIcon(ShieldCheckFilledIcon),
-  Check: wrapHeroIcon(CheckIcon),
-  InformationCircleFilled: wrapHeroIcon(InformationCircleFilledIcon),
-  CheckCircleFilled: wrapHeroIcon(CheckCircleFilledIcon),
-  QueueListFilled: wrapHeroIcon(QueueListFilledIcon),
-  ChatBubbleBottomCenterTextFilled: wrapHeroIcon(ChatBubbleBottomCenterTextFilledIcon),
-  Cog8ToothFilled: wrapHeroIcon(Cog8ToothFilledIcon),
-  IdentificationFilled: wrapHeroIcon(IdentificationFilledIcon),
-  CameraFilled: wrapHeroIcon(CameraFilledIcon),
-  MagnifyingGlass: wrapHeroIcon(MagnifyingGlassIcon),
-  Link: wrapHeroIcon(LinkIcon),
-  Cloud: wrapHeroIcon(CloudIcon),
-  CpuChipFilled: wrapHeroIcon(CpuChipFilledIcon),
-  CommandLineFilled: wrapHeroIcon(CommandLineIcon),
-  LockClosedFilled: wrapHeroIcon(LockClosedFilledIcon),
-  CodeBracketFilled: wrapHeroIcon(CodeBracketFilledIcon),
-  ArrowUpRightFilled: wrapHeroIcon(ArrowUpRightFilledIcon),
-  PenFilled: wrapHeroIcon(PencilFilledIcon),
-  Pen: wrapHeroIcon(PencilIcon),
+  Bell: wrapIcon(BellIcon),
+  Langugae: wrapIcon(LanguageIcon),
+  BellFilled: wrapIcon(BellFilledIcon),
+  Plus: wrapIcon(PlusIcon),
+  Share: wrapIcon(ArrowUpOnSquareStackIcon),
+  Trash: wrapIcon(TrashIcon),
+  TrashFilled: wrapIcon(TrashFilledIcon),
+  ArchiveBoxXMarkFilled: wrapIcon(ArchiveBoxXMarkFilledIcon),
+  ClockFilled: wrapIcon(ClockFilledIcon),
+  BuildingOffice: wrapIcon(BuildingOfficeIcon),
+  GlobeAlt: wrapIcon(GlobeAltIcon),
+  Key: wrapIcon(KeyIcon),
+  Identification: wrapIcon(IdentificationIcon),
+  Star: wrapIcon(StarIcon),
+  Bolt: wrapIcon(BoltFilledIcon),
+  ShieldCheck: wrapIcon(ShieldCheckIcon),
+  ArrowPath: wrapIcon(ArrowPathIcon),
+  LockClosed: wrapIcon(LockClosedIcon),
+  ArrowRight: wrapIcon(ArrowRightIcon),
+  ArrowLeft: wrapIcon(ArrowLeftIcon),
+  Backspace: wrapIcon(BackspaceIcon),
+  ExclamationCircle: wrapIcon(ExclamationCircleIcon),
+  CheckCircle: wrapIcon(CheckCircleIcon),
+  Scan: wrapIcon(QrCodeIcon),
+  CreditCard: wrapIcon(CreditCardIcon),
+  CreditCardFilled: wrapIcon(CreditCardFilledIcon),
+  DevicePhoneMobile: wrapIcon(DevicePhoneMobileIcon),
+  HandRaised: wrapIcon(HandRaisedIcon),
+  HandRaisedFilled: wrapIcon(HandRaisedFilledIcon),
+  XCircle: wrapIcon(XCircleIcon),
+  InformationCircle: wrapIcon(InformationCircleIcon),
+  CircleStack: wrapIcon(CircleStackIcon),
+  CircleStackFilled: wrapIcon(CircleStackFilledIcon),
+  X: wrapIcon(XMarkIcon),
+  QrCode: wrapIcon(QrCodeIcon),
+  QuestionMarkCircle: wrapIcon(QuestionMarkCircleIcon),
+  FingerPrint: wrapIcon(FingerPrintIcon),
+  User: wrapIcon(UserIcon),
+  Bars3: wrapIcon(Bars3Icon),
+  EllipsisVertical: wrapIcon(EllipsisVerticalIcon),
+  EllipsisHorizontal: wrapIcon(EllipsisHorizontalIcon),
+  Eye: wrapIcon(EyeFilledIcon),
+  EyeSlash: wrapIcon(EyeSlashFilledIcon),
+  QueueList: wrapIcon(QueueListIcon),
+  Activity: wrapIcon(QueueListIcon),
+  Settings: wrapIcon(Cog8ToothIcon),
+  Feedback: wrapIcon(ChatBubbleBottomCenterTextIcon),
+  ChevronDown: wrapIcon(ChevronDownIcon),
+  ChevronUp: wrapIcon(ChevronUpIcon),
+  ChevronRight: wrapIcon(ChevronRightIcon),
+  Menu: wrapIcon(Bars3Icon),
+  Interaction: wrapIcon(ArrowsRightLeftIcon),
+  ExclamationCircleFilled: wrapIcon(ExclamationCircleFilledIcon),
+  ExclamationTriangleFilled: wrapIcon(ExclamationTriangleFilledIcon),
+  NoSymbol: wrapIcon(NoSymbolIcon),
+  ShieldCheckFilled: wrapIcon(ShieldCheckFilledIcon),
+  Check: wrapIcon(CheckIcon),
+  InformationCircleFilled: wrapIcon(InformationCircleFilledIcon),
+  CheckCircleFilled: wrapIcon(CheckCircleFilledIcon),
+  QueueListFilled: wrapIcon(QueueListFilledIcon),
+  ChatBubbleBottomCenterTextFilled: wrapIcon(ChatBubbleBottomCenterTextFilledIcon),
+  Cog8ToothFilled: wrapIcon(Cog8ToothFilledIcon),
+  IdentificationFilled: wrapIcon(IdentificationFilledIcon),
+  CameraFilled: wrapIcon(CameraFilledIcon),
+  MagnifyingGlass: wrapIcon(MagnifyingGlassIcon),
+  Link: wrapIcon(LinkIcon),
+  Cloud: wrapIcon(CloudIcon),
+  CpuChipFilled: wrapIcon(CpuChipFilledIcon),
+  CommandLineFilled: wrapIcon(CommandLineIcon),
+  LockClosedFilled: wrapIcon(LockClosedFilledIcon),
+  CodeBracketFilled: wrapIcon(CodeBracketFilledIcon),
+  ArrowUpRightFilled: wrapIcon(ArrowUpRightFilledIcon),
+  PenFilled: wrapIcon(PencilFilledIcon),
+  Pen: wrapIcon(PencilIcon),
 } as const
 
 export const CustomIcons = {
@@ -213,16 +239,7 @@ export type CustomIconProps = SvgProps & {
 }
 
 function wrapLocalSvg(SvgComponent: React.ComponentType<CustomIconProps>) {
-  return styled(
-    forwardRef((props: CustomIconProps, _ref) => {
-      const { size, ...restProps } = props
-      return <SvgComponent width={size} height={size} {...restProps} />
-    }),
-    {},
-    {
-      accept: {
-        color: 'color',
-      },
-    }
-  )
+  return wrapIcon(({ size, ...restProps }: CustomIconProps) => (
+    <SvgComponent width={size} height={size} {...restProps} />
+  ))
 }

@@ -6,5 +6,5 @@ interface SpinnerProps extends TSpinnerProps {
 }
 
 export function Spinner({ size = 'small', variant = 'light', ...props }: SpinnerProps) {
-  return <TSpinner size={size} color={variant === 'dark' ? '$grey-100' : '$grey-900'} {...props} />
+  return <TSpinner size={size} color={variant === 'dark' ? 'grey-100' : 'grey-900'} {...props} />
 }

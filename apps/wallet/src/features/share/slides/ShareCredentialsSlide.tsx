@@ -49,28 +49,28 @@ export const ShareCredentialsSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$4" fg={1}>
+      <YStack gap="4" fg={1}>
         <Heading>{t(commonMessages.reviewRequestTitle)}</Heading>
 
         <YStack
           fg={1}
-          px="$4"
-          mx="$-4"
+          px="4"
+          mx="-4"
+          borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
           onLayout={(event) => {
             if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
           }}
-          btw="$0.5"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+          btw="0-5"
         >
           <ScrollView
             onScroll={handleScroll}
             scrollEventThrottle={scrollEventThrottle}
-            contentContainerStyle={{ gap: '$6' }}
-            px="$4"
-            mx="$-4"
-            pt="$4"
+            contentContainerStyle={{ gap: '6' }}
+            px="4"
+            mx="-4"
+            pt="4"
             maxHeight={scrollViewHeight}
-            bg="$white"
+            bg="white"
           >
             {isOffline ? (
               <MessageBox
@@ -103,7 +103,7 @@ export const ShareCredentialsSlide = ({
         </YStack>
       </YStack>
 
-      <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
+      <YStack btw="0-5" borderColor="grey-200" py="4" mx="-4" px="4" bg="background">
         {submission.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
@@ -114,8 +114,8 @@ export const ShareCredentialsSlide = ({
             isLoading={isProcessing}
           />
         ) : (
-          <YStack gap="$3">
-            <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
+          <YStack gap="3">
+            <Paragraph variant="sub" fontWeight="medium" ta="center" color="danger-500">
               {t(
                 hasMissingCards(submission)
                   ? commonMessages.missingCardsWarning

@@ -158,24 +158,24 @@ export function OfflineQrScreen() {
   }
 
   return (
-    <Page bg="$black" ai="center">
+    <Page bg="black" ai="center">
       <SystemBars style="light" />
-      <AnimatedStack pt="$8" maxWidth="90%" gap="$2">
-        <Heading heading="h1" lineHeight={36} ta="center" dark>
+      <AnimatedStack pt="8" maxWidth="90%" gap="2">
+        <Heading heading="h1" lineHeight="36px" ta="center" dark>
           <Trans id="offlineQr.heading" comment="Main heading for offline QR sharing screen">
             Share with QR code
           </Trans>
         </Heading>
-        <Paragraph color="$grey-400">
+        <Paragraph color="grey-400">
           <Trans id="offlineQr.instruction" comment="Instruction for the verifier to scan the QR code">
             A verifier needs to scan your QR-Code.
           </Trans>
         </Paragraph>
       </AnimatedStack>
 
-      <AnimatedStack fg={1} pb="$12" jc="center">
+      <AnimatedStack fg={1} pb="12" jc="center">
         {qrCodeData ? (
-          <Stack bg="$white" br="$8" p="$5">
+          <Stack bg="white" br="8" p="5">
             <QRCode
               logoBorderRadius={12}
               logoMargin={4}
@@ -189,18 +189,18 @@ export function OfflineQrScreen() {
         )}
       </AnimatedStack>
 
-      <YStack jc="center" ai="center" gap="$4">
+      <YStack jc="center" ai="center" gap="4">
         <XStack>
           <Button.Solid
-            h="$3.5"
-            px="$5"
-            br="$12"
-            bg="$grey-100"
-            color="$grey-900"
+            h="3-5"
+            px="5"
+            bg="grey-100"
+            color="grey-900"
             flexDirection="row"
+            alignSelf="center"
+            br="12"
             onPress={() => back()}
             scaleOnPress
-            alignSelf="center"
           >
             {t(commonMessages.cancel)}
           </Button.Solid>

@@ -18,35 +18,33 @@ export const TableRow = ({ attributes, values, isLastRow = false, onPress, image
 
   return (
     <YStack
-      py="$2"
+      py="2"
       borderBottomWidth={isLastRow ? 0 : 2}
-      borderBottomColor="$tableBorderColor"
-      backgroundColor="$tableBackgroundColor"
+      borderBottomColor="tableBorderColor"
+      backgroundColor="tableBackgroundColor"
+      opacity={`1 press:${onPress ? 0.8 : 1}`}
       onPress={onPress}
-      pressStyle={{
-        opacity: onPress ? 0.8 : 1,
-      }}
     >
       <XStack f={1} alignItems="center">
         {attributesArray.map((attr, index) => (
           <YStack
             key={`attribute-${attr}-${index}`}
             borderRightWidth={2}
-            borderRightColor={index === attributesArray.length - 1 ? 'transparent' : '$white'}
-            my="$-2"
-            py="$2"
-            px="$2.5"
-            f={1}
-            gap="$1.5"
-            ai={centred ? 'center' : 'flex-start'}
+            borderRightColor={index === attributesArray.length - 1 ? 'transparent' : 'white'}
+            my="-2"
+            py="2"
+            px="2-5"
+            gap="1-5"
             justifyContent="flex-start"
+            f={1}
+            ai={centred ? 'center' : 'flex-start'}
           >
             {attr && (
-              <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
+              <Paragraph variant="annotation" color="grey-600" fontWeight="medium">
                 {attr}
               </Paragraph>
             )}
-            {valuesArray[index] && <Paragraph color="$grey-900">{valuesArray[index]}</Paragraph>}
+            {valuesArray[index] && <Paragraph color="grey-900">{valuesArray[index]}</Paragraph>}
             {/* Render image on the left if no value */}
             {!valuesArray[index] && renderedImage}
           </YStack>

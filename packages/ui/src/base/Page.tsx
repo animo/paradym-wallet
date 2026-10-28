@@ -1,13 +1,13 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { styled } from 'tamagui'
+import { createStyledHOC, type GetProps, styled } from 'tamagui'
 import { useDeviceMedia } from '../hooks/useDeviceMedia'
 import { Stack, YStack } from './Stacks'
 
 export const Page = styled(Stack, {
   name: 'Page',
-  backgroundColor: '$background',
+  backgroundColor: 'background',
   position: 'absolute',
-  padding: '$4',
+  padding: '4',
   top: 0,
   left: 0,
   right: 0,
@@ -16,14 +16,15 @@ export const Page = styled(Stack, {
 
 const FlexPageBase = styled(Stack, {
   name: 'FlexPage',
-  backgroundColor: '$background',
+  backgroundColor: 'background',
+  gap: '6',
+  paddingHorizontal: '4',
   'flex-1': true,
-  gap: '$6',
-  paddingHorizontal: '$4',
 })
 
-export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' | 'l' | 'b' | 't' | 'r' }>(
-  (props, ref) => {
+export const FlexPage = createStyledHOC(
+  FlexPageBase,
+  (props: GetProps<typeof FlexPageBase> & { safeArea?: boolean | 'x' | 'y' | 'l' | 'b' | 't' | 'r' }, ref) => {
     const safeAreaInsets = useSafeAreaInsets()
     const { additionalPadding } = useDeviceMedia()
 
@@ -45,7 +46,7 @@ export const FlexPage = FlexPageBase.styleable<{ safeArea?: boolean | 'x' | 'y' 
     const right = safeArea === true || safeArea === 'x' || safeArea === 'r' ? safeAreaInsets.right : undefined
 
     return (
-      <YStack bg={props.bg ?? props.backgroundColor ?? '$background'} h="100%" w="100%">
+      <YStack bg={props.bg ?? props.backgroundColor ?? 'background'} h="100%" w="100%">
         <FlexPageBase
           {...props}
           ref={ref}

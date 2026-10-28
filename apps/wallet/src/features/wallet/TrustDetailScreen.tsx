@@ -52,7 +52,7 @@ export function TrustDetailScreen({
           : 'No signature'
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
+    <FlexPage gap="0" paddingHorizontal="0">
       <HeaderContainer
         title={t({
           id: 'trust.headerTitle',
@@ -63,7 +63,7 @@ export function TrustDetailScreen({
       />
 
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack px="$4" gap="$4" marginBottom={bottom}>
+        <YStack px="4" gap="4" marginBottom={bottom}>
           <MessageBox
             variant="light"
             message={t({
@@ -74,14 +74,14 @@ export function TrustDetailScreen({
             icon={<HeroIcons.ExclamationTriangleFilled />}
           />
 
-          <XStack gap="$4" pt="$2" ai="center">
+          <XStack gap="4" pt="2" ai="center">
             {logo ? (
-              <Circle overflow="hidden" ai="center" jc="center" size="$6" bw={1} borderColor="$grey-200" bg="$grey-100">
+              <Circle overflow="hidden" ai="center" jc="center" size="6" bw={1} borderColor="grey-200" bg="grey-100">
                 <Image src={logo} height="100%" width="100%" />
               </Circle>
             ) : (
-              <Circle overflow="hidden" ai="center" jc="center" size="$6" bw={1} borderColor="$grey-200" bg="$grey-100">
-                <HeroIcons.BuildingOffice color="$grey-700" />
+              <Circle overflow="hidden" ai="center" jc="center" size="6" bw={1} borderColor="grey-200" bg="grey-100">
+                <HeroIcons.BuildingOffice color="grey-700" />
               </Circle>
             )}
             <Heading flex={1} numberOfLines={3} heading="h2">
@@ -94,8 +94,8 @@ export function TrustDetailScreen({
             </Heading>
           </XStack>
 
-          <YStack gap="$4" py="$2">
-            <YStack gap="$2">
+          <YStack gap="4" py="2">
+            <YStack gap="2">
               <Heading heading="sub2">
                 <Trans id="trust.trustedBy" comment="Subheading for list of organizations that trust the current one">
                   Trusted by
@@ -131,15 +131,15 @@ export function TrustDetailScreen({
               </Paragraph>
             </YStack>
 
-            <YStack gap="$2">
+            <YStack gap="2">
               {trustedEntities.map((entity) => (
-                <XStack ai="center" key={entity.entityId} br="$8" p="$3.5" gap="$3" bg="$grey-100">
+                <XStack ai="center" key={entity.entityId} br="8" p="3-5" gap="3" bg="grey-100">
                   {entity.logoUri && (
-                    <Circle overflow="hidden" size="$4" bg="$grey-50">
+                    <Circle overflow="hidden" size="4" bg="grey-50">
                       <Image src={entity.logoUri} height="100%" width="100%" />
                     </Circle>
                   )}
-                  <XStack gap="$2" display="flex" f={1} justifyContent="space-between" ai="center">
+                  <XStack gap="2" display="flex" f={1} justifyContent="space-between" ai="center">
                     <YStack flexShrink={1}>
                       <Heading heading="h3" numberOfLines={3} textOverflow="ellipsis">
                         {entity.organizationName}
@@ -149,9 +149,9 @@ export function TrustDetailScreen({
                     <IconContainer
                       icon={
                         entity.demo ? (
-                          <HeroIcons.ExclamationTriangleFilled size={30} color="$warning-500" />
+                          <HeroIcons.ExclamationTriangleFilled size={30} color="warning-500" />
                         ) : (
-                          <HeroIcons.CheckCircleFilled size={30} color="$positive-500" />
+                          <HeroIcons.CheckCircleFilled size={30} color="positive-500" />
                         )
                       }
                     />
@@ -163,7 +163,7 @@ export function TrustDetailScreen({
         </YStack>
       </ScrollView>
 
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
         <TextBackButton />
       </YStack>
     </FlexPage>

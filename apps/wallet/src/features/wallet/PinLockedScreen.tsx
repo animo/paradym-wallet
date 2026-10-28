@@ -31,15 +31,15 @@ export const PinLockedScreen = () => {
   }
 
   return (
-    <FlexPage gap="$2" jc="space-between">
-      <YStack fg={1} gap="$6" mt="$6">
-        <YStack gap="$6">
+    <FlexPage gap="2" jc="space-between">
+      <YStack fg={1} gap="6" mt="6">
+        <YStack gap="6">
           <Heading heading="h1">
             <Trans id="pinLocked.title" comment="Heading shown when the user has entered too many incorrect PINs">
               Too many incorrect attempts
             </Trans>
           </Heading>
-          <Paragraph color="$grey-700">
+          <Paragraph color="grey-700">
             <Trans
               id="pinLocked.description"
               comment="Descriptive text explaining that the wallet is locked and must be reset"

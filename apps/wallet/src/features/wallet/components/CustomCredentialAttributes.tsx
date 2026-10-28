@@ -156,34 +156,34 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
     headerImage = raw.portrait ?? headerImage
   }
   return (
-    <Stack gap="$4">
-      <YStack gap="$3" position="relative">
-        <Stack h="$1" />
+    <Stack gap="4">
+      <YStack gap="3" position="relative">
+        <Stack h="1" />
         <Stack pos="relative" ai="center">
           <Circle
             zi={5}
             borderWidth={2}
             borderColor="white"
-            pos="absolute"
-            top="$-5"
-            bg="$idCardBackground"
+            top="-5"
+            bg="idCardBackground"
             overflow="hidden"
-            size="$8"
+            size="8"
+            pos="absolute"
           >
             <Image width={80} height={80} src={headerImage} />
           </Circle>
           <TableContainer>
             <YStack
-              bg="$tableBackgroundColor"
-              ai="center"
-              gap="$4"
-              px="$2.5"
-              py="$3"
+              bg="tableBackgroundColor"
+              gap="4"
+              px="2-5"
+              py="3"
               borderBottomWidth={2}
-              borderBottomColor="$tableBorderColor"
+              borderBottomColor="tableBorderColor"
+              ai="center"
             >
-              <Stack h="$3" />
-              <YStack gap="$2" ai="center">
+              <Stack h="3" />
+              <YStack gap="2" ai="center">
                 <Heading ta="center" heading="h3">
                   {personalInfoCard.name}
                 </Heading>
@@ -199,7 +199,7 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
         </Stack>
       </YStack>
       {addressTable && (
-        <YStack gap="$2">
+        <YStack gap="2">
           <Heading heading="sub2" secondary>
             {t(commonMessages.fields.address)}
           </Heading>
@@ -269,34 +269,34 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
   }
 
   return (
-    <Stack gap="$6">
-      <YStack gap="$3" position="relative">
-        <Stack h="$1" />
+    <Stack gap="6">
+      <YStack gap="3" position="relative">
+        <Stack h="1" />
         <Stack pos="relative" ai="center">
           <Circle
             zi={5}
             borderWidth={2}
             borderColor="white"
-            pos="absolute"
-            top="$-5"
-            bg="$idCardBackground"
+            top="-5"
+            bg="idCardBackground"
             overflow="hidden"
-            size="$8"
+            size="8"
+            pos="absolute"
           >
             <Image width={80} height={80} src={raw.portrait} />
           </Circle>
           <TableContainer>
             <YStack
-              bg="$tableBackgroundColor"
-              ai="center"
-              gap="$4"
-              px="$2.5"
-              py="$3"
+              bg="tableBackgroundColor"
+              gap="4"
+              px="2-5"
+              py="3"
               borderBottomWidth={2}
-              borderBottomColor="$tableBorderColor"
+              borderBottomColor="tableBorderColor"
+              ai="center"
             >
-              <Stack h="$3" />
-              <YStack gap="$2" ai="center">
+              <Stack h="3" />
+              <YStack gap="2" ai="center">
                 <Heading heading="h3">{mainCard.name}</Heading>
                 <Paragraph>
                   {/* Führerschein in german */}
@@ -311,7 +311,7 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
                 t(commonMessages.credentials.mdl.document_number),
               ]}
               values={[
-                <XStack key="driving-privileges-icons" gap="$3">
+                <XStack key="driving-privileges-icons" gap="3">
                   {mainCard.privileges.map((privilege) => (
                     <Image key={privilege.code.code} src={privilege.code.icon} width={36} height={28} />
                   ))}
@@ -322,7 +322,7 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
           </TableContainer>
         </Stack>
       </YStack>
-      <YStack gap="$2">
+      <YStack gap="2">
         <Heading heading="sub2" secondary>
           {t(commonMessages.credentials.mdl.driving_privileges)}
         </Heading>
@@ -336,8 +336,8 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
                   ...(privilege.expiry_date ? [t(commonMessages.fields.expires_at)] : []),
                 ]}
                 values={[
-                  <XStack key={privilege.vehicle_category_code} ai="center" gap="$3">
-                    <Paragraph color="$grey-900" fontWeight="$semiBold" fontSize={18}>
+                  <XStack key={privilege.vehicle_category_code} ai="center" gap="3">
+                    <Paragraph color="grey-900" fontWeight="semiBold" fontSize={18}>
                       {privilege.vehicle_category_code}
                     </Paragraph>
                     {code.icon && (
@@ -351,7 +351,7 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
           })}
         </TableContainer>
       </YStack>
-      <YStack gap="$2">
+      <YStack gap="2">
         <Heading heading="sub2" secondary>
           <Trans id="cardAttributes.aboutTheCard">About the card</Trans>
         </Heading>

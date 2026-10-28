@@ -18,7 +18,7 @@ export function AboutScreen() {
   }
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
+    <FlexPage gap="0" paddingHorizontal="0">
       <HeaderContainer
         title={t({
           id: 'aboutScreen.header',
@@ -26,22 +26,22 @@ export function AboutScreen() {
           comment: 'Screen header shown on the about page of the wallet',
         })}
       />
-      <YStack fg={1} px="$4" gap="$4">
-        <YStack gap="$2">
-          <Paragraph color="$grey-700">{t(about.description)}</Paragraph>
+      <YStack fg={1} px="4" gap="4">
+        <YStack gap="2">
+          <Paragraph color="grey-700">{t(about.description)}</Paragraph>
           <Paragraph>
             {t({
               id: 'aboutScreen.contactIntro',
               message: 'For more information, reach out to',
               comment: 'Intro sentence before showing support email address',
             })}{' '}
-            <Paragraph fontWeight="$semiBold" color="$primary-500" onPress={openContact}>
+            <Paragraph fontWeight="semiBold" color="primary-500" onPress={openContact}>
               ana@animo.id
             </Paragraph>
             .
           </Paragraph>
         </YStack>
-        <YStack gap="$2" fg={1} jc="space-between">
+        <YStack gap="2" fg={1} jc="space-between">
           <InfoButton
             variant="view"
             title={t({
@@ -57,12 +57,12 @@ export function AboutScreen() {
             routingType="external"
             onPress={openPrivacyPolicy}
           />
-          <Paragraph py="$4" mx="auto" variant="sub" fontSize={13} fontWeight="$medium">
+          <Paragraph py="4" mx="auto" variant="sub" fontSize={13} fontWeight="medium">
             {Application.applicationName} {Application.nativeApplicationVersion} ({Application.nativeBuildVersion})
           </Paragraph>
         </YStack>
       </YStack>
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
         <TextBackButton />
       </YStack>
     </FlexPage>

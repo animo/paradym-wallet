@@ -24,7 +24,7 @@ export default function OnboardingPinEnter({ goToNextStep }: OnboardingPinEnterP
   }
 
   return (
-    <YStack mt="$10" fg={1} mb={noBottomSafeArea ? -additionalPadding : undefined}>
+    <YStack mt="10" fg={1} mb={noBottomSafeArea ? -additionalPadding : undefined}>
       <PinDotsInput
         onPinComplete={onPinComplete}
         isLoading={isLoading}

@@ -49,21 +49,21 @@ export function ProgressHeader({
   }, [color])
 
   return (
-    <YStack gap={media.short ? '$3' : '$4'} {...props}>
-      <XStack mx="$-1" jc="space-between">
+    <YStack gap={media.short ? '3' : '4'} {...props}>
+      <XStack mx="-1" jc="space-between">
         {onBack ? <IconContainer aria-label="Back" icon={<HeroIcons.ArrowLeft />} onPress={onBack} /> : <Stack />}
         {onCancel ? <IconContainer aria-label="Cancel" icon={<HeroIcons.X />} onPress={onCancel} /> : <Stack />}
       </XStack>
       {progress > 1 && (
         <AnimatedStack
           entering={enterAnimation ? FadeIn.delay(200) : undefined}
-          mb={media.short ? '$2' : '$4'}
-          mx={variant === 'small' ? '$-4' : '$0'}
+          mb={media.short ? '2' : '4'}
+          mx={variant === 'small' ? '-4' : '0'}
         >
           {variant === 'small' ? (
-            <Stack pos="absolute" h={1} w="100%" bg="$grey-50" />
+            <Stack pos="absolute" h={1} w="100%" bg="grey-50" />
           ) : (
-            <Stack pos="absolute" h={12} w="100%" br={24} bg="$grey-50" />
+            <Stack pos="absolute" h={12} w="100%" br={24} bg="grey-50" />
           )}
           <AnimatedStack
             accessibilityRole="progressbar"

@@ -52,31 +52,31 @@ export const PayAndShareSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$4" fg={1}>
+      <YStack gap="4" fg={1}>
         <Heading>{t(commonMessages.reviewRequestTitle)}</Heading>
 
         <YStack
           fg={1}
-          px="$4"
-          mx="$-4"
+          px="4"
+          mx="-4"
+          borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
           onLayout={(event) => {
             if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
           }}
-          btw="$0.5"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+          btw="0-5"
         >
           <ScrollView
             onScroll={handleScroll}
             scrollEventThrottle={scrollEventThrottle}
-            contentContainerStyle={{ gap: '$6' }}
-            px="$4"
-            mx="$-4"
-            pt="$4"
+            contentContainerStyle={{ gap: '6' }}
+            px="4"
+            mx="-4"
+            pt="4"
             maxHeight={scrollViewHeight}
-            bg="$white"
+            bg="white"
           >
-            <YStack gap="$4">
-              <YStack gap="$2">
+            <YStack gap="4">
+              <YStack gap="2">
                 <Heading heading="sub2">{t(commonMessages.paymentHeading)}</Heading>
                 <Paragraph>
                   <Trans id="payShare.documentIntro" comment="Text above the payment to be paid">
@@ -84,12 +84,12 @@ export const PayAndShareSlide = ({
                   </Trans>
                 </Paragraph>
               </YStack>
-              <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
-                <YStack f={1} gap="$2" ai="center">
-                  <Heading textTransform="none" color="$grey-800">
+              <XStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4">
+                <YStack f={1} gap="2" ai="center">
+                  <Heading textTransform="none" color="grey-800">
                     {transaction.amount}
                   </Heading>
-                  <Paragraph variant="sub" size="$2">
+                  <Paragraph variant="sub" size="2">
                     {/* TODO: derive payment network from SCA */}
                     <Trans>Paying with iDeal | Wero</Trans>
                   </Paragraph>
@@ -102,7 +102,7 @@ export const PayAndShareSlide = ({
         </YStack>
       </YStack>
 
-      <YStack btw="$0.5" borderColor="$grey-200" py="$4" mx="$-4" px="$4" bg="$background">
+      <YStack btw="0-5" borderColor="grey-200" py="4" mx="-4" px="4" bg="background">
         {submission?.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
@@ -113,8 +113,8 @@ export const PayAndShareSlide = ({
             isLoading={isProcessing}
           />
         ) : (
-          <YStack gap="$3">
-            <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
+          <YStack gap="3">
+            <Paragraph variant="sub" fontWeight="medium" ta="center" color="danger-500">
               {t(
                 !submission || hasMissingCards(submission)
                   ? commonMessages.missingCardsWarning

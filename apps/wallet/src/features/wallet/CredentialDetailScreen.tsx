@@ -54,17 +54,17 @@ export function CredentialDetailScreen() {
 
   return (
     <>
-      <FlexPage gap="$0" paddingHorizontal="$0">
+      <FlexPage gap="0" paddingHorizontal="0">
         <YStack
           w="100%"
           top={0}
-          p="$4"
-          borderBottomWidth="$0.5"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+          p="4"
+          borderBottomWidth="0-5"
+          borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
         />
         <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack ai="center" gap="$6" p="$4" marginBottom={bottom}>
-            <AnimatedStack width="100%" mt="$-3" mb="$-5" scale={0.75}>
+          <YStack ai="center" gap="6" p="4" marginBottom={bottom}>
+            <AnimatedStack width="100%" mt="-3" mb="-5" scale={0.75}>
               <CredentialCard
                 issuerImage={{
                   url: credential.display.issuer.logo?.url,
@@ -76,10 +76,10 @@ export function CredentialDetailScreen() {
                   url: credential.display.backgroundImage?.url,
                   altText: credential.display.backgroundImage?.altText,
                 }}
-                bgColor={credential.display.backgroundColor ?? '$grey-900'}
+                bgColor={credential.display.backgroundColor ?? 'grey-900'}
               />
             </AnimatedStack>
-            <Stack gap="$2">
+            <Stack gap="2">
               <Heading ta="center" heading="h1">
                 <Trans id="credentials.detailsTitle" comment="Title of the credential details screen">
                   Card details
@@ -91,7 +91,7 @@ export function CredentialDetailScreen() {
                 </Trans>
               </Paragraph>
             </Stack>
-            <YStack w="100%" gap="$2">
+            <YStack w="100%" gap="2">
               <CardInfoLifecycle
                 validFrom={credential.metadata.validFrom ? new Date(credential.metadata.validFrom) : undefined}
                 validUntil={credential.metadata.validUntil ? new Date(credential.metadata.validUntil) : undefined}
@@ -114,7 +114,7 @@ export function CredentialDetailScreen() {
             </YStack>
           </YStack>
         </ScrollView>
-        <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
           <TextBackButton />
         </YStack>
       </FlexPage>

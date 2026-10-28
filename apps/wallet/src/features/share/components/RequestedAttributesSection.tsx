@@ -50,8 +50,8 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         : unavailableCardsHeading
 
   return (
-    <YStack gap="$4">
-      <YStack gap="$2">
+    <YStack gap="4">
+      <YStack gap="2">
         <Heading heading="sub2">{firstHeading}</Heading>
         <Paragraph>
           {t(
@@ -144,8 +144,8 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
               key={entry.inputDescriptorId}
               name={entry.name ?? fallbackCardLabel}
               formattedDisclosedAttributes={Array.from(new Set(formatAttributePaths(entry.requestedAttributePaths)))}
-              backgroundColor="$grey-800"
-              textColor="$white"
+              backgroundColor="grey-800"
+              textColor="white"
             />
           ))}
         </>

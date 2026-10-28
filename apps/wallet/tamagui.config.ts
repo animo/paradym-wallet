@@ -1,4 +1,4 @@
-import { radius, size, space, zIndex } from '@tamagui/themes'
+import { radius, size, space, zIndex } from '@tamagui/themes/v5-tokens'
 import { createTamagui, createTokens } from 'tamagui'
 import { configInput, fontOpenSans, fontRaleway, hexColors } from '../../packages/ui/src/config/tamagui.config'
 import { APP_THEME } from './src/config/themes'

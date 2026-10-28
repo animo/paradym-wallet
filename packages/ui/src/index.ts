@@ -1,8 +1,7 @@
-export { ToastProvider, ToastViewport, useToastController, useToastState } from '@tamagui/toast'
+export { Toast, type ToastItemRenderProps } from '@tamagui/toast'
 export {
   AnimatePresence,
   Circle,
-  Input,
   Select,
   Spacer,
   TamaguiProvider,

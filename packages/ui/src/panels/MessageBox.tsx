@@ -5,28 +5,28 @@ import { useScaleAnimation } from '../hooks/useScaleAnimation'
 
 const messageBoxVariants = {
   light: {
-    bg: '$grey-50',
-    color: '$grey-700',
+    bg: 'grey-50',
+    color: 'grey-700',
   },
   default: {
-    bg: '$grey-500',
-    color: '$white',
+    bg: 'grey-500',
+    color: 'white',
   },
   info: {
-    bg: '$primary-500',
-    color: '$white',
+    bg: 'primary-500',
+    color: 'white',
   },
   warning: {
-    bg: '$warning-500',
-    color: '$white',
+    bg: 'warning-500',
+    color: 'white',
   },
   error: {
-    bg: '$danger-500',
-    color: '$white',
+    bg: 'danger-500',
+    color: 'white',
   },
   success: {
-    bg: '$positive-500',
-    color: '$white',
+    bg: 'positive-500',
+    color: 'white',
   },
 }
 
@@ -50,8 +50,8 @@ export function MessageBox({
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   const container = (
-    <XStack gap="$2" p="$3.5" bg={messageBoxVariants[variant].bg} borderRadius="$8">
-      <YStack gap="$2" f={1}>
+    <XStack gap="2" p="3-5" bg={messageBoxVariants[variant].bg} borderRadius="8">
+      <YStack gap="2" f={1}>
         {title && (
           <Heading heading="sub2" color={messageBoxVariants[variant].color}>
             {title}

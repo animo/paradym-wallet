@@ -45,22 +45,22 @@ export function CredentialsScreen() {
   const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
+    <FlexPage gap="0" paddingHorizontal="0">
       <HeaderContainer title={t(commonMessages.cards)} isScrolledByOffset={isScrolledByOffset} />
 
       {credentials.length === 0 ? (
         <AnimatedStack
           flexDirection="column"
           entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
-          gap="$2"
+          gap="2"
           jc="center"
-          p="$4"
+          p="4"
           fg={1}
         >
-          <Heading ta="center" heading="h3" fontWeight="$semiBold">
+          <Heading ta="center" heading="h3" fontWeight="semiBold">
             {t(commonMessages.nothingHereYet)}
           </Heading>
-          <Paragraph ta="center" px="$2">
+          <Paragraph ta="center" px="2">
             <Trans id="credentials.emptyDescription" comment="Subtext explaining that credentials will appear later">
               Credentials will appear here once you receive them.
             </Trans>
@@ -69,19 +69,19 @@ export function CredentialsScreen() {
       ) : isLoadingCredentials ? (
         <YStack fg={1} ai="center" jc="center">
           <Loader />
-          <Spacer size="$12" />
+          <Spacer size="12" />
         </YStack>
       ) : (
-        <ScrollView px="$4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <ScrollView px="4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <Stack position="relative">
             <Input
               value={searchQuery}
               onChangeText={setSearchQuery}
-              pl="$7"
-              mb="$4"
-              bg="$grey-50"
-              placeholderTextColor="$grey-500"
-              borderColor="$borderTranslucent"
+              pl="7"
+              mb="4"
+              bg="grey-50"
+              placeholderTextColor="grey-500"
+              borderColor="borderTranslucent"
               placeholder={t({
                 id: 'common.search',
                 message: 'Search cards',
@@ -91,20 +91,20 @@ export function CredentialsScreen() {
             <HeroIcons.MagnifyingGlass
               size={20}
               strokeWidth={2.5}
-              color="$grey-400"
+              color="grey-400"
               position="absolute"
               top={12} // Positions icon in the middle of standard input height
-              left="$3"
+              left="3"
             />
           </Stack>
-          <YStack fg={1} gap="$2">
+          <YStack fg={1} gap="2">
             {filteredCredentials.length > 0 ? (
               filteredCredentials.map((credential) => (
                 <CredentialRowCard
                   key={credential.id}
                   name={credential.display.name ?? t(commonMessages.unknown)}
-                  textColor={credential.display.textColor ?? '$grey-100'}
-                  backgroundColor={credential.display.backgroundColor ?? '$grey-900'}
+                  textColor={credential.display.textColor ?? 'grey-100'}
+                  backgroundColor={credential.display.backgroundColor ?? 'grey-900'}
                   issuer={credential.display.issuer.name ?? t(commonMessages.unknown)}
                   logo={credential.display.issuer.logo}
                   // TODO: we should have RAW metadata (date instance) and human metadata (string)
@@ -115,7 +115,7 @@ export function CredentialsScreen() {
                 />
               ))
             ) : (
-              <Paragraph mt="$8" ta="center">
+              <Paragraph mt="8" ta="center">
                 <Trans id="common.noResultsSearch" comment="Shown when search yields no results; includes query string">
                   No cards found for "{searchQuery}"
                 </Trans>
@@ -125,7 +125,7 @@ export function CredentialsScreen() {
         </ScrollView>
       )}
 
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
         <TextBackButton />
       </YStack>
     </FlexPage>
@@ -155,8 +155,8 @@ export function CredentialRowCard({
   const icon = logo?.url ? (
     <Image src={logo.url} width={36} height={36} />
   ) : (
-    <XStack width={36} height={36} bg="$lightTranslucent" ai="center" jc="center" br="$12">
-      <LucideIcons.FileBadge size={20} strokeWidth={2.5} color="$grey-100" />
+    <XStack width={36} height={36} bg="lightTranslucent" ai="center" jc="center" br="12">
+      <LucideIcons.FileBadge size={20} strokeWidth={2.5} color="grey-100" />
     </XStack>
   )
 
@@ -164,12 +164,12 @@ export function CredentialRowCard({
     <AnimatedStack
       flexDirection="row"
       bg={backgroundColor}
-      gap="$4"
+      gap="4"
       ai="center"
-      borderWidth="$0.5"
-      borderColor="$borderTranslucent"
-      br="$6"
-      p="$4"
+      borderWidth="0-5"
+      borderColor="borderTranslucent"
+      br="6"
+      p="4"
       style={pressStyle}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
@@ -177,8 +177,8 @@ export function CredentialRowCard({
       fg={1}
     >
       {icon}
-      <YStack gap="$1" jc="center" fg={1} f={1}>
-        <Paragraph mt="$-1.5" fontSize={14} fontWeight="$bold" color={textColor} numberOfLines={1}>
+      <YStack gap="1" jc="center" fg={1} f={1}>
+        <Paragraph mt="-1-5" fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
           {name.toLocaleUpperCase()}
         </Paragraph>
         {issuedAt && (

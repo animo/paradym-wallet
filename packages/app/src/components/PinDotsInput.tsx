@@ -1,3 +1,4 @@
+import { Input } from '@package/ui/base/Input'
 import { XStack, YStack } from '@package/ui/base/Stacks'
 import { PinPad, PinValues } from '@package/ui/components/PinPad'
 import {
@@ -11,7 +12,7 @@ import {
   useState,
 } from 'react'
 import { Animated, Easing } from 'react-native'
-import { Circle, Input, type InputRef } from 'tamagui'
+import { Circle, type InputRef } from 'tamagui'
 import { useHaptics } from '../hooks/useHaptics'
 
 interface PinDotsInputProps {
@@ -92,10 +93,10 @@ const PinDot = ({ filled, index, totalDots, progress }: PinDotProps) => {
   return (
     <Animated.View style={{ transform: [{ translateY }] }}>
       <Circle
-        size="$1.5"
-        backgroundColor={filled ? '$primary-500' : '$background'}
-        borderColor="$primary-500"
-        borderWidth="$1"
+        size="1-5"
+        backgroundColor={filled ? 'primary-500' : 'background'}
+        borderColor="primary-500"
+        borderWidth="1"
       />
     </Animated.View>
   )
@@ -207,9 +208,9 @@ export const PinDotsInput = forwardRef(
     }
 
     return (
-      <YStack flexGrow={1} gap="$8" jc="space-between" onPress={() => inputRef.current?.focus()}>
+      <YStack flexGrow={1} gap="8" jc="space-between" onPress={() => inputRef.current?.focus()}>
         <Animated.View style={{ transform: [{ translateX: shakeAnimation }] }}>
-          <XStack justifyContent="center" gap="$2">
+          <XStack justifyContent="center" gap="2">
             {Array.from({ length: pinLength }, (_, i) => (
               <PinDot
                 key={i}

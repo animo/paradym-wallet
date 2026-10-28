@@ -19,7 +19,7 @@ export function OnboardingIdCardFetch({ goToNextStep, userName }: OnboardingIdCa
           <Animated.View layout={LinearTransition}>
             <Animated.View entering={FadeIn}>
               <Button.Solid scaleOnPress onPress={goToNextStep}>
-                {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
+                {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
               </Button.Solid>
             </Animated.View>
           </Animated.View>

@@ -140,7 +140,7 @@ export const CredentialRetrievalSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <AnimatedStack gap="$4" fg={1}>
+      <AnimatedStack gap="4" fg={1}>
         {isStoringOrCompleted && (
           <AnimatedStack
             key={isCompleteAndAllowed ? 'success-icon' : 'info-icon'}
@@ -149,8 +149,8 @@ export const CredentialRetrievalSlide = ({
             }}
             entering={useSpringify(ZoomIn)}
           >
-            <XStack pt="$4" jc="center">
-              <HeroIcons.ShieldCheckFilled color="$primary-500" size={48} />
+            <XStack pt="4" jc="center">
+              <HeroIcons.ShieldCheckFilled color="primary-500" size={48} />
             </XStack>
           </AnimatedStack>
         )}
@@ -185,13 +185,13 @@ export const CredentialRetrievalSlide = ({
           >
             <AnimatedStack style={animatedTextStyle}>
               {isCompleted ? (
-                <Paragraph ta="center" mt="$-2" mb="$6">
+                <Paragraph ta="center" mt="-2" mb="6">
                   <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
                 </Paragraph>
               ) : isStoring ? (
-                <Paragraph ta="center" mt="$-2" mb="$6"></Paragraph>
+                <Paragraph ta="center" mt="-2" mb="6"></Paragraph>
               ) : deferred ? (
-                <Paragraph ta="center" mt="$-2" mb="$6">
+                <Paragraph ta="center" mt="-2" mb="6">
                   <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
                 </Paragraph>
               ) : null}
@@ -200,8 +200,8 @@ export const CredentialRetrievalSlide = ({
         </AnimatedStack>
         <AnimatedStack layout={useSpringify(LinearTransition)} fg={1}>
           <AnimatedStack
-            pb="$5"
-            borderColor={isCompleteAndAllowed ? '$background' : '$grey-100'}
+            pb="5"
+            borderColor={isCompleteAndAllowed ? 'background' : 'grey-100'}
             style={animatedCardStyle}
           >
             <CredentialCard
@@ -215,10 +215,10 @@ export const CredentialRetrievalSlide = ({
           </AnimatedStack>
           <AnimatedStack
             fg={1}
-            btw="$0.5"
-            px="$4"
-            mx="$-4"
-            borderColor={isScrolledByOffset && !isStoringOrCompleted ? '$grey-200' : '$background'}
+            btw="0-5"
+            px="4"
+            mx="-4"
+            borderColor={isScrolledByOffset && !isStoringOrCompleted ? 'grey-200' : 'background'}
             onLayout={(event) => {
               // Set the initial height of the stack to define the maxHeight of the scrollView
               if (!scrollViewHeight) {
@@ -231,10 +231,10 @@ export const CredentialRetrievalSlide = ({
                 ref={scrollViewRef}
                 onScroll={handleScroll}
                 scrollEventThrottle={scrollEventThrottle}
-                px="$4"
-                mx="$-4"
+                px="4"
+                mx="-4"
                 maxHeight={scrollViewHeight}
-                bg="$white"
+                bg="white"
                 contentContainerStyle={{ flexGrow: 1 }}
               >
                 {scrollViewHeight && isAllowedToAccept ? (
@@ -255,10 +255,10 @@ export const CredentialRetrievalSlide = ({
                     <Loader />
                   </YStack>
                 )}
-                <Spacer size="$6" />
+                <Spacer size="6" />
               </ScrollView>
             ) : (
-              <Spacer size="$6" />
+              <Spacer size="6" />
             )}
           </AnimatedStack>
         </AnimatedStack>
@@ -268,15 +268,15 @@ export const CredentialRetrievalSlide = ({
           key={isCompleteAndAllowed ? 'success' : 'error'}
           entering={isCompleteAndAllowed ? FadeIn.duration(300).delay(500) : undefined}
           exiting={FadeOut.duration(100)}
-          btw="$0.5"
-          borderColor={isStoringOrCompleted ? '$background' : '$grey-200'}
-          p="$4"
-          mx="$-4"
-          bg="$background"
+          btw="0-5"
+          borderColor={isStoringOrCompleted ? 'background' : 'grey-200'}
+          p="4"
+          mx="-4"
+          bg="background"
         >
           {isStoringOrCompleted ? (
-            <Button.Solid opacity={isCompleteAndAllowed ? 1 : 0} onPress={onGoToWallet}>
-              {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
+            <Button.Solid opacity={isCompleteAndAllowed ? '1 press:0.8' : 0} onPress={onGoToWallet}>
+              {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
             </Button.Solid>
           ) : (
             <DualResponseButtons

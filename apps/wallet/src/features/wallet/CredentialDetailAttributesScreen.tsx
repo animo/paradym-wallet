@@ -89,7 +89,7 @@ export function CredentialDetailAttributesScreen() {
 
   return (
     <>
-      <FlexPage gap="$0" paddingHorizontal="$0">
+      <FlexPage gap="0" paddingHorizontal="0">
         <HeaderContainer
           isScrolledByOffset={isScrolledByOffset}
           title={t({
@@ -99,7 +99,7 @@ export function CredentialDetailAttributesScreen() {
           })}
         />
         <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack px="$4" gap="$4" marginBottom={bottom}>
+          <YStack px="4" gap="4" marginBottom={bottom}>
             <CustomCredentialAttributes credential={credential} scrollRef={scrollViewRef} />
             <AnimatedStack
               key={isShareableAttributesVisible ? 'visible-shareable-attributes' : 'hidden-shareable-attributes'}
@@ -137,7 +137,7 @@ export function CredentialDetailAttributesScreen() {
             </AnimatedStack>
           </YStack>
         </ScrollView>
-        <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
+        <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
           <TextBackButton />
         </YStack>
       </FlexPage>
@@ -149,9 +149,9 @@ export function CredentialDetailAttributesScreen() {
             ? [
                 {
                   icon: isShareableAttributesVisible ? (
-                    <HeroIcons.EyeSlash color="$grey-500" />
+                    <HeroIcons.EyeSlash color="grey-500" />
                   ) : (
-                    <HeroIcons.Eye color="$grey-500" />
+                    <HeroIcons.Eye color="grey-500" />
                   ),
                   title: isShareableAttributesVisible
                     ? t({
@@ -169,7 +169,7 @@ export function CredentialDetailAttributesScreen() {
               ]
             : []),
           {
-            icon: <HeroIcons.CodeBracketFilled color="$grey-500" />,
+            icon: <HeroIcons.CodeBracketFilled color="grey-500" />,
             title: isMetadataVisible
               ? t(commonMessages.hideMetadataAttributes)
               : t(commonMessages.showMetadataAttributes),

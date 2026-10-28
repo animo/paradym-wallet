@@ -44,18 +44,18 @@ export function AnimatedNfcScanIcon({ icon }: { icon: 'complete' | 'error' | 'sc
       exiting={FadeOut}
     >
       {icon === 'scan' && (
-        <HeroIcons.DevicePhoneMobile position="absolute" fill="white" color="$primary-500" size={108} />
+        <HeroIcons.DevicePhoneMobile position="absolute" fill="white" color="primary-500" size={108} />
       )}
       {icon === 'scan' && (
         <Stack position="absolute" justifyContent="center" alignItems="center" width={32} height={32}>
           <Reanimated.View style={animatedStyle}>
-            <HeroIcons.ArrowPath color="$primary-500" size={32} />
+            <HeroIcons.ArrowPath color="primary-500" size={32} />
           </Reanimated.View>
         </Stack>
       )}
 
-      {icon === 'complete' && <HeroIcons.CheckCircle size={108} color="$positive-500" />}
-      {icon === 'error' && <HeroIcons.XCircle size={108} color="$danger-500" />}
+      {icon === 'complete' && <HeroIcons.CheckCircle size={108} color="positive-500" />}
+      {icon === 'error' && <HeroIcons.XCircle size={108} color="danger-500" />}
     </Reanimated.View>
   )
 }

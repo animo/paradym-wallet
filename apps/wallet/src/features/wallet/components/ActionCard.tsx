@@ -25,11 +25,11 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
       onPressOut={qrHandlePressOut}
       onPress={onPress}
       jc="center"
-      bg={variant === 'primary' ? '$grey-900' : '$white'}
-      p="$3"
+      bg={variant === 'primary' ? 'grey-900' : 'white'}
+      p="3"
       fg={1}
-      gap="$3"
-      br="$6"
+      gap="3"
+      br="6"
     >
       <XStack jc="space-between" ai="center">
         <Stack />
@@ -37,7 +37,7 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
       </XStack>
       <YStack>
         {titleParts.map((word) => (
-          <Heading key={word} color={variant === 'primary' ? 'white' : '$grey-900'} heading="h2">
+          <Heading key={word} color={variant === 'primary' ? 'white' : 'grey-900'} heading="h2">
             {word}
           </Heading>
         ))}

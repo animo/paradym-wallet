@@ -1,6 +1,7 @@
 export * from './AnimatedStack'
 export * from './Button'
 export * from './Headings'
+export * from './Input'
 export * from './Page'
 export * from './Paragraph'
 export * from './ScrollView'

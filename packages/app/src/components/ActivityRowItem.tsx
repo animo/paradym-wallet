@@ -35,22 +35,22 @@ export const activityInteractions: ActivityInteractions = {
   received: {
     success: {
       icon: HeroIcons.Plus,
-      color: '$feature-500',
+      color: 'feature-500',
       text: commonMessages.cardAdded,
     },
     pending: {
       icon: HeroIcons.ClockFilled,
-      color: '$warning-500',
+      color: 'warning-500',
       text: commonMessages.cardPending,
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
-      color: '$grey-500',
+      color: 'grey-500',
       text: commonMessages.cardRejected,
     },
     failed: {
       icon: CustomIcons.Exclamation,
-      color: '$danger-500',
+      color: 'danger-500',
       text: commonMessages.cardNotAdded,
     },
   },
@@ -62,12 +62,12 @@ export const activityInteractions: ActivityInteractions = {
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
-      color: '$grey-500',
+      color: 'grey-500',
       text: commonMessages.signingStopped,
     },
     failed: {
       icon: CustomIcons.Exclamation,
-      color: '$danger-500',
+      color: 'danger-500',
       text: commonMessages.signingFailed,
     },
   },
@@ -79,29 +79,29 @@ export const activityInteractions: ActivityInteractions = {
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
-      color: '$grey-500',
+      color: 'grey-500',
       text: commonMessages.paymentStopped,
     },
     failed: {
       icon: CustomIcons.Exclamation,
-      color: '$danger-500',
+      color: 'danger-500',
       text: commonMessages.paymentFailed,
     },
   },
   shared: {
     success: {
       icon: HeroIcons.Interaction,
-      color: '$positive-500',
+      color: 'positive-500',
       text: commonMessages.informationShared,
     },
     stopped: {
       icon: HeroIcons.HandRaisedFilled,
-      color: '$grey-500',
+      color: 'grey-500',
       text: commonMessages.sharingStopped,
     },
     failed: {
       icon: CustomIcons.Exclamation,
-      color: '$danger-500',
+      color: 'danger-500',
       text: commonMessages.sharingFailed,
     },
   },
@@ -110,12 +110,12 @@ export const activityInteractions: ActivityInteractions = {
 const paymentTransactionStatusInteractions: Record<'PDNG' | 'RJCT', ActivityInteraction> = {
   PDNG: {
     icon: HeroIcons.ClockFilled,
-    color: '$warning-500',
+    color: 'warning-500',
     text: commonMessages.paymentPending,
   },
   RJCT: {
     icon: CustomIcons.Exclamation,
-    color: '$danger-500',
+    color: 'danger-500',
     text: commonMessages.paymentRejected,
   },
 }
@@ -165,7 +165,7 @@ export function ActivityRowItem({ activity }: ActivityRowItemProps) {
         accessibilityRole="button"
         aria-label={`${Title} activity from ${subtitle}`}
         ai="center"
-        gap="$4"
+        gap="4"
         w="100%"
         onPress={onLinkPress}
         onPressIn={handlePressIn}
@@ -177,30 +177,30 @@ export function ActivityRowItem({ activity }: ActivityRowItemProps) {
             ai="center"
             w={48}
             h={48}
-            br="$12"
-            bg={backgroundColor ?? '$grey-50'}
-            bw={logo?.url ? 0.5 : 0}
-            borderColor="$grey-100"
+            bg={backgroundColor ?? 'grey-50'}
+            borderColor="grey-100"
             overflow="hidden"
+            br="12"
+            bw={logo?.url ? 0.5 : 0}
           >
             {logo?.url ? (
               <Image src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
             ) : (
-              <HeroIcons.BuildingOffice strokeWidth={2} color="$grey-500" />
+              <HeroIcons.BuildingOffice strokeWidth={2} color="grey-500" />
             )}
           </Stack>
-          <Stack overflow="hidden" pos="absolute" bg={Icon.color} br="$12" p="$1" bw="$1" boc="$white">
-            <Icon.icon strokeWidth={3} size={10} color="$white" />
+          <Stack overflow="hidden" pos="absolute" bg={Icon.color} br="12" p="1" bw="1" boc="white">
+            <Icon.icon strokeWidth={3} size={10} color="white" />
           </Stack>
         </Stack>
-        <YStack gap="$0.5" jc="space-between" fg={1} w="75%">
+        <YStack gap="0-5" jc="space-between" fg={1} w="75%">
           <XStack jc="space-between">
             <Paragraph>{Title}</Paragraph>
-            <Paragraph variant="annotation" color="$grey-500" fontWeight="$regular">
+            <Paragraph variant="annotation" color="grey-500" fontWeight="regular">
               {formatRelativeDate(date)}
             </Paragraph>
           </XStack>
-          <Heading heading="h3" numberOfLines={1} fontWeight="$semiBold" color="$grey-900">
+          <Heading heading="h3" numberOfLines={1} fontWeight="semiBold" color="grey-900">
             {subtitle}
           </Heading>
         </YStack>

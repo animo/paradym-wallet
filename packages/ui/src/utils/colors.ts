@@ -5,7 +5,7 @@ import { hexColors } from '../config/tamagui.config'
  * Get text color (white or black) for specific background color
  */
 export function getTextColorBasedOnBg(bgColor: string) {
-  return Number.parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2 ? '$grey-900' : '$grey-100'
+  return Number.parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2 ? 'grey-900' : 'grey-100'
 }
 
 /**
