@@ -1,7 +1,7 @@
 import type { DcApiRequest } from '@animo-id/expo-digital-credentials-api/request-handler'
 // Deep import: `@app/hooks` pulls in the over-asking AI and the payment hooks, none of which this
 // bundle links. The setting itself lives in the shared MMKV, so the request UI reads what the app
-// wrote — in its own process, on iOS.
+// wrote — in its own process.
 import { useDevelopmentMode } from '@app/hooks/useDevelopmentMode'
 import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { useLingui } from '@lingui/react/macro'

@@ -19,5 +19,6 @@ appId: com.apple.mobilesafari
 - extendedWaitUntil:
     visible: Identity Verification
     timeout: 30000
-- tapOn: Paradym Wallet.*
+# The preview build, not another Paradym Wallet build on the same device
+- tapOn: Paradym Wallet \(Preview\).*
 - tapOn: Continue

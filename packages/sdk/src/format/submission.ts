@@ -100,35 +100,6 @@ export interface FormattedSubmissionEntrySatisfiedCredential {
   }
 }
 
-/**
- * The document to answer when an ISO mdoc request lists several document requests.
- *
- * ISO 18013-5 leaves open whether several DocRequests ask for all of the documents or for any one
- * of them, and iOS presents them as alternatives. The wallet reads them as alternatives on every
- * transport — proximity, and the digital credentials API on both platforms — so a request gets the
- * same answer wherever it comes from: the first document the wallet can share. When it can share
- * none, the entry shown is the one that comes closest: a card missing attributes before no card.
- *
- * @returns the submission narrowed to that one entry, and the index of the entry it was, which is
- * also the index of its document request.
- */
-export function selectAlternativeEntry(submission: FormattedSubmission): {
-  submission: FormattedSubmission
-  entryIndex: number | undefined
-} {
-  if (submission.entries.length === 0) return { submission, entryIndex: undefined }
-
-  const satisfiedIndex = submission.entries.findIndex((entry) => entry.isSatisfied)
-  const partialIndex = submission.entries.findIndex((entry) => !entry.isSatisfied && entry.partialMatches.length > 0)
-  const entryIndex = satisfiedIndex !== -1 ? satisfiedIndex : partialIndex !== -1 ? partialIndex : 0
-  const entry = submission.entries[entryIndex]
-
-  return {
-    submission: { ...submission, entries: [entry], areAllSatisfied: entry.isSatisfied },
-    entryIndex,
-  }
-}
-
 export function getFormattedSubmission(resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest) {
   if (resolvedAuthorizationRequest.presentationExchange) {
     return formatDifPexCredentialsForRequest(

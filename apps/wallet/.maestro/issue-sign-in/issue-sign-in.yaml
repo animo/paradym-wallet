@@ -3,6 +3,18 @@ appId: id.paradym.wallet.preview
 - openLink:
     link: ${deeplink}
 
+# Android shows an app chooser when other installed wallets handle the link too
+- runFlow:
+    when:
+      visible: Open with
+      platform: Android
+    commands:
+      - tapOn: Paradym Wallet \(Preview\)
+      # Not shown on every device: some open the app as soon as it is picked
+      - tapOn:
+          text: Just once
+          optional: true
+
 - runFlow:
     when:
       visible: .*Open in.*

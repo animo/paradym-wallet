@@ -5,7 +5,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "APP_VARIANT=development TAMAGUI_IGNORE_BUNDLE_ERRORS=expo-modules-core,expo-updates,expo-asset,expo-image,expo expo start -c --dev-client",
+		"start": "APP_VARIANT=development TAMAGUI_IGNORE_BUNDLE_ERRORS=expo-modules-core,expo-asset,expo-image,expo expo start -c --dev-client",
 		"android": "APP_VARIANT=development expo run:android",
 		"ios": "APP_VARIANT=development expo run:ios",
 		"prebuild": "APP_VARIANT=development expo prebuild",
@@ -54,7 +54,6 @@
 		"expo-router": "catalog:",
 		"expo-splash-screen": "catalog:",
 		"expo-system-ui": "catalog:",
-		"expo-updates": "catalog:",
 		"expo-web-browser": "catalog:",
 		"react": "catalog:",
 		"react-native": "catalog:",

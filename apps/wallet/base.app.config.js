@@ -143,9 +143,6 @@ const createBaseConfig = (appSpecific) => {
     icon,
     userInterfaceStyle: 'light',
     backgroundColor: '#FFFFFF',
-    updates: {
-      fallbackToCacheTimeout: 0,
-    },
     // `expo run:ios` / `expo run:android` reuse a local build when the native fingerprint is unchanged
     buildCacheProvider: { plugin: 'expo-build-disk-cache' },
     experiments: {
