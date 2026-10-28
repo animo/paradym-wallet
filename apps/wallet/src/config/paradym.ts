@@ -49,7 +49,8 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
       : undefined,
   openId4VcConfiguration: {
     getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {
-      if (verification.type === 'credential') {
+      // Whether the issuer is trusted is decided by the trust mechanisms, so an untrusted issuer resolves as untrusted
+      if (verification.type === 'credential' || verification.type === 'openId4VciCredentialIssuerMetadata') {
         return [certificateChain[certificateChain.length - 1].toString('pem')]
       }
 
