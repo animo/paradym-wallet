@@ -22,7 +22,6 @@ overrides:
   '@hyperledger/anoncreds-shared': 'catalog:'
 
 patchedDependencies:
-  '@dr.pogodin/react-native-fs': patches/@dr.pogodin__react-native-fs@2.39.0.patch
   # Patches required for DC API
   react-native@0.88.0: patches/react-native@0.88.0.patch
   # Android layout animation fixes from Reanimated main (#10808, #10811, #10812, #10817), not released yet
@@ -47,7 +46,7 @@ catalog:
   react: 19.3.0
   "@types/react": ~19.3.0
   typescript: ~6.0.3
-  "@tanstack/react-query": ^5.101.1
+  "@tanstack/react-query": ^5.105.0
   tsdown: ^0.22.3
 
   # Babel
@@ -101,25 +100,25 @@ catalog:
   # React Native FS is not maintained, and doesn't support new Arch
   # this seems to be the best maintained fork. We might want to switch
   # to Expo FileSystem, but Credo depends on react-native-fs
-  "react-native-fs": "npm:@dr.pogodin/react-native-fs@^2.36.1"
+  "react-native-fs": "npm:@dr.pogodin/react-native-fs@~2.40.4"
   react-native-mmkv: ^4.3.2
-  react-native-qrcode-svg: ^6.3.21
+  react-native-qrcode-svg: ^6.3.34
   react-native-reanimated-carousel: ^5.2.0
   react-native-nitro-modules: ^0.37.1
   # OpenSSL through Nitro. Only used for RSA signature verification: askar and the secure
   # environment are both EC-only, so without it an issuer chaining up to an RSA CA cannot be
   # verified at all. react-native-quick-base64 is its peer dependency.
-  react-native-quick-crypto: ^1.1.7
+  react-native-quick-crypto: ^1.1.9
   react-native-quick-base64: ^3.0.0
   burnt: ^0.13.0
   "@react-native-community/blur": ^4.4.1
-  react-native-edge-to-edge: ^1.8.1
+  react-native-edge-to-edge: ^1.8.2
   '@shopify/react-native-skia': 2.14.0
 
   # Lingui (i18n)
-  "@lingui/babel-plugin-lingui-macro": ^6.4.0
-  "@lingui/cli": ^6.4.0
-  "@lingui/format-json": ^6.4.0
+  "@lingui/babel-plugin-lingui-macro": ^6.10.1
+  "@lingui/cli": ^6.10.1
+  "@lingui/format-json": ^6.10.1
 
   # Expo (SDK 58 uses unified 58.x versioning across expo-* packages)
   # Versions aligned with Expo SDK 58 bundledNativeModules.
@@ -151,16 +150,16 @@ catalog:
   "@expo-google-fonts/raleway": ^0.4.2
 
   # Tamagui
-  "@tamagui/animations-react-native": 2.3.3
-  "@tamagui/font-inter": 2.3.3
-  "@tamagui/shorthands": 2.3.3
-  "@tamagui/themes": 2.3.3
-  "@tamagui/toast": 2.3.3
-  "@tamagui/react-native-media-driver": 2.3.3
-  "@tamagui/colors": 2.3.3
-  "@tamagui/lucide-icons-2": 2.3.3
-  "@tamagui/babel-plugin": 2.3.3
-  tamagui: 2.3.3
+  "@tamagui/animations-react-native": 2.7.7
+  "@tamagui/font-inter": 2.7.7
+  "@tamagui/shorthands": 2.7.7
+  "@tamagui/themes": 2.7.7
+  "@tamagui/toast": 2.7.7
+  "@tamagui/react-native-media-driver": 2.7.7
+  "@tamagui/colors": 2.7.7
+  "@tamagui/lucide-icons-2": 2.7.7
+  "@tamagui/babel-plugin": 2.7.7
+  tamagui: 2.7.7
 
 minimumReleaseAgeExclude:
   - '@hyperledger/anoncreds-react-native@0.5.0-alpha-20261027094647'

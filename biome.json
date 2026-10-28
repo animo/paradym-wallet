@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.6.3/schema.json",
 	"files": {
 		"includes": ["**", "!packages/sdk/src/index.ts"]
 	},
@@ -25,6 +25,16 @@
 	"json": {
 		"parser": {
 			"allowComments": true
+		}
+	},
+	"yaml": {
+		"formatter": {
+			"enabled": false
+		}
+	},
+	"markdown": {
+		"formatter": {
+			"enabled": false
 		}
 	},
 	"linter": {
