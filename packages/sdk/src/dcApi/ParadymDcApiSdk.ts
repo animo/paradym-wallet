@@ -6,7 +6,7 @@ import type {
   Openid4vpProtocolRequest,
 } from '@animo-id/expo-digital-credentials-api/request-handler'
 import { AskarKeyManagementService, AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
-import { Agent, CredoError, Kms, type MdocRecord, type X509Certificate, X509Module } from '@credo-ts/core'
+import { Agent, CredoError, Kms, type X509Certificate, X509Module } from '@credo-ts/core'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
@@ -25,9 +25,10 @@ import {
   ParadymWalletNoStoreError,
 } from '../error'
 import { withBiometricAuthenticationErrors } from '../error/withBiometricAuthenticationErrors'
+import { getSubmissionForMdocRequest } from '../format/mdocDeviceRequest'
 import { type FormattedSubmission, getFormattedSubmission } from '../format/submission'
 import { createLogger } from '../logging'
-import { getSubmissionForMdocDocumentRequest } from '../proximity/getSubmissionForMdocDocumentRequest'
+import { resolveMdocDeviceRequest } from '../proximity/resolveMdocDeviceRequest'
 import { storeSharedActivityForSubmission } from '../storage/activityStore'
 import {
   getWalletStoreDatabaseConfig,
@@ -41,7 +42,7 @@ import {
   getVerifierForOpenId4VpRequest,
   type RequestVerifier,
 } from '../trust/verifier'
-import { getSubmissionForMdocDcApiRequest, toDeviceRequest } from './submission'
+import { toDeviceRequest } from './submission'
 
 export type ParadymDcApiAgent = Agent<ReturnType<typeof getModules>>
 
@@ -105,8 +106,13 @@ export type DcApiReview = {
   decline: (reason?: string) => Promise<void>
 }
 
-/** A review as the platform- and protocol-specific paths build it, before it is recorded. */
-type ResolvedReview = Omit<DcApiReview, 'decline'>
+/**
+ * A review as the platform- and protocol-specific paths build it, before it is recorded. Its `share`
+ * builds the response and returns the call that sends it, so the share can be recorded in between.
+ */
+type ResolvedReview = Omit<DcApiReview, 'decline' | 'share'> & {
+  share: () => Promise<() => Promise<void>>
+}
 
 /**
  * The wallet, reduced to what answering a digital credentials request needs.
@@ -225,8 +231,9 @@ export class ParadymDcApiSdk {
     return {
       ...review,
       share: async () => {
+        let respond: () => Promise<void>
         try {
-          await withBiometricAuthenticationErrors(review.share())
+          respond = await withBiometricAuthenticationErrors(review.share())
         } catch (error) {
           // The request is still open after a cancelled prompt: whatever the user does next is what
           // gets recorded.
@@ -236,7 +243,10 @@ export class ParadymDcApiSdk {
           throw error
         }
 
+        // Recorded before the response is sent, like a decline: answering takes the request UI down
+        // with it, so nothing after `respond` is sure to run.
         await this.storeSharedActivity(review, 'success')
+        await respond()
       },
       decline: (reason) => {
         declining ??= (async () => {
@@ -251,8 +261,8 @@ export class ParadymDcApiSdk {
   }
 
   /**
-   * Never throws: the verifier already has its response (or the decline) by the time this runs, so
-   * failing to write the log entry cannot be allowed to change what happens to the request.
+   * Never throws: failing to write the log entry cannot be allowed to change what happens to the
+   * request.
    */
   private async storeSharedActivity(review: ResolvedReview, status: 'success' | 'failed' | 'stopped') {
     try {
@@ -277,7 +287,8 @@ export class ParadymDcApiSdk {
 
   /**
    * ISO 18013-7 Annex C, on Android. Credo parses the request and matches it against the wallet's
-   * mdocs in one go, so both the review and the response come out of the same resolved request.
+   * mdocs in one go, so both the review and the response come out of the same resolved request and
+   * the same selected credentials.
    */
   private async reviewMdocRequest(
     request: AndroidDcApiRequest,
@@ -289,21 +300,15 @@ export class ParadymDcApiSdk {
       request: protocolRequest.data,
       // Must come from the OS, never from the request payload (ISO 18013-7 C.5).
       origin: request.origin,
-      // Several doc requests are alternatives, the way iOS presents them (see `selectAlternativeEntry`).
+      // Several doc requests without use cases are alternatives, the way iOS presents them.
       treatAmbiguousMultipleDocRequestsAsAlternatives: true,
     })
 
-    // Decided here rather than in `share`, so what the user reviewed is exactly what is sent: the one
-    // doc request the review is for, answered with the credential it shows first.
-    const { submission, docRequest } = getSubmissionForMdocDcApiRequest(resolved)
-    const [validCredential] = docRequest?.validCredentials ?? []
-    const credentials =
-      docRequest && validCredential
-        ? [{ docRequestIndex: docRequest.docRequestIndex, record: validCredential.record }]
-        : []
+    // Decided here rather than in `share`, so what the user reviewed is exactly what is sent.
+    const selected = resolved.success ? this.agent.mdoc.selectCredentialsForRequest(resolved) : undefined
 
     return {
-      submission,
+      submission: getSubmissionForMdocRequest(resolved, selected),
       // A request without an origin came from a native app calling for itself, which the calling
       // package is the only identity for.
       ...(await this.getMdocVerifier(
@@ -312,11 +317,10 @@ export class ParadymDcApiSdk {
         request.origin
       )),
       share: async () => {
-        const { response } = await this.agent.mdoc.createDcApiResponse({
-          resolvedRequest: resolved,
-          credentials,
-        })
-        await request.respond({ protocol: 'org-iso-mdoc', data: { response } })
+        if (!selected) throw new Error('No stored card answers the request')
+
+        const { response } = await this.agent.mdoc.createDcApiResponse(selected)
+        return () => request.respond({ protocol: 'org-iso-mdoc', data: { response } })
       },
     }
   }
@@ -358,7 +362,7 @@ export class ParadymDcApiSdk {
           dcql: { credentials },
         })
 
-        await request.respond({ protocol: protocolRequest.protocol, data: authorizationResponse })
+        return () => request.respond({ protocol: protocolRequest.protocol, data: authorizationResponse })
       },
     }
   }
@@ -374,27 +378,12 @@ export class ParadymDcApiSdk {
    * approved the first time, rather than approving again.
    */
   private async reviewIosRequest(request: IosDcApiRequest): Promise<ResolvedReview> {
-    // iOS presents several document requests as alternative document request sets, which is how the
-    // wallet reads them anyway (see `selectAlternativeEntry`). So its structure needs no handling of
-    // its own: every document it lists is a candidate, and the submission picks the one to answer.
-    const documentRequests = request.presentmentRequests.flatMap((presentmentRequest) =>
-      presentmentRequest.documentRequestSets.flatMap((set) => set.documentRequests)
-    )
-
-    const submission = await getSubmissionForMdocDocumentRequest({
+    const reviewedRequest = await resolveMdocDeviceRequest({
       mdocApi: this.agent.mdoc,
-      encodedDeviceRequest: toDeviceRequest(documentRequests),
+      deviceRequest: toDeviceRequest(request.presentmentRequests),
     })
-
-    // The document and credential the review showed, so the response cannot end up disclosing a
-    // different one than the user approved.
-    const [reviewedEntry] = submission.entries
-    const reviewed = reviewedEntry?.isSatisfied
-      ? {
-          docType: reviewedEntry.inputDescriptorId,
-          // iOS only supports mDoc, cast is safe
-          record: reviewedEntry.credentials[0].credential.record as MdocRecord,
-        }
+    const reviewedSelection = reviewedRequest.success
+      ? this.agent.mdoc.selectCredentialsForRequest(reviewedRequest)
       : undefined
 
     const approve = async () => {
@@ -409,36 +398,32 @@ export class ParadymDcApiSdk {
         origin: request.origin,
         treatAmbiguousMultipleDocRequestsAsAlternatives: true,
       })
+      if (!reviewedSelection || !resolved.success) throw new Error('No stored card answers the request')
 
-      // Only what the user reviewed: the raw request carries every alternative, and answering each
-      // one that matches would disclose cards nobody approved.
-      if (!reviewed) throw new Error('No stored card matches the request')
-      const docRequest = resolved.docRequests.find(
-        ({ docType, validCredentials }) =>
-          docType === reviewed.docType && validCredentials.some(({ record }) => record.id === reviewed.record.id)
-      )
-      if (!docRequest) {
-        throw new Error(`The card reviewed for '${reviewed.docType}' does not answer the request`)
+      // Only the cards the user reviewed: the raw request is selected for the same way the summary
+      // was, and answering it with any other card would disclose a card nobody approved.
+      const selected = this.agent.mdoc.selectCredentialsForRequest(resolved)
+      const reviewedRecordIds = reviewedSelection.credentials.map(({ record }) => record.id)
+      if (
+        selected.credentials.length !== reviewedRecordIds.length ||
+        selected.credentials.some(({ record }, index) => record.id !== reviewedRecordIds[index])
+      ) {
+        throw new Error('The cards that answer the request are not the ones that were reviewed')
       }
 
-      return { resolved, docRequestIndex: docRequest.docRequestIndex, record: reviewed.record }
+      return selected
     }
     let approved: ReturnType<typeof approve> | undefined
 
     return {
-      submission,
+      submission: getSubmissionForMdocRequest(reviewedRequest, reviewedSelection),
       // The OS parses reader authentication out for us, so the verifier is known before the raw
       // request is released — the same trust the Android mdoc path establishes.
       ...(await this.getMdocVerifier(request.readerAuthentications[0]?.certificateChain, request.origin)),
       share: async () => {
         approved ??= approve()
-        const { resolved, docRequestIndex, record } = await approved
-
-        const { response } = await this.agent.mdoc.createDcApiResponse({
-          resolvedRequest: resolved,
-          credentials: [{ docRequestIndex, record }],
-        })
-        await request.respond({ protocol: 'org-iso-mdoc', data: { response } })
+        const { response } = await this.agent.mdoc.createDcApiResponse(await approved)
+        return () => request.respond({ protocol: 'org-iso-mdoc', data: { response } })
       },
     }
   }

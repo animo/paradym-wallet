@@ -42,7 +42,10 @@ export const useProofByState = (state: DidCommProofState | DidCommProofState[]):
   const { records: proofs } = useProofs()
 
   const filteredProofs = useMemo(
-    () => proofs.filter((r: DidCommProofExchangeRecord) => states.includes(r.state)),
+    () =>
+      // Only v2 exchanges: Credo no longer supports the v1 protocols, so a v1 exchange stored before
+      // that can't be read or continued.
+      proofs.filter((r: DidCommProofExchangeRecord) => states.includes(r.state) && r.protocolVersion === 'v2'),
     [proofs, states]
   )
   return filteredProofs

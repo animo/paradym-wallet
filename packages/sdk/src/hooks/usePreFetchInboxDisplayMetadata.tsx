@@ -44,7 +44,7 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
           : undefined
 
       const formatData = await agent.didcomm.credentials.getFormatData(record.id)
-      const offer = formatData.offer?.anoncreds ?? formatData.offer?.indy
+      const offer = formatData.offer?.anoncreds
       // We just return here, so the rest can still continue
       if (!offer) return
 
@@ -83,7 +83,7 @@ export const usePreFetchInboxDisplayMetadata = ({ paradym }: { paradym: ParadymW
           : undefined
 
       const formatData = await agent.didcomm.proofs.getFormatData(record.id)
-      const request = formatData.request?.anoncreds ?? formatData.request?.indy
+      const request = formatData.request?.anoncreds
 
       // We just return here, so the rest can still continue
       if (!request) return

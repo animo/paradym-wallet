@@ -19,7 +19,7 @@ function useOfferAttributes(credentialExchangeId: string) {
     queryKey: ['didCommCredentialOfferAttributes', credentialExchangeId],
     queryFn: async () => {
       const formatData = await paradym.agent.didcomm.credentials.getFormatData(credentialExchangeId)
-      const offer = formatData.offer?.anoncreds ?? formatData.offer?.indy
+      const offer = formatData.offer?.anoncreds
       const offerAttributes = formatData.offerAttributes
 
       if (!offer || !offerAttributes) {

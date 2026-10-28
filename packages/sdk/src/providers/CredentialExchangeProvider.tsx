@@ -44,7 +44,12 @@ export const useCredentialByState = (
   const { records: credentials } = useCredentials()
 
   const filteredCredentials = useMemo(
-    () => credentials.filter((r: DidCommCredentialExchangeRecord) => states.includes(r.state)),
+    () =>
+      // Only v2 exchanges: Credo no longer supports the v1 protocols, so a v1 exchange stored before
+      // that can't be read or continued.
+      credentials.filter(
+        (r: DidCommCredentialExchangeRecord) => states.includes(r.state) && r.protocolVersion === 'v2'
+      ),
     [credentials, states]
   )
   return filteredCredentials

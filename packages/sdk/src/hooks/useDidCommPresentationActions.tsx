@@ -37,15 +37,13 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
     queryFn: async () => {
       const formatData = await paradym.agent.didcomm.proofs.getFormatData(proofExchangeId)
 
-      const proofRequest = formatData.request?.anoncreds ?? formatData.request?.indy
+      const proofRequest = formatData.request?.anoncreds
 
       const credentialsForRequest = await paradym.agent.didcomm.proofs.getCredentialsForRequest({
         proofExchangeRecordId: proofExchangeId,
       })
 
-      const formatKey = formatData.request?.anoncreds !== undefined ? 'anoncreds' : 'indy'
-      const anonCredsCredentials =
-        credentialsForRequest.proofFormats.anoncreds ?? credentialsForRequest.proofFormats.indy
+      const anonCredsCredentials = credentialsForRequest.proofFormats.anoncreds
       if (!anonCredsCredentials || !proofRequest) {
         throw new CredoError('Invalid proof request.')
       }
@@ -193,17 +191,17 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         purpose,
       }
 
-      return { submission, formatKey, entries }
+      return { submission, entries }
     },
   })
 
   const { mutateAsync: acceptMutateAsync, status: acceptStatus } = useMutation({
     mutationKey: ['acceptDidCommPresentation', proofExchangeId],
     mutationFn: async (selectedCredentials?: { [inputDescriptorId: string]: string }) => {
-      let formatInput: { indy?: AnonCredsSelectedCredentials; anoncreds?: AnonCredsSelectedCredentials } | undefined
+      let formatInput: { anoncreds: AnonCredsSelectedCredentials } | undefined
 
       if (selectedCredentials && Object.keys(selectedCredentials).length > 0) {
-        if (!data?.formatKey || !data.entries) throw new Error('Unable to accept presentation without credentials')
+        if (!data?.entries) throw new Error('Unable to accept presentation without credentials')
 
         const selectedAttributes: Record<string, AnonCredsRequestedAttributeMatch> = {}
         const selectedPredicates: Record<string, AnonCredsRequestedPredicateMatch> = {}
@@ -225,7 +223,7 @@ export function useDidCommPresentationActions(proofExchangeId: string) {
         }
 
         formatInput = {
-          [data.formatKey]: {
+          anoncreds: {
             attributes: selectedAttributes,
             predicates: selectedPredicates,
             selfAttestedAttributes: {},

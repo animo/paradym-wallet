@@ -60,9 +60,10 @@ export function getSharedMmkv(): MMKV {
   if (shared) return shared
 
   const path = getSharedMmkvPath()
-  // `multi-process` is what MMKV calls the mode for app extensions: it takes a cross-process lock
-  // rather than assuming this app is the only writer.
-  shared = createMMKV(path ? { id: defaultInstanceId, path, mode: 'multi-process' } : undefined)
+  // `multi-process` takes a cross-process lock rather than assuming this app is the only writer. The
+  // credential request UI is a process of its own on both platforms: the provider extension on iOS,
+  // a separate process in the app's sandbox on Android.
+  shared = createMMKV({ id: defaultInstanceId, ...(path && { path }), mode: 'multi-process' })
 
   // Creating the instance before migrating into it is deliberate, and safe: MMKV is synchronous, so
   // nothing else in this process runs in between, and {@link migrate} decides by key count rather

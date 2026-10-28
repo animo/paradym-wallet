@@ -17,3 +17,14 @@ appId: com.android.chrome
     element: Verify Credential
     timeout: 60000
 - tapOn: Verify Credential
+
+# Some Credential Manager versions ask for consent in a system sheet before opening the wallet
+- extendedWaitUntil:
+    visible: Agree and continue
+    timeout: 15000
+    optional: true
+- runFlow:
+    when:
+      visible: Agree and continue
+    commands:
+      - tapOn: Agree and continue

@@ -78,7 +78,8 @@ export const isDidCommInvitation = (url: string) => {
     return true
   }
 
-  if (url.includes('c_i=') || url.includes('oob=') || url.includes('oobUrl=') || url.includes('d_m=')) {
+  // Legacy connection invitations (`c_i`) are not detected: Credo no longer supports the connections protocol
+  if (url.includes('oob=') || url.includes('oobUrl=') || url.includes('d_m=')) {
     return true
   }
 
@@ -96,8 +97,8 @@ export async function parseDidCommInvitation(
     // Try to parse the invitation as an DIDComm invitation.
     // We can't know for sure, as it could be a shortened URL to a DIDComm invitation.
     // So we use the parseMessage from credo and see if this returns a valid message.
-    // Parse invitation supports legacy connection invitations, oob invitations, and
-    // legacy connectionless invitations, and will all transform them into an OOB invitation.
+    // Parse invitation supports oob invitations and legacy connectionless invitations, and will
+    // transform them into an OOB invitation.
     const parsedInvitation = await paradym.agent.didcomm.oob.parseInvitation(updatedInvitationUrl)
     paradym.logger.debug(`Parsed didcomm invitation with id ${parsedInvitation.id}`)
     return parsedInvitation

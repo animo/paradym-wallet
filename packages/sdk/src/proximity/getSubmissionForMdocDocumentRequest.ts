@@ -1,7 +1,8 @@
 import type { MdocApi } from '@credo-ts/core'
-import { type CredentialMatch, DeviceRequest, Holder } from '@owf/mdoc'
-import { getSubmissionForMdocDocRequestMatches } from '../format/mdocDeviceRequest'
+import { DeviceRequest } from '@owf/mdoc'
+import { getSubmissionForMdocRequest } from '../format/mdocDeviceRequest'
 import type { FormattedSubmission } from '../format/submission'
+import { resolveMdocDeviceRequest } from './resolveMdocDeviceRequest'
 
 export type GetSubmissionForMdocDocumentRequestOptions = {
   /**
@@ -13,38 +14,20 @@ export type GetSubmissionForMdocDocumentRequestOptions = {
 }
 
 /**
- * What a device request asks for, matched against the wallet's mdocs the same way Credo matches a
- * digital credentials API request — both go through `@owf/mdoc`'s `Holder.matchDeviceRequest` — so
- * the review reads the same whichever way the request arrived.
- *
- * Several doc requests are alternatives, see `selectAlternativeEntry`: the submission holds the one
- * document the wallet answers.
+ * What a device request asks for, matched against the wallet's mdocs and answered the same way Credo
+ * answers a digital credentials API request, so the review reads the same whichever way the request
+ * arrived. See {@link getSubmissionForMdocRequest}.
  */
 export async function getSubmissionForMdocDocumentRequest(
   options: GetSubmissionForMdocDocumentRequestOptions
 ): Promise<FormattedSubmission> {
-  const deviceRequest = DeviceRequest.decode(options.encodedDeviceRequest)
-
-  const records = await options.mdocApi.findAllByQuery({
-    $or: deviceRequest.docRequests.map((docRequest) => ({ docType: docRequest.itemsRequest.docType })),
+  const resolvedRequest = await resolveMdocDeviceRequest({
+    mdocApi: options.mdocApi,
+    deviceRequest: DeviceRequest.decode(options.encodedDeviceRequest),
   })
 
-  const match = Holder.matchDeviceRequest({
-    deviceRequest,
-    credentials: records.map((record) => record.firstCredential.issuerSigned),
-    treatAmbiguousMultipleDocRequestsAsAlternatives: true,
-  })
-
-  const withRecord = (credential: CredentialMatch) => ({ ...credential, record: records[credential.credentialIndex] })
-
-  return getSubmissionForMdocDocRequestMatches(
-    match.docRequests.map((docRequestMatch) => ({
-      docType: docRequestMatch.docType,
-      requestedElements: Array.from(
-        deviceRequest.docRequests[docRequestMatch.docRequestIndex].itemsRequest.namespaces.values()
-      ).flatMap((elements) => Array.from(elements.keys())),
-      validCredentials: docRequestMatch.validCredentials.map(withRecord),
-      failedCredentials: docRequestMatch.failedCredentials.map(withRecord),
-    }))
-  ).submission
+  return getSubmissionForMdocRequest(
+    resolvedRequest,
+    resolvedRequest.success ? options.mdocApi.selectCredentialsForRequest(resolvedRequest) : undefined
+  )
 }

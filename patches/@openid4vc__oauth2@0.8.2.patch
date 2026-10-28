@@ -1,0 +1,15 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 9b2cecbe6818c9022a73a16493dab1f51624817d..963f73bcf3a4b75c9ed0d29e60b1afae6d7a77fd 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1768,7 +1768,9 @@ async function createJarAuthorizationRequest(options) {
+ * @throws {Error} if parsing json from response fails
+ */
+ async function fetchWellKnownMetadata(wellKnownMetadataUrl, schema, options) {
+-	const { result, response } = await createZodFetcher(options?.fetch)(schema, options?.acceptedContentType ?? [ContentType.Json], wellKnownMetadataUrl);
++	const acceptedContentType = options?.acceptedContentType ?? [ContentType.Json];
++	// Send the accepted content types as Accept header, so issuers return signed metadata (application/jwt) when the caller can verify it
++	const { result, response } = await createZodFetcher(options?.fetch)(schema, acceptedContentType, wellKnownMetadataUrl, { headers: { Accept: acceptedContentType.join(", ") } });
+ 	if (response.status === 404) return null;
+ 	if (!response.ok) throw new InvalidFetchResponseError$1(`Fetching well known metadata from '${wellKnownMetadataUrl}' resulted in an unsuccessful response with status '${response.status}'.`, await response.clone().text(), response);
+ 	if (!result?.success) throw new ValidationError(`Validation of metadata from '${wellKnownMetadataUrl}' failed`, result?.error);
