@@ -65,6 +65,7 @@
 		"expo-image": "catalog:",
 		"expo-image-manipulator": "catalog:",
 		"expo-secure-store": "catalog:",
+		"query-string": "catalog:",
 		"react-native-fs": "catalog:",
 		"react-native-get-random-values": "catalog:",
 		"react-native-keychain": "catalog:",
