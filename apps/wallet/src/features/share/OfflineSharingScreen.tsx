@@ -55,7 +55,9 @@ export function OfflineSharingScreen({
             step: 'success',
             progress: 100,
             backIsCancel: true,
-            screen: <PresentationSuccessSlide onComplete={onComplete} />,
+            // The second pane lists the shared cards
+            ownsWideLayout: !!submission,
+            screen: <PresentationSuccessSlide onComplete={onComplete} submission={submission} />,
           },
         ].filter(Boolean) as SlideStep[]
       }

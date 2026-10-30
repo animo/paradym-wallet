@@ -84,10 +84,11 @@ export function InfoButton({
       transition={isPressable ? 'quick' : undefined}
       pressStyle={isPressable ? { scale: 0.98 } : undefined}
       flexDirection="row"
-      gap="$4"
+      gap="$3"
       br="$8"
       bg={isPressable ? '$grey-50' : '$background'}
-      p="$3.5"
+      px="$3.5"
+      py="$3"
       bw="$0.5"
       accessible={true}
       accessibilityRole={onPress ? 'button' : undefined}
@@ -96,7 +97,7 @@ export function InfoButton({
       onPress={onPress}
     >
       {!noIcon && (
-        <Circle size="$3.5" br="$12" bg={infoButtonVariants[variant].accent}>
+        <Circle size="$3" br="$12" bg={infoButtonVariants[variant].accent}>
           {image ? <Image src={image.src} alt={image.alt} width={24} height={24} /> : infoButtonVariants[variant].icon}
         </Circle>
       )}
@@ -105,7 +106,7 @@ export function InfoButton({
           <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} heading="sub1">
             {title}
           </Heading>
-          {description && <Paragraph fontSize={15}>{description}</Paragraph>}
+          {description && <Paragraph fontSize={14}>{description}</Paragraph>}
         </YStack>
         {isPressable && (
           <Stack>

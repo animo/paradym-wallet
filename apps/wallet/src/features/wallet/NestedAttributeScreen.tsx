@@ -1,4 +1,4 @@
-import { CredentialAttributes, TextBackButton, useScrollViewPosition } from '@package/app'
+import { BackFooter, CredentialAttributes, useScrollViewPosition } from '@package/app'
 import { FlexPage, ScrollView, type ScrollViewRefType, YStack } from '@package/ui'
 import { HeaderContainer } from '@package/ui/content/HeaderContainer'
 import type { FormattedAttributeArray, FormattedAttributeObject } from '@paradym/wallet-sdk'
@@ -27,9 +27,7 @@ export function NestedAttributeScreen({ item, parentName }: NestedAttributeScree
           <CredentialAttributes attributes={item.value} scrollRef={scrollViewRef} />
         </YStack>
       </ScrollView>
-      <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
-        <TextBackButton />
-      </YStack>
+      <BackFooter />
     </FlexPage>
   )
 }

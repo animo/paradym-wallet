@@ -50,14 +50,8 @@ export const resetWalletServiceProviderState = async () => {
     getValidationStoreId(walletKeyVersion, id)
   )
 
-  const paths = [
-    // Legacy ones too: one left behind would be moved back in on the next PIN entry.
-    ...validationStoreIds.flatMap(getWalletStoreDirectories),
-    // The wallet's own store in Credo's default directory. The SDK's reset only
-    // removes it while the wallet is unlocked; onboarding also resets a locked one.
-    `${fs.dataPath}/wallet/paradym-wallet-${walletKeyVersion}`,
-  ]
-  for (const p of paths) {
+  // Legacy ones too: one left behind would be moved back in on the next PIN entry.
+  for (const p of validationStoreIds.flatMap(getWalletStoreDirectories)) {
     if (await fs.exists(p)) await fs.delete(p)
   }
 }

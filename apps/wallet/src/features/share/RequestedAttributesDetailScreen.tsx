@@ -1,6 +1,6 @@
 import { metadataForDisplay } from '@app/utils/metadataForDisplay'
 import { useLingui } from '@lingui/react/macro'
-import { CredentialAttributes, CredentialCard, TextBackButton } from '@package/app/components'
+import { BackFooter, CredentialAttributes, CredentialCard } from '@package/app/components'
 import { useHaptics, useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import {
@@ -166,9 +166,7 @@ export function RequestedAttributesDetailScreen({
             </YStack>
           </ScrollView>
         </YStack>
-        <YStack btw="$0.5" borderColor="$grey-200" pt="$4" mx="$-4" px="$4" bg="$background">
-          <TextBackButton />
-        </YStack>
+        <BackFooter />
       </YStack>
       <OptionSheet
         isOpen={isSheetOpen}

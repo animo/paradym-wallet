@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
-import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack } from '@package/ui'
+import { AnimatedStack, FlexPage, ProgressHeader, ScrollableStack, Stack, TwoPane, useMedia } from '@package/ui'
 import type React from 'react'
 import { type ForwardedRef, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Keyboard, type ScrollView } from 'react-native'
@@ -16,6 +16,13 @@ export type SlideStep = {
   progress: number
   screen: (() => React.ReactNode) | React.ReactElement
   backIsCancel?: boolean
+  /**
+   * Wide windows show this step next to the next one, as one step. The next step then holds the buttons, and
+   * continuing there runs the continue action this step registered with `setCombinedContinue`.
+   */
+  combineWithNext?: boolean
+  // Wide windows give this step the full width without padding, and it lays out its own panes with `SlidePane`
+  ownsWideLayout?: boolean
 }
 
 type SlideWizardProps = {
@@ -70,6 +77,9 @@ export const SlideWizard = forwardRef(
     const translateX = useSharedValue(0)
     const scrollViewRef = useRef<ScrollView>(null)
     const { withHaptics } = useHaptics()
+    const media = useMedia()
+    const combinedContinueRef = useRef<(() => Promise<void>) | undefined>(undefined)
+    const [isContinuing, setIsContinuing] = useState(false)
 
     const [currentStepIndex, setCurrentStepIndex] = useState(0)
     const [isCompleted, setIsCompleted] = useState(false)
@@ -120,26 +130,28 @@ export const SlideWizard = forwardRef(
           }
         } else {
           setCurrentStepIndex((prev) => {
-            const newIndex = prev + increment
+            let newIndex = prev + increment
+            // Going back in a wide window lands on a combined step, not on its second half
+            if (increment < 0 && media.wide && steps[newIndex - 1]?.combineWithNext) newIndex -= 1
             setProgress(steps[newIndex].progress)
             return newIndex
           })
         }
       },
-      [steps]
+      [steps, media.wide]
     )
 
     const animateTransition = useCallback(
-      (isForward: boolean, slide?: string) => {
+      (isForward: boolean, slide?: string, increment = 1) => {
         'worklet'
 
-        const shouldNavigateToWhite = isForward && currentStepIndex + 1 === steps.length && willResume
+        const shouldNavigateToWhite = isForward && currentStepIndex + increment === steps.length && willResume
 
         // Fade out and translate current screen
         opacity.value = withTiming(0, { duration: FADE_OUT_DURATION, easing: EASE_OUT }, () => {
           runOnJS(scrollToTop)()
           if (!shouldNavigateToWhite) {
-            runOnJS(updateStep)(isForward ? 1 : -1, slide)
+            runOnJS(updateStep)(isForward ? increment : -1, slide)
           }
         })
         translateX.value = withTiming(isForward ? -DISTANCE : DISTANCE, {
@@ -201,12 +213,12 @@ export const SlideWizard = forwardRef(
 
     const onNext = withHaptics(
       useCallback(
-        (slide?: string) => {
+        (slide?: string, increment = 1) => {
           if (isNavigating.current) return
-          if (currentStepIndex < steps.length - 1 || willResume) {
+          if (currentStepIndex + increment < steps.length || willResume) {
             setIsNavigating(true)
             direction.value = 'forward'
-            animateTransition(true, slide)
+            animateTransition(true, slide, increment)
           }
         },
         [currentStepIndex, steps.length, animateTransition, direction, isNavigating, willResume, setIsNavigating]
@@ -228,37 +240,102 @@ export const SlideWizard = forwardRef(
       }, [])
     )
 
-    const contextValue = { onNext, onBack, onCancel: handleCancel, completeProgressBar }
+    const setCombinedContinue = useCallback((onContinue?: () => Promise<void>) => {
+      combinedContinueRef.current = onContinue
+    }, [])
+
+    // Continuing from the second half of a combined step also continues the first half, and moves past both
+    const onNextCombined = useCallback(
+      async (slide?: string) => {
+        if (isNavigating.current) return
+        setIsContinuing(true)
+        try {
+          await combinedContinueRef.current?.()
+        } finally {
+          setIsContinuing(false)
+        }
+        onNext(slide, 2)
+      },
+      [onNext]
+    )
+
     const Screen = isError && errorScreen ? errorScreen : steps[currentStepIndex].screen
+    const isCombined =
+      media.wide &&
+      !(isError && errorScreen) &&
+      !!steps[currentStepIndex].combineWithNext &&
+      currentStepIndex < steps.length - 1
+    const NextScreen = isCombined ? steps[currentStepIndex + 1].screen : undefined
+    const isOwnWideLayout =
+      media.wide && !(isError && errorScreen) && !!steps[currentStepIndex].ownsWideLayout && !isCombined
     const { t } = useLingui()
+    const contextValue = {
+      onNext,
+      onBack,
+      onCancel: handleCancel,
+      completeProgressBar,
+      ownsWideLayout: isOwnWideLayout,
+    }
+
+    const renderScreen = (PaneScreen: SlideStep['screen']) =>
+      typeof PaneScreen === 'function' ? <PaneScreen /> : PaneScreen
 
     return (
       <WizardProvider value={contextValue}>
-        <FlexPage safeArea="t" p="$0" jc="space-between" gap="$0" background="$background">
+        <FlexPage
+          safeArea={['t', 'l', 'r']}
+          p="$0"
+          jc="space-between"
+          gap="$0"
+          background="$background"
+          {...((isCombined || isOwnWideLayout) && { maxWidth: '100%' })}
+        >
           <Stack px="$4" pb="$2" bbw={1} borderColor={isScrolledByOffset ? '$grey-100' : '$background'}>
             <ProgressHeader
-              progress={isCompleted || isError ? 100 : progress}
+              progress={isCompleted || isError ? 100 : isCombined ? steps[currentStepIndex + 1].progress : progress}
               onBack={onBack}
               onCancel={handleCancel}
               color={isError ? 'danger' : 'primary'}
             />
           </Stack>
-          <AnimatedStack style={animatedStyles} fg={1} pos="relative" jc="space-between">
-            <ScrollableStack
-              scrollViewProps={{
-                // @ts-expect-error
-                ref: scrollViewRef,
-                onScroll: handleScroll,
-                scrollEventThrottle,
-                onContentSizeChange,
-                onLayout,
-                contentContainerStyle: { flexGrow: 1, paddingBottom: Math.max(bottom, 16) },
-              }}
-              fg={1}
-              px="$4"
-            >
-              {typeof Screen === 'function' ? <Screen /> : Screen}
-            </ScrollableStack>
+          <AnimatedStack style={animatedStyles} f={1} pos="relative" jc="space-between">
+            {isCombined && NextScreen ? (
+              <TwoPane
+                start={
+                  <WizardProvider value={{ ...contextValue, isCombined: true, setCombinedContinue }}>
+                    <SlidePane>{renderScreen(Screen)}</SlidePane>
+                  </WizardProvider>
+                }
+                end={
+                  <WizardProvider
+                    value={{ ...contextValue, onNext: onNextCombined, isContinuing, isNextToPrevious: true }}
+                  >
+                    <SlidePane>{renderScreen(NextScreen)}</SlidePane>
+                  </WizardProvider>
+                }
+              />
+            ) : (
+              // Also for a step that owns its wide layout, so folding the device doesn't remount the step and lose
+              // its state. Its panes scroll themselves.
+              <ScrollableStack
+                scrollViewProps={{
+                  // @ts-expect-error
+                  ref: scrollViewRef,
+                  onScroll: handleScroll,
+                  scrollEventThrottle,
+                  onContentSizeChange,
+                  onLayout,
+                  scrollEnabled: !isOwnWideLayout,
+                  contentContainerStyle: isOwnWideLayout
+                    ? { flex: 1 }
+                    : { flexGrow: 1, paddingBottom: Math.max(bottom, 16) },
+                }}
+                fg={1}
+                px={isOwnWideLayout ? '$0' : '$4'}
+              >
+                {renderScreen(Screen)}
+              </ScrollableStack>
+            )}
           </AnimatedStack>
         </FlexPage>
         <ConfirmationSheet
@@ -273,3 +350,18 @@ export const SlideWizard = forwardRef(
     )
   }
 )
+
+// One pane of a step in a wide window, with the padding and scrolling a step gets in a narrow window
+export function SlidePane({ children }: { children: React.ReactNode }) {
+  const { bottom } = useSafeAreaInsets()
+
+  return (
+    <ScrollableStack
+      scrollViewProps={{ contentContainerStyle: { flexGrow: 1, paddingBottom: Math.max(bottom, 16) } }}
+      fg={1}
+      px="$4"
+    >
+      {children}
+    </ScrollableStack>
+  )
+}
