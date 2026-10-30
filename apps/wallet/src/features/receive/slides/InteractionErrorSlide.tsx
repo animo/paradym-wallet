@@ -7,9 +7,10 @@ interface InteractionErrorSlideProps {
   reason?: string
   flowType: 'issue' | 'verify' | 'connect' | 'sign'
   onCancel: () => void
+  showReturnToApp?: boolean
 }
 
-export const InteractionErrorSlide = ({ reason, onCancel, flowType }: InteractionErrorSlideProps) => {
+export const InteractionErrorSlide = ({ reason, onCancel, flowType, showReturnToApp }: InteractionErrorSlideProps) => {
   const { t } = useLingui()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
 
@@ -66,7 +67,12 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType }: Interactio
         </ScrollView>
       </YStack>
 
-      <Stack borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
+      <Stack gap="3" borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
+        {showReturnToApp && (
+          <Paragraph variant="annotation" ta="center">
+            {t(commonMessages.returnToPreviousApp)}
+          </Paragraph>
+        )}
         <Button.Solid scaleOnPress onPress={onCancel}>
           {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
         </Button.Solid>

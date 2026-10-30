@@ -38,6 +38,7 @@ export {
 } from './logging'
 export type { OpenId4VcCredentialMetadata } from './metadata/credentials'
 export type { CredentialsForProofRequest } from './openid4vc/func/resolveCredentialRequest'
+export { Openid4vpAuthorizationRequestError } from '@credo-ts/openid4vc'
 export type { FormattedTransactionData, FormattedTransactionDataPaymentSingle, QtspInfo } from './openid4vc/transaction'
 export { setWalletInstanceVersion } from './config/walletInstanceVersion'
 export {

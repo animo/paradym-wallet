@@ -9,6 +9,7 @@ import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } fr
 import {
   type FormattedTransactionData,
   getDisclosedAttributeNamesForDisplay,
+  Openid4vpAuthorizationRequestError,
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
@@ -40,6 +41,8 @@ export function OpenIdPresentationNotificationScreen() {
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [errorReason, setErrorReason] = useState<string>()
+  // An invalid request the verifier is told about when the user leaves the error screen
+  const [authorizationRequestError, setAuthorizationRequestError] = useState<Openid4vpAuthorizationRequestError>()
 
   const [resolvedRequest, setResolvedRequest] = useState<CredentialsForProofRequest>()
   const [formattedTransactionData, setFormattedTransactionData] = useState<FormattedTransactionData>()
@@ -100,6 +103,8 @@ export function OpenIdPresentationNotificationScreen() {
       })
       .then((r) => setResolvedRequest(r))
       .catch((error) => {
+        if (error instanceof Openid4vpAuthorizationRequestError) setAuthorizationRequestError(error)
+
         const errorMessage =
           error instanceof Error && isDevelopmentModeEnabled ? `Development mode error: ${error.message}` : undefined
 
@@ -282,23 +287,33 @@ export function OpenIdPresentationNotificationScreen() {
 
   const onProofDecline = useCallback(async () => {
     stopOverAsking()
-    if (shareRequest) {
-      // The transaction goes along so the declined activity records what was turned down. Resolving
-      // a PaSO transaction is asynchronous, so leaving this out would record the refusal of a
-      // payment as the refusal of a bare information request.
-      await paradym.openid4vc.declineCredentialRequest({
-        resolvedRequest: shareRequest,
-        transactionData: formattedTransactionData,
-      })
-    }
+    // The transaction goes along so the declined activity records what was turned down. Resolving
+    // a PaSO transaction is asynchronous, so leaving this out would record the refusal of a
+    // payment as the refusal of a bare information request.
+    const { redirectUri } = shareRequest
+      ? await paradym.openid4vc.declineCredentialRequest({
+          resolvedRequest: shareRequest,
+          transactionData: formattedTransactionData,
+        })
+      : { redirectUri: undefined }
 
     pushToWallet()
+    // Without a redirect, the user has to go back to the app that started the request themselves
     toast.show(t(commonMessages.informationRequestDeclined), {
+      message: redirectUri ? undefined : t(commonMessages.returnToPreviousApp),
       customData: { preset: 'danger' },
     })
   }, [shareRequest, pushToWallet, stopOverAsking, t, toast, paradym, formattedTransactionData])
 
   const replace = useCallback(() => pushToWallet(), [pushToWallet])
+
+  const onErrorCancel = useCallback(async () => {
+    if (authorizationRequestError) {
+      await paradym.openid4vc.declineCredentialRequest({ authorizationRequestError })
+    }
+
+    pushToWallet()
+  }, [authorizationRequestError, paradym, pushToWallet])
 
   const onSelectPaymentCredential = useCallback(
     (credentialQueryId: string, credentialId: string) => setPaymentCredential({ credentialQueryId, credentialId }),
@@ -319,7 +334,7 @@ export function OpenIdPresentationNotificationScreen() {
       trustedEntities={resolvedRequest?.verifier.trustedEntities}
       trustMechanism={resolvedRequest?.trustMechanism}
       onComplete={replace}
-      onCancel={replace}
+      onCancel={onErrorCancel}
       overAskingResponse={overAskingResponse}
       transaction={formattedTransactionData}
       isResolvingTransaction={isResolvingTransaction}
