@@ -20,7 +20,7 @@ const tokens = createTokens({
   ...tokensInput,
   size: {
     ...tokensInput.size,
-    buttonHeight: 56,
+    buttonHeight: 48,
   },
   color: {
     ...hexColors, // Re-use existing colors for positive/warnings etc.

@@ -38,9 +38,9 @@ export const Heading = styled(SizableText, {
     // Margin left is used to remove the whitespace that is added by the font-family
     heading: {
       h1: {
-        size: '7',
+        size: '6',
         fontWeight: 'semiBold',
-        lineHeight: '6',
+        lineHeight: '5',
         letterSpacing: '4',
         ml: -2,
       },

@@ -34,9 +34,6 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
   const fallbackCardLabel = t(commonMessages.credential)
   const unmetAttributeMessages = getUnmetAttributeMessages(submission)
 
-  const formatDisclosedAttributes = (credential: FormattedSubmissionEntrySatisfiedCredential) =>
-    getDisclosedAttributeNamesForDisplay(credential).map((c) => (typeof c === 'string' ? c : formatPredicate(c)))
-
   const formatAttributePaths = (
     paths: FormattedSubmissionEntryNotSatisfied['requestedAttributePaths'],
     record?: CredentialRecord
@@ -67,31 +64,9 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
       </YStack>
 
       {/* We always take the first one for now (no selection) */}
-      {satisfiedEntries.map(({ credentials: [credential], ...entry }) => {
-        return (
-          <CardWithAttributes
-            key={entry.inputDescriptorId}
-            id={credential.credential.id}
-            name={credential.credential.display.name ?? t(commonMessages.unknown)}
-            backgroundImage={credential.credential.display.backgroundImage}
-            backgroundColor={credential.credential.display.backgroundColor}
-            issuerImage={credential.credential.display.issuer.logo}
-            textColor={credential.credential.display.textColor}
-            formattedDisclosedAttributes={formatDisclosedAttributes(credential)}
-            disclosedPaths={credential.disclosed.paths}
-            isExpired={
-              credential.credential.metadata?.validUntil
-                ? new Date(credential.credential.metadata.validUntil) < new Date()
-                : false
-            }
-            isNotYetActive={
-              credential.credential.metadata?.validFrom
-                ? new Date(credential.credential.metadata.validFrom) > new Date()
-                : false
-            }
-          />
-        )
-      })}
+      {satisfiedEntries.map(({ credentials: [credential], ...entry }) => (
+        <SatisfiedCard key={entry.inputDescriptorId} credential={credential} />
+      ))}
 
       {partiallySatisfiedEntries.length > 0 && (
         <>
@@ -115,7 +90,6 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
               <CardWithAttributes
                 key={entry.inputDescriptorId}
                 name={credential.display.name ?? entry.name ?? fallbackCardLabel}
-                backgroundImage={credential.display.backgroundImage}
                 backgroundColor={credential.display.backgroundColor}
                 issuerImage={credential.display.issuer.logo}
                 textColor={credential.display.textColor}
@@ -151,5 +125,47 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         </>
       )}
     </YStack>
+  )
+}
+
+// The cards a presentation shared, with the attributes it disclosed from each
+export function SharedCardsList({ submission }: RequestedAttributesSectionProps) {
+  const { t } = useLingui()
+  const satisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntrySatisfied => e.isSatisfied)
+
+  return (
+    <YStack gap="4">
+      <Heading heading="sub2">
+        {t({
+          id: 'activity.sharedAttributesHeading',
+          message: 'Shared attributes',
+          comment: 'Heading shown when attributes were successfully shared in an activity',
+        })}
+      </Heading>
+      {satisfiedEntries.map(({ credentials: [credential], ...entry }) => (
+        <SatisfiedCard key={entry.inputDescriptorId} credential={credential} />
+      ))}
+    </YStack>
+  )
+}
+
+function SatisfiedCard({ credential }: { credential: FormattedSubmissionEntrySatisfiedCredential }) {
+  const { t } = useLingui()
+  const { display, metadata } = credential.credential
+
+  return (
+    <CardWithAttributes
+      id={credential.credential.id}
+      name={display.name ?? t(commonMessages.unknown)}
+      backgroundColor={display.backgroundColor}
+      issuerImage={display.issuer.logo}
+      textColor={display.textColor}
+      formattedDisclosedAttributes={getDisclosedAttributeNamesForDisplay(credential).map((c) =>
+        typeof c === 'string' ? c : formatPredicate(c)
+      )}
+      disclosedPaths={credential.disclosed.paths}
+      isExpired={metadata?.validUntil ? new Date(metadata.validUntil) < new Date() : false}
+      isNotYetActive={metadata?.validFrom ? new Date(metadata.validFrom) > new Date() : false}
+    />
   )
 }

@@ -135,7 +135,6 @@ export const SignAndShareSlide = ({
                 <CardWithAttributes
                   id={cardForSigning.credential.id}
                   name={cardForSigning.credential.display.name ?? t(commonMessages.unknown)}
-                  backgroundImage={cardForSigning.credential.display.backgroundImage}
                   backgroundColor={cardForSigning.credential.display.backgroundColor}
                   issuerImage={cardForSigning.credential.display.issuer.logo}
                   textColor={cardForSigning.credential.display.textColor}
@@ -165,7 +164,7 @@ export const SignAndShareSlide = ({
         </YStack>
       </YStack>
 
-      <YStack btw="0-5" borderColor="grey-200" py="4" mx="-4" px="4" bg="background">
+      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
         {submission?.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"

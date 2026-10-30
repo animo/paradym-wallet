@@ -138,9 +138,12 @@ export const getActivityInteraction = (activity: Activity) => {
 
 interface ActivityRowItemProps {
   activity: Activity
+  isSelected?: boolean
+  // Opens the activity by default
+  onPress?: () => void
 }
 
-export function ActivityRowItem({ activity }: ActivityRowItemProps) {
+export function ActivityRowItem({ activity, isSelected, onPress }: ActivityRowItemProps) {
   const { t } = useLingui()
   const { id, entity } = activity
   const { logo, backgroundColor } = entity
@@ -155,6 +158,7 @@ export function ActivityRowItem({ activity }: ActivityRowItemProps) {
   const { withHaptics } = useHaptics()
 
   const onLinkPress = withHaptics(() => {
+    if (onPress) return onPress()
     return router.push(`/activity/${id}`)
   })
 
@@ -166,7 +170,10 @@ export function ActivityRowItem({ activity }: ActivityRowItemProps) {
         aria-label={`${Title} activity from ${subtitle}`}
         ai="center"
         gap="4"
-        w="100%"
+        p="2"
+        m="-2"
+        br="6"
+        bg={isSelected ? 'grey-100' : 'transparent'}
         onPress={onLinkPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}

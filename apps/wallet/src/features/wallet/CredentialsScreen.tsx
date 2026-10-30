@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { TextBackButton, useHaptics, useScrollViewPosition } from '@package/app'
+import { BackFooter, useHaptics, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
@@ -16,19 +16,76 @@ import {
   ScrollView,
   Spacer,
   Stack,
+  TwoPane,
+  useMedia,
   useScaleAnimation,
   XStack,
   YStack,
 } from '@package/ui'
 import { formatDate } from '@package/utils'
-import type { DisplayImage } from '@paradym/wallet-sdk'
+import type { CredentialForDisplay, CredentialId, DisplayImage } from '@paradym/wallet-sdk'
 import { useCredentials } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { FadeInDown } from 'react-native-reanimated'
+import { CredentialDetail } from './components/CredentialDetail'
 
 export function CredentialsScreen() {
-  const { credentials, isLoading: isLoadingCredentials } = useCredentials()
+  const { credentials, isLoading } = useCredentials()
+  const media = useMedia()
+  const [selectedId, setSelectedId] = useState<CredentialId>()
+  const { push } = useRouter()
+  const { withHaptics } = useHaptics()
+
+  // Wide windows show the selected card next to the list, or the first card when the selected one is gone
+  const selectedCredential =
+    media.wide && credentials.length > 0
+      ? (credentials.find((credential) => credential.id === selectedId) ?? credentials[0])
+      : undefined
+
+  return (
+    <FlexPage gap="0" paddingHorizontal="0" {...(selectedCredential && { maxWidth: '100%' })}>
+      {selectedCredential ? (
+        <TwoPane
+          start={
+            <CredentialList
+              credentials={credentials}
+              isLoading={isLoading}
+              selectedId={selectedCredential.id}
+              onSelect={withHaptics((id: CredentialId) => setSelectedId(id))}
+            />
+          }
+          end={
+            // Stays on this screen after deleting, the list then selects the first card
+            <CredentialDetail key={selectedCredential.id} credential={selectedCredential} onDeleted={() => {}} />
+          }
+        />
+      ) : (
+        <CredentialList
+          credentials={credentials}
+          isLoading={isLoading}
+          onSelect={withHaptics((id: CredentialId) => push(`/credentials/${id}`))}
+        />
+      )}
+
+      <BackFooter />
+    </FlexPage>
+  )
+}
+
+interface CredentialListProps {
+  credentials: CredentialForDisplay[]
+  isLoading: boolean
+  selectedId?: CredentialId
+  onSelect: (id: CredentialId) => void
+}
+
+export function CredentialList({
+  credentials,
+  isLoading: isLoadingCredentials,
+  selectedId,
+  onSelect,
+}: CredentialListProps) {
   const { t } = useLingui()
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -39,13 +96,9 @@ export function CredentialsScreen() {
   }, [credentials, searchQuery])
 
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-  const { push } = useRouter()
-  const { withHaptics } = useHaptics()
-
-  const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
 
   return (
-    <FlexPage gap="0" paddingHorizontal="0">
+    <>
       <HeaderContainer title={t(commonMessages.cards)} isScrolledByOffset={isScrolledByOffset} />
 
       {credentials.length === 0 ? (
@@ -109,9 +162,8 @@ export function CredentialsScreen() {
                   logo={credential.display.issuer.logo}
                   // TODO: we should have RAW metadata (date instance) and human metadata (string)
                   issuedAt={credential.metadata.issuedAt ? new Date(credential.metadata.issuedAt) : undefined}
-                  onPress={() => {
-                    pushToCredential(credential.id)
-                  }}
+                  isSelected={credential.id === selectedId}
+                  onPress={() => onSelect(credential.id)}
                 />
               ))
             ) : (
@@ -124,11 +176,7 @@ export function CredentialsScreen() {
           </YStack>
         </ScrollView>
       )}
-
-      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
-        <TextBackButton />
-      </YStack>
-    </FlexPage>
+    </>
   )
 }
 
@@ -139,6 +187,7 @@ interface CredentialRowCardProps {
   issuer: string
   logo?: DisplayImage
   issuedAt?: Date
+  isSelected?: boolean
   onPress?: () => void
 }
 
@@ -148,6 +197,7 @@ export function CredentialRowCard({
   textColor,
   logo,
   issuedAt,
+  isSelected,
   onPress,
 }: CredentialRowCardProps) {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
@@ -168,6 +218,10 @@ export function CredentialRowCard({
       ai="center"
       borderWidth="0-5"
       borderColor="borderTranslucent"
+      outlineWidth={isSelected ? 2 : 0}
+      outlineColor="primary-500"
+      outlineStyle="solid"
+      outlineOffset={2}
       br="6"
       p="4"
       style={pressStyle}

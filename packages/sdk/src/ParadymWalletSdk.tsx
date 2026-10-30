@@ -405,8 +405,10 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       unlockMethod,
       reinitialize,
       reset: async () => {
+        // No instance yet, so the store ids come from the configuration. Reinitialized after the reset, as it
+        // reads the salt the reset removes.
+        await reset(undefined, configuration)
         reinitialize()
-        await reset(paradym)
       },
       unlock: async (options) => {
         try {
@@ -487,7 +489,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
       canTryUnlockingUsingBiometrics,
       reinitialize,
       reset: async () => {
-        await reset(undefined)
+        await reset(undefined, configuration)
         reinitialize()
       },
       tryUnlockingUsingBiometrics: async () => {

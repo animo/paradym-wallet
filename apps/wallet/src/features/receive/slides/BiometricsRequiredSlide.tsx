@@ -62,7 +62,7 @@ export function BiometricsRequiredSlide() {
         </Paragraph>
       </YStack>
 
-      <YStack borderTopWidth="0-5" borderColor="grey-200" py="4" mx="-4" px="4">
+      <YStack borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
         <Button.Solid scaleOnPress onPress={() => Linking.openSettings()}>
           {t(commonMessages.openSettingsButton)}
         </Button.Solid>

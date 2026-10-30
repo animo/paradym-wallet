@@ -111,6 +111,10 @@ export const configInput = {
     short: {
       maxHeight: 756,
     },
+    // Room for two panes side by side, such as the open iPhone Duo held wide
+    wide: {
+      minWidth: 720,
+    },
   },
 } as const satisfies CreateTamaguiProps
 

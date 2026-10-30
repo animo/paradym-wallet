@@ -76,6 +76,7 @@ export function PresentationNotificationScreen({
             step: 'verify-issuer',
             progress: 33,
             backIsCancel: true,
+            combineWithNext: true,
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"
@@ -188,7 +189,21 @@ export function PresentationNotificationScreen({
             step: 'success',
             progress: 100,
             backIsCancel: true,
-            screen: <PresentationSuccessSlide showReturnToApp verifierName={verifierName} onComplete={onComplete} />,
+            // The second pane lists the shared cards
+            ownsWideLayout: !!submission,
+            screen: (
+              <PresentationSuccessSlide
+                showReturnToApp
+                verifierName={verifierName}
+                onComplete={onComplete}
+                submission={submission}
+                payment={
+                  transaction?.type === pasoPaymentTransactionDataType
+                    ? { amount: transaction.amount.value, payee: transaction.payee.value }
+                    : undefined
+                }
+              />
+            ),
           },
         ].filter(Boolean) as SlideStep[]
       }

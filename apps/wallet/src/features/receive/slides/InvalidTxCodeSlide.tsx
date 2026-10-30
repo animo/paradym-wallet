@@ -40,7 +40,7 @@ export const InvalidTxCodeSlide = ({ onCancel }: InvalidTxCodeSlideProps) => {
         </ScrollView>
       </YStack>
 
-      <Stack borderTopWidth="0-5" borderColor="grey-200" py="4" mx="-4" px="4">
+      <Stack borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
         <Button.Solid scaleOnPress onPress={onCancel}>
           {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
         </Button.Solid>

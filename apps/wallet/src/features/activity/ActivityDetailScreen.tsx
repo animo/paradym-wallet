@@ -1,11 +1,12 @@
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { CardWithAttributes, getActivityInteraction, MiniDocument, TextBackButton } from '@package/app'
+import { BackFooter, CardWithAttributes, getActivityInteraction, MiniDocument } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import type {
+  Activity,
   CredentialForDisplay,
   IssuanceActivity,
   PaymentActivity,
@@ -49,15 +50,8 @@ function getDisclosedLabels(
 export function ActivityDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const router = useRouter()
-  const { bottom } = useSafeAreaInsets()
-  const { t } = useLingui()
 
   const { activity, isLoading: isLoadingActivity } = useActivityById(id)
-  usePaymentTransactionStatus(activity?.type === 'payment' ? activity : undefined)
-
-  // Above the early returns below: reading an activity is a query now, so there is a render where
-  // it is still loading — and a hook called only on the renders after it is a different hook count.
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   if (isLoadingActivity) return null
 
@@ -66,11 +60,26 @@ export function ActivityDetailScreen() {
     return
   }
 
+  return (
+    <FlexPage p={0} gap={0}>
+      <ActivityDetail activity={activity} />
+      <BackFooter />
+    </FlexPage>
+  )
+}
+
+export function ActivityDetail({ activity }: { activity: Activity }) {
+  const { bottom } = useSafeAreaInsets()
+  const { t } = useLingui()
+
+  usePaymentTransactionStatus(activity.type === 'payment' ? activity : undefined)
+  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
+
   const Icon = getActivityInteraction(activity)
   const Title = t(Icon.text)
 
   return (
-    <FlexPage p={0} gap={0}>
+    <>
       <YStack bbw="0-5" h="4" borderColor={isScrolledByOffset ? 'grey-200' : 'background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
         <YStack gap="4" marginBottom={bottom}>
@@ -97,10 +106,7 @@ export function ActivityDetailScreen() {
           </YStack>
         </YStack>
       </ScrollView>
-      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
-        <TextBackButton />
-      </YStack>
-    </FlexPage>
+    </>
   )
 }
 
@@ -379,7 +385,6 @@ export function SharedActivityDetailSection({
                     issuerImage={credential.display.issuer.logo}
                     textColor={credential.display.textColor}
                     backgroundColor={credential.display.backgroundColor}
-                    backgroundImage={credential.display.backgroundImage}
                     formattedDisclosedAttributes={getDisclosedLabels(activityCredential, credential)}
                     // The values come from the credential as it is now, which is the whole point of
                     // linking to it rather than copying it into the activity.

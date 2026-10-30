@@ -1,5 +1,5 @@
 import { type PropsWithChildren, useEffect, useState } from 'react'
-import { Modal, Pressable, StyleSheet } from 'react-native'
+import { Modal, Pressable, StyleSheet, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { scheduleOnRN } from 'react-native-worklets'
@@ -25,7 +25,7 @@ export function FloatingSheet({
   onDismiss,
   enableDismissOnClose = true,
 }: PropsWithChildren<FloatingSheetProps>) {
-  const { bottom } = useSafeAreaInsets()
+  const { bottom, left, right } = useSafeAreaInsets()
   const [isMounted, setIsMounted] = useState(isOpen)
 
   const backdropOpacity = useSharedValue(0)
@@ -74,17 +74,26 @@ export function FloatingSheet({
         style={[
           {
             position: 'absolute',
-            left: 16,
-            right: 16,
+            left: left + 16,
+            right: right + 16,
             bottom: bottom || 16,
-            backgroundColor: 'white',
-            borderRadius: 16,
-            overflow: 'hidden',
+            alignItems: 'center',
           },
           sheetStyle,
         ]}
       >
-        {children}
+        <View
+          style={{
+            width: '100%',
+            // Phone-sized in wide windows, such as the open iPhone Duo
+            maxWidth: 440,
+            backgroundColor: 'white',
+            borderRadius: 16,
+            overflow: 'hidden',
+          }}
+        >
+          {children}
+        </View>
       </Animated.View>
     </Modal>
   )

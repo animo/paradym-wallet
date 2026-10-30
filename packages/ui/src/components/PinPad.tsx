@@ -104,6 +104,8 @@ export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled, biometric
       key={rowIndex}
       borderTopWidth="0-5"
       borderBottomWidth={rowIndex === pinValues.length - 1 ? '0-5' : 0}
+      // Closes the pad on the left where it doesn't reach the screen edge, such as in wide windows
+      borderLeftWidth="0-5"
       borderColor="grey-200"
       w="100%"
       justifyContent="center"

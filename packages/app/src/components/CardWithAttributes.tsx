@@ -22,7 +22,6 @@ interface CardWithAttributesProps {
   backgroundColor?: string
   textColor?: string
   issuerImage?: DisplayImage
-  backgroundImage?: DisplayImage
   /** Rendered as given: pass labels ready for display, they are not formatted again. */
   formattedDisclosedAttributes: string[]
   /** Entries of `formattedDisclosedAttributes` the card lacks, shown in red. */
@@ -43,7 +42,6 @@ export function CardWithAttributes({
   backgroundColor,
   issuerImage,
   textColor,
-  backgroundImage,
   formattedDisclosedAttributes,
   missingAttributes,
   disclosedPaths,
@@ -90,18 +88,7 @@ export function CardWithAttributes({
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="4" py="3" pos="relative" bg={backgroundColor ?? 'grey-900'}>
-        {backgroundImage?.url && (
-          <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
-            <Image
-              src={backgroundImage.url}
-              alt={backgroundImage.altText}
-              contentFit="cover"
-              height="100%"
-              width="100%"
-            />
-          </Stack>
-        )}
+      <Stack px="4" py="3" bg={backgroundColor ?? 'grey-900'}>
         <XStack ai="center" jc="space-between">
           <YStack f={1}>
             <Heading heading="sub2" fontSize={14} fontWeight="bold" numberOfLines={1} color={textColor ?? 'grey-200'}>

@@ -294,7 +294,7 @@ export const PasoPaymentSlide = ({
         </YStack>
       </YStack>
 
-      <YStack btw="0-5" borderColor="grey-200" py="4" mx="-4" px="4" bg="background">
+      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
         {submission?.areAllSatisfied ? (
           <YStack gap="2">
             <DualResponseButtons

@@ -1,6 +1,6 @@
 import { useAppCopy } from '@app/config/copy'
 import { useLingui } from '@lingui/react/macro'
-import { TextBackButton } from '@package/app'
+import { BackFooter } from '@package/app'
 import { FlexPage, HeaderContainer, InfoButton, Paragraph, YStack } from '@package/ui'
 import * as Application from 'expo-application'
 import { Linking } from 'react-native'
@@ -62,9 +62,7 @@ export function AboutScreen() {
           </Paragraph>
         </YStack>
       </YStack>
-      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
-        <TextBackButton />
-      </YStack>
+      <BackFooter />
     </FlexPage>
   )
 }

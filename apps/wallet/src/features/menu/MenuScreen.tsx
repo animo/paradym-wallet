@@ -1,6 +1,6 @@
 import { useWalletReset } from '@app/hooks/useWalletReset'
 import { useLingui } from '@lingui/react/macro'
-import { TextBackButton } from '@package/app'
+import { BackFooter } from '@package/app'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
 import {
@@ -145,9 +145,7 @@ export function MenuScreen() {
           </YStack>
         </YStack>
       </ScrollView>
-      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
-        <TextBackButton />
-      </YStack>
+      <BackFooter />
     </FlexPage>
   )
 }

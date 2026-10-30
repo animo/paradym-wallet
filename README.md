@@ -1,14 +1,22 @@
 <div align="center">
-   <img src="assets/icon.png" alt="Animo Logo" height="176px" />
+   <img src="assets/icon.png" alt="Paradym Wallet logo" height="176px" />
 </div>
 
 <h1 align="center"><b>Paradym Wallet</b></h1>
 
-🚀 Welcome to the Paradym Mobile Wallet repository!
+<p align="center">
+  An open source digital identity wallet for EUDI and global standards.
+</p>
 
-The Paradym Mobile Wallet is a digital identity wallet developed as a companion to the [Paradym platform](https://paradym.id/). It supports both EUDI and global standards. See the full overview of the current supported standards and protocols [here](https://paradym.id/products/paradym-mobile-wallet).
-
-> The Paradym wallet can be downloaded directly from the app store ([iOS](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en), [Android](https://play.google.com/store/apps/details?id=id.paradym.wallet)), or the code in this repository can be adapted. The wallet is also available as a [whitelabel solution](mailto:ana@paradym.id). 
+<p align="center">
+  <a href="https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en">App Store</a>
+  &nbsp;|&nbsp;
+  <a href="https://play.google.com/store/apps/details?id=id.paradym.wallet">Google Play</a>
+  &nbsp;|&nbsp;
+  <a href="https://paradym.id/products/paradym-mobile-wallet">Website</a>
+  &nbsp;|&nbsp;
+  <a href="packages/sdk">Wallet SDK</a>
+</p>
 
 <div align="center">
   <img src="assets/ios-1.png" width="30%" />
@@ -16,95 +24,83 @@ The Paradym Mobile Wallet is a digital identity wallet developed as a companion 
   <img src="assets/ios-3.png" width="30%" />
 </div>
 
-<p align="center"><i>Impression of Paradym Wallet</i></p>
+Paradym Wallet lets people receive, store and share digital credentials such as an ID card, a driving licence or a bank account. Credentials stay on the phone, and the user decides what to share and with whom. You can use the wallet as it is from the app stores, or use this repository as the starting point for your own wallet.
 
-With Paradym Wallet, you can seamlessly manage and present your digital credentials, allowing for a secure and private digital existence. Your data is stored locally on your device, meaning that you retain full control over your information and decide who you want to share it with.
+## Features
+
+- **OpenID4VC**: receive credentials with OpenID4VCI and share them with OpenID4VP 1.0, including DCQL, signed requests and deferred and batch issuance.
+- **All major credential formats**: SD-JWT VC, mdoc (ISO 18013-5, mDL), W3C Verifiable Credentials and AnonCreds.
+- **EUDI ready**: the EU PID, mDL, age verification and photo ID, and relying party registration certificates.
+- **Digital Credentials API**: share credentials from the browser on both iOS and Android, over OpenID4VP or ISO 18013-7.
+- **In-person sharing**: present an mdoc offline over Bluetooth, started from a QR code or NFC tap.
+- **Payments and signing**: confirm payments with strong customer authentication (EUDI SCA and PaSO) and authorize qualified electronic signatures.
+- **DIDComm**: connect to issuers and verifiers, and receive and present AnonCreds credentials.
+- **Trust**: see who you're dealing with, based on X.509 certificates, DIDs and trusted issuer and verifier lists.
+- **Security**: PIN and biometric unlock, encrypted storage and hardware-backed keys in the Secure Enclave or StrongBox.
+- **Available in 7 languages**: English, German, Dutch, Finnish, Swedish, Portuguese and Albanian.
+
+The wallet is also available as a [white-label solution](mailto:ana@paradym.id), and the credential and protocol logic is published as the [`@paradym/wallet-sdk`](packages/sdk) package to build your own wallet.
+
+## Issue and verify with Paradym
+
+[Paradym](https://paradym.id) is our platform to issue and verify digital credentials. It integrates with any digital identity wallet, including the EUDI wallets of the member states, and works out of the box with Paradym Wallet. Sign up for free at [paradym.id](https://paradym.id).
 
 ## Try it out
 
-You can download Paradym Wallet from the [Google Play Store](https://play.google.com/store/apps/details?id=id.paradym.wallet) or [Apple App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en).
+Install Paradym Wallet from the [App Store](https://apps.apple.com/nl/app/paradym-wallet/id6449846111?l=en) or [Google Play](https://play.google.com/store/apps/details?id=id.paradym.wallet), then open one of the playgrounds.
 
-You can test out the wallets in these environments (as well as any solution that issues and/or verifies credentials according to the supported standards):
+### Paradym Playground
 
-- [Paradym Issuer/Verifier platform](https://paradym.id/sign-up). Test out how the Paradym wallet looks and feels using the Paradym free tier. 
-- [EUDI Playground](https://funke.animo.id/). Test out several pre-configured flows based on the main EUDI use cases.
+The [Paradym Playground](https://playground.paradym.id) is the quickest way to get started. Issue a PID or mDL to your wallet and verify it again in a few clicks, powered by Paradym.
 
+<a href="https://playground.paradym.id"><img src="assets/playground-paradym.png" alt="Paradym Playground" /></a>
 
-## Project Structure
+### Animo Playground
 
-The project is a monorepo managed using **pnpm**, which contains an **Expo React Native** application. The UI is built using **Tamagui**, and navigation is handled using **Expo Router and React Navigation**. For the Agent and SSI capabilities **Credo Framework** is used.
+The [Animo Playground](https://playground.animo.id) is our experimental playground, where we try out the latest specifications first. You can configure almost everything: issuers, credential formats, attributes, authorization flows, the Digital Credentials API and your own certificates. Use it for experimentation, and expect things to break now and then. The code is on [GitHub](https://github.com/animo/openid4vc-playground).
 
-The folder structure is as follows
+<a href="https://playground.animo.id"><img src="assets/playground-animo.png" alt="Animo Playground" /></a>
 
-- `apps` top level applications
-  - `app` Paradym Wallet - react native app for iOS & Android
-- `packages` shared packages
-  - `ui` includes our custom UI kit that will be optimized by Tamagui
-  - `agent` includes the Credo agent and SSI capabilities
-  - `app` you'll be importing most files from `app/`
-    - `features` (don't use a `screens` folder. organize by feature.)
-    - `provider` (all the providers that wrap the app, and some no-ops for Web.)
-    - `navigation` This folder contains navigation-related code for RN. You may use it for any navigation code, such as custom links.
-  - `scanner` includes utils for scanning QR codes.
-  - `secure-store` contains methods to securely store, derive and retrieve the wallet key.
-  - `translations` includes utils for translations based on the Lingui package.
-  - `utils` contains varied utils used across the other packages.
+## Development
 
-You can add other folders inside of `packages/` if you know what you're doing and have a good reason to.
+The repository is a pnpm monorepo with an Expo (React Native) app. The UI is built with Tamagui, and [Credo](https://github.com/openwallet-foundation/credo-ts) powers the credential and protocol logic.
 
-## 🏁 Start a wallet
+- `apps/wallet`: the Paradym Wallet app for iOS and Android
+- `packages/sdk`: `@paradym/wallet-sdk`, with the OpenID4VC, DIDComm, Digital Credentials API, proximity and payment flows
+- `packages/app`: shared components, hooks and providers
+- `packages/ui`: the Tamagui UI kit
+- `packages/scanner`: QR code scanning
+- `packages/translations`: Lingui setup and translation scripts
+- `packages/utils`: shared helpers
 
-First, start by installing all dependencies by running `pnpm install`.
+### Run the wallet
 
-Once all dependencies are installed, you need to make sure you have a development build of the app on your mobile device. You can install this using the following commands:
+You need Node.js 22 and pnpm. Install the dependencies, then build and install a development build on a simulator or device:
 
 ```sh
+pnpm install
 cd apps/wallet
 pnpm prebuild
-pnpm ios # or android
+pnpm ios # or: pnpm android
 ```
 
-You only need to install the development build when **native** dependencies change. If you're only working on JS, you can skip this step if you already have the development build installed.
+Then start Metro with `pnpm start` from `apps/wallet`. You only need a new development build when native code changes. For JavaScript changes, Metro is enough.
 
-Once installed you can run `pnpm start` from the root of the project to start your development server.
+### Add dependencies
 
-## 📦 Releasing
+Dependency versions are pinned in the pnpm catalog in `pnpm-workspace.yaml`.
 
-Uploading builds to Appstore Connect and the Google Play Console are automated using Github Actions and Expo Build. 
+- JavaScript-only dependencies go in the package that uses them.
+- Dependencies with native code go in `apps/wallet`. If another package also needs to import it, install the exact same version there, or you'll end up with two copies at runtime.
 
-Before making a release, make sure to update the `version` in the `apps/wallet/package.json`. We generally follow semver, and so for fixes we update the patch version, for new features we update the minor version, and for large refactorings we can use the major version. However we often push user-facing changes as minor and not major, as the wallet is not interacted with by a machine, so "breaking change" is hard to define.
-To trigger a release of the Paradym Wallet, run the [Continuous Deployment](https://github.com/animo/paradym-wallet/actions/workflows/continuous-deployment.yaml) workflow. Make sure to:
-- Set the channel to `production`
-- The platform to `all` (unless you only want to release for iOS OR Android)
+Run `pnpm install` from the root after any dependency change.
 
-This will trigger builds in Expo, and will then automatically upload the builds to Appstore Connect and Google Play. Build numbers are automatically incremented by Expo.
+### Release
 
-Releases are automatically published as internal release on Testflight and Google Play, allowing them to be tested.
+The [Continuous Deployment](https://github.com/animo/paradym-wallet/actions/workflows/continuous-deployment.yaml) workflow builds the app with EAS. Bump the `version` in `apps/wallet/package.json`, then run the workflow with the `production` channel. The builds are submitted to TestFlight and the Google Play alpha track, and released to users from App Store Connect and the Google Play Console.
 
-From there on you can manually create a release in the respective platforms (of which plentry documentation can be found online).
+SDK changes need a changeset (`pnpm changeset`). Merging the `chore(release): new version` pull request publishes a new version of `@paradym/wallet-sdk`.
 
-## 🆕 Add new dependencies
+## License
 
-### Pure JS dependencies
-
-If you're installing a JavaScript-only dependency that will be used across platforms, install it in `packages/app`:
-
-```sh
-cd packages/app
-pnpm add date-fns
-cd ../..
-pnpm
-```
-
-### Native dependencies
-
-If you're installing a library with any native code, you must install it in `expo`:
-
-```sh
-cd apps/wallet
-pnpm add react-native-reanimated
-cd ..
-pnpm
-```
-
-You can also install the native library inside of `packages/app` if you want to get autoimport for that package inside of the `app` folder. However, you need to be careful and install the _exact_ same version in both packages. If the versions mismatch at all, you'll potentially get terrible bugs. This is a classic monorepo issue. You can use `lerna-update-wizard` to help with this (you don't need to use Lerna to use that lib).
+Paradym Wallet is licensed under the [Apache 2.0 license](LICENSE).

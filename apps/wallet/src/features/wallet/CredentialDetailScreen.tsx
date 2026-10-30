@@ -1,42 +1,23 @@
-import { Trans, useLingui } from '@lingui/react/macro'
-import { DeleteCredentialSheet, TextBackButton, useHaptics } from '@package/app'
-import { CardInfoLifecycle, CredentialCard } from '@package/app/components'
-import { useHeaderRightAction, useScrollViewPosition } from '@package/app/hooks'
+import { useLingui } from '@lingui/react/macro'
+import { BackFooter, DeleteCredentialSheet, useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
-import {
-  AnimatedStack,
-  FlexPage,
-  Heading,
-  HeroIcons,
-  InfoButton,
-  Paragraph,
-  ScrollView,
-  Stack,
-  useToastController,
-  YStack,
-} from '@package/ui'
+import { FlexPage, TwoPane, useMedia, useToastController } from '@package/ui'
 import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useState } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { CredentialDetail } from './components/CredentialDetail'
+import { CredentialDetailAttributes } from './components/CredentialDetailAttributes'
 
 export function CredentialDetailScreen() {
-  const toast = useToastController()
   const { id } = useLocalSearchParams<{ id: CredentialId }>()
+  const toast = useToastController()
   const router = useRouter()
-  const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
-  const { bottom } = useSafeAreaInsets()
-  const { withHaptics } = useHaptics()
   const { t } = useLingui()
+  const media = useMedia()
+  const { withHaptics } = useHaptics()
+  const [isDeleteSheetOpen, setIsDeleteSheetOpen] = useState(false)
 
   const { credential } = useCredentialById(id)
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-
-  useHeaderRightAction({
-    icon: <HeroIcons.Trash />,
-    onPress: withHaptics(() => setIsSheetOpen(true)),
-    renderCondition: credential?.category?.canDeleteCredential ?? true,
-  })
 
   if (!credential) {
     toast.show(t(commonMessages.credentialNotFound), {
@@ -48,82 +29,35 @@ export function CredentialDetailScreen() {
     return
   }
 
-  const onCardAttributesPress = withHaptics(() => {
-    router.push(`/credentials/${id}/attributes`)
-  })
-
   return (
-    <>
-      <FlexPage gap="0" paddingHorizontal="0">
-        <YStack
-          w="100%"
-          top={0}
-          p="4"
-          borderBottomWidth="0-5"
-          borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
-        />
-        <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack ai="center" gap="6" p="4" marginBottom={bottom}>
-            <AnimatedStack width="100%" mt="-3" mb="-5" scale={0.75}>
-              <CredentialCard
-                issuerImage={{
-                  url: credential.display.issuer.logo?.url,
-                  altText: credential.display.issuer.logo?.altText,
-                }}
-                textColor={credential.display.textColor}
-                name={credential.display.name}
-                backgroundImage={{
-                  url: credential.display.backgroundImage?.url,
-                  altText: credential.display.backgroundImage?.altText,
-                }}
-                bgColor={credential.display.backgroundColor ?? 'grey-900'}
+    <FlexPage gap="0" paddingHorizontal="0" {...(media.wide && { maxWidth: '100%' })}>
+      {media.wide ? (
+        // Wide windows show the attributes next to the card, and both actions in the header
+        <>
+          <TwoPane
+            start={<CredentialDetail credential={credential} showAttributesLink={false} showDeleteAction={false} />}
+            end={
+              <CredentialDetailAttributes
+                credential={credential}
+                onDelete={
+                  (credential.category?.canDeleteCredential ?? true)
+                    ? withHaptics(() => setIsDeleteSheetOpen(true))
+                    : undefined
+                }
               />
-            </AnimatedStack>
-            <Stack gap="2">
-              <Heading ta="center" heading="h1">
-                <Trans id="credentials.detailsTitle" comment="Title of the credential details screen">
-                  Card details
-                </Trans>
-              </Heading>
-              <Paragraph numberOfLines={2} ta="center">
-                <Trans id="common.issuedBy" comment="Prefix before issuer name">
-                  Issued by {credential.display.issuer.name}.
-                </Trans>
-              </Paragraph>
-            </Stack>
-            <YStack w="100%" gap="2">
-              <CardInfoLifecycle
-                validFrom={credential.metadata.validFrom ? new Date(credential.metadata.validFrom) : undefined}
-                validUntil={credential.metadata.validUntil ? new Date(credential.metadata.validUntil) : undefined}
-                hasRefreshToken={credential.hasRefreshToken}
-              />
-              <InfoButton
-                variant="view"
-                title={t({
-                  id: 'credentials.cardAttributes',
-                  message: 'Card attributes',
-                  comment: 'Label for button that shows detailed card attributes',
-                })}
-                description={t({
-                  id: 'credentials.cardAttributesDescription',
-                  message: 'View attributes of the card',
-                  comment: 'Description text for the attributes button',
-                })}
-                onPress={onCardAttributesPress}
-              />
-            </YStack>
-          </YStack>
-        </ScrollView>
-        <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
-          <TextBackButton />
-        </YStack>
-      </FlexPage>
-      <DeleteCredentialSheet
-        isSheetOpen={isSheetOpen}
-        setIsSheetOpen={setIsSheetOpen}
-        id={credential.id}
-        name={credential.display.name ?? t(commonMessages.unknown)}
-      />
-    </>
+            }
+          />
+          <DeleteCredentialSheet
+            isSheetOpen={isDeleteSheetOpen}
+            setIsSheetOpen={setIsDeleteSheetOpen}
+            id={credential.id}
+            name={credential.display.name ?? t(commonMessages.unknown)}
+          />
+        </>
+      ) : (
+        <CredentialDetail credential={credential} />
+      )}
+      <BackFooter />
+    </FlexPage>
   )
 }

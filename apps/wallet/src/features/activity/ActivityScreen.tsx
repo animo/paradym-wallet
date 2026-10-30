@@ -1,6 +1,6 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { ActivityRowItem, TextBackButton, useScrollViewPosition } from '@package/app'
+import { ActivityRowItem, BackFooter, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
@@ -12,12 +12,15 @@ import {
   ScrollView,
   Spacer,
   Stack,
+  TwoPane,
+  useMedia,
   YStack,
 } from '@package/ui'
-import { useActivities } from '@paradym/wallet-sdk'
+import { useActivities, useActivityById } from '@paradym/wallet-sdk'
 import React, { useCallback, useMemo, useState } from 'react'
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { FadeInDown } from 'react-native-reanimated'
+import { ActivityDetail } from './ActivityDetailScreen'
 
 const activityMessages = {
   screenTitle: commonMessages.activity,
@@ -32,10 +35,16 @@ const activityMessages = {
 /** How many more activities are read each time the list reaches its end. */
 const activityPageSize = 50
 
-export function ActivityScreen({ entityId }: { entityId?: string }) {
+export function ActivityScreen({ entityId, initialSelectedId }: { entityId?: string; initialSelectedId?: string }) {
   const [limit, setLimit] = useState(activityPageSize)
   const { activities, isLoading: isLoadingActivities, hasMore } = useActivities({ filters: { entityId }, limit })
   const { t, i18n } = useLingui()
+  const media = useMedia()
+  const [selectedId, setSelectedId] = useState(initialSelectedId)
+
+  // Wide windows show the selected activity next to the list, or the latest one when none is selected
+  const isSplit = media.wide && activities.length > 0
+  const selectedActivityId = isSplit ? (selectedId ?? activities[0].id) : undefined
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
 
   // The whole history is still reachable — it is just read a page at a time, rather than every
@@ -71,8 +80,8 @@ export function ActivityScreen({ entityId }: { entityId?: string }) {
     )
   }, [activities])
 
-  return (
-    <FlexPage gap="0" paddingHorizontal="0">
+  const list = (
+    <>
       <HeaderContainer title={t(activityMessages.screenTitle)} isScrolledByOffset={isScrolledByOffset} />
 
       {activities.length === 0 ? (
@@ -108,7 +117,12 @@ export function ActivityScreen({ entityId }: { entityId?: string }) {
                     </Heading>
                   </Stack>
                   {groupActivities.map((activity) => (
-                    <ActivityRowItem activity={activity} key={activity.id} />
+                    <ActivityRowItem
+                      activity={activity}
+                      key={activity.id}
+                      isSelected={activity.id === selectedActivityId}
+                      onPress={isSplit ? () => setSelectedId(activity.id) : undefined}
+                    />
                   ))}
                 </React.Fragment>
               )
@@ -116,9 +130,24 @@ export function ActivityScreen({ entityId }: { entityId?: string }) {
           </YStack>
         </ScrollView>
       )}
-      <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
-        <TextBackButton />
-      </YStack>
+    </>
+  )
+
+  return (
+    <FlexPage gap="0" paddingHorizontal="0" {...(isSplit && { maxWidth: '100%' })}>
+      {selectedActivityId ? (
+        <TwoPane start={list} end={<SelectedActivityDetail key={selectedActivityId} id={selectedActivityId} />} />
+      ) : (
+        list
+      )}
+      <BackFooter />
     </FlexPage>
   )
+}
+
+// Read by id, so an activity that isn't in the loaded pages of the list can still be shown
+function SelectedActivityDetail({ id }: { id: string }) {
+  const { activity } = useActivityById(id)
+
+  return activity ? <ActivityDetail activity={activity} /> : null
 }

@@ -1,8 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import {
+  BackFooter,
   CredentialCard,
   DeleteDeferredCredentialSheet,
-  TextBackButton,
   useHaptics,
   useHeaderRightAction,
   useScrollViewPosition,
@@ -188,9 +188,7 @@ export function DeferredCredentialNotificationScreen() {
             </YStack>
           </YStack>
         </ScrollView>
-        <YStack btw="0-5" borderColor="grey-200" pt="4" mx="-4" px="4" bg="background">
-          <TextBackButton />
-        </YStack>
+        <BackFooter />
       </FlexPage>
       <DeleteDeferredCredentialSheet
         isSheetOpen={isSheetOpen}

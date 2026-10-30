@@ -18,7 +18,7 @@ import { formatRelativeDate } from '@package/utils'
 import type { DisplayImage, TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk'
 import { useActivities } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const NO_ENTITY_ID = 'NO_ENTITY_ID'
 
@@ -48,7 +48,7 @@ export const VerifyPartySlide = ({
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
-  const { onNext, onCancel } = useWizard()
+  const { onNext, onCancel, isCombined, setCombinedContinue } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
   const { activities } = useActivities({ filters: { entityId }, limit: 1 })
@@ -65,6 +65,12 @@ export const VerifyPartySlide = ({
       ...entity,
       demo: isDemoTrustedEntity ? true : entity.demo,
     }))
+
+  // Next to the next step in a wide window, that step's buttons continue this one
+  useEffect(() => {
+    setCombinedContinue?.(onContinue)
+    return () => setCombinedContinue?.(undefined)
+  }, [setCombinedContinue, onContinue])
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -102,7 +108,7 @@ export const VerifyPartySlide = ({
       <ScrollView contentContainerStyle={{ gap: media.short ? '4' : '6' }}>
         <YStack gap="4">
           <XStack ai="center" pt="4" jc="center">
-            <Circle size={88} bw="0-5" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
+            <Circle size={64} bw="0-5" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
               {logo?.url ? (
                 <Image
                   circle
@@ -115,7 +121,7 @@ export const VerifyPartySlide = ({
                   contentFit="contain"
                 />
               ) : (
-                <HeroIcons.BuildingOffice color="grey-800" size={36} />
+                <HeroIcons.BuildingOffice color="grey-800" size={28} />
               )}
             </Circle>
           </XStack>
@@ -226,16 +232,18 @@ export const VerifyPartySlide = ({
           />
         </YStack>
       </ScrollView>
-      <Stack btw={1} borderColor="grey-100" p="4" mx="-4">
-        <DualResponseButtons
-          align="horizontal"
-          onAccept={handleContinue}
-          onDecline={handleDecline}
-          acceptText={t(commonMessages.confirmContinue)}
-          declineText={t(commonMessages.stop)}
-          isLoading={isLoading}
-        />
-      </Stack>
+      {!isCombined && (
+        <Stack btw={1} borderColor="grey-100" px="4" py="3" mx="-4">
+          <DualResponseButtons
+            align="horizontal"
+            onAccept={handleContinue}
+            onDecline={handleDecline}
+            acceptText={t(commonMessages.confirmContinue)}
+            declineText={t(commonMessages.stop)}
+            isLoading={isLoading}
+          />
+        </Stack>
+      )}
     </YStack>
   )
 }

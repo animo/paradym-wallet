@@ -96,7 +96,8 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
       }
     | null = null
 
-  let headerImage = credential?.display.issuer.logo?.url ?? ''
+  // Only the holder's photo, the issuer's logo would read as one
+  let headerImage: string | undefined
 
   if (isPidSdJwtVc) {
     const raw = credential?.rawAttributes as unknown as ArfPidSdJwtVcAttributes
@@ -129,7 +130,7 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
       }
     }
 
-    headerImage = raw.picture ?? headerImage
+    headerImage = raw.picture
   } else if (isPidMdoc) {
     const raw = (
       credential.rawAttributes as {
@@ -153,25 +154,27 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
       postalCode: raw.resident_postal_code ?? '',
       country: null,
     }
-    headerImage = raw.portrait ?? headerImage
+    headerImage = raw.portrait
   }
   return (
     <Stack gap="4">
       <YStack gap="3" position="relative">
-        <Stack h="1" />
+        {headerImage && <Stack h="1" />}
         <Stack pos="relative" ai="center">
-          <Circle
-            zi={5}
-            borderWidth={2}
-            borderColor="white"
-            top="-5"
-            bg="idCardBackground"
-            overflow="hidden"
-            size="8"
-            pos="absolute"
-          >
-            <Image width={80} height={80} src={headerImage} />
-          </Circle>
+          {headerImage && (
+            <Circle
+              zi={5}
+              borderWidth={2}
+              borderColor="white"
+              top="-5"
+              bg="idCardBackground"
+              overflow="hidden"
+              size="8"
+              pos="absolute"
+            >
+              <Image width={80} height={80} src={headerImage} />
+            </Circle>
+          )}
           <TableContainer>
             <YStack
               bg="tableBackgroundColor"
@@ -182,7 +185,7 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
               borderBottomColor="tableBorderColor"
               ai="center"
             >
-              <Stack h="3" />
+              {headerImage && <Stack h="3" />}
               <YStack gap="2" ai="center">
                 <Heading ta="center" heading="h3">
                   {personalInfoCard.name}
@@ -271,20 +274,22 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
   return (
     <Stack gap="6">
       <YStack gap="3" position="relative">
-        <Stack h="1" />
+        {raw.portrait && <Stack h="1" />}
         <Stack pos="relative" ai="center">
-          <Circle
-            zi={5}
-            borderWidth={2}
-            borderColor="white"
-            top="-5"
-            bg="idCardBackground"
-            overflow="hidden"
-            size="8"
-            pos="absolute"
-          >
-            <Image width={80} height={80} src={raw.portrait} />
-          </Circle>
+          {raw.portrait && (
+            <Circle
+              zi={5}
+              borderWidth={2}
+              borderColor="white"
+              top="-5"
+              bg="idCardBackground"
+              overflow="hidden"
+              size="8"
+              pos="absolute"
+            >
+              <Image width={80} height={80} src={raw.portrait} />
+            </Circle>
+          )}
           <TableContainer>
             <YStack
               bg="tableBackgroundColor"
@@ -295,7 +300,7 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
               borderBottomColor="tableBorderColor"
               ai="center"
             >
-              <Stack h="3" />
+              {raw.portrait && <Stack h="3" />}
               <YStack gap="2" ai="center">
                 <Heading heading="h3">{mainCard.name}</Heading>
                 <Paragraph>
