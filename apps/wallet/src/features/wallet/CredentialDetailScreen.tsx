@@ -30,7 +30,7 @@ export function CredentialDetailScreen() {
   }
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0" {...(media.wide && { maxWidth: '100%' })}>
+    <FlexPage gap="0" paddingHorizontal="0" {...(media.wide && { maxWidth: '100%' })}>
       {media.wide ? (
         // Wide windows show the attributes next to the card, and both actions in the header
         <>

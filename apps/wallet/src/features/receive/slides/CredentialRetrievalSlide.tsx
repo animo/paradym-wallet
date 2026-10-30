@@ -159,8 +159,8 @@ export const CredentialRetrievalSlide = ({
           }}
           entering={useSpringify(ZoomIn)}
         >
-          <XStack pt="$4" jc="center">
-            <HeroIcons.ShieldCheckFilled color="$primary-500" size={48} />
+          <XStack pt="4" jc="center">
+            <HeroIcons.ShieldCheckFilled color="primary-500" size={48} />
           </XStack>
         </AnimatedStack>
       )}
@@ -195,13 +195,13 @@ export const CredentialRetrievalSlide = ({
         >
           <AnimatedStack style={animatedTextStyle}>
             {isCompleted ? (
-              <Paragraph ta="center" mt="$-2" mb="$6">
+              <Paragraph ta="center" mt="-2" mb="6">
                 <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
               </Paragraph>
             ) : isStoring ? (
-              <Paragraph ta="center" mt="$-2" mb="$6"></Paragraph>
+              <Paragraph ta="center" mt="-2" mb="6"></Paragraph>
             ) : deferred ? (
-              <Paragraph ta="center" mt="$-2" mb="$6">
+              <Paragraph ta="center" mt="-2" mb="6">
                 <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
               </Paragraph>
             ) : null}
@@ -212,7 +212,7 @@ export const CredentialRetrievalSlide = ({
   )
 
   const card = (
-    <AnimatedStack pb="$5" borderColor={isCompleteAndAllowed ? '$background' : '$grey-100'} style={animatedCardStyle}>
+    <AnimatedStack pb="5" borderColor={isCompleteAndAllowed ? 'background' : 'grey-100'} style={animatedCardStyle}>
       <CredentialCard
         issuerImage={display.issuer.logo}
         textColor={display.textColor}
@@ -227,10 +227,10 @@ export const CredentialRetrievalSlide = ({
   const details = (
     <AnimatedStack
       fg={1}
-      btw="$0.5"
-      px="$4"
-      mx="$-4"
-      borderColor={isScrolledByOffset && !isStoringOrCompleted ? '$grey-200' : '$background'}
+      btw="0-5"
+      px="4"
+      mx="-4"
+      borderColor={isScrolledByOffset && !isStoringOrCompleted ? 'grey-200' : 'background'}
       onLayout={(event) => {
         // Set the initial height of the stack to define the maxHeight of the scrollView
         if (!scrollViewHeight) {
@@ -243,10 +243,10 @@ export const CredentialRetrievalSlide = ({
           ref={scrollViewRef}
           onScroll={handleScroll}
           scrollEventThrottle={scrollEventThrottle}
-          px="$4"
-          mx="$-4"
+          px="4"
+          mx="-4"
           maxHeight={scrollViewHeight}
-          bg="$white"
+          bg="white"
           contentContainerStyle={{ flexGrow: 1 }}
         >
           {scrollViewHeight && isAllowedToAccept ? (
@@ -269,10 +269,10 @@ export const CredentialRetrievalSlide = ({
               <Loader />
             </YStack>
           )}
-          <Spacer size="$6" />
+          <Spacer size="6" />
         </ScrollView>
       ) : (
-        <Spacer size="$6" />
+        <Spacer size="6" />
       )}
     </AnimatedStack>
   )
@@ -283,15 +283,15 @@ export const CredentialRetrievalSlide = ({
         key={isCompleteAndAllowed ? 'success' : 'error'}
         entering={isCompleteAndAllowed ? FadeIn.duration(300).delay(500) : undefined}
         exiting={FadeOut.duration(100)}
-        btw="$0.5"
-        borderColor={isStoringOrCompleted ? '$background' : '$grey-200'}
-        p="$4"
-        mx="$-4"
-        bg="$background"
+        btw="0-5"
+        borderColor={isStoringOrCompleted ? 'background' : 'grey-200'}
+        p="4"
+        mx="-4"
+        bg="background"
       >
         {isStoringOrCompleted ? (
-          <Button.Solid opacity={isCompleteAndAllowed ? 1 : 0} onPress={onGoToWallet}>
-            {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
+          <Button.Solid opacity={isCompleteAndAllowed ? '1 press:0.8' : 0} onPress={onGoToWallet}>
+            {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
           </Button.Solid>
         ) : (
           <DualResponseButtons
@@ -311,18 +311,18 @@ export const CredentialRetrievalSlide = ({
       <TwoPane
         start={
           <SlidePane>
-            <YStack fg={1} jc="center" ai="center" gap="$4">
+            <YStack fg={1} jc="center" ai="center" gap="4">
               <YStack w="100%" maxWidth={340}>
                 {card}
               </YStack>
-              <YStack ai="center" gap="$2">
+              <YStack ai="center" gap="2">
                 <Heading heading="h2" ta="center">
                   {display.name ?? t(commonMessages.unknown)}
                 </Heading>
                 {display.issuer.name && (
-                  <XStack ai="center" gap="$2">
+                  <XStack ai="center" gap="2">
                     {display.issuer.logo?.url && (
-                      <Circle size={28} overflow="hidden" bw="$0.5" borderColor="$grey-100" bg="$white">
+                      <Circle size={28} overflow="hidden" bw="0-5" borderColor="grey-100" bg="white">
                         <Image src={display.issuer.logo.url} width="100%" height="100%" contentFit="contain" />
                       </Circle>
                     )}
@@ -340,7 +340,7 @@ export const CredentialRetrievalSlide = ({
         end={
           <SlidePane>
             <YStack fg={1} jc="space-between">
-              <AnimatedStack gap="$4" fg={1} jc={isCompleted ? 'center' : undefined}>
+              <AnimatedStack gap="4" fg={1} jc={isCompleted ? 'center' : undefined}>
                 {header}
                 {!isCompleted && details}
               </AnimatedStack>
@@ -354,7 +354,7 @@ export const CredentialRetrievalSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <AnimatedStack gap="$4" fg={1}>
+      <AnimatedStack gap="4" fg={1}>
         {header}
         <AnimatedStack layout={useSpringify(LinearTransition)} fg={1}>
           {card}

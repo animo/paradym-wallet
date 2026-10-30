@@ -31,11 +31,11 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           jc="center"
         >
           <Stack
-            br="$7"
+            br="7"
             ov="hidden"
-            bg="$primary-500"
+            bg="primary-500"
             shadowOffset={{ width: 5, height: 5 }}
-            shadowColor="$grey-400"
+            shadowColor="grey-400"
             shadowOpacity={0.5}
             shadowRadius={24}
           >
@@ -43,15 +43,15 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </Stack>
         </YStack>
       </YStack>
-      <FlexPage fg={1} jc="space-between" backgroundColor="$transparent">
+      <FlexPage fg={1} jc="space-between" backgroundColor="transparent">
         <Stack h="40%" />
-        <YStack gap="$4" ai="center">
+        <YStack gap="4" ai="center">
           <Heading fontSize={32}>{ExpoConstants.expoConfig?.name}</Heading>
-          <Paragraph px="$2" ta="center">
+          <Paragraph px="2" ta="center">
             {introText}
           </Paragraph>
         </YStack>
-        <XStack gap="$2">
+        <XStack gap="2">
           <Button.Solid flexGrow={1} onPress={goToNextStep}>
             {getStartedLabel}
           </Button.Solid>

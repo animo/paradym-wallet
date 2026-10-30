@@ -68,18 +68,16 @@ export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScree
       {isLoading && (
         <Page
           position="absolute"
+          y="0 enter:50px exit:-20px"
+          opacity="0.7 enter:0 exit:0"
+          bg="black"
+          transition="lazy"
           jc="center"
           ai="center"
           g="md"
-          enterStyle={{ opacity: 0, y: 50 }}
-          exitStyle={{ opacity: 0, y: -20 }}
-          y={0}
-          bg="$black"
-          opacity={0.7}
-          transition="lazy"
         >
           <Spinner variant="dark" />
-          <Paragraph variant="sub" color="$white" textAlign="center">
+          <Paragraph variant="sub" color="white" textAlign="center">
             <Trans id="qrScanScreen.loadingInvitation" comment="Text shown while an invitation is loading">
               Loading invitation
             </Trans>

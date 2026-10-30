@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { styled } from 'tamagui'
+import { createStyledHOC, type GetProps, styled } from 'tamagui'
 import { useDeviceMedia } from '../hooks/useDeviceMedia'
 import { Stack, XStack, YStack } from './Stacks'
 
 export const Page = styled(Stack, {
   name: 'Page',
-  backgroundColor: '$background',
+  backgroundColor: 'background',
   position: 'absolute',
-  padding: '$4',
+  padding: '4',
   top: 0,
   left: 0,
   right: 0,
@@ -21,10 +21,10 @@ const readableContentWidth = 600
 
 const FlexPageBase = styled(Stack, {
   name: 'FlexPage',
-  backgroundColor: '$background',
+  backgroundColor: 'background',
+  gap: '5',
+  paddingHorizontal: '4',
   'flex-1': true,
-  gap: '$5',
-  paddingHorizontal: '$4',
   width: '100%',
   maxWidth: readableContentWidth,
 })
@@ -39,38 +39,39 @@ function getSafeAreaEdges(safeArea: boolean | 'x' | 'y' | SafeAreaEdge | SafeAre
   return Array.isArray(safeArea) ? safeArea : [safeArea]
 }
 
-export const FlexPage = FlexPageBase.styleable<{
-  safeArea?: boolean | 'x' | 'y' | SafeAreaEdge | SafeAreaEdge[]
-}>((props, ref) => {
-  const safeAreaInsets = useSafeAreaInsets()
-  const { additionalPadding } = useDeviceMedia()
+export const FlexPage = createStyledHOC(
+  FlexPageBase,
+  (props: GetProps<typeof FlexPageBase> & { safeArea?: boolean | 'x' | 'y' | SafeAreaEdge | SafeAreaEdge[] }, ref) => {
+    const safeAreaInsets = useSafeAreaInsets()
+    const { additionalPadding } = useDeviceMedia()
 
-  // Not defined means true, not sure why defaultVariant doesn't work
-  const edges = getSafeAreaEdges(props.safeArea ?? true)
+    // Not defined means true, not sure why defaultVariant doesn't work
+    const edges = getSafeAreaEdges(props.safeArea ?? true)
 
-  // Some devices have no bottom safe area, so we add a default padding so the content is not against the edge
-  const bottom = edges.includes('b') ? Math.max(safeAreaInsets.bottom, additionalPadding) : undefined
+    // Some devices have no bottom safe area, so we add a default padding so the content is not against the edge
+    const bottom = edges.includes('b') ? Math.max(safeAreaInsets.bottom, additionalPadding) : undefined
 
-  // Some devices have little to no top safe area, so we add a default padding so the content is not against the edge
-  const top = edges.includes('t') ? Math.max(safeAreaInsets.top, additionalPadding) : undefined
-  const left = edges.includes('l') ? safeAreaInsets.left : undefined
-  const right = edges.includes('r') ? safeAreaInsets.right : undefined
+    // Some devices have little to no top safe area, so we add a default padding so the content is not against the edge
+    const top = edges.includes('t') ? Math.max(safeAreaInsets.top, additionalPadding) : undefined
+    const left = edges.includes('l') ? safeAreaInsets.left : undefined
+    const right = edges.includes('r') ? safeAreaInsets.right : undefined
 
-  return (
-    <YStack
-      bg={props.bg ?? props.backgroundColor ?? '$background'}
-      h="100%"
-      w="100%"
-      ai="center"
-      pt={top}
-      pl={left}
-      pr={right}
-      pb={bottom}
-    >
-      <FlexPageBase {...props} ref={ref} />
-    </YStack>
-  )
-})
+    return (
+      <YStack
+        bg={props.bg ?? props.backgroundColor ?? 'background'}
+        h="100%"
+        w="100%"
+        ai="center"
+        pt={top}
+        pl={left}
+        pr={right}
+        pb={bottom}
+      >
+        <FlexPageBase {...props} ref={ref} />
+      </YStack>
+    )
+  }
+)
 
 interface TwoPaneProps {
   start: ReactNode
@@ -87,10 +88,10 @@ export function TwoPane({ start, end }: TwoPaneProps) {
 
   return (
     <XStack f={1}>
-      <YStack w={width / 2 - left} pr="$2" borderRightWidth="$0.5" borderColor="$grey-200">
+      <YStack w={width / 2 - left} pr="2" borderRightWidth="0-5" borderColor="grey-200">
         {start}
       </YStack>
-      <YStack f={1} pl="$2">
+      <YStack f={1} pl="2">
         {end}
       </YStack>
     </XStack>

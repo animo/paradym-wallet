@@ -12,7 +12,7 @@ export function InboxIcon() {
     <TouchableOpacity onPress={() => push('/notifications/inbox')}>
       <XStack>
         <LucideIcons.Inbox />
-        {hasInboxNotifications && <Circle ml="$-2" size={10} backgroundColor="$danger-500" />}
+        {hasInboxNotifications && <Circle ml="-2" size={10} backgroundColor="danger-500" />}
       </XStack>
     </TouchableOpacity>
   )

@@ -22,8 +22,8 @@ export function NestedAttributeScreen({ item, parentName }: NestedAttributeScree
         title={item.label ?? parentName}
         subtitle={item.label ? parentName : undefined}
       />
-      <ScrollView ref={scrollViewRef} pt="$4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack px="$4" gap="$4" marginBottom={bottom}>
+      <ScrollView ref={scrollViewRef} pt="4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <YStack px="4" gap="4" marginBottom={bottom}>
           <CredentialAttributes attributes={item.value} scrollRef={scrollViewRef} />
         </YStack>
       </ScrollView>

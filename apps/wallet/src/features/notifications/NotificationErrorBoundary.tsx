@@ -51,19 +51,19 @@ function NotificationError({ error }: { error: Error }) {
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
 
   return (
-    <FlexPage gap="$4" jc="center" ai="center">
-      <YStack gap="$4" ai="center" fg={1} jc="center">
-        <Stack p="$4" bg="$danger-100" br="$12">
-          <HeroIcons.ExclamationTriangleFilled color="$danger-500" size={32} />
+    <FlexPage gap="4" jc="center" ai="center">
+      <YStack gap="4" ai="center" fg={1} jc="center">
+        <Stack p="4" bg="danger-100" br="12">
+          <HeroIcons.ExclamationTriangleFilled color="danger-500" size={32} />
         </Stack>
-        <Heading heading="h2" ta="center" fontWeight="$semiBold">
+        <Heading heading="h2" ta="center" fontWeight="semiBold">
           {t(messages.title)}
         </Heading>
         <Paragraph ta="center">{t(messages.description)}</Paragraph>
 
         {/* The message and where it was thrown, which is the whole point of a development build. */}
         {isDevelopmentModeEnabled && (
-          <Paragraph ta="center" variant="sub" color="$grey-500">
+          <Paragraph ta="center" variant="sub" color="grey-500">
             {`Development mode error: ${error.message}`}
           </Paragraph>
         )}

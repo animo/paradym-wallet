@@ -10,14 +10,12 @@ export const Stack = styled(TStack, {
     },
     shadow: {
       sm: {
-        elevation: 3,
         shadowOffset: { width: 0, height: 4 },
         shadowColor: 'grey',
         shadowOpacity: 0.3,
         shadowRadius: 10,
       },
       true: {
-        elevation: 4,
         shadowOffset: { width: 3, height: 3 },
         shadowColor: 'grey',
         shadowOpacity: 0.15,
@@ -27,71 +25,72 @@ export const Stack = styled(TStack, {
     bordered: {
       true: {
         borderWidth: 0.5,
-        borderColor: '$grey-300',
+        borderColor: 'grey-300',
       },
     },
     borderRad: {
       xs: {
-        borderRadius: '$1',
+        borderRadius: '1',
       },
       sm: {
-        borderRadius: '$2',
+        borderRadius: '2',
       },
       md: {
-        borderRadius: '$3',
+        borderRadius: '3',
       },
       lg: {
-        borderRadius: '$4',
+        borderRadius: '4',
       },
       xl: {
-        borderRadius: '$8',
+        borderRadius: '8',
       },
     },
     g: {
       xs: {
-        gap: '$1',
+        gap: '1',
       },
       sm: {
-        gap: '$2',
+        gap: '2',
       },
       md: {
-        gap: '$3',
+        gap: '3',
       },
       lg: {
-        gap: '$4',
+        gap: '4',
       },
       xl: {
-        gap: '$6',
+        gap: '6',
       },
       '2xl': {
-        gap: '$8',
+        gap: '8',
       },
       '3xl': {
-        gap: '$10',
+        gap: '10',
       },
       '4xl': {
-        gap: '$12',
+        gap: '12',
       },
     },
     pad: {
       xs: {
-        padding: '$1',
+        padding: '1',
       },
       sm: {
-        padding: '$2',
+        padding: '2',
       },
       md: {
-        padding: '$3',
+        padding: '3',
       },
       lg: {
-        padding: '$4',
+        padding: '4',
       },
       xl: {
-        padding: '$6',
+        padding: '6',
       },
     },
   } as const,
-})
+  // v3 drops `elevation` from variants. It's Android-only and not in v3's style types, but a resolver can still set it.
+}).resolve((props) => (props.shadow ? ({ elevation: props.shadow === 'sm' ? 3 : 4 } as object) : undefined))
 
 export const XStack = styled(Stack, {
   flexDirection: 'row',

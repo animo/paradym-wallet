@@ -80,24 +80,24 @@ export function ActivityDetail({ activity }: { activity: Activity }) {
 
   return (
     <>
-      <YStack bbw="$0.5" h="$4" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
+      <YStack bbw="0-5" h="4" borderColor={isScrolledByOffset ? 'grey-200' : 'background'} />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack gap="$4" marginBottom={bottom}>
-          <Stack h="$8" jc="center" ai="center" pos="relative">
+        <YStack gap="4" marginBottom={bottom}>
+          <Stack h="8" jc="center" ai="center" pos="relative">
             <Circle pos="absolute" size={72} bg={Icon.color} opacity={0.1} />
             <Circle pos="absolute" size={58} bg={Icon.color} opacity={0.2} />
-            <Circle size="$4" bg={Icon.color}>
-              <Icon.icon strokeWidth={2} color="$white" />
+            <Circle size="4" bg={Icon.color}>
+              <Icon.icon strokeWidth={2} color="white" />
             </Circle>
           </Stack>
-          <YStack gap="$4" px="$4">
-            <Stack gap="$2" ai="center">
+          <YStack gap="4" px="4">
+            <Stack gap="2" ai="center">
               <Heading textAlign="center" heading="h1">
                 {Title}
               </Heading>
               <Paragraph textAlign="center">{formatRelativeDate(new Date(activity.date), undefined, true)}</Paragraph>
             </Stack>
-            <Stack h={1} my="$2" bg="$grey-100" />
+            <Stack h={1} my="2" bg="grey-100" />
             {activity.type === 'shared' || activity.type === 'signed' || activity.type === 'payment' ? (
               <SharedActivityDetailSection activity={activity} />
             ) : (
@@ -187,9 +187,9 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
   }
 
   return (
-    <Stack gap="$6">
-      <YStack gap="$4">
-        <YStack gap="$2">
+    <Stack gap="6">
+      <YStack gap="4">
+        <YStack gap="2">
           <Heading heading="sub2">{t(commonMessages.cards)}</Heading>
 
           <Paragraph>{description}</Paragraph>
@@ -202,8 +202,8 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
               <CredentialRowCard
                 key={credentialId}
                 name={t(activityMessages.deletedCredential)}
-                textColor="$grey-100"
-                backgroundColor="$grey-900"
+                textColor="grey-100"
+                backgroundColor="grey-900"
                 issuer={activity.entity.name ?? t(commonMessages.unknown)}
                 issuedAt={activity.date ? new Date(activity.date) : undefined}
               />
@@ -214,8 +214,8 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
             <CredentialRowCard
               key={credential.id}
               name={credential.display.name ?? t(commonMessages.unknown)}
-              textColor={credential.display.textColor ?? '$grey-100'}
-              backgroundColor={credential.display.backgroundColor ?? '$grey-900'}
+              textColor={credential.display.textColor ?? 'grey-100'}
+              backgroundColor={credential.display.backgroundColor ?? 'grey-900'}
               issuer={credential.display.issuer.name ?? t(commonMessages.unknown)}
               logo={credential.display.issuer.logo}
               issuedAt={credential.metadata.issuedAt ? new Date(credential.metadata.issuedAt) : undefined}
@@ -261,15 +261,15 @@ export function SharedActivityDetailSection({
         })
 
   return (
-    <Stack gap="$6">
+    <Stack gap="6">
       <RequestPurposeSection
         purpose={activity.request.purpose ?? t(activityMessages.noPurposeGiven)}
         logo={activity.entity.logo}
         overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
       />
       {activity && activity.type === 'signed' ? (
-        <YStack gap="$4">
-          <YStack gap="$2">
+        <YStack gap="4">
+          <YStack gap="2">
             <Heading heading="sub2">{t(commonMessages.documentHeading)}</Heading>
             <Paragraph>
               {activity.status === 'success'
@@ -277,9 +277,9 @@ export function SharedActivityDetailSection({
                 : t(activityMessages.documentNotSigned)}
             </Paragraph>
           </YStack>
-          <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
-            <YStack f={1} gap="$2">
-              <Heading heading="sub2" textTransform="none" color="$grey-800">
+          <XStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4">
+            <YStack f={1} gap="2">
+              <Heading heading="sub2" textTransform="none" color="grey-800">
                 {activity.transaction?.documentName}
               </Heading>
               <Paragraph>
@@ -296,18 +296,18 @@ export function SharedActivityDetailSection({
         </YStack>
       ) : (
         activity.type === 'payment' && (
-          <YStack gap="$4">
-            <YStack gap="$2">
+          <YStack gap="4">
+            <YStack gap="2">
               <Heading heading="sub2">{t(commonMessages.paymentHeading)}</Heading>
             </YStack>
-            <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
-              <YStack f={1} gap="$2" ai="center">
-                <Heading textTransform="none" color="$grey-800">
+            <XStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4">
+              <YStack f={1} gap="2" ai="center">
+                <Heading textTransform="none" color="grey-800">
                   {activity.transaction.type === pasoPaymentTransactionDataType
                     ? activity.transaction.amount.value
                     : activity.transaction.amount}
                 </Heading>
-                <Paragraph variant="sub" size="$2">
+                <Paragraph variant="sub" size="2">
                   <Trans>
                     To{' '}
                     {activity.transaction.type === pasoPaymentTransactionDataType
@@ -323,9 +323,9 @@ export function SharedActivityDetailSection({
                 {paymentTransactionStatus && paymentTransactionStatus !== 'ACSC' && (
                   <Paragraph
                     variant="sub"
-                    size="$2"
-                    fontWeight="$medium"
-                    color={paymentTransactionStatus === 'RJCT' ? '$danger-500' : '$warning-600'}
+                    size="2"
+                    fontWeight="medium"
+                    color={paymentTransactionStatus === 'RJCT' ? 'danger-500' : 'warning-600'}
                   >
                     {t(
                       paymentTransactionStatus === 'RJCT'
@@ -339,8 +339,8 @@ export function SharedActivityDetailSection({
           </YStack>
         )
       )}
-      <Stack gap="$3">
-        <Stack gap="$2">
+      <Stack gap="3">
+        <Stack gap="2">
           <Heading heading="sub2">
             {activity.status === 'success'
               ? t(activityMessages.sharedAttributes)
@@ -362,8 +362,8 @@ export function SharedActivityDetailSection({
                     // credential they came from is gone, so the names are all there is.
                     <CardWithAttributes
                       name={activityCredential.name ?? t(activityMessages.deletedCredential)}
-                      textColor="$grey-100"
-                      backgroundColor="$primary-500"
+                      textColor="grey-100"
+                      backgroundColor="primary-500"
                       formattedDisclosedAttributes={getDisclosedLabels(activityCredential)}
                     />
                   )

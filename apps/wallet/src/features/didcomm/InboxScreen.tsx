@@ -29,7 +29,7 @@ export function InboxScreen() {
   }, [inboxNotifications, paradym])
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
+    <FlexPage gap="0" paddingHorizontal="0">
       <HeaderContainer
         title={t({
           id: 'inbox.header',
@@ -48,18 +48,18 @@ export function InboxScreen() {
           <AnimatedStack
             flexDirection="column"
             entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
-            gap="$2"
+            gap="2"
             jc="center"
-            p="$4"
+            p="4"
             fg={1}
           >
-            <Heading ta="center" heading="h3" fontWeight="$semiBold">
+            <Heading ta="center" heading="h3" fontWeight="semiBold">
               {t(commonMessages.noNotificationsTitle)}
             </Heading>
             <Paragraph ta="center">{t(commonMessages.noNotificationsDescription)}</Paragraph>
           </AnimatedStack>
         ) : (
-          <YStack overflow="hidden" px="$4" gap="$4">
+          <YStack overflow="hidden" px="4" gap="4">
             {inboxNotifications.map((notification) => {
               const baseLabel =
                 notification.type === 'DeferredCredentialRecord'

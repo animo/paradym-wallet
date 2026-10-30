@@ -1,10 +1,9 @@
 import { useLingui } from '@lingui/react/macro'
 import { useWizard } from '@package/app'
-import { Heading, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
+import { Heading, Input, MessageBox, Paragraph, ScrollView, YStack } from '@package/ui'
 import type { OpenId4VciTxCode } from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import { Keyboard } from 'react-native'
-import { Input } from 'tamagui'
 
 interface TxCodeSlideProps {
   txCode: OpenId4VciTxCode
@@ -44,9 +43,9 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
   }
 
   return (
-    <YStack fg={1} gap="$6">
-      <ScrollView contentContainerStyle={{ gap: '$6' }} scrollEnabled={txCode.description !== undefined}>
-        <YStack gap="$4">
+    <YStack fg={1} gap="6">
+      <ScrollView contentContainerStyle={{ gap: '6' }} scrollEnabled={txCode.description !== undefined}>
+        <YStack gap="4">
           <Heading>
             {t({
               id: 'txCodeSlide.title',
@@ -63,7 +62,7 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
             })}
           </Paragraph>
           {txCode.description && (
-            <YStack gap="$2">
+            <YStack gap="2">
               <Paragraph>
                 {t({
                   id: 'txCodeSlide.descriptionIntro',
@@ -75,7 +74,7 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
             </YStack>
           )}
         </YStack>
-        <YStack gap="$2">
+        <YStack gap="2">
           <Heading heading="sub2">
             {t({
               id: 'txCodeSlide.inputLabel',
@@ -94,9 +93,8 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
             keyboardType={txCode.input_mode === 'text' ? 'ascii-capable' : 'numeric'}
             maxLength={txCode.length}
             onChangeText={onChangeTxCodeEntry}
-            placeholderTextColor="$grey-500"
-            borderColor="$grey-300"
-            size="$4"
+            placeholderTextColor="grey-500"
+            borderColor="grey-300"
           />
         </YStack>
       </ScrollView>

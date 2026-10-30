@@ -10,46 +10,46 @@ import type { StatusVariant } from '../utils/variants'
 
 const infoButtonVariants = {
   default: {
-    icon: <HeroIcons.CheckCircleFilled color="$background" />,
-    accent: '$grey-500',
+    icon: <HeroIcons.CheckCircleFilled color="background" />,
+    accent: 'grey-500',
   },
   positive: {
-    icon: <HeroIcons.ShieldCheckFilled color="$background" />,
-    accent: '$positive-500',
+    icon: <HeroIcons.ShieldCheckFilled color="background" />,
+    accent: 'positive-500',
   },
   warning: {
-    icon: <HeroIcons.ExclamationTriangleFilled color="$background" />,
-    accent: '$warning-500',
+    icon: <HeroIcons.ExclamationTriangleFilled color="background" />,
+    accent: 'warning-500',
   },
   danger: {
-    icon: <HeroIcons.ExclamationCircleFilled color="$background" />,
-    accent: '$danger-500',
+    icon: <HeroIcons.ExclamationCircleFilled color="background" />,
+    accent: 'danger-500',
   },
   info: {
-    icon: <HeroIcons.InformationCircleFilled color="$background" />,
-    accent: '$grey-500',
+    icon: <HeroIcons.InformationCircleFilled color="background" />,
+    accent: 'grey-500',
   },
 
   // States
   expired: {
-    icon: <HeroIcons.ClockFilled color="$background" />,
-    accent: '$grey-500',
+    icon: <HeroIcons.ClockFilled color="background" />,
+    accent: 'grey-500',
   },
   view: {
-    icon: <HeroIcons.Eye color="$background" />,
-    accent: '$primary-500',
+    icon: <HeroIcons.Eye color="background" />,
+    accent: 'primary-500',
   },
   'interaction-success': {
-    icon: <HeroIcons.Interaction color="$background" />,
-    accent: '$positive-500',
+    icon: <HeroIcons.Interaction color="background" />,
+    accent: 'positive-500',
   },
   'interaction-new': {
-    icon: <HeroIcons.Interaction color="$background" />,
-    accent: '$grey-500',
+    icon: <HeroIcons.Interaction color="background" />,
+    accent: 'grey-500',
   },
   unknown: {
-    icon: <HeroIcons.ExclamationCircleFilled color="$background" />,
-    accent: '$grey-500',
+    icon: <HeroIcons.ExclamationCircleFilled color="background" />,
+    accent: 'grey-500',
   },
 }
 
@@ -82,27 +82,27 @@ export function InfoButton({
   return (
     <Stack
       transition={isPressable ? 'quick' : undefined}
-      pressStyle={isPressable ? { scale: 0.98 } : undefined}
+      scale={isPressable ? '1 press:0.98' : undefined}
       flexDirection="row"
-      gap="$3"
-      br="$8"
-      bg={isPressable ? '$grey-50' : '$background'}
-      px="$3.5"
-      py="$3"
-      bw="$0.5"
+      gap="3"
+      bg={isPressable ? 'grey-50' : 'background'}
+      px="3-5"
+      py="3"
+      borderColor="grey-100"
+      br="8"
+      bw="0-5"
       accessible={true}
       accessibilityRole={onPress ? 'button' : undefined}
       aria-label={ariaLabel ?? `${title}. ${description}`}
-      borderColor="$grey-100"
       onPress={onPress}
     >
       {!noIcon && (
-        <Circle size="$3" br="$12" bg={infoButtonVariants[variant].accent}>
+        <Circle size="3" br="12" bg={infoButtonVariants[variant].accent}>
           {image ? <Image src={image.src} alt={image.alt} width={24} height={24} /> : infoButtonVariants[variant].icon}
         </Circle>
       )}
       <XStack fg={1} f={1} ai="center">
-        <YStack gap="$1" f={1} fg={1}>
+        <YStack gap="1" f={1} fg={1}>
           <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} heading="sub1">
             {title}
           </Heading>
@@ -111,11 +111,11 @@ export function InfoButton({
         {isPressable && (
           <Stack>
             {routingType === 'push' ? (
-              <HeroIcons.ChevronRight size={20} color="$grey-500" />
+              <HeroIcons.ChevronRight size={20} color="grey-500" />
             ) : routingType === 'external' ? (
-              <HeroIcons.Link size={20} color="$grey-500" />
+              <HeroIcons.Link size={20} color="grey-500" />
             ) : (
-              <HeroIcons.InformationCircle size={20} color="$grey-500" />
+              <HeroIcons.InformationCircle size={20} color="grey-500" />
             )}
           </Stack>
         )}

@@ -50,23 +50,23 @@ export function WalletScreen() {
 
   const home = (
     <>
-      <XStack pt="$2" jc="space-between">
+      <XStack pt="2" jc="space-between">
         <IconContainer bg="white" aria-label="Menu" icon={<HeroIcons.Menu />} onPress={pushToMenu} />
         <InboxIcon />
       </XStack>
 
       <AnimatedStack fg={1} entering={useSpringify(FadeIn, 200)}>
-        <ScrollView scrollEnabled={false} contentContainerStyle={{ fg: 1 }}>
-          <YStack fg={1} f={1} gap="$4">
-            <YStack ai="center" jc="center" gap="$2">
-              <Heading heading="h1" fontSize={38} lineHeight={40} ta="center" numberOfLines={2}>
+        <ScrollView scrollEnabled={false} contentContainerStyle={{ flexGrow: 1 }}>
+          <YStack fg={1} f={1} gap="4">
+            <YStack ai="center" jc="center" gap="2">
+              <Heading heading="h1" fontSize={38} lineHeight="40px" ta="center" numberOfLines={2}>
                 <Trans id="home.helloWithoutName">Hello!</Trans>
               </Heading>
               <Paragraph>
                 <Trans id="home.receiveOrShare">Receive or share from your wallet</Trans>{' '}
               </Paragraph>
             </YStack>
-            <XStack gap="$4" jc="center" py="$2" w="95%" mx="auto">
+            <XStack gap="4" jc="center" py="2" w="95%" mx="auto">
               <ActionCard
                 variant="primary"
                 icon={<CustomIcons.Qr color="white" />}
@@ -81,10 +81,10 @@ export function WalletScreen() {
               />
             </XStack>
 
-            <Stack h="$4" />
+            <Stack h="4" />
           </YStack>
-          <YStack gap="$4" jc="space-around" fg={1} f={1}>
-            <YStack gap="$4">
+          <YStack gap="4" jc="space-around" fg={1} f={1}>
+            <YStack gap="4">
               <LatestActivityCard />
               <AllCardsCard />
             </YStack>
@@ -96,17 +96,17 @@ export function WalletScreen() {
   )
 
   return (
-    <YStack pos="relative" fg={1} bg="$background">
+    <YStack pos="relative" fg={1} bg="background">
       <YStack pos="absolute" h="50%" w={media.wide ? width / 2 : '100%'}>
         <Blob />
       </YStack>
 
       {media.wide ? (
         // Wide windows show the cards next to the home screen
-        <FlexPage fg={1} flex-1={false} bg="transparent" maxWidth="100%" px="$0" gap="$0">
+        <FlexPage fg={1} flex-1={false} bg="transparent" maxWidth="100%" px="0" gap="0">
           <TwoPane
             start={
-              <YStack f={1} px="$4" gap="$6">
+              <YStack f={1} px="4" gap="6">
                 {home}
               </YStack>
             }

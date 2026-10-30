@@ -105,10 +105,10 @@ export const VerifyPartySlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <ScrollView contentContainerStyle={{ gap: media.short ? '$4' : '$6' }}>
-        <YStack gap="$4">
-          <XStack ai="center" pt="$4" jc="center">
-            <Circle size={64} bw="$0.5" borderColor="$grey-100" bg={backgroundColor ?? '$white'}>
+      <ScrollView contentContainerStyle={{ gap: media.short ? '4' : '6' }}>
+        <YStack gap="4">
+          <XStack ai="center" pt="4" jc="center">
+            <Circle size={64} bw="0-5" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
               {logo?.url ? (
                 <Image
                   circle
@@ -121,16 +121,16 @@ export const VerifyPartySlide = ({
                   contentFit="contain"
                 />
               ) : (
-                <HeroIcons.BuildingOffice color="$grey-800" size={28} />
+                <HeroIcons.BuildingOffice color="grey-800" size={28} />
               )}
             </Circle>
           </XStack>
-          <Stack gap="$2">
-            <Heading heading="h2" numberOfLines={2} center fontSize={24} lineHeight="$5">
+          <Stack gap="2">
+            <Heading heading="h2" numberOfLines={2} fontSize={24} lineHeight="5" center>
               {name ? t(commonMessages.doYouTrust(name)) : t(commonMessages.organizationNotVerifiedHeading)}
             </Heading>
             {type === 'offer' ? (
-              <Paragraph center px="$4">
+              <Paragraph center px="4">
                 {name ? (
                   <Trans id="verifyPartySlide.offerCardSubtitle">{name} wants to offer you a card.</Trans>
                 ) : (
@@ -140,7 +140,7 @@ export const VerifyPartySlide = ({
                 )}
               </Paragraph>
             ) : type === 'signing' ? (
-              <Paragraph center px="$4">
+              <Paragraph center px="4">
                 {name ? (
                   <Trans id="verifyPartySlide.signingSubtitle">
                     {name} wants to interact to create a digital signature for a document.
@@ -152,7 +152,7 @@ export const VerifyPartySlide = ({
                 )}
               </Paragraph>
             ) : type === 'request' ? (
-              <Paragraph center px="$4">
+              <Paragraph center px="4">
                 {name ? (
                   <Trans id="verifyPartySlide.requestSubtitle">{name} wants to request information from you.</Trans>
                 ) : (
@@ -162,7 +162,7 @@ export const VerifyPartySlide = ({
                 )}
               </Paragraph>
             ) : type === 'connect' ? (
-              <Paragraph center px="$4">
+              <Paragraph center px="4">
                 {name ? (
                   <Trans id="verifyPartySlide.connectSubtitle">{name} wants to connect with you.</Trans>
                 ) : (
@@ -175,7 +175,7 @@ export const VerifyPartySlide = ({
           </Stack>
         </YStack>
 
-        <YStack gap="$4">
+        <YStack gap="4">
           {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
             <InfoButton
               variant={entityIsTrustAnchor ? 'positive' : 'info'}
@@ -233,7 +233,7 @@ export const VerifyPartySlide = ({
         </YStack>
       </ScrollView>
       {!isCombined && (
-        <Stack btw={1} borderColor="$grey-100" px="$4" py="$3" mx="$-4">
+        <Stack btw={1} borderColor="grey-100" px="4" py="3" mx="-4">
           <DualResponseButtons
             align="horizontal"
             onAccept={handleContinue}

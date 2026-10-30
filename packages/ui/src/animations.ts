@@ -41,8 +41,11 @@ const driver = createAnimations(
 
 // Tamagui also animates border widths by default, which aren't on RN's native driver allowlist: every animated
 // component with a border width logged "Style property 'borderWidth' is not supported by native animated module".
-// Components without their own `animateOnly` get the keys the native driver supports, the rest is applied directly.
-const nativeDriverStyleKeys = [
+// A preset name (`transition="quick"`) animates only the keys the native driver supports, the rest is applied
+// directly. Components that pass a transition object choose their keys themselves.
+// Style updates without a re-render (press and other states) don't check the transition's keys, so those only get the
+// native driver keys. A state that changes another key, like `bw="1 press:2"`, won't apply.
+const nativeDriverStyleKeys = new Set([
   'transform',
   'opacity',
   'backgroundColor',
@@ -57,19 +60,46 @@ const nativeDriverStyleKeys = [
   'borderTopRightRadius',
   'borderBottomLeftRadius',
   'borderBottomRightRadius',
-]
+])
 
-// Without re-renders, Tamagui applies press and media styles through a path that ignores `animateOnly`. It then animates
-// layout keys such as height and switches a node that is already on the native driver to the JS driver, which throws.
+const nativeDriverTransitions = new Map<string, Record<string, string>>()
+const toNativeDriverTransition = (preset: string) => {
+  let transition = nativeDriverTransitions.get(preset)
+  if (!transition) {
+    transition = Object.fromEntries(Array.from(nativeDriverStyleKeys, (key) => [key, preset]))
+    nativeDriverTransitions.set(preset, transition)
+  }
+  return transition
+}
+
 export const animations: typeof driver = {
   ...driver,
-  avoidReRenders: false,
-  useAnimations: (animationProps) =>
-    driver.useAnimations(
-      animationProps.props.animateOnly
-        ? animationProps
-        : { ...animationProps, props: { ...animationProps.props, animateOnly: nativeDriverStyleKeys } }
-    ),
+  useAnimations: (animationProps) => {
+    const transition = animationProps.styleState?.effectiveTransition ?? animationProps.props.transition
+    if (typeof transition !== 'string' || !(transition in driver.animations))
+      return driver.useAnimations(animationProps)
+
+    const nativeDriverTransition = toNativeDriverTransition(transition)
+    const { useStyleEmitter } = animationProps
+    return driver.useAnimations({
+      ...animationProps,
+      props: { ...animationProps.props, transition: nativeDriverTransition },
+      styleState: animationProps.styleState && {
+        ...animationProps.styleState,
+        effectiveTransition: nativeDriverTransition,
+      },
+      useStyleEmitter:
+        useStyleEmitter &&
+        ((listener) =>
+          useStyleEmitter((nextStyle, ...rest) => {
+            const nativeDriverStyle: typeof nextStyle = {}
+            for (const key in nextStyle) {
+              if (nativeDriverStyleKeys.has(key)) nativeDriverStyle[key] = nextStyle[key]
+            }
+            listener(nativeDriverStyle, ...rest)
+          })),
+    })
+  },
 }
 
 export const springConfig = {

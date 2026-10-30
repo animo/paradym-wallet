@@ -52,8 +52,8 @@ export function DualResponseButtons({
     ? ({
         ellipsis: false,
         height: 'auto',
-        minHeight: '$size.buttonHeight',
-        py: '$2',
+        minHeight: 'size.buttonHeight',
+        py: '2',
         // `f={1}` implies a zero basis, which in a column would hold a wrapped label to the minimum height.
         ...(isHorizontal ? {} : { flexBasis: 'auto' }),
         textProps: {
@@ -66,19 +66,20 @@ export function DualResponseButtons({
     : {}
 
   return (
-    <YStack gap={isHorizontal ? '$4' : '$2'} flexDirection={isHorizontal ? 'row-reverse' : 'column'}>
+    <YStack gap={isHorizontal ? '4' : '2'} flexDirection={isHorizontal ? 'row-reverse' : 'column'}>
       <Button.Solid
         f={1}
         fg={giveAcceptButtonMoreSpace ? 2 : 1}
         disabled={isLoading || isAcceptDisabled}
-        opacity={isAcceptDisabled ? 0.5 : 1}
+        // A plain value would replace the button's press fade
+        opacity={isAcceptDisabled ? 0.5 : '1 press:0.8'}
         onPress={onAccept}
-        {...(variant === 'confirmation' ? { bg: '$danger-500' } : {})}
+        {...(variant === 'confirmation' ? { bg: 'danger-500' } : {})}
         {...wrapProps}
       >
         {isLoading ? <Spinner variant="dark" /> : accept}
       </Button.Solid>
-      <Button.Outline f={1} bg="$grey-100" disabled={isLoading} onPress={onDecline} {...wrapProps}>
+      <Button.Outline f={1} bg="grey-100" disabled={isLoading} onPress={onDecline} {...wrapProps}>
         {deline}
       </Button.Outline>
     </YStack>

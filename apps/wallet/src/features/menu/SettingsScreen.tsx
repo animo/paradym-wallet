@@ -52,23 +52,23 @@ export function LocaleSelect() {
 
   return (
     <YStack>
-      <XStack gap="$3" ai="center">
-        <XStack bg="$primary-100" p="$1.5" br="$4">
-          <HeroIcons.Langugae size={20} color="$primary-500" />
+      <XStack gap="3" ai="center">
+        <XStack bg="primary-100" p="1-5" br="4">
+          <HeroIcons.Langugae size={20} color="primary-500" />
         </XStack>
-        <XStack gap="$2">
+        <XStack gap="2">
           <Label
             maxWidth={200}
             numberOfLines={1}
-            fontWeight="$semiBold"
-            fontFamily="$default"
+            fontWeight="medium"
+            fontFamily="default"
             fontSize={17}
-            lineHeight="$5"
-            letterSpacing="$8"
+            lineHeight="5"
+            letterSpacing="8"
           >
             <Trans id="selectLanguage.label">Language</Trans>{' '}
           </Label>
-          <YStack mt="$0.5">
+          <YStack mt="0-5">
             <BetaTag />
           </YStack>
         </XStack>
@@ -167,15 +167,15 @@ export function SettingsScreen() {
   const biometricsType = useBiometricsType()
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
+    <FlexPage gap="0" paddingHorizontal="0">
       <HeaderContainer title={t(commonMessages.settings)} isScrolledByOffset={isScrolledByOffset} />
       <ScrollView
         onScroll={handleScroll}
         scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        <YStack fg={1} px="$4" jc="space-between">
-          <YStack gap="$4" py="$2">
+        <YStack fg={1} px="4" jc="space-between">
+          <YStack gap="4" py="2">
             <Switch
               id="biometrics-enabled"
               label={t({

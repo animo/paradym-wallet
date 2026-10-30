@@ -45,13 +45,13 @@ export function CredentialDetail({
       <YStack
         w="100%"
         top={0}
-        p="$4"
-        borderBottomWidth="$0.5"
-        borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+        p="4"
+        borderBottomWidth="0-5"
+        borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
       />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack ai="center" gap="$6" p="$4" marginBottom={bottom}>
-          <AnimatedStack width="100%" mt="$-3" mb="$-5" scale={0.75}>
+        <YStack ai="center" gap="6" p="4" marginBottom={bottom}>
+          <AnimatedStack width="100%" mt="-3" mb="-5" scale={0.75}>
             <CredentialCard
               issuerImage={{
                 url: credential.display.issuer.logo?.url,
@@ -63,10 +63,10 @@ export function CredentialDetail({
                 url: credential.display.backgroundImage?.url,
                 altText: credential.display.backgroundImage?.altText,
               }}
-              bgColor={credential.display.backgroundColor ?? '$grey-900'}
+              bgColor={credential.display.backgroundColor ?? 'grey-900'}
             />
           </AnimatedStack>
-          <Stack gap="$2">
+          <Stack gap="2">
             <Heading ta="center" heading="h1">
               <Trans id="credentials.detailsTitle" comment="Title of the credential details screen">
                 Card details
@@ -78,7 +78,7 @@ export function CredentialDetail({
               </Trans>
             </Paragraph>
           </Stack>
-          <YStack w="100%" gap="$2">
+          <YStack w="100%" gap="2">
             <CardInfoLifecycle
               validFrom={credential.metadata.validFrom ? new Date(credential.metadata.validFrom) : undefined}
               validUntil={credential.metadata.validUntil ? new Date(credential.metadata.validUntil) : undefined}

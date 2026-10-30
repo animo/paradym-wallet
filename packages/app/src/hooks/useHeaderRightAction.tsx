@@ -21,7 +21,7 @@ export function useHeaderRightActions(actions: UseHeaderRightActionProps[]) {
     navigation.setOptions({
       headerRight: () =>
         visibleActions.length > 0 ? (
-          <XStack gap="$2">
+          <XStack gap="2">
             {visibleActions.map(({ icon, onPress }, index) => (
               // FIXME: should remove pressable and pass it to IconContainer once
               // the following issue is resolved:

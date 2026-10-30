@@ -31,7 +31,7 @@ export function CredentialDetailAttributesScreen() {
   }
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
+    <FlexPage gap="0" paddingHorizontal="0">
       <CredentialDetailAttributes credential={credential} />
       <BackFooter />
     </FlexPage>

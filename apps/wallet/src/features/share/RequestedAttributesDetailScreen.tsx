@@ -97,9 +97,9 @@ export function RequestedAttributesDetailScreen({
 
   return (
     <>
-      <YStack bg="$background" height="100%" pb={bottom}>
-        <Spacer size="$13" />
-        <YStack borderBottomWidth="$0.5" borderColor={isScrolledByOffset ? '$grey-200' : '$background'} />
+      <YStack bg="background" height="100%" pb={bottom}>
+        <Spacer size="13" />
+        <YStack borderBottomWidth="0-5" borderColor={isScrolledByOffset ? 'grey-200' : 'background'} />
         <YStack
           fg={1}
           onLayout={(e) => {
@@ -114,8 +114,8 @@ export function RequestedAttributesDetailScreen({
             scrollEventThrottle={scrollEventThrottle}
             height={scrollViewHeight}
           >
-            <YStack gap="$6" pad="lg" py="$4">
-              <Stack width="100%" mt="$-3" mb="$-5" scale={0.75}>
+            <YStack gap="6" pad="lg" py="4">
+              <Stack width="100%" mt="-3" mb="-5" scale={0.75}>
                 <CredentialCard
                   issuerImage={{
                     url: activeCredential.display.issuer.logo?.url,
@@ -127,11 +127,11 @@ export function RequestedAttributesDetailScreen({
                     url: activeCredential.display.backgroundImage?.url,
                     altText: activeCredential.display.backgroundImage?.altText,
                   }}
-                  bgColor={activeCredential.display.backgroundColor ?? '$grey-900'}
+                  bgColor={activeCredential.display.backgroundColor ?? 'grey-900'}
                 />
               </Stack>
-              <Stack gap="$4">
-                <Stack gap="$2">
+              <Stack gap="4">
+                <Stack gap="2">
                   <Heading ta="center" heading="h1">
                     {t({
                       id: 'requestedAttributes.heading',
@@ -173,7 +173,7 @@ export function RequestedAttributesDetailScreen({
         setIsOpen={setIsSheetOpen}
         items={[
           {
-            icon: isMetadataVisible ? <HeroIcons.EyeSlash color="$grey-500" /> : <HeroIcons.Eye color="$grey-500" />,
+            icon: isMetadataVisible ? <HeroIcons.EyeSlash color="grey-500" /> : <HeroIcons.Eye color="grey-500" />,
             title: isMetadataVisible
               ? t(commonMessages.hideMetadataAttributes)
               : t(commonMessages.showMetadataAttributes),

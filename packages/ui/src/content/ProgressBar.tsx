@@ -1,24 +1,21 @@
-import { Progress, styled, withStaticProperties } from 'tamagui'
+import { type ColorTokens, createStyledHOC, type GetProps, Progress, styled, withStaticProperties } from 'tamagui'
 
 const _ProgressBar = styled(Progress, {
   name: 'ProgressBar',
-  size: '$4',
-  backgroundColor: '$grey-200',
-  variants: {
-    // Added here for type completion, but rendered in ProgressBar
-    indicatorColor: {
-      '...color': () => ({}),
-    },
-  },
+  size: '4',
+  backgroundColor: 'grey-200',
 })
 
-const ProgressBarStyled = _ProgressBar.styleable(({ indicatorColor, ...props }, ref) => {
-  return (
-    <_ProgressBar {...props} ref={ref}>
-      {props.children ?? <Progress.Indicator backgroundColor={indicatorColor ?? '$primary-500'} />}
-    </_ProgressBar>
-  )
-})
+const ProgressBarStyled = createStyledHOC(
+  _ProgressBar,
+  ({ indicatorColor, ...props }: GetProps<typeof _ProgressBar> & { indicatorColor?: ColorTokens }, ref) => {
+    return (
+      <_ProgressBar {...props} ref={ref}>
+        {props.children ?? <Progress.Indicator backgroundColor={indicatorColor ?? 'primary-500'} />}
+      </_ProgressBar>
+    )
+  }
+)
 
 /**
  * Progress bar which renders an indicator by default. You can override it by

@@ -40,19 +40,19 @@ const MenuListItem = ({ variant = 'regular', onPress, icon, label, action = 'rou
       flexDirection="row"
       ai="center"
       jc="space-between"
-      gap="$4"
-      px="$4"
-      py="$2"
+      gap="4"
+      px="4"
+      py="2"
     >
-      <XStack ai="center" gap="$4">
+      <XStack ai="center" gap="4">
         <IconContainer icon={icon} radius="normal" variant={variant} />
-        <Heading heading="h3" fontWeight="$semiBold" color={variant === 'regular' ? '$grey-900' : '$danger-600'}>
+        <Heading heading="h3" fontWeight="semiBold" color={variant === 'regular' ? 'grey-900' : 'danger-600'}>
           {label}
         </Heading>
       </XStack>
-      {action === 'route' && <HeroIcons.ChevronRight color="$grey-500" />}
-      {action === 'info' && <HeroIcons.InformationCircleFilled color="$grey-500" />}
-      {action === 'outside' && <HeroIcons.ArrowUpRightFilled color="$grey-500" />}
+      {action === 'route' && <HeroIcons.ChevronRight color="grey-500" />}
+      {action === 'info' && <HeroIcons.InformationCircleFilled color="grey-500" />}
+      {action === 'outside' && <HeroIcons.ArrowUpRightFilled color="grey-500" />}
     </AnimatedStack>
   )
 }
@@ -67,7 +67,7 @@ export function MenuScreen() {
   const handlePush = (path: string) => withHaptics(() => router.push(path))
 
   return (
-    <FlexPage gap="$0" paddingHorizontal="$0">
+    <FlexPage gap="0" paddingHorizontal="0">
       <HeaderContainer
         isScrolledByOffset={isScrolledByOffset}
         title={t({
@@ -77,10 +77,10 @@ export function MenuScreen() {
         })}
       />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack fg={1} gap="$6" jc="space-between">
-          <Stack my="$-3" />
-          <YStack gap="$3">
-            <Heading px="$4" heading="sub2" fontWeight="$semiBold">
+        <YStack fg={1} gap="6" jc="space-between">
+          <Stack my="-3" />
+          <YStack gap="3">
+            <Heading px="4" heading="sub2" fontWeight="semiBold">
               {t({
                 id: 'menu.section.wallet',
                 message: 'WALLET',
@@ -101,8 +101,8 @@ export function MenuScreen() {
             </YStack>
           </YStack>
 
-          <YStack gap="$3">
-            <Heading px="$4" heading="sub2" fontWeight="$semiBold">
+          <YStack gap="3">
+            <Heading px="4" heading="sub2" fontWeight="semiBold">
               {t({
                 id: 'menu.section.app',
                 message: 'APP',

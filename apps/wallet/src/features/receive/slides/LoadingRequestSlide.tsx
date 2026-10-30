@@ -35,9 +35,9 @@ export const LoadingRequestSlide = ({ isLoading, isError }: LoadingRequestSlideP
     <YStack fg={1} jc="space-between">
       <YStack />
       <AnimatedStack entering={FadeIn.delay(150)}>
-        <AnimatedStack entering={useSpringify(ZoomIn)} gap="$4">
-          <YStack gap="$2" jc="center" ai="center">
-            <Stack py="$2">
+        <AnimatedStack entering={useSpringify(ZoomIn)} gap="4">
+          <YStack gap="2" jc="center" ai="center">
+            <Stack py="2">
               <Loader />
             </Stack>
             <Heading heading="sub1">

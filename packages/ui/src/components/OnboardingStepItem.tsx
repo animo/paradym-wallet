@@ -10,18 +10,18 @@ interface OnboardingStepItemProps {
 
 export const OnboardingStepItem = ({ stepName, title, description, icon }: OnboardingStepItemProps) => {
   return (
-    <XStack gap="$3">
+    <XStack gap="3">
       <Stack
-        backgroundColor="$primary-500"
-        width="$4"
-        height="$4"
-        borderRadius="$12"
+        backgroundColor="primary-500"
+        width="4"
+        height="4"
+        borderRadius="12"
         justifyContent="center"
         alignItems="center"
       >
         {icon}
       </Stack>
-      <YStack gap="$1" flex-1>
+      <YStack gap="1" flex-1>
         <Paragraph variant="caption" textTransform="uppercase">
           {stepName}
         </Paragraph>

@@ -81,13 +81,13 @@ const useTruncatedValue = ({
     rowRef,
 
     collapsibleButton: truncate ? (
-      <XStack ai="center" gap="$1">
+      <XStack ai="center" gap="1">
         {isExpanded ? (
-          <HeroIcons.ChevronUp size={14} color="$grey-500" />
+          <HeroIcons.ChevronUp size={14} color="grey-500" />
         ) : (
-          <HeroIcons.ChevronDown size={14} color="$grey-500" />
+          <HeroIcons.ChevronDown size={14} color="grey-500" />
         )}
-        <Paragraph variant="annotation" color="$grey-500">
+        <Paragraph variant="annotation" color="grey-500">
           {isExpanded ? t(commonMessages.showLess) : t(commonMessages.showMore)}
         </Paragraph>
       </XStack>
@@ -117,7 +117,7 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
 
   if (!headerTitle && attributes.length === 1 && (attributes[0].type === 'object' || attributes[0].type === 'array')) {
     return (
-      <YStack gap="$4">
+      <YStack gap="4">
         {attributes[0].label && <Heading heading="sub2">{attributes[0].label}</Heading>}
 
         <TableContainer>
@@ -135,9 +135,9 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
   }
 
   return (
-    <YStack gap="$6">
+    <YStack gap="6">
       {primitiveItems.length > 0 && (
-        <YStack gap="$4">
+        <YStack gap="4">
           {headerTitle && <Heading heading="sub2">{headerTitle}</Heading>}
 
           <TableContainer>
@@ -149,7 +149,7 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
       )}
 
       {objectItems.map((item, index) => (
-        <YStack key={`object-${index}-${item.path.join('.')}`} gap="$4">
+        <YStack key={`object-${index}-${item.path.join('.')}`} gap="4">
           {item.label && <Heading heading="sub2">{item.label}</Heading>}
           <TableContainer>
             {(item.type === 'array' &&
@@ -261,24 +261,21 @@ const NestedRow = ({ item, parentName }: { item: FormattedAttribute; parentName?
     <XStack
       key={`object-array-${item.path.join('.')}`}
       borderBottomWidth={1}
-      borderBottomColor="$tableBorderColor"
-      backgroundColor="$tableBackgroundColor"
-      gap="$1.5"
-      px="$2.5"
-      pl="$4"
-      py="$2"
+      borderBottomColor="tableBorderColor"
+      backgroundColor="tableBackgroundColor press:grey-100"
+      gap="1-5"
+      paddingRight="2-5"
+      pl="4"
+      py="2"
+      w="100%"
       jc="space-between"
       ai="center"
-      w="100%"
-      pressStyle={{
-        backgroundColor: '$grey-100',
-      }}
       onPress={onPress}
     >
-      <Paragraph flexShrink={1} color="$grey-900">
+      <Paragraph flexShrink={1} color="grey-900">
         {label}
       </Paragraph>
-      <IconContainer bg="$transparent" icon={<HeroIcons.ChevronRight size={20} />} />
+      <IconContainer bg="transparent" icon={<HeroIcons.ChevronRight size={20} />} />
     </XStack>
   )
 }
@@ -294,46 +291,43 @@ const ImageRow = ({ label, value }: { label?: string; value: string }) => {
   return (
     <>
       <XStack
-        bg="$tableBackgroundColor"
-        px="$2.5"
-        py="$2"
+        bg="tableBackgroundColor press:grey-100"
+        px="2-5"
+        py="2"
         borderBottomWidth={1}
-        borderBottomColor="$tableBorderColor"
+        borderBottomColor="tableBorderColor"
         ai="center"
         jc="space-between"
         onPress={handleOpen}
-        pressStyle={{
-          backgroundColor: '$grey-100',
-        }}
       >
         <YStack>
           {label && (
-            <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
+            <Paragraph variant="annotation" color="grey-600" fontWeight="medium">
               {label}
             </Paragraph>
           )}
-          <Paragraph color="$grey-900">
+          <Paragraph color="grey-900">
             <Trans id="common.tapToView" comment="Label shown on image rows prompting user to tap to view image">
               Tap to view
             </Trans>
           </Paragraph>
         </YStack>
-        <YStack br="$2" overflow="hidden">
+        <YStack br="2" overflow="hidden">
           <Image height={36} width={36} src={value} alt={label} />
         </YStack>
       </XStack>
       <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
-        <Stack p="$4" gap="$4">
+        <Stack p="4" gap="4">
           <XStack jc="space-between">
-            <Heading color="$grey-900" heading="h2">
+            <Heading color="grey-900" heading="h2">
               {label}
             </Heading>
-            <Stack br="$12" p="$2" bg="$grey-50" onPress={() => setIsOpen(false)}>
-              <HeroIcons.X size={16} strokeWidth={2.5} color="$grey-500" />
+            <Stack br="12" p="2" bg="grey-50" onPress={() => setIsOpen(false)}>
+              <HeroIcons.X size={16} strokeWidth={2.5} color="grey-500" />
             </Stack>
           </XStack>
-          <Stack borderBottomWidth="$0.5" borderColor="$grey-100" />
-          <Stack gap="$2" ai="center">
+          <Stack borderBottomWidth="0-5" borderColor="grey-100" />
+          <Stack gap="2" ai="center">
             <Image height={150} width={150} src={value} alt={label} />
           </Stack>
         </Stack>
@@ -357,17 +351,16 @@ const NamelessValueRow = ({
   return (
     <YStack
       ref={rowRef}
-      bg="$tableBackgroundColor"
+      bg={onPress ? 'tableBackgroundColor press:grey-100' : 'tableBackgroundColor'}
       borderBottomWidth={1}
-      borderBottomColor="$tableBorderColor"
-      gap="$1.5"
-      px="$2.5"
-      pl="$4"
-      py="$2"
+      borderBottomColor="tableBorderColor"
+      gap="1-5"
+      paddingRight="2-5"
+      pl="4"
+      py="2"
       onPress={onPress}
-      pressStyle={onPress ? { backgroundColor: '$grey-100' } : undefined}
     >
-      <Paragraph color="$grey-900" numberOfLines={truncate && !isExpanded ? 2 : undefined}>
+      <Paragraph color="grey-900" numberOfLines={truncate && !isExpanded ? 2 : undefined}>
         {value}
       </Paragraph>
       {collapsibleButton}
@@ -393,19 +386,18 @@ const ValueRow = ({
   return (
     <YStack
       ref={rowRef}
-      bg="$tableBackgroundColor"
-      gap="$1.5"
-      px="$2.5"
-      py="$2"
+      bg={onPress ? 'tableBackgroundColor press:grey-100' : 'tableBackgroundColor'}
+      gap="1-5"
+      px="2-5"
+      py="2"
       borderBottomWidth={1}
-      borderBottomColor="$tableBorderColor"
+      borderBottomColor="tableBorderColor"
       onPress={onPress}
-      pressStyle={onPress ? { backgroundColor: '$grey-100' } : undefined}
     >
-      <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
+      <Paragraph variant="annotation" color="grey-600" fontWeight="medium">
         {label}
       </Paragraph>
-      <Paragraph color="$grey-900" numberOfLines={truncate && !isExpanded ? 2 : undefined}>
+      <Paragraph color="grey-900" numberOfLines={truncate && !isExpanded ? 2 : undefined}>
         {value}
       </Paragraph>
       {collapsibleButton}
@@ -431,23 +423,22 @@ const MultiValueRow = ({
   return (
     <YStack
       ref={rowRef}
-      bg="$tableBackgroundColor"
-      gap="$1.5"
-      px="$2.5"
-      py="$2"
+      bg={onPress ? 'tableBackgroundColor press:grey-100' : 'tableBackgroundColor'}
+      gap="1-5"
+      px="2-5"
+      py="2"
       borderBottomWidth={1}
-      borderBottomColor="$tableBorderColor"
+      borderBottomColor="tableBorderColor"
       onPress={onPress}
-      pressStyle={onPress ? { backgroundColor: '$grey-100' } : undefined}
     >
-      <Paragraph variant="annotation" color="$grey-600" fontWeight="$medium">
+      <Paragraph variant="annotation" color="grey-600" fontWeight="medium">
         {label}
       </Paragraph>
 
-      <Paragraph pl="$2" color="$grey-900" numberOfLines={truncate && !isExpanded ? 2 : undefined}>
+      <Paragraph pl="2" color="grey-900" numberOfLines={truncate && !isExpanded ? 2 : undefined}>
         {values.map((value, index) => {
           return (
-            <Paragraph color="$grey-900">
+            <Paragraph color="grey-900">
               - {value}
               {index === values.length - 1 ? '' : '\n'}
             </Paragraph>

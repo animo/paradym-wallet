@@ -43,13 +43,13 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType }: Interactio
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$6" fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
-        <ScrollView fg={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '$4' }}>
-          <YStack gap="$4">
+      <YStack gap="6" fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
+        <ScrollView fg={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '4' }}>
+          <YStack gap="4">
             <Heading>{t(commonMessages.somethingWentWrong)}</Heading>
             <Stack alignSelf="flex-start">
-              <XStack p="$4" bg="$grey-100" borderRadius="$4">
-                <HeroIcons.NoSymbol color="$grey-800" size={32} />
+              <XStack p="4" bg="grey-100" borderRadius="4">
+                <HeroIcons.NoSymbol color="grey-800" size={32} />
               </XStack>
             </Stack>
             <Paragraph>{message}</Paragraph>
@@ -66,9 +66,9 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType }: Interactio
         </ScrollView>
       </YStack>
 
-      <Stack borderTopWidth="$0.5" borderColor="$grey-200" py="$3" mx="$-4" px="$4">
+      <Stack borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
         <Button.Solid scaleOnPress onPress={onCancel}>
-          {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="$white" />
+          {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
         </Button.Solid>
       </Stack>
     </YStack>

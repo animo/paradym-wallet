@@ -77,7 +77,7 @@ export function CredentialDetailAttributes({ credential, onDelete }: CredentialD
         })}
       />
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack px="$4" gap="$4" marginBottom={bottom}>
+        <YStack px="4" gap="4" marginBottom={bottom}>
           <CustomCredentialAttributes credential={credential} scrollRef={scrollViewRef} />
           <AnimatedStack
             key={isShareableAttributesVisible ? 'visible-shareable-attributes' : 'hidden-shareable-attributes'}
@@ -123,9 +123,9 @@ export function CredentialDetailAttributes({ credential, onDelete }: CredentialD
             ? [
                 {
                   icon: isShareableAttributesVisible ? (
-                    <HeroIcons.EyeSlash color="$grey-500" />
+                    <HeroIcons.EyeSlash color="grey-500" />
                   ) : (
-                    <HeroIcons.Eye color="$grey-500" />
+                    <HeroIcons.Eye color="grey-500" />
                   ),
                   title: isShareableAttributesVisible
                     ? t({
@@ -143,7 +143,7 @@ export function CredentialDetailAttributes({ credential, onDelete }: CredentialD
               ]
             : []),
           {
-            icon: <HeroIcons.CodeBracketFilled color="$grey-500" />,
+            icon: <HeroIcons.CodeBracketFilled color="grey-500" />,
             title: isMetadataVisible
               ? t(commonMessages.hideMetadataAttributes)
               : t(commonMessages.showMetadataAttributes),

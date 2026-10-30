@@ -34,9 +34,9 @@ export function OnboardingBiometrics({ goToNextStep, actionText, skipText }: Onb
   }
 
   return (
-    <YStack fg={1} jc="space-between" gap="$6">
+    <YStack fg={1} jc="space-between" gap="6">
       <YStack f={1} ai="center" onLayout={onLayout}>
-        <YStack height={height} mt="$4">
+        <YStack height={height} mt="4">
           <SetUpBiometrics />
         </YStack>
       </YStack>

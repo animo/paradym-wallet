@@ -8,11 +8,11 @@ export function NoContentWallet() {
   const { t } = useLingui()
 
   return (
-    <YStack jc="space-between" px="$4" height="95%">
+    <YStack jc="space-between" px="4" height="95%">
       <Spacer />
       <YStack>
-        <YStack jc="center" ai="center" gap="$2">
-          <Heading heading="h2" fontWeight="$medium" letterSpacing={-0.5}>
+        <YStack jc="center" ai="center" gap="2">
+          <Heading heading="h2" fontWeight="medium" letterSpacing={-0.5}>
             {t(commonMessages.thisIsYourWallet)}
           </Heading>
           <Paragraph textAlign="center" secondary>
@@ -21,13 +21,13 @@ export function NoContentWallet() {
             </Trans>
           </Paragraph>
         </YStack>
-        <Button.Text fontWeight="$medium" onPress={() => push('/scan')}>
+        <Button.Text fontWeight="medium" onPress={() => push('/scan')}>
           <Trans id="noContentWallet.scanButton" comment="Label for button to scan a QR code">
             Scan a QR code
           </Trans>
         </Button.Text>
       </YStack>
-      <Spacer size="$8" />
+      <Spacer size="8" />
     </YStack>
   )
 }

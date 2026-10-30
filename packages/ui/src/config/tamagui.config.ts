@@ -1,5 +1,5 @@
 import { shorthands } from '@tamagui/shorthands'
-import { radius, size, space, zIndex } from '@tamagui/themes'
+import { radius, size, space, zIndex } from '@tamagui/themes/v5-tokens'
 import { type CreateTamaguiProps, createTamagui, createTokens } from 'tamagui'
 
 import { animations } from '../animations'
@@ -69,7 +69,7 @@ export const tokensInput = {
   },
   size: {
     ...size,
-    buttonHeight: size.$4,
+    buttonHeight: size[4],
   },
   radius: {
     ...radius,

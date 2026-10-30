@@ -78,7 +78,7 @@ export default function OnboardingScreens() {
     page = onboardingContext.screen
   } else {
     page = (
-      <FlexPage gap="$2" jc="space-between" bg="$background">
+      <FlexPage gap="2" jc="space-between" bg="background">
         <AnimatedStack entering={FadeIn.delay(300)}>
           <ProgressHeader enterAnimation progress={onboardingContext.progress} onBack={onReset} />
         </AnimatedStack>
@@ -89,8 +89,8 @@ export default function OnboardingScreens() {
           exiting={pageContentTransition.exiting.default}
           style={{ flexGrow: 1 }}
         >
-          <YStack fg={1} gap={media.short ? '$5' : '$6'}>
-            <YStack gap={media.short ? '$2' : '$3'}>
+          <YStack fg={1} gap={media.short ? '5' : '6'}>
+            <YStack gap={media.short ? '2' : '3'}>
               {onboardingContext.page.title && (
                 <Heading ref={headerRef} heading="h1">
                   {t(onboardingContext.page.title)}

@@ -74,31 +74,31 @@ export const SignAndShareSlide = ({
 
   return (
     <YStack fg={1} jc="space-between">
-      <YStack gap="$4" fg={1}>
+      <YStack gap="4" fg={1}>
         <Heading>{t(commonMessages.reviewRequestTitle)}</Heading>
 
         <YStack
           fg={1}
-          px="$4"
-          mx="$-4"
+          px="4"
+          mx="-4"
+          borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
           onLayout={(event) => {
             if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
           }}
-          btw="$0.5"
-          borderColor={isScrolledByOffset ? '$grey-200' : '$background'}
+          btw="0-5"
         >
           <ScrollView
             onScroll={handleScroll}
             scrollEventThrottle={scrollEventThrottle}
-            contentContainerStyle={{ gap: '$6' }}
-            px="$4"
-            mx="$-4"
-            pt="$4"
+            contentContainerStyle={{ gap: '6' }}
+            px="4"
+            mx="-4"
+            pt="4"
             maxHeight={scrollViewHeight}
-            bg="$white"
+            bg="white"
           >
-            <YStack gap="$4">
-              <YStack gap="$2">
+            <YStack gap="4">
+              <YStack gap="2">
                 <Heading heading="sub2">{t(commonMessages.documentHeading)}</Heading>
                 <Paragraph>
                   <Trans id="signShare.documentIntro" comment="Text above the document to be signed">
@@ -106,9 +106,9 @@ export const SignAndShareSlide = ({
                   </Trans>
                 </Paragraph>
               </YStack>
-              <XStack br="$6" bg="$grey-50" bw={1} borderColor="$grey-200" gap="$4" p="$4">
-                <YStack f={1} gap="$2">
-                  <Heading heading="sub2" textTransform="none" color="$grey-800">
+              <XStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4">
+                <YStack f={1} gap="2">
+                  <Heading heading="sub2" textTransform="none" color="grey-800">
                     {documentName}
                   </Heading>
                   <Paragraph>{signingWithLabel}</Paragraph>
@@ -118,8 +118,8 @@ export const SignAndShareSlide = ({
             </YStack>
 
             {cardForSigning && (
-              <YStack gap="$4">
-                <YStack gap="$2">
+              <YStack gap="4">
+                <YStack gap="2">
                   <Heading heading="sub2">
                     <Trans id="signShare.cardHeading" comment="Heading above the signing card">
                       Signing card
@@ -164,7 +164,7 @@ export const SignAndShareSlide = ({
         </YStack>
       </YStack>
 
-      <YStack btw="$0.5" borderColor="$grey-200" py="$3" mx="$-4" px="$4" bg="$background">
+      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
         {submission?.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
@@ -175,8 +175,8 @@ export const SignAndShareSlide = ({
             isLoading={isProcessing}
           />
         ) : (
-          <YStack gap="$3">
-            <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
+          <YStack gap="3">
+            <Paragraph variant="sub" fontWeight="medium" ta="center" color="danger-500">
               {t(
                 !submission || hasMissingCards(submission)
                   ? commonMessages.missingCardsWarning

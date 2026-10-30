@@ -1,101 +1,89 @@
-import { Toast, useToastController } from '@tamagui/toast'
-
-import { type EntryExitAnimationFunction, withSpring, withTiming } from 'react-native-reanimated'
-import { AnimatedStack, Stack, XStack, YStack } from '../base'
+import { Toast, toast } from '@tamagui/toast'
+import { useMemo } from 'react'
+import { Stack, XStack, YStack } from '../base'
 import { HeroIcons, LucideIcons } from '../content'
 
-declare module '@tamagui/toast' {
-  interface CustomData {
+export type ToastPreset = 'danger' | 'success' | 'warning' | 'none'
+
+interface ToastShowOptions {
+  message?: string
+  customData?: {
     /**
      * @default "none"
      */
-    preset?: 'danger' | 'success' | 'warning' | 'none'
+    preset?: ToastPreset
   }
+}
+
+/**
+ * Shows toasts through v3's `toast()`, keeping the `show(title, { message, customData })` shape of v2's controller.
+ */
+export function useToastController() {
+  return useMemo(
+    () => ({
+      show: (title: string, options?: ToastShowOptions) =>
+        toast(title, { description: options?.message, data: { preset: options?.customData?.preset } }),
+      hide: () => toast.dismiss(),
+    }),
+    []
+  )
 }
 
 interface ToastContainerProps {
   title: string
   message?: string
-  safeAreaMargin?: boolean
-  variant?: 'danger' | 'success' | 'warning' | 'none'
+  variant?: ToastPreset
+  onClose: () => void
 }
 
 const iconMapping = {
-  danger: <HeroIcons.ExclamationCircleFilled size={20} color="$color.danger-500" />,
-  success: <HeroIcons.CheckCircleFilled size={20} color="$color.positive-500" />,
-  warning: <HeroIcons.ExclamationCircleFilled size={20} color="$color.warning-500" />,
-  none: <HeroIcons.InformationCircleFilled size={20} color="$color.grey-50" />,
+  danger: <HeroIcons.ExclamationCircleFilled size={20} color="danger-500" />,
+  success: <HeroIcons.CheckCircleFilled size={20} color="positive-500" />,
+  warning: <HeroIcons.ExclamationCircleFilled size={20} color="warning-500" />,
+  none: <HeroIcons.InformationCircleFilled size={20} color="grey-50" />,
 }
 
-const enteringAnimation: EntryExitAnimationFunction = () => {
-  'worklet'
-  const animations = {
-    originY: withSpring(0, { damping: 50, mass: 0.2, stiffness: 100 }),
-    opacity: withTiming(1, { duration: 200 }),
-  }
-  const initialValues = {
-    originY: -20,
-    opacity: 0,
-  }
-  return {
-    initialValues,
-    animations,
-  }
-}
-
-const exitingAnimation: EntryExitAnimationFunction = () => {
-  'worklet'
-  const animations = {
-    originY: withSpring(-20, { damping: 50, mass: 0.2, stiffness: 100 }),
-    opacity: withTiming(0, { duration: 200 }),
-  }
-  const initialValues = {
-    originY: 0,
-    opacity: 1,
-  }
-  return {
-    initialValues,
-    animations,
-  }
-}
-
-export const ToastContainer = ({ title, message, variant = 'none' }: ToastContainerProps) => {
-  const toast = useToastController()
-
+export const ToastContainer = ({ title, message, variant = 'none', onClose }: ToastContainerProps) => {
   const icon = iconMapping[variant]
   return (
-    <AnimatedStack
-      entering={enteringAnimation}
-      exiting={exitingAnimation}
+    <Stack
       flexDirection="row"
-      backgroundColor="$grey-900"
+      backgroundColor="grey-900"
       shadow="sm"
-      borderRadius="$5"
-      padding="$3"
+      borderRadius="5"
+      padding="3"
       f={1}
       bw={1}
       fg={1}
       w="100%"
-      gap="$2"
+      gap="2"
       jc="space-between"
     >
-      <XStack gap="$3" f={1}>
+      <XStack gap="3" f={1}>
         <Stack>{icon}</Stack>
-        <YStack gap="$1" f={1}>
-          <Toast.Title color="$white" size="$3">
+        <YStack gap="1" f={1}>
+          <Toast.Title color="white" size="3">
             {title}
           </Toast.Title>
           {message && (
-            <Toast.Description color="$grey-400" size="$2">
+            <Toast.Description color="grey-400" size="2">
               {message}
             </Toast.Description>
           )}
         </YStack>
       </XStack>
       {/* somehow onPress does not trigger on Android */}
-      <Toast.Close role="button" m="$-1" onPressOut={() => toast.hide()}>
-        <LucideIcons.X size="$1" color="$grey-400" />
+      <Toast.Close
+        role="button"
+        aria-label="Close"
+        m="-1"
+        width="auto"
+        height="auto"
+        alignItems="flex-start"
+        onPressOut={onClose}
+      >
+        <LucideIcons.X size={20} color="grey-400" />
       </Toast.Close>
-    </AnimatedStack>
+    </Stack>
   )
 }

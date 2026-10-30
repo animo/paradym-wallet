@@ -13,12 +13,12 @@ import { LucideIcons } from '../content/Icon'
  */
 export function AttributeListItem({ name, isMissing = false }: { name: string; isMissing?: boolean }) {
   return (
-    <XStack gap="$1.5" ai="flex-start">
+    <XStack gap="1-5" ai="flex-start">
       {/* As tall as the first line of text, so the bullet stays level with it when the name wraps. */}
       <Stack w={16} h={20} ai="center" jc="center">
-        <LucideIcons.Dot size={16} strokeWidth={4} color={isMissing ? '$danger-500' : '$grey-500'} />
+        <LucideIcons.Dot size={16} strokeWidth={4} color={isMissing ? 'danger-500' : 'grey-500'} />
       </Stack>
-      <Paragraph variant="sub" secondary color={isMissing ? '$danger-500' : undefined} f={1}>
+      <Paragraph variant="sub" secondary color={isMissing ? 'danger-500' : undefined} f={1}>
         {name}
       </Paragraph>
     </XStack>

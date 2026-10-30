@@ -56,23 +56,23 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
   return (
     <YStack fg={1} jc="space-between">
       <YStack flex={1} overflow="hidden">
-        <ScrollableStack gap="$2" pb="$4" accessible={true} accessibilityRole="list">
+        <ScrollableStack gap="2" pb="4" accessible={true} accessibilityRole="list">
           <OnboardingStepItem
             stepName={step1}
             title={step1Title}
             description={step1Description}
-            icon={<HeroIcons.Key color="$white" size={20} />}
+            icon={<HeroIcons.Key color="white" size={20} />}
           />
           <OnboardingStepItem
             stepName={step2}
             title={step2Title}
             description={step2Description}
-            icon={<HeroIcons.Identification color="$white" size={20} />}
+            icon={<HeroIcons.Identification color="white" size={20} />}
           />
         </ScrollableStack>
       </YStack>
-      <YStack gap="$4" alignItems="center">
-        <Paragraph variant="sub" py="$2" textAlign="center">
+      <YStack gap="4" alignItems="center">
+        <Paragraph variant="sub" py="2" textAlign="center">
           {reminder}
         </Paragraph>
         <Button.Solid scaleOnPress alignSelf="stretch" onPress={goToNextStep}>

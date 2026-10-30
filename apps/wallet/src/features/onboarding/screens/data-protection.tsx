@@ -69,20 +69,20 @@ export function OnboardingDataProtection({ goToNextStep }: OnboardingDataProtect
   return (
     <YStack fg={1} jc="space-between">
       <YStack f={1} ai="center" onLayout={onLayout}>
-        <YStack height={height} mt="$4">
+        <YStack height={height} mt="4">
           <ProtectData />
         </YStack>
       </YStack>
-      <YStack gap="$4" alignItems="center">
-        <Button.Text onPress={onPressPrivacy} icon={HeroIcons.Link} color="$primary-500" py="$2" textAlign="center">
+      <YStack gap="4" alignItems="center">
+        <Button.Text onPress={onPressPrivacy} icon={HeroIcons.Link} color="primary-500" py="2" textAlign="center">
           {privacyButtonText}
         </Button.Text>
-        <XStack gap="$2" width="100%">
+        <XStack gap="2" width="100%">
           {isCloudHsmFeatureEnabled && (
             <Button.Outline
-              bg="$grey-100"
+              bg="grey-100"
+              width="buttonHeight"
               scaleOnPress
-              width="$buttonHeight"
               onPress={onToggleCloudHsm}
               disabled={!isLocalSecureEnvironmentSupported()}
             >

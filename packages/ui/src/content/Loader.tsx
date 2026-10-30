@@ -15,8 +15,8 @@ export function Loader({ size = 'small', variant = 'light' }: LoaderProps) {
   const circleSize = size === 'small' ? 21 : 48
   const borderWidth = size === 'small' ? 3.5 : 8
 
-  const trackColor = variant === 'light' ? '$grey-300' : '#00000026'
-  const spinnerColor = variant === 'light' ? '$primary-500' : 'white'
+  const trackColor = variant === 'light' ? 'grey-300' : '#00000026'
+  const spinnerColor = variant === 'light' ? 'primary-500' : 'white'
 
   useEffect(() => {
     rotation.value = withRepeat(

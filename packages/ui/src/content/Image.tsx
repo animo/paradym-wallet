@@ -29,7 +29,7 @@ export const Image = ({
       style={{
         width: width ?? '100%',
         height: height ?? '100%',
-        backgroundColor: backgroundColor ?? '$grey-50',
+        backgroundColor: backgroundColor ?? 'grey-50',
         borderRadius: circle ? 999 : undefined,
       }}
       {...props}

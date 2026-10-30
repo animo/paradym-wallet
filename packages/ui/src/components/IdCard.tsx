@@ -62,24 +62,24 @@ export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
       <YStack
         jc="space-between"
         w="100%"
-        h="$15"
-        gap="$6"
-        p="$5"
-        borderRadius="$8"
+        h="15"
+        gap="6"
+        p="5"
+        borderRadius="8"
         overflow="hidden"
         borderColor="#D8DAC8"
-        bw="$0.5"
+        position="relative"
+        bw="0-5"
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        position="relative"
       >
         <XStack justifyContent="space-between">
-          <YStack gap="$3">
-            <Paragraph size="$2" fontWeight="$bold" color="$grey-700">
+          <YStack gap="3">
+            <Paragraph size="2" fontWeight="bold" color="grey-700">
               PERSONALAUSWEIS
             </Paragraph>
-            <Paragraph color="$grey-900" size="$6" fontWeight="$semiBold">
+            <Paragraph color="grey-900" size="6" fontWeight="semiBold">
               {hideUserName && !icon ? '********' : (userName ?? '')}
             </Paragraph>
           </YStack>
@@ -91,17 +91,17 @@ export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
           <XStack justifyContent="flex-start" alignItems="flex-end">
             {IconComponent && (
               <AnimatedStack style={animatedStyle}>
-                <Circle m="$-1" size="$3.5" backgroundColor="#282C3740">
-                  <IconComponent strokeWidth={2} color="$white" size={22} />
+                <Circle m="-1" size="3-5" backgroundColor="#282C3740">
+                  <IconComponent strokeWidth={2} color="white" size={22} />
                 </Circle>
               </AnimatedStack>
             )}
           </XStack>
           <XStack justifyContent="flex-end" alignItems="flex-end">
-            {onPress && <HeroIcons.ArrowRight color="$black" />}
+            {onPress && <HeroIcons.ArrowRight color="black" />}
           </XStack>
         </XStack>
-        <Stack zIndex="$-1" position="absolute" bg="$idCardBackground" top={0} left={0} right={0} bottom={0}>
+        <Stack zIndex="-1" position="absolute" bg="idCardBackground" top={0} left={0} right={0} bottom={0}>
           <Image src="pid_background" width="100%" contentFit="cover" height="100%" />
         </Stack>
       </YStack>

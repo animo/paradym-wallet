@@ -6,20 +6,20 @@ import { Stack } from '../base/Stacks'
 
 const variantStyles = {
   default: {
-    bg: '$grey-50',
-    color: '$grey-500',
+    bg: 'grey-50',
+    color: 'grey-500',
   },
   danger: {
-    bg: '$danger-300',
-    color: '$danger-600',
+    bg: 'danger-300',
+    color: 'danger-600',
   },
   regular: {
-    bg: '$grey-50',
-    color: '$grey-900',
+    bg: 'grey-50',
+    color: 'grey-900',
   },
   primary: {
-    bg: '$grey-50',
-    color: '$primary-500',
+    bg: 'grey-50',
+    color: 'primary-500',
   },
 }
 
@@ -46,12 +46,12 @@ export function IconContainer({
       accessible={true}
       accessibilityRole="button"
       transition={isPressable ? 'quick' : undefined}
-      pressStyle={isPressable ? { scale: scaleOnPress ? 0.9 : 1 } : undefined}
+      scale={isPressable && scaleOnPress ? '1 press:0.9' : undefined}
       aria-label={ariaLabel}
       bg={variantStyles[variant].bg}
-      br={radius === 'full' ? '$12' : '$4'}
-      p="$2"
-      mx="$-1"
+      br={radius === 'full' ? '12' : '4'}
+      p="2"
+      mx="-1"
       {...props}
     >
       {cloneElement(icon, {

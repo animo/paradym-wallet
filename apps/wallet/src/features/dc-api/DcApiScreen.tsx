@@ -248,13 +248,13 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
       // On iOS the system sheet is the whole surface, so the screen fills it instead of drawing a
       // second one inside it. See `drawsOwnSheet`.
       flex-1={!drawsOwnSheet}
-      borderTopLeftRadius={drawsOwnSheet ? '$8' : undefined}
-      borderTopRightRadius={drawsOwnSheet ? '$8' : undefined}
-      backgroundColor="$background"
-      gap="$4"
-      pt="$5"
-      px="$4"
-      paddingBottom={insets.bottom || '$6'}
+      borderTopLeftRadius={drawsOwnSheet ? '8' : undefined}
+      borderTopRightRadius={drawsOwnSheet ? '8' : undefined}
+      backgroundColor="background"
+      gap="4"
+      pt="5"
+      px="4"
+      paddingBottom={insets.bottom || '6'}
       // The Android sheet sits on top of the verifier's app, so it can never take the whole screen:
       // the request keeps its own height and the review scrolls inside it.
       maxHeight={drawsOwnSheet ? '85%' : undefined}
@@ -270,12 +270,12 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           flex-1
           alignItems="center"
           justifyContent={showsPinPad(phase) ? 'flex-end' : 'center'}
-          gap="$4"
-          pb={showsPinPad(phase) ? '$6' : undefined}
+          gap="4"
+          pb={showsPinPad(phase) ? '6' : undefined}
         >
-          <IconContainer h="$4" w="$4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
-          <YStack gap="$2" alignItems="center">
-            <Heading heading="h2" fontWeight="$semiBold" textAlign="center">
+          <IconContainer h="4" w="4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
+          <YStack gap="2" alignItems="center">
+            <Heading heading="h2" fontWeight="semiBold" textAlign="center">
               {t(messages.unlockTitle)}
             </Heading>
             <Paragraph variant="annotation" textAlign="center">
@@ -283,7 +283,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
             </Paragraph>
           </YStack>
           {phase.name === 'opening' && !showsPinPad(phase) ? (
-            <Stack pt="$2">
+            <Stack pt="2">
               <Spinner />
             </Stack>
           ) : null}
@@ -306,7 +306,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           // space instead, so the buttons stay at the bottom of the screen.
           flexShrink={1}
           flexGrow={drawsOwnSheet ? 0 : 1}
-          contentContainerStyle={{ gap: '$5', paddingBottom: '$4' }}
+          contentContainerStyle={{ gap: '5', paddingBottom: '4' }}
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
@@ -319,14 +319,14 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         <ScrollView
           flexShrink={1}
           flexGrow={drawsOwnSheet ? 0 : 1}
-          contentContainerStyle={{ gap: '$4' }}
+          contentContainerStyle={{ gap: '4' }}
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
           <Heading>{t(commonMessages.somethingWentWrong)}</Heading>
           <Stack alignSelf="flex-start">
-            <XStack p="$4" bg="$grey-100" borderRadius="$4">
-              <HeroIcons.NoSymbol color="$grey-800" size={32} />
+            <XStack p="4" bg="grey-100" borderRadius="4">
+              <HeroIcons.NoSymbol color="grey-800" size={32} />
             </XStack>
           </Stack>
           <Paragraph>{phase.description}</Paragraph>
@@ -342,12 +342,12 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         </ScrollView>
       ) : null}
 
-      {error ? <Paragraph color="$danger-500">{error}</Paragraph> : null}
+      {error ? <Paragraph color="danger-500">{error}</Paragraph> : null}
 
       {showsPinPad(phase) ? (
         // Kept mounted across the phase change: `isLoading` fills the dots and animates them while
         // the wallet opens, which is the app's own lock screen, and it ignores taps meanwhile.
-        <Stack pt="$4" gap="$4">
+        <Stack pt="4" gap="4">
           <PinDotsInput
             ref={pinRef}
             pinLength={6}
@@ -361,21 +361,21 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         // The full-height sheet centres its own spinner with the heading above; this is the compact
         // sheet's, where the pad would be, so the heading does not jump as the phase changes.
         drawsOwnSheet ? (
-          <Stack alignItems="center" py="$6">
+          <Stack alignItems="center" py="6">
             <Spinner />
           </Stack>
         ) : null
       ) : phase.name === 'failed' ? (
         // Closing is what declines: the request is still open until then, and the verifier is told
         // why rather than being left to time out.
-        <Stack btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
+        <Stack btw="0-5" borderColor="grey-200" mx="-4" px="4" pt="4">
           <Button.Solid onPress={() => request.decline(phase.reason)}>{t(commonMessages.close)}</Button.Solid>
         </Stack>
       ) : phase.name === 'review' && !canShare(phase.review) ? (
         // Nothing the wallet holds answers the request, so declining is all there is to do — the
         // same as the app's own share screen, rather than a share button that can never be pressed.
-        <YStack gap="$3" btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
-          <Paragraph variant="sub" fontWeight="$medium" ta="center" color="$danger-500">
+        <YStack gap="3" btw="0-5" borderColor="grey-200" mx="-4" px="4" pt="4">
+          <Paragraph variant="sub" fontWeight="medium" ta="center" color="danger-500">
             {t(
               phase.review.submission.entries.length === 0 || hasMissingCards(phase.review.submission)
                 ? commonMessages.missingCardsWarning
@@ -387,7 +387,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           </Button.Solid>
         </YStack>
       ) : phase.name === 'review' || phase.name === 'sharing' ? (
-        <XStack gap="$2" btw="$0.5" borderColor="$grey-200" mx="$-4" px="$4" pt="$4">
+        <XStack gap="2" btw="0-5" borderColor="grey-200" mx="-4" px="4" pt="4">
           {/* Both are disabled while the response is being built: it cannot be taken back once
               `approve()` has released the request, so there is nothing a second press could do. */}
           <Button.Outline fg={1} disabled={phase.name === 'sharing'} onPress={() => decline(phase.review)}>

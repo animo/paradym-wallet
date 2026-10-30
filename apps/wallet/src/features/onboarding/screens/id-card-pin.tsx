@@ -63,13 +63,13 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
       <ScrollView flex={1} maxHeight={media.short ? 150 : undefined}>
         <Stack jc="center">
           <IdCard icon={isLoading ? 'loading' : 'locked'} hideUserName />
-          <XStack pos="absolute" gap="$3" justifyContent="center" w="100%">
+          <XStack pos="absolute" gap="3" justifyContent="center" w="100%">
             {pinValues.map((digit, index) => (
               <YStack key={index} maxWidth={24} flex-1 justifyContent="center" alignItems="center">
-                <Paragraph lineHeight={32} size="$6" color="$grey-900" fontWeight="$medium">
+                <Paragraph lineHeight="32px" size="6" color="grey-900" fontWeight="medium">
                   {digit ? '*' : ' '}
                 </Paragraph>
-                <Stack borderBottomWidth={1.5} borderBottomColor="$grey-900" width="100%" />
+                <Stack borderBottomWidth={1.5} borderBottomColor="grey-900" width="100%" />
               </YStack>
             ))}
           </XStack>

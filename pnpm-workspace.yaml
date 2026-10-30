@@ -87,6 +87,7 @@ catalog:
 
   # React Native
   react-native-heroicons: ^4.0.0
+  lucide-react-native: ^1.62.0
   "@react-native-masked-view/masked-view": 0.3.2
   "@react-native-picker/picker": 2.11.4
   react-native-keychain: ^10.0.0
@@ -150,16 +151,17 @@ catalog:
   "@expo-google-fonts/raleway": ^0.4.2
 
   # Tamagui
-  "@tamagui/animations-react-native": 2.7.7
-  "@tamagui/font-inter": 2.7.7
-  "@tamagui/shorthands": 2.7.7
-  "@tamagui/themes": 2.7.7
-  "@tamagui/toast": 2.7.7
-  "@tamagui/react-native-media-driver": 2.7.7
-  "@tamagui/colors": 2.7.7
-  "@tamagui/lucide-icons-2": 2.7.7
-  "@tamagui/babel-plugin": 2.7.7
-  tamagui: 2.7.7
+  "@tamagui/animations-react-native": 3.1.6
+  "@tamagui/button": 3.1.6
+  "@tamagui/font-inter": 3.1.6
+  "@tamagui/input": 3.1.6
+  "@tamagui/shorthands": 3.1.6
+  "@tamagui/switch": 3.1.6
+  "@tamagui/themes": 3.1.6
+  "@tamagui/toast": 3.1.6
+  "@tamagui/react-native-media-driver": 3.1.6
+  "@tamagui/colors": 3.1.6
+  tamagui: 3.1.6
 
 minimumReleaseAgeExclude:
   - '@hyperledger/anoncreds-react-native@0.5.0-alpha-20261027094647'

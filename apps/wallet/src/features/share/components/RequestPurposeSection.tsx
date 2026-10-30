@@ -62,7 +62,7 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
 
   return (
     <>
-      <YStack gap="$2">
+      <YStack gap="2">
         {overAskingResponse?.validRequest === 'no' && (
           <AnimatedStack
             entering={FadeIn}
@@ -70,8 +70,8 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             onPress={toggleAnalysisModal}
-            mt={isAndroid() ? '$0' : '$-2'}
-            mb="$4"
+            mt={isAndroid() ? '0' : '-2'}
+            mb="4"
           >
             <MessageBox
               icon={<HeroIcons.InformationCircleFilled />}
@@ -80,17 +80,17 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
             />
           </AnimatedStack>
         )}
-        <XStack gap="$2" jc="space-between" ai="center">
+        <XStack gap="2" jc="space-between" ai="center">
           <Heading heading="sub2">{headingLabel}</Heading>
           {hasAiAnalysisFeatureFlag && (
-            <Stack h="$2" w="$2" ai="center" jc="center">
+            <Stack h="2" w="2" ai="center" jc="center">
               <AnimatedStack key={overAskingResponse?.validRequest} entering={ZoomIn}>
                 {!overAskingResponse ? (
                   <Spinner scale={0.8} />
                 ) : overAskingResponse.validRequest === 'yes' ? (
-                  <HeroIcons.CheckCircleFilled size={26} color="$positive-500" />
+                  <HeroIcons.CheckCircleFilled size={26} color="positive-500" />
                 ) : overAskingResponse.validRequest === 'no' ? (
-                  <HeroIcons.ExclamationTriangleFilled size={26} color="$danger-500" />
+                  <HeroIcons.ExclamationTriangleFilled size={26} color="danger-500" />
                 ) : null}
               </AnimatedStack>
             </Stack>
@@ -100,12 +100,12 @@ export function RequestPurposeSection({ purpose, logo, overAskingResponse }: Req
           variant="light"
           message={purpose}
           icon={
-            <Circle size="$4" overflow="hidden">
+            <Circle size="4" overflow="hidden">
               {logo?.url ? (
                 <Image circle src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
               ) : (
-                <Stack bg="$grey-200" width="100%" height="100%" ai="center" jc="center">
-                  <HeroIcons.BuildingOffice color="$grey-800" size={24} />
+                <Stack bg="grey-200" width="100%" height="100%" ai="center" jc="center">
+                  <HeroIcons.BuildingOffice color="grey-800" size={24} />
                 </Stack>
               )}
             </Circle>

@@ -18,7 +18,7 @@ export default function Screen() {
       gestureEnabled: !isLoading,
       headerLeft: () => (
         <XStack onPress={!isLoading ? () => router.back() : undefined}>
-          {!isLoading && <HeroIcons.ArrowLeft size={32} color="$black" />}
+          {!isLoading && <HeroIcons.ArrowLeft size={32} color="black" />}
         </XStack>
       ),
     })

@@ -11,34 +11,34 @@ export function WelcomePopup({ bottom, onClose }: { bottom: number; onClose: () 
         exiting={FadeOutDown.springify().mass(0.8).damping(10).stiffness(120)}
       >
         <YStack ai="center" width="100%">
-          <Stack bg="$grey-900" gap="$2" maxWidth="80%" br="$8" p="$4">
+          <Stack bg="grey-900" gap="2" maxWidth="80%" br="8" p="4">
             <XStack jc="space-between">
-              <Heading color="$white" heading="h4" fontWeight="$semiBold">
+              <Heading color="white" heading="h4" fontWeight="semiBold">
                 <Trans id="welcome.titleToYourWallet" comment="Welcome title in wallet screen">
                   Welcome to your wallet
                 </Trans>
               </Heading>
-              <Stack p="$2" m={-6}>
-                <HeroIcons.X color="$white" size={20} />
+              <Stack p="2" m={-6}>
+                <HeroIcons.X color="white" size={20} />
               </Stack>
             </XStack>
-            <Paragraph variant="sub" ta="center" color="$white">
+            <Paragraph variant="sub" ta="center" color="white">
               <Trans id="welcome.scanAQrCode" comment="Subtitle prompting user to scan a QR code">
                 Scan a QR code to start an interaction.
               </Trans>
             </Paragraph>
           </Stack>
           <Stack
-            bbc="$grey-900"
-            h="$3"
-            w="$3"
-            blw="$4"
-            brw="$4"
-            blc="transparent"
-            brc="transparent"
-            bbw="$5"
+            bbc="grey-900"
+            h="3"
+            w="3"
             rotate="180deg"
             mt={-8}
+            blw="4"
+            brw="4"
+            blc="transparent"
+            brc="transparent"
+            bbw="5"
           />
         </YStack>
       </Animated.View>

@@ -82,8 +82,8 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
   }
 
   return (
-    <YStack fg={1} gap="$6" jc="space-between">
-      <YStack fg={1} mt="$-5">
+    <YStack fg={1} gap="6" jc="space-between">
+      <YStack fg={1} mt="-5">
         <Carousel
           ref={carouselRef}
           loop={false}
@@ -99,11 +99,11 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
             }
           }}
           renderItem={({ item }) => (
-            <AnimatedStack flexDirection="column" flex={1} gap="$3" pr={36}>
+            <AnimatedStack flexDirection="column" flex={1} gap="3" pr={36}>
               <Heading heading="h1">{item.title}</Heading>
               <Paragraph>{item.subtitle}</Paragraph>
               <YStack ai="center" f={1} onLayout={onLayout} pos="relative">
-                <YStack height={height} mt="$4">
+                <YStack height={height} mt="4">
                   {item.image}
                 </YStack>
               </YStack>
@@ -112,27 +112,27 @@ export function OnboardingWalletExplanation({ onSkip, goToNextStep }: Onboarding
         />
       </YStack>
 
-      <AnimatedStack flexDirection="column" gap="$6" layout={useSpringify(LinearTransition)}>
+      <AnimatedStack flexDirection="column" gap="6" layout={useSpringify(LinearTransition)}>
         {/* Slide indicators */}
-        <XStack jc="center" gap="$2">
+        <XStack jc="center" gap="2">
           {slides.map((_, index) => (
             <AnimatedStack
               key={`indicator-${index}-${currentSlide === index}`}
-              h="$0.75"
+              h="0-75"
               layout={useSpringify(LinearTransition)}
               w={currentSlide === index ? 32 : 16}
-              br="$12"
-              bg={currentSlide === index ? '$primary-500' : '$grey-100'}
+              br="12"
+              bg={currentSlide === index ? 'primary-500' : 'grey-100'}
             />
           ))}
         </XStack>
-        <YStack gap="$4">
+        <YStack gap="4">
           <Button.Solid onPress={handleNext}>
             {currentSlide === slides.length - 1 ? getStartedLabel : continueLabel}
           </Button.Solid>
           {currentSlide !== slides.length - 1 && (
             <Button.Text onPress={onSkip}>
-              <HeroIcons.ArrowRight color="$primary-500" size={20} /> {skipLabel}
+              <HeroIcons.ArrowRight color="primary-500" size={20} /> {skipLabel}
             </Button.Text>
           )}
         </YStack>

@@ -5,7 +5,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "APP_VARIANT=development TAMAGUI_IGNORE_BUNDLE_ERRORS=expo-modules-core,expo-asset,expo-image,expo expo start -c --dev-client",
+		"start": "APP_VARIANT=development expo start -c --dev-client",
 		"android": "APP_VARIANT=development expo run:android",
 		"ios": "APP_VARIANT=development expo run:ios",
 		"prebuild": "APP_VARIANT=development expo prebuild",
@@ -74,7 +74,6 @@
 		"@babel/core": "catalog:",
 		"@lingui/cli": "catalog:",
 		"@lingui/format-json": "catalog:",
-		"@tamagui/babel-plugin": "catalog:",
 		"babel-plugin-syntax-hermes-parser": "catalog:",
 		"expo-build-disk-cache": "catalog:",
 		"expo-build-properties": "catalog:",

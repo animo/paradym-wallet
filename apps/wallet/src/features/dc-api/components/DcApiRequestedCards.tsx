@@ -46,7 +46,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
   const unavailable = unsatisfied.filter((entry) => entry.partialMatches.length === 0)
 
   if (submission.entries.length === 0) {
-    return <Paragraph color="$danger-500">{t(messages.nothingRequested)}</Paragraph>
+    return <Paragraph color="danger-500">{t(messages.nothingRequested)}</Paragraph>
   }
 
   const { title, subtitle, unmetHeading, unavailableHeading } = getRequestedCardsMessages({
@@ -57,8 +57,8 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
   })
 
   return (
-    <YStack gap="$4">
-      <YStack gap="$2">
+    <YStack gap="4">
+      <YStack gap="2">
         <Heading heading="sub2">{t(title)}</Heading>
         <Paragraph>{t(subtitle)}</Paragraph>
       </YStack>
@@ -86,8 +86,8 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
             <Card
               key={entry.inputDescriptorId}
               name={entry.name ?? t(commonMessages.unknown)}
-              backgroundColor="$grey-800"
-              textColor="$background"
+              backgroundColor="grey-800"
+              textColor="background"
               attributeNames={formatAttributePaths(entry.requestedAttributePaths)}
             />
           ))}
@@ -185,7 +185,7 @@ function RequestedCard({ credential }: { credential: FormattedSubmissionEntrySat
       isExpanded={isExpanded}
       onToggle={() => setIsExpanded((expanded) => !expanded)}
     >
-      <YStack gap="$3">
+      <YStack gap="3">
         {credential.disclosed.attributes.map((attribute) => (
           <AttributeRow key={attribute.path.join('.')} attribute={attribute} />
         ))}
@@ -225,30 +225,30 @@ function Card({
 
   return (
     <Stack
-      br="$6"
-      borderWidth="$0.5"
-      borderColor="$borderTranslucent"
+      br="6"
+      borderWidth="0-5"
+      borderColor="borderTranslucent"
       overflow="hidden"
       transition={onToggle ? 'quick' : undefined}
-      pressStyle={onToggle ? { scale: 0.98 } : undefined}
+      scale={onToggle ? '1 press:0.98' : undefined}
       onPress={onToggle}
       role={onToggle ? 'button' : undefined}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="$4" py="$3" pos="relative" bg={backgroundColor ?? '$grey-900'}>
+      <Stack px="4" py="3" pos="relative" bg={backgroundColor ?? 'grey-900'}>
         {backgroundImage && (
           <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
             <Image src={backgroundImage} contentFit="cover" height="100%" width="100%" />
           </Stack>
         )}
-        <XStack ai="center" jc="space-between" gap="$2">
+        <XStack ai="center" jc="space-between" gap="2">
           <Heading
             heading="sub2"
             fontSize={14}
-            fontWeight="$bold"
+            fontWeight="bold"
             numberOfLines={1}
+            color={textColor ?? 'grey-200'}
             f={1}
-            color={textColor ?? '$grey-200'}
           >
             {name.toLocaleUpperCase()}
           </Heading>
@@ -256,13 +256,13 @@ function Card({
         </XStack>
       </Stack>
 
-      <YStack px="$4" pt="$3" pb="$4" gap="$3" bg="$background">
+      <YStack px="4" pt="3" pb="4" gap="3" bg="background">
         {isExpanded ? (
           children
         ) : (
-          <YStack gap="$2" pr="$4">
+          <YStack gap="2" pr="4">
             {columns.map(([first, second]) => (
-              <XStack key={`${first.name}-${second?.name}`} gap="$3">
+              <XStack key={`${first.name}-${second?.name}`} gap="3">
                 <Stack flexGrow={1} flexBasis={0}>
                   <AttributeListItem name={first.name} isMissing={first.isMissing} />
                 </Stack>
@@ -277,9 +277,9 @@ function Card({
         {onToggle && (
           <XStack jc="flex-end">
             {isExpanded ? (
-              <HeroIcons.ChevronUp size={20} color="$grey-500" />
+              <HeroIcons.ChevronUp size={20} color="grey-500" />
             ) : (
-              <HeroIcons.ChevronDown size={20} color="$grey-500" />
+              <HeroIcons.ChevronDown size={20} color="grey-500" />
             )}
           </XStack>
         )}
@@ -306,11 +306,11 @@ function AttributeRow({ attribute, isNested = false }: { attribute: FormattedAtt
 
   if (attribute.type === 'object' && !isNested) {
     return (
-      <YStack gap="$2">
-        <Paragraph variant="sub" fontWeight="$medium">
+      <YStack gap="2">
+        <Paragraph variant="sub" fontWeight="medium">
           {label}
         </Paragraph>
-        <YStack gap="$2" pl="$3" bw={0} blw="$0.5" borderColor="$grey-200">
+        <YStack gap="2" pl="3" bw={0} blw="0-5" borderColor="grey-200">
           {attribute.value.map((nested, index) => (
             <AttributeRow key={`${nested.path.join('.')}-${index}`} attribute={nested} isNested />
           ))}
@@ -321,7 +321,7 @@ function AttributeRow({ attribute, isNested = false }: { attribute: FormattedAtt
 
   if (attribute.type === 'image') {
     return (
-      <XStack gap="$4" jc="space-between" ai="flex-start">
+      <XStack gap="4" jc="space-between" ai="flex-start">
         <Paragraph variant="sub" flexShrink={1}>
           {label}
         </Paragraph>
@@ -338,7 +338,7 @@ function AttributeRow({ attribute, isNested = false }: { attribute: FormattedAtt
       : formatPlainValue(attribute, t)
 
   return (
-    <XStack gap="$4" jc="space-between" ai="flex-start">
+    <XStack gap="4" jc="space-between" ai="flex-start">
       <Paragraph variant="sub" flexShrink={1}>
         {label}
       </Paragraph>
@@ -368,12 +368,12 @@ function AttributeValue({ value }: { value: string }) {
   const isLong = value.length > 100
 
   return (
-    <YStack flexShrink={1} ai="flex-end" gap="$1">
-      <Paragraph fontWeight="$medium" ta="right" numberOfLines={isLong && !isExpanded ? 2 : undefined}>
+    <YStack flexShrink={1} ai="flex-end" gap="1">
+      <Paragraph fontWeight="medium" ta="right" numberOfLines={isLong && !isExpanded ? 2 : undefined}>
         {value}
       </Paragraph>
       {isLong && (
-        <Paragraph variant="annotation" color="$grey-500" onPress={() => setIsExpanded((expanded) => !expanded)}>
+        <Paragraph variant="annotation" color="grey-500" onPress={() => setIsExpanded((expanded) => !expanded)}>
           {t(isExpanded ? commonMessages.showLess : commonMessages.showMore)}
         </Paragraph>
       )}

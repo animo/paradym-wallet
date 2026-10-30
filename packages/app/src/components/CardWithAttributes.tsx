@@ -76,9 +76,9 @@ export function CardWithAttributes({
 
   return (
     <AnimatedStack
-      br="$6"
-      borderWidth="$0.5"
-      borderColor="$borderTranslucent"
+      br="6"
+      borderWidth="0-5"
+      borderColor="borderTranslucent"
       overflow="hidden"
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
@@ -88,35 +88,35 @@ export function CardWithAttributes({
       role={disabledNav ? undefined : 'button'}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="$4" py="$3" bg={backgroundColor ?? '$grey-900'}>
+      <Stack px="4" py="3" bg={backgroundColor ?? 'grey-900'}>
         <XStack ai="center" jc="space-between">
           <YStack f={1}>
-            <Heading heading="sub2" fontSize={14} fontWeight="$bold" numberOfLines={1} color={textColor ?? '$grey-200'}>
+            <Heading heading="sub2" fontSize={14} fontWeight="bold" numberOfLines={1} color={textColor ?? 'grey-200'}>
               {name.toLocaleUpperCase()}
             </Heading>
           </YStack>
-          <XStack h="$3">
+          <XStack h="3">
             {issuerImage?.url && !isRevokedOrExpired && (
               <Image circle src={issuerImage.url} alt={issuerImage.altText} width={36} height={36} />
             )}
           </XStack>
         </XStack>
       </Stack>
-      <YStack px="$4" pt="$3" pb="$4" gap="$4" bg="$white">
-        <YStack gap="$2" fg={1} pr="$4">
+      <YStack px="4" pt="3" pb="4" gap="4" bg="white">
+        <YStack gap="2" fg={1} pr="4">
           {groupedAttributes.map(([first, second], index) => {
             const isLast = index === groupedAttributes.length - 1
 
             return (
               // Keeps the last row level with the arrow in the corner.
-              <XStack key={`${first.name}-${second?.name}`} gap="$3" minHeight={isLast ? '$3.5' : undefined}>
+              <XStack key={`${first.name}-${second?.name}`} gap="3" minHeight={isLast ? '3-5' : undefined}>
                 <Stack flexGrow={1} flexBasis={0}>
                   <AttributeListItem name={first.name} isMissing={first.isMissing} />
                 </Stack>
                 <Stack flexGrow={1} flexBasis={0}>
                   {/* Padded inside the column rather than on it: padding on the column itself
                       would widen it, and shift this row's second column out of line. */}
-                  <Stack pr={isLast && !disabledNav ? '$5' : undefined}>
+                  <Stack pr={isLast && !disabledNav ? '5' : undefined}>
                     {second && <AttributeListItem name={second.name} isMissing={second.isMissing} />}
                   </Stack>
                 </Stack>
@@ -124,7 +124,7 @@ export function CardWithAttributes({
             )
           })}
           {!disabledNav && (
-            <Stack pos="absolute" bottom="$0" right="$0">
+            <Stack pos="absolute" bottom="0" right="0">
               <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight />} />
             </Stack>
           )}
@@ -132,8 +132,8 @@ export function CardWithAttributes({
       </YStack>
       {(isRevoked || isExpired || isNotYetActive) && (
         <>
-          <Stack bg="$grey-900" pos="absolute" top="$0" left="$0" right="$0" bottom="$0" opacity={0.2} zIndex={0} />
-          <Stack pos="absolute" top="$3.5" right="$2.5">
+          <Stack bg="grey-900" pos="absolute" top="0" left="0" right="0" bottom="0" opacity={0.2} zIndex={0} />
+          <Stack pos="absolute" top="3-5" right="2-5">
             <BlurBadge
               tint="dark"
               color={textColor}

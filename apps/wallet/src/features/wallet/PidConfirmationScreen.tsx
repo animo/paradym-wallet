@@ -17,11 +17,11 @@ export const PidConfirmationScreen = forwardRef<PinDotsInputRef, PidConfirmation
 
     return (
       <FlexPage flex-1 alignItems="center">
-        <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="$4">
-          <Circle size="$4" backgroundColor="$grey-100">
-            <HeroIcons.LockClosed strokeWidth={2} color="$grey-700" />
+        <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="4">
+          <Circle size="4" backgroundColor="grey-100">
+            <HeroIcons.LockClosed strokeWidth={2} color="grey-700" />
           </Circle>
-          <Heading heading="h2" fontWeight="$semiBold">
+          <Heading heading="h2" fontWeight="semiBold">
             {t(commonMessages.enterPin)}
           </Heading>
         </YStack>

@@ -76,14 +76,14 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
 
   return (
     <FloatingSheet isOpen={open} onDismiss={onCancel} setIsOpen={() => {}} enableDismissOnClose={false}>
-      <XStack backgroundColor="$primary-100" height={175} justifyContent="center" alignItems="center">
+      <XStack backgroundColor="primary-100" height={175} justifyContent="center" alignItems="center">
         <AnimatedNfcScanIcon
           icon={scanningState === 'readyToScan' || scanningState === 'scanning' ? 'scan' : scanningState}
         />
       </XStack>
 
-      <YStack gap="$4" flex-1 p="$4" justifyContent="space-between">
-        <YStack gap="$2" alignItems="center" px="$5">
+      <YStack gap="4" p="4" justifyContent="space-between" flex-1>
+        <YStack gap="2" alignItems="center" px="5">
           <Heading heading="h2" textAlign="center">
             {title}
           </Heading>
@@ -93,7 +93,7 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
         </YStack>
 
         {scanningState === 'scanning' && (
-          <YStack px="$2" alignItems="center">
+          <YStack px="2" alignItems="center">
             <ProgressBar value={progress} />
           </YStack>
         )}

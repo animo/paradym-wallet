@@ -31,36 +31,36 @@ export function SettingsButton({ label, disabled, icon, description, beta, onPre
       }
 
   return (
-    <AnimatedYStack gap="$2" onPressIn={onPressIn} onPressOut={onPressOut} disabled={disabled} style={pressStyle}>
+    <AnimatedYStack gap="2" onPressIn={onPressIn} onPressOut={onPressOut} disabled={disabled} style={pressStyle}>
       <XStack jc="space-between" ai="center">
-        <XStack gap="$3" ai="center">
+        <XStack gap="3" ai="center">
           {icon && (
-            <XStack bg="$primary-100" p="$1.5" br="$4">
-              {cloneElement(icon, { size: 20, color: '$primary-500' })}
+            <XStack bg="primary-100" p="1-5" br="4">
+              {cloneElement(icon, { size: 20, color: 'primary-500' })}
             </XStack>
           )}
-          <XStack gap="$2">
+          <XStack gap="2">
             <Label
               onPressIn={onPressIn}
               onPressOut={onPressOut}
               disabled={disabled}
               maxWidth={200}
-              fontWeight="$semiBold"
-              fontFamily="$default"
+              fontWeight="medium"
+              fontFamily="default"
               fontSize={17}
-              lineHeight="$5"
-              letterSpacing="$8"
+              lineHeight="5"
+              letterSpacing="8"
             >
               {label}
             </Label>
             {beta && (
-              <YStack mt="$0.5" justifyContent="center">
+              <YStack mt="0-5" justifyContent="center">
                 <BetaTag />
               </YStack>
             )}
           </XStack>
         </XStack>
-        <HeroIcons.ChevronRight color="$primary-500" />
+        <HeroIcons.ChevronRight color="primary-500" />
       </XStack>
 
       {description && <Paragraph variant="annotation">{description}</Paragraph>}
