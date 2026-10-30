@@ -302,7 +302,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
     resolveCredentialRequest: (options: Omit<ResolveCredentialRequestOptions, 'paradym'>) =>
       resolveCredentialRequest({ ...options, paradym: this }),
 
-    declineCredentialRequest: (options: Omit<DeclineCredentialRequestOptions, 'paradym'>) =>
+    declineCredentialRequest: (options: DistributedOmit<DeclineCredentialRequestOptions, 'paradym'>) =>
       declineCredentialRequest({ ...options, paradym: this }),
 
     shareCredentials: (options: Omit<ShareCredentialsOptions, 'paradym'>) =>

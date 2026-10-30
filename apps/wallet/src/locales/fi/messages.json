@@ -217,7 +217,7 @@
 		"message": "Accept",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 179]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 185]],
 		"translation": "Hyväksy"
 	},
 	"biometrics.activateBiometricsButton": {
@@ -240,7 +240,7 @@
 		"comments": [
 			"Name of the activity screen, listing shared and received cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 593]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 599]],
 		"translation": "Toiminta"
 	},
 	"activity.emptyDescription": {
@@ -279,14 +279,14 @@
 		"message": "Address",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 644]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 650]],
 		"translation": "Osoite"
 	},
 	"common.fields.age": {
 		"message": "Age",
 		"placeholders": {},
 		"comments": ["The age of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 676]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 682]],
 		"translation": "Ikä"
 	},
 	"common.fields.ageOver": {
@@ -295,7 +295,7 @@
 		"comments": [
 			"Used as prefix to indicate the age of a person is over a certain age."
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 686]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 692]],
 		"translation": "Ikä yli"
 	},
 	"credentials.allCardsTitle": {
@@ -329,7 +329,7 @@
 		"comments": [
 			"Error message when connection fails during connect interaction"
 		],
-		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 18]],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 19]],
 		"translation": "Yhdistämisessä tapahtui virhe. Luo uusi QR-koodi tai yritä myöhemmin uudelleen."
 	},
 	"interactionError.message.issue": {
@@ -338,7 +338,7 @@
 		"comments": [
 			"Error message when credential issuance fails to fetch card info"
 		],
-		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 24]],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 25]],
 		"translation": "Kortin tietojen hakemisessa tapahtui virhe. Pyydä myöntäjää luomaan uusi QR-koodi tai yritä myöhemmin uudelleen."
 	},
 	"deferredCredentials.failedToRetrieveCardDescription": {
@@ -356,14 +356,14 @@
 		"comments": [
 			"Error message when sharing a credential for verification fails"
 		],
-		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 31]],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 32]],
 		"translation": "Kortin tietojen jakamisessa tapahtui virhe. Pyydä tarkastajaa luomaan uusi QR-koodi tai yritä myöhemmin uudelleen."
 	},
 	"interactionError.message.sign": {
 		"message": "An error occurred while signing with your card information. Ask the verifier to generate a new QR-code or try again later.",
 		"placeholders": {},
 		"comments": ["Error message when signing fails with selected credentials"],
-		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 37]],
+		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 38]],
 		"translation": "Kortin tiedoilla allekirjoittamisessa tapahtui virhe. Pyydä tarkastajaa luomaan uusi QR-koodi tai yritä myöhemmin uudelleen."
 	},
 	"aiOverAking.errorReason": {
@@ -423,7 +423,7 @@
 		"comments": [
 			"Shown when several trusted organizations approved the organization behind a request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 549]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 555]],
 		"translation": "{count} luottavaa organisaatiota"
 	},
 	"common.approvedByOneOrganization": {
@@ -432,14 +432,14 @@
 		"comments": [
 			"Shown when one trusted organization approved the organization behind a request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 543]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 549]],
 		"translation": "1 luottava organisaatio"
 	},
 	"common.archiveCardTitle": {
 		"message": "Archive card?",
 		"placeholders": {},
 		"comments": ["Title for confirmation dialog to archive a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 378]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 384]],
 		"translation": "Arkistoi kortti?"
 	},
 	"onboarding.resetAlert.message": {
@@ -469,7 +469,7 @@
 		"comments": [
 			"Heading shown above requested cards the user has, but that hold some of the requested attributes with a value the request does not accept"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 210]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 216]],
 		"translation": "TIEDOT EIVÄT VASTAA PYYNTÖÄ"
 	},
 	"common.unmetAttributesHeading": {
@@ -478,7 +478,7 @@
 		"comments": [
 			"Heading shown above requested cards the user has, but that lack some requested attributes and hold others with a value the request does not accept"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 228]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 234]],
 		"translation": "TIEDOT EIVÄT TÄYTÄ PYYNTÖÄ"
 	},
 	"authCodeFlowSlide.authenticate": {
@@ -502,7 +502,7 @@
 		"placeholders": {},
 		"comments": ["Shown when authentication with PIN fails for other reasons"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 84]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 87]
 		],
 		"translation": "Tunnistautuminen epäonnistui"
 	},
@@ -510,21 +510,21 @@
 		"message": "Authorization cancelled",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 444]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 450]],
 		"translation": "Valtuutus peruutettu"
 	},
 	"common.authorizationFailed": {
 		"message": "Authorization failed",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 440]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 446]],
 		"translation": "Valtuutus epäonnistui"
 	},
 	"common.backButton": {
 		"message": "Back",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 187]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 193]],
 		"translation": "Takaisin"
 	},
 	"betaTag": {
@@ -618,14 +618,14 @@
 		"message": "Birth year",
 		"placeholders": {},
 		"comments": ["The birth year of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 681]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 687]],
 		"translation": "Syntymävuosi"
 	},
 	"common.fields.born": {
 		"message": "Born",
 		"placeholders": {},
 		"comments": ["Used a prefix for when a person is born"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 756]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 762]],
 		"translation": "Syntynyt"
 	},
 	"common.deleteDeferredCredentialDescription": {
@@ -636,7 +636,7 @@
 		"comments": [
 			"Description in confirmation dialog explaining pending card deletion"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 410]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 416]],
 		"translation": "Jos poistat kohteen {name}, et voi enää noutaa korttia myöntäjältä."
 	},
 	"common.cancel": {
@@ -657,7 +657,7 @@
 		"message": "Card added",
 		"placeholders": {},
 		"comments": ["Shown when a card has been successfully received"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 303]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 309]],
 		"translation": "Kortti lisätty"
 	},
 	"credentials.cardAttributes": {
@@ -718,7 +718,7 @@
 		"message": "Card not added",
 		"placeholders": {},
 		"comments": ["Shown when receiving a card failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 318]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 324]],
 		"translation": "Korttia ei lisätty"
 	},
 	"deferredCredentials.cardNotAvailableYet": {
@@ -754,14 +754,14 @@
 		"message": "Card pending",
 		"placeholders": {},
 		"comments": ["Shown when the issuance of a card is pending"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 308]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 314]],
 		"translation": "Kortti odottaa"
 	},
 	"common.cardRejected": {
 		"message": "Card rejected",
 		"placeholders": {},
 		"comments": ["Shown when a received card was rejected"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 313]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 319]],
 		"translation": "Kortti hylätty"
 	},
 	"cardLifecycle.revoked.title": {
@@ -784,7 +784,7 @@
 		"message": "Card successfully archived",
 		"placeholders": {},
 		"comments": ["Toast message shown after successfully archiving a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 394]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 400]],
 		"translation": "Kortin arkistointi onnistui"
 	},
 	"cardLifecycle.limitedByDate.willExpire.title": {
@@ -802,7 +802,7 @@
 		"comments": [
 			"Name of the screen listing the cards in the wallet, and heading above a list of cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 598]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 604]],
 		"translation": "Kortit"
 	},
 	"onboarding.pin.title": {
@@ -834,7 +834,7 @@
 		"message": "City",
 		"placeholders": {},
 		"comments": ["The city where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 661]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 667]],
 		"translation": "Kaupunki"
 	},
 	"common.close": {
@@ -848,14 +848,14 @@
 		"message": "Code",
 		"placeholders": {},
 		"comments": ["The code of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 779]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 785]],
 		"translation": "Koodi"
 	},
 	"common.credentials.mdl.codes": {
 		"message": "Codes",
 		"placeholders": {},
 		"comments": ["The codes of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 794]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 800]],
 		"translation": "Koodit"
 	},
 	"pidSetup.idCardVerify.title": {
@@ -892,14 +892,14 @@
 		"message": "Country",
 		"placeholders": {},
 		"comments": ["The country where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 666]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 672]],
 		"translation": "Maa"
 	},
 	"common.credential": {
 		"message": "Credential",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 199]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 205]],
 		"translation": "Todiste"
 	},
 	"credential.declined": {
@@ -922,21 +922,21 @@
 		"message": "Credential not found",
 		"placeholders": {},
 		"comments": ["Shown if a credential is missing or cannot be loaded"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 566]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 572]],
 		"translation": "Todistetta ei löytynyt"
 	},
 	"common.fields.credentialType": {
 		"message": "Credential type",
 		"placeholders": {},
 		"comments": ["The type of credential, usually a complex url structure"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 731]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 737]],
 		"translation": "Valtuustietojen tyyppi"
 	},
 	"credentials.emptyDescription": {
 		"message": "Credentials will appear here once you receive them.",
 		"placeholders": {},
 		"comments": ["Subtext explaining that credentials will appear later"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 112]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 117]],
 		"translation": "Todisteet näkyvät täällä, kun vastaanotat niitä."
 	},
 	"noContentWallet.message": {
@@ -950,21 +950,21 @@
 		"message": "Data Request",
 		"placeholders": {},
 		"comments": ["Fallback title for a proof request notification"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 256]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 262]],
 		"translation": "Tietopyyntö"
 	},
 	"common.fields.dateOfBirth": {
 		"message": "Date of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 640]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 646]],
 		"translation": "Syntymäaika"
 	},
 	"common.declineButton": {
 		"message": "Decline",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 183]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 189]],
 		"translation": "Hylkää"
 	},
 	"didcommCancelFlow.issuance.title": {
@@ -980,7 +980,7 @@
 		"message": "Delete pending card?",
 		"placeholders": {},
 		"comments": ["Title for confirmation dialog to delete a pending card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 404]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 410]],
 		"translation": "Poistetaanko odottava kortti?"
 	},
 	"activity.deletedCredential": {
@@ -994,7 +994,7 @@
 		"message": "Demo organization",
 		"placeholders": {},
 		"comments": ["Shown to indicate that an organization is a demo"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 554]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 560]],
 		"translation": "Demo-organisaatio"
 	},
 	"settings.developmentMode": {
@@ -1017,7 +1017,7 @@
 		"message": "Do not share real data",
 		"placeholders": {},
 		"comments": ["Warning shown with a demo organization"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 559]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 565]],
 		"translation": "Älä jaa oikeita tietoja"
 	},
 	"common.doYouTrust": {
@@ -1026,7 +1026,7 @@
 			"name": ["name"]
 		},
 		"comments": ["Heading above the organization behind a request"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 523]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 529]],
 		"translation": "Luotatko toimijaan {name}?"
 	},
 	"receiveCredential.checkInformationHeader": {
@@ -1042,35 +1042,35 @@
 		"message": "Document",
 		"placeholders": {},
 		"comments": ["Section heading above a document that is, or was, signed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 495]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 501]],
 		"translation": "Asiakirja"
 	},
 	"common.credentials.mdl.documentNumber": {
 		"message": "Document number",
 		"placeholders": {},
 		"comments": ["The document number of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 774]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 780]],
 		"translation": "Asiakirjan numero"
 	},
 	"common.documentSigned": {
 		"message": "Document signed",
 		"placeholders": {},
 		"comments": ["Shown when signing a document succeeded"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 323]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 329]],
 		"translation": "Asiakirja allekirjoitettu"
 	},
 	"common.credentials.mdl.title": {
 		"message": "Driving License",
 		"placeholders": {},
 		"comments": ["The title of a driving license"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 764]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 770]],
 		"translation": "Ajokortti"
 	},
 	"common.credentials.mdl.drivingPrivileges": {
 		"message": "Driving privileges",
 		"placeholders": {},
 		"comments": ["The title of driving privileges"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 769]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 775]],
 		"translation": "Ajoluokat"
 	},
 	"eidCard.requestAttributesTitle": {
@@ -1097,7 +1097,7 @@
 		"message": "Enter transaction code",
 		"placeholders": {},
 		"comments": ["Title prompting the user to enter a transaction code"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 51]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 50]],
 		"translation": "Syötä tapahtumakoodi"
 	},
 	"common.enterPin": {
@@ -1118,14 +1118,14 @@
 		"message": "Error deleting card",
 		"placeholders": {},
 		"comments": ["Toast message shown when card deletion failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 399]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 405]],
 		"translation": "Virhe kortin poistamisessa"
 	},
 	"common.toastDeferredCredentialDeleteError": {
 		"message": "Error deleting pending card",
 		"placeholders": {},
 		"comments": ["Toast message shown when pending card deletion failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 425]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 431]],
 		"translation": "Odottavan kortin poistaminen epäonnistui"
 	},
 	"aiOverAking.errorReasonFallback": {
@@ -1171,14 +1171,14 @@
 		"message": "Expired",
 		"placeholders": {},
 		"comments": ["Label shown on a credential card when it is expired"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 430]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 436]],
 		"translation": "Vanhentunut"
 	},
 	"common.fields.expiresAt": {
 		"message": "Expires at",
 		"placeholders": {},
 		"comments": ["The time at which a credential expires"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 726]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 732]],
 		"translation": "Vanhenee"
 	},
 	"cardLifecycle.limitedByDate.willExpire.description": {
@@ -1219,7 +1219,7 @@
 		"message": "Failed to parse invitation.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 275]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 281]],
 		"translation": "Kutsun käsittely epäonnistui."
 	},
 	"deferredCredentials.failedToRetrieveCard": {
@@ -1235,7 +1235,7 @@
 		"message": "Family name",
 		"placeholders": {},
 		"comments": ["The family name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 691]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 697]],
 		"translation": "Sukunimi"
 	},
 	"menu.item.feedback": {
@@ -1270,7 +1270,7 @@
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to begin or finish onboarding"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 610]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 616]],
 		"translation": "Aloita"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
@@ -1291,7 +1291,7 @@
 		"message": "Given name",
 		"placeholders": {},
 		"comments": ["The given name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 696]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 702]],
 		"translation": "Etunimi"
 	},
 	"noContentInbox.goBack": {
@@ -1349,7 +1349,7 @@
 		"message": "Hide metadata attributes",
 		"placeholders": {},
 		"comments": ["Option that hides the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 581]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 587]],
 		"translation": "Piilota metatiedot"
 	},
 	"credentials.hideShareableAttributes": {
@@ -1369,7 +1369,7 @@
 		"comments": [
 			"The holder identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 741]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 747]],
 		"translation": "Haltija"
 	},
 	"onboardingWalletExplanation.slide3.title": {
@@ -1392,7 +1392,7 @@
 		"comments": [
 			"Description in the confirmation dialog shown when the user stops a data sharing request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 510]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 516]],
 		"translation": "Jos lopetat, tietoja ei jaeta."
 	},
 	"didcommCancelFlow.connect.description": {
@@ -1463,21 +1463,21 @@
 		"message": "Information request has been declined.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 170]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 176]],
 		"translation": "Tietopyyntö on hylätty."
 	},
 	"common.informationShared": {
 		"message": "Information shared",
 		"placeholders": {},
 		"comments": ["Shown when data was successfully shared"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 363]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 369]],
 		"translation": "Tiedot jaettu"
 	},
 	"common.invalidInvitation": {
 		"message": "Invalid invitation.",
 		"placeholders": {},
 		"comments": ["Error message shown when the invitation is not valid"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 288]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 294]],
 		"translation": "Kutsu ei ole kelvollinen."
 	},
 	"common.invalidPinEntered": {
@@ -1498,7 +1498,7 @@
 		"message": "Invitation has already been scanned.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 293]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 299]],
 		"translation": "Kutsu on jo skannattu."
 	},
 	"common.invitationNotRecognized": {
@@ -1507,7 +1507,7 @@
 		"comments": [
 			"Shown when the invitation data format is not supported or could not be parsed"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 266]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 272]],
 		"translation": "Kutsua ei tunnistettu."
 	},
 	"common.invitationNotSupported": {
@@ -1516,21 +1516,21 @@
 		"comments": [
 			"Error message shown when the type of invitation is not supported by the wallet"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 283]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 289]],
 		"translation": "Kutsu ei ole tuettu."
 	},
 	"common.invitationTypeNotAllowed": {
 		"message": "Invitation type not allowed.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 271]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 277]],
 		"translation": "Kutsun tyyppi ei ole sallittu."
 	},
 	"common.fields.issuedAt": {
 		"message": "Issued at",
 		"placeholders": {},
 		"comments": ["The time at which a credential is issued"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 716]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 722]],
 		"translation": "Myönnetty"
 	},
 	"common.issuedBy": {
@@ -1562,7 +1562,7 @@
 		"comments": [
 			"Label showing the name of the credential issuer, e.g. \"Issued by Government of Austria\""
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 298]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 304]],
 		"translation": "Myöntäjä: {name}"
 	},
 	"common.issuedOn": {
@@ -1571,7 +1571,7 @@
 			"0": ["formatDate(issuedAt, { includeTime: false })"]
 		},
 		"comments": ["Label before the date a credential was issued"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 235]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 240]],
 		"translation": "Myönnetty {0}"
 	},
 	"common.fields.issuer": {
@@ -1580,21 +1580,21 @@
 		"comments": [
 			"The issuer identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 736]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 742]],
 		"translation": "Myöntäjä"
 	},
 	"common.fields.issuingAuthority": {
 		"message": "Issuing authority",
 		"placeholders": {},
 		"comments": ["The issuing authority of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 706]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 712]],
 		"translation": "Myöntävä viranomainen"
 	},
 	"common.fields.issuingCountry": {
 		"message": "Issuing country",
 		"placeholders": {},
 		"comments": ["The issuing country of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 711]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 717]],
 		"translation": "Myöntävä maa"
 	},
 	"selectLanguage.label": {
@@ -1640,14 +1640,14 @@
 		"message": "Loading invitation",
 		"placeholders": {},
 		"comments": ["Text shown while an invitation is loading"],
-		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 83]],
+		"origin": [["../../packages/app/src/features/scan/ScanScreen.tsx", 81]],
 		"translation": "Ladataan kutsua"
 	},
 	"common.fields.locality": {
 		"message": "Locality",
 		"placeholders": {},
 		"comments": ["The locality of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 746]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 752]],
 		"translation": "Paikkakunta"
 	},
 	"inbox.menuLabel": {
@@ -1668,7 +1668,7 @@
 		"message": "Metadata",
 		"placeholders": {},
 		"comments": ["Section heading for the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 571]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 577]],
 		"translation": "Metatiedot"
 	},
 	"common.missingAttributesHeading": {
@@ -1677,21 +1677,21 @@
 		"comments": [
 			"Heading shown above requested cards the user has, but that lack some of the requested attributes"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 200]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 206]],
 		"translation": "PUUTTUVAT TIEDOT"
 	},
 	"common.fields.nationalities": {
 		"message": "Nationalities",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 648]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 654]],
 		"translation": "Kansalaisuudet"
 	},
 	"common.fields.nationality": {
 		"message": "Nationality",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 652]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 658]],
 		"translation": "Kansalaisuus"
 	},
 	"activity.latest.newCardFallback": {
@@ -1737,7 +1737,7 @@
 			"searchQuery": ["searchQuery"]
 		},
 		"comments": ["Shown when search yields no results; includes query string"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 166]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 171]],
 		"translation": "Ei kortteja haulle \"{searchQuery}\""
 	},
 	"credentials.noCardsMessage": {
@@ -1756,7 +1756,7 @@
 			"Shown when the user tries to accept a proof but no credentials are loaded"
 		],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 72]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 75]
 		],
 		"translation": "Todisteita ei valittu"
 	},
@@ -1773,7 +1773,7 @@
 		"comments": [
 			"Shown in place of the purpose when a data request does not state one"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 465]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 471]],
 		"translation": "Tietopyynnön tarkoituksesta ei annettu tietoa. Ole varovainen"
 	},
 	"network.noInternet": {
@@ -1861,7 +1861,7 @@
 		"message": "Open settings",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 448]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 454]],
 		"translation": "Avaa asetukset"
 	},
 	"aboutScreen.privacyPolicyDescription": {
@@ -1884,7 +1884,7 @@
 		"comments": [
 			"Description shown when the organization behind a request could not be verified"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 538]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 544]],
 		"translation": "Organisaatiota ei ole vahvistettu"
 	},
 	"common.organizationNotVerifiedHeading": {
@@ -1893,7 +1893,7 @@
 		"comments": [
 			"Heading shown when the organization behind a request could not be verified"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 533]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 539]],
 		"translation": "Organisaatio ei ole vahvistettu"
 	},
 	"requestPurpose.infoSheet.title": {
@@ -1911,7 +1911,7 @@
 			"0": ["payment.payee"]
 		},
 		"comments": ["Shown below the amount of a completed payment"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 131]],
+		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 129]],
 		"translation": "Maksettu: {0}"
 	},
 	"paso.payment.accept": {
@@ -1963,7 +1963,7 @@
 		"message": "Payment",
 		"placeholders": {},
 		"comments": ["Section heading above a payment that is, or was, authorized"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 500]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 506]],
 		"translation": "Maksu"
 	},
 	"paso.payment.cardHeading": {
@@ -1984,28 +1984,28 @@
 		"message": "Payment failed",
 		"placeholders": {},
 		"comments": ["Shown when a payment is failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 348]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 354]],
 		"translation": "Maksu epäonnistui"
 	},
 	"common.paymentPending": {
 		"message": "Payment is pending",
 		"placeholders": {},
 		"comments": ["Shown when a payment is pending settlement on the bank side"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 353]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 359]],
 		"translation": "Maksu on vireillä"
 	},
 	"common.paymentRejected": {
 		"message": "Payment is rejected",
 		"placeholders": {},
 		"comments": ["Shown when a payment was rejected by the bank"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 358]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 364]],
 		"translation": "Maksu on hylätty"
 	},
 	"common.paid": {
 		"message": "Payment is successful",
 		"placeholders": {},
 		"comments": ["Shown when a payment is successful"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 338]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 344]],
 		"translation": "Maksu suoritettu"
 	},
 	"activity.latest.paymentPending": {
@@ -2026,7 +2026,7 @@
 		"message": "Payment stopped",
 		"placeholders": {},
 		"comments": ["Shown when a payment is stopped"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 343]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 349]],
 		"translation": "Maksu keskeytettiin"
 	},
 	"activity.latest.paymentMade": {
@@ -2067,7 +2067,7 @@
 		"comments": [
 			"Toast message shown after successfully deleting a pending card"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 420]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 426]],
 		"translation": "Odottava kortti poistettu"
 	},
 	"presentation.pinAuthFailed": {
@@ -2075,7 +2075,7 @@
 		"placeholders": {},
 		"comments": ["Shown when PIN is required but not provided"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 78]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 81]
 		],
 		"translation": "PIN-tunnistautuminen epäonnistui"
 	},
@@ -2097,7 +2097,7 @@
 		"message": "Place of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 636]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 642]],
 		"translation": "Syntymäpaikka"
 	},
 	"common.placeDeviceOnIdCard": {
@@ -2106,7 +2106,7 @@
 		"comments": [
 			"Instruction shown when the eID card is about to be scanned with NFC"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 586]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 592]],
 		"translation": "Lue henkilökortin tiedot asettamalla laitteesi sen päälle."
 	},
 	"offlineQr.allowBluetoothAccessTitle": {
@@ -2152,14 +2152,14 @@
 		"message": "Portrait",
 		"placeholders": {},
 		"comments": ["The portrait of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 701]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 707]],
 		"translation": "Kuva"
 	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
 		"placeholders": {},
 		"comments": ["The postal code where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 671]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 677]],
 		"translation": "Postinumero"
 	},
 	"home.presentInPersonButton": {
@@ -2249,7 +2249,7 @@
 		"message": "Reason:",
 		"placeholders": {},
 		"comments": ["Label before the underlying error message"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 515]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 521]],
 		"translation": "Syy:"
 	},
 	"home.receiveOrShare": {
@@ -2292,7 +2292,7 @@
 		"comments": [
 			"Shown when the organization behind a request is recognized by a trusted party"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 528]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 534]],
 		"translation": "Luotettu toimija"
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2306,7 +2306,7 @@
 		"message": "Region",
 		"placeholders": {},
 		"comments": ["The region of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 751]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 757]],
 		"translation": "Alue"
 	},
 	"onboarding.pinReenter.title": {
@@ -2334,7 +2334,7 @@
 		"message": "REQUESTED CARDS",
 		"placeholders": {},
 		"comments": ["Heading shown above a list of requested cards the user has"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 470]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 476]],
 		"translation": "PYYDETYT KORTIT"
 	},
 	"activity.requestedInformationHeading": {
@@ -2364,7 +2364,7 @@
 		"message": "Resolved parameter is missing, but required for accepting an invitation.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 279]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 285]],
 		"translation": "Vaadittava parametri puuttuu, jotta kutsu voidaan hyväksyä."
 	},
 	"common.reviewRequestTitle": {
@@ -2373,14 +2373,14 @@
 		"comments": [
 			"Main heading of the screen where the user reviews a request to share, sign or pay"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 455]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 461]],
 		"translation": "Tarkasta pyyntö"
 	},
 	"common.revoked": {
 		"message": "Revoked",
 		"placeholders": {},
 		"comments": ["Label shown on a credential card when it is revoked"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 435]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 441]],
 		"translation": "Peruutettu"
 	},
 	"noContentWallet.scanButton": {
@@ -2463,7 +2463,7 @@
 		"message": "Search cards",
 		"placeholders": {},
 		"comments": ["Placeholder for search input in credentials list"],
-		"origin": [["src/features/wallet/CredentialsScreen.tsx", 133]],
+		"origin": [["src/features/wallet/CredentialsScreen.tsx", 138]],
 		"translation": "Hae kortteja"
 	},
 	"onboardingIntroduction.step1.title": {
@@ -2518,7 +2518,7 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Name of the settings screen"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 603]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 609]],
 		"translation": "Asetukset"
 	},
 	"common.share": {
@@ -2527,7 +2527,7 @@
 		"comments": [
 			"Button label to accept a request and share the requested cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 460]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 466]],
 		"translation": "Jaa"
 	},
 	"offlineQr.heading": {
@@ -2577,14 +2577,14 @@
 		"message": "Sharing failed",
 		"placeholders": {},
 		"comments": ["Shown when data sharing failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 373]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 379]],
 		"translation": "Jakaminen epäonnistui"
 	},
 	"common.sharingStopped": {
 		"message": "Sharing stopped",
 		"placeholders": {},
 		"comments": ["Shown when the user stopped the data sharing process"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 368]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 374]],
 		"translation": "Jakaminen keskeytetty"
 	},
 	"common.showLess": {
@@ -2598,7 +2598,7 @@
 		"message": "Show metadata attributes",
 		"placeholders": {},
 		"comments": ["Option that shows the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 576]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 582]],
 		"translation": "Näytä metatiedot"
 	},
 	"common.showMore": {
@@ -2623,7 +2623,7 @@
 		"message": "Sign",
 		"placeholders": {},
 		"comments": ["The sign of a driving privilege in an mDL (e.g. >=)"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 789]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 795]],
 		"translation": "Merkki"
 	},
 	"signShare.accept": {
@@ -2637,7 +2637,7 @@
 		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 809]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 815]],
 		"translation": "Allekirjoituksen merkki"
 	},
 	"activity.latest.signedDocument": {
@@ -2665,14 +2665,14 @@
 		"message": "Signing failed",
 		"placeholders": {},
 		"comments": ["Shown when the signing process failed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 333]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 339]],
 		"translation": "Allekirjoitus epäonnistui"
 	},
 	"common.signingStopped": {
 		"message": "Signing stopped",
 		"placeholders": {},
 		"comments": ["Shown when the signing process was stopped"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 328]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 334]],
 		"translation": "Allekirjoitus keskeytetty"
 	},
 	"signShare.signingWith": {
@@ -2717,7 +2717,7 @@
 		"comments": [
 			"Description when the user has the requested cards, but some hold requested attributes with a value the request does not accept"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 216]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 222]],
 		"translation": "Joidenkin korttiesi tiedoilla ei ole pyydettyä arvoa. Ne on merkitty punaisella."
 	},
 	"cardLifecycle.limitedByDate.active.sheetDescription": {
@@ -2735,7 +2735,7 @@
 		"comments": [
 			"Description when the user has the requested cards, but some lack requested attributes and some hold requested attributes with a value the request does not accept"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 234]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 240]],
 		"translation": "Joistakin korteistasi puuttuu pyydettyjä tietoja tai niillä ei ole pyydettyä arvoa. Ne on merkitty punaisella."
 	},
 	"common.missingAttributesDescription": {
@@ -2744,7 +2744,7 @@
 		"comments": [
 			"Description when the user has the requested cards, but some lack requested attributes"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 205]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 211]],
 		"translation": "Joistakin korteistasi puuttuu pyydettyjä tietoja. Ne on merkitty punaisella."
 	},
 	"common.somethingWentWrong": {
@@ -2805,14 +2805,14 @@
 		"comments": [
 			"Title of the confirmation dialog shown when the user stops a data sharing request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 505]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 511]],
 		"translation": "Lopeta jakaminen?"
 	},
 	"common.fields.street": {
 		"message": "Street",
 		"placeholders": {},
 		"comments": ["The street where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 656]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 662]],
 		"translation": "Katu"
 	},
 	"common.success": {
@@ -2838,7 +2838,7 @@
 			"Label shown on image rows prompting user to tap to view image"
 		],
 		"origin": [
-			["../../packages/app/src/components/CredentialAttributes.tsx", 316]
+			["../../packages/app/src/components/CredentialAttributes.tsx", 310]
 		],
 		"translation": "Napauta nähdäksesi"
 	},
@@ -2923,7 +2923,7 @@
 		"message": "The following cards will be shared.",
 		"placeholders": {},
 		"comments": ["Description when the user has all requested cards"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 480]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 486]],
 		"translation": "Seuraavat kortit jaetaan."
 	},
 	"signShare.documentIntro": {
@@ -3003,7 +3003,7 @@
 		"message": "The issuer provided the following:",
 		"placeholders": {},
 		"comments": ["Label shown above optional extra description"],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 68]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 67]],
 		"translation": "Myöntäjä antoi seuraavat tiedot:"
 	},
 	"paso.refusal.externalResourceVerificationFailed": {
@@ -3114,7 +3114,7 @@
 		"comments": [
 			"Heading shown when a list, such as the cards or the activity, is still empty"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 620]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 626]],
 		"translation": "Täällä ei ole vielä mitään"
 	},
 	"onboardingIdCardRequestedAttributes.description": {
@@ -3202,7 +3202,7 @@
 		"message": "This feature is not supported in this version of the app.",
 		"placeholders": {},
 		"comments": ["Shown when a feature that is not supported is accessed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 174]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 180]],
 		"translation": "Ominaisuus ei toimi tässä sovelluksen versiossa."
 	},
 	"submission.offlineRequestTitle": {
@@ -3232,7 +3232,7 @@
 		"comments": [
 			"Heading introducing the wallet, in onboarding and on the empty wallet screen"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 615]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 621]],
 		"translation": "Tämä on lompakkosi"
 	},
 	"requestPurpose.infoSheet.description": {
@@ -3302,7 +3302,7 @@
 		"comments": [
 			"Description in confirmation dialog explaining card archiving"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 384]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 390]],
 		"translation": "Tämä tekee kortista {name} käyttökelvottoman ja poistaa sen lompakostasi."
 	},
 	"TSg3cu": {
@@ -3351,7 +3351,7 @@
 		"comments": [
 			"Instructions explaining why the user must enter a transaction code"
 		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 58]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 57]],
 		"translation": "Vastaanottaaksesi tämän kortin sinun tulee syöttää tapahtumakoodi. Myöntäjä on antanut sinulle tämän koodin."
 	},
 	"authCodeFlowSlide.description": {
@@ -3392,7 +3392,7 @@
 		"comments": [
 			"Label for the input field where the user types the transaction code"
 		],
-		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 80]],
+		"origin": [["src/features/receive/slides/TxCodeSlide.tsx", 79]],
 		"translation": "Tapahtumakoodi"
 	},
 	"trust.trustedBy": {
@@ -3408,14 +3408,14 @@
 		"message": "UN sign",
 		"placeholders": {},
 		"comments": ["The United Nations distinguishing sign of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 804]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 810]],
 		"translation": "YK-tunnus"
 	},
 	"common.unableToRetrieveInvitation": {
 		"message": "Unable to retrieve invitation.",
 		"placeholders": {},
 		"comments": ["Shown when fetching an invitation from a URL fails"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 261]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 267]],
 		"translation": "Kutsun hakeminen epäonnistui."
 	},
 	"common.unavailableCardsHeading": {
@@ -3424,21 +3424,21 @@
 		"comments": [
 			"Heading shown above a list of requested cards the user does not have"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 475]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 481]],
 		"translation": "PUUTTUVAT KORTIT"
 	},
 	"common.unknown": {
 		"message": "Unknown",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 191]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 197]],
 		"translation": "Tuntematon"
 	},
 	"common.unknownOrganization": {
 		"message": "Unknown Organization",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 195]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 201]],
 		"translation": "Tuntematon organisaatio"
 	},
 	"dcApi.unlockSubtitle": {
@@ -3500,21 +3500,21 @@
 		"message": "Valid from",
 		"placeholders": {},
 		"comments": ["The time ƒrom which a credential is valid"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 721]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 727]],
 		"translation": "Voimassa alkaen"
 	},
 	"common.credentials.mdl.value": {
 		"message": "Value",
 		"placeholders": {},
 		"comments": ["The value of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 784]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 790]],
 		"translation": "Arvo"
 	},
 	"common.credentials.mdl.vehicleCategoryCode": {
 		"message": "Vehicle category code",
 		"placeholders": {},
 		"comments": ["The vehicle category code of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 799]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 805]],
 		"translation": "Ajoneuvoluokka"
 	},
 	"cardLifecycle.batch.description": {
@@ -3595,7 +3595,7 @@
 		"message": "Yes, archive",
 		"placeholders": {},
 		"comments": ["Confirm button text for archiving a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 389]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 395]],
 		"translation": "Kyllä, arkistoi"
 	},
 	"common.confirmContinue": {
@@ -3616,7 +3616,7 @@
 		"message": "Yes, delete",
 		"placeholders": {},
 		"comments": ["Confirm button text for deleting a pending card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 415]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 421]],
 		"translation": "Kyllä, poista"
 	},
 	"common.confirmStop": {
@@ -3674,8 +3674,10 @@
 	"presentationSuccess.returnHint": {
 		"message": "You can now return to the previous app.",
 		"placeholders": {},
-		"comments": ["Instruction shown after presentation is completed"],
-		"origin": [["src/features/share/slides/PresentationSuccessSlide.tsx", 106]],
+		"comments": [
+			"Instruction shown when a presentation request is completed, declined or failed"
+		],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 170]],
 		"translation": "Voit nyt palata aiempaan sovellukseen."
 	},
 	"sharing.failed.missingCredentials": {
@@ -3703,21 +3705,21 @@
 		"comments": [
 			"Description when the user has some but not all requested cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 490]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 496]],
 		"translation": "Sinulla ei ole kaikkia pyydettyjä kortteja."
 	},
 	"common.noNotificationsDescription": {
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
 		"comments": ["Message shown when the user has no notifications"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 630]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 636]],
 		"translation": "Sinulla ei ole tällä hetkellä ilmoituksia."
 	},
 	"common.noRequestedCardsDescription": {
 		"message": "You don't have the requested card(s).",
 		"placeholders": {},
 		"comments": ["Description when the user has none of the requested cards"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 485]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 491]],
 		"translation": "Sinulla ei ole pyydettyjä kortteja."
 	},
 	"common.missingCardsWarning": {
@@ -3726,7 +3728,7 @@
 		"comments": [
 			"Shown above the close button when the user lacks the required credentials"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 246]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 252]],
 		"translation": "Sinulla ei ole tarvittavia kortteja"
 	},
 	"pinLocked.description": {
@@ -3778,7 +3780,7 @@
 		"message": "You're all caught up",
 		"placeholders": {},
 		"comments": ["Heading shown when the user has no notifications"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 625]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 631]],
 		"translation": "Olet ajan tasalla"
 	},
 	"dcApi.shareFailed": {
@@ -3796,7 +3798,7 @@
 		"comments": [
 			"Shown above the close button when the user has the required cards, but they lack requested attributes"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 251]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 257]],
 		"translation": "Korteistasi puuttuu vaadittuja tietoja"
 	},
 	"common.unmetAttributesWarning": {
@@ -3805,7 +3807,7 @@
 		"comments": [
 			"Shown above the close button when the user has the required cards, but they lack requested attributes and hold others with a value the request does not accept"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 240]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 246]],
 		"translation": "Korteistasi puuttuu vaadittuja tietoja tai niillä ei ole pyydettyjä arvoja"
 	},
 	"receiveCredential.deferredCredentialParagraph": {
@@ -3823,7 +3825,7 @@
 		"comments": [
 			"Shown above the close button when the user has the required cards, but they hold requested attributes with a value the request does not accept"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 222]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 228]],
 		"translation": "Korttiesi tiedoilla ei ole pyydettyjä arvoja"
 	},
 	"cardLifecycle.active.sheetDescription": {

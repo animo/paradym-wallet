@@ -22,29 +22,29 @@ catalogs:
       specifier: ^7.29.0
       version: 7.29.7
     '@credo-ts/anoncreds':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@credo-ts/askar':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@credo-ts/cheqd':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@credo-ts/core':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@credo-ts/didcomm':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@credo-ts/openid4vc':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@credo-ts/react-native':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@credo-ts/webvh':
-      specifier: 0.8.0-alpha-20261027143516
-      version: 0.8.0-alpha-20261027143516
+      specifier: 0.8.0-alpha-20261030133527
+      version: 0.8.0-alpha-20261030133527
     '@expo-google-fonts/open-sans':
       specifier: ^0.4.2
       version: 0.4.2
@@ -323,13 +323,13 @@ importers:
         version: 0.6.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@credo-ts/askar':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)
       '@credo-ts/core':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@credo-ts/react-native':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(b87c1d348b349d8221d47b21c8ab583c)
+        version: 0.8.0-alpha-20261030133527(b87c1d348b349d8221d47b21c8ab583c)
       '@expo-google-fonts/open-sans':
         specifier: 'catalog:'
         version: 0.4.2
@@ -595,7 +595,7 @@ importers:
     dependencies:
       '@animo-id/eudi-wallet-functionality':
         specifier: 'catalog:'
-        version: 0.1.0(@credo-ts/core@0.8.0-alpha-20261027143516(typescript@6.0.3))(@credo-ts/openid4vc@0.8.0-alpha-20261027143516(typescript@6.0.3))
+        version: 0.1.0(@credo-ts/core@0.8.0-alpha-20261030133527(typescript@6.0.3))(@credo-ts/openid4vc@0.8.0-alpha-20261030133527(typescript@6.0.3))
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
         version: 0.6.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
@@ -607,28 +607,28 @@ importers:
         version: 1.1.2
       '@credo-ts/anoncreds':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
       '@credo-ts/askar':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)
       '@credo-ts/cheqd':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)
       '@credo-ts/core':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@credo-ts/didcomm':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@credo-ts/openid4vc':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@credo-ts/react-native':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(b87c1d348b349d8221d47b21c8ab583c)
+        version: 0.8.0-alpha-20261030133527(b87c1d348b349d8221d47b21c8ab583c)
       '@credo-ts/webvh':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261027143516(@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)
+        version: 0.8.0-alpha-20261030133527(@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)
       '@hyperledger/anoncreds-react-native':
         specifier: 'catalog:'
         version: 0.5.0-alpha-20261027094647(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
@@ -652,7 +652,7 @@ importers:
         version: 5.105.0(@types/react@19.3.0)(react@19.3.0)
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
-        version: 0.0.2-alpha.6(@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(@credo-ts/core@0.8.0-alpha-20261027143516(typescript@6.0.3))
+        version: 0.0.2-alpha.6(@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(@credo-ts/core@0.8.0-alpha-20261030133527(typescript@6.0.3))
       expo-crypto:
         specifier: 'catalog:'
         version: 58.0.7(expo@58.0.19)
@@ -1482,37 +1482,37 @@ packages:
   '@craftzdog/react-native-buffer@6.1.2':
     resolution: {integrity: sha512-KV1HitN05FHLLDG7Zb/yftDsa+mKBYBzFMQ0PMldvUicq6vWOtAvz9mDavt7Fzozh+WNqORE+yFDkkdWysZ/SA==}
 
-  '@credo-ts/anoncreds@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-wfBPwJSsf0b9IraKL/LLfmCVd85ni8BcxZ/WG7kv5nPUZbzHl1ke0AyyBhiykkj4ZlWelWQ7zNveYd6jKddhMA==}
+  '@credo-ts/anoncreds@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-cFrQnP74cDeZlmlDSXWxbxARcwAB1EVLmpqMSnuaYpmzexBchaFrKwpPyZlChr64aSTnhil2xYrmq2RlFb89aQ==}
     peerDependencies:
       '@hyperledger/anoncreds-shared': 0.5.0-alpha-20261027094647
 
-  '@credo-ts/askar@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-VoJE2v/ttTRNQv9QPlZOlD6lm8EjoH8jvNdCleRG5IO1ZYeraMX4TUyv+1fkmXq4yVEIeJhej+PnNUxUatKlAA==}
+  '@credo-ts/askar@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-WKOWCPpzhXyqhwJILP2Am5OBv5T4agE/KvFvwbO4m00FyR4gYdJb89dVr3y8RpY80uGnqUejw8EYzEI2AydLNA==}
     peerDependencies:
       '@openwallet-foundation/askar-shared': 0.7.0-alpha-20261023221824
 
-  '@credo-ts/cheqd@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-9ktbAiS7gTwvt0Z3u5FO9YMqZJ58LpcIUbsSKZJaLBY6tQ2QcPVkVMyZ/TWHOUCvhQbNtBYpItxVskrrtWKuMQ==}
+  '@credo-ts/cheqd@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-QVPPT7sZdXsNluq0ARRQnKwZYTfiOW08TXH/Sl4sGQ9ZF29k+yQj2/fGxqq9y9nBw9zg1srH0KpEwpRDv1FDIg==}
     peerDependencies:
-      '@credo-ts/anoncreds': 0.8.0-alpha-20261027143516
+      '@credo-ts/anoncreds': 0.8.0-alpha-20261030133527
     peerDependenciesMeta:
       '@credo-ts/anoncreds':
         optional: true
 
-  '@credo-ts/core@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-M0pgePB9Am31hLDmD2ANFk3ywy9hKxx9mOOwiozPO4sN4RpLma+yNyAOvUXKghxxcYFla4KfSXquqqkoLj7jZA==}
+  '@credo-ts/core@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-H1zoaLJn6/qO8GvZi7c6ALylCcEL7/oVIBKk42eVT1jbEWmY2BNIpNyb30ppFSD0mF3ugYyLkJoPBPrGqWvIKg==}
 
-  '@credo-ts/didcomm@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-pnofMlVn474kSz1mvsWgVBTXX514B6LR8dlzk12upisP/bdlnrWmhHconOejlqyZtBJMnoBUUdzTjNLDRhIP2w==}
+  '@credo-ts/didcomm@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-bp0O46ldbhWAaSs7W9iauLe7xbxyWkZFjUfjVYNnu4kwV4Pk8eq+i+fMvMHGmANQW3QY4K2NDxZXcTffbgjrcA==}
 
-  '@credo-ts/openid4vc@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-7fa8E3scuMk/mukSIidVqEH7wxPABmbsIQ5euOexczc7uiPNhZhCYfNE5n5XhTmSx8zLJiRntCTgcTBkATpUfA==}
+  '@credo-ts/openid4vc@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-zVJgIG39dojQDeN5T7mCTUvwuunZL6AG6GJyuuN94c/VdCuJtRbobSKjGs3DTS8y9tdo7wToYysh0MJK99yy0A==}
 
-  '@credo-ts/react-native@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-215OtzGFWTazjLLY76JR7daRapKgLK7H0dle0ERodsodbEUPSaK6oc3ROkhYeWWIlrOL5PYfunNeCk0XL/dYpA==}
+  '@credo-ts/react-native@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-/d8yG16claMRq4Z/2X4K1Is4qUQLe1q0uFmTY+ymC8WrJSFkA/EUD+1Jv5zLKBTL6zqeLyJ9BbrAAI35Yb77Kg==}
     peerDependencies:
-      '@animo-id/expo-secure-environment': ^0.1.1
+      '@animo-id/expo-secure-environment': ^0.3.0
       '@dr.pogodin/react-native-fs': '>= 2.37.0'
       expo-crypto: ^15.0.7
       react-native: 0.88.0
@@ -1526,10 +1526,10 @@ packages:
       react-native-fs:
         optional: true
 
-  '@credo-ts/webvh@0.8.0-alpha-20261027143516':
-    resolution: {integrity: sha512-VIr7Rc19IbGd8n7D58g4qaeTInw2Sbko9SXdcsSRm9LKpHgA7awREyqTB0GTQMZkDfU1J3uY502iDEMeZDdaMw==}
+  '@credo-ts/webvh@0.8.0-alpha-20261030133527':
+    resolution: {integrity: sha512-YQNbCWP/jnfY48ywUPNrNE+IV9rnTSgCP2lc93tikYDBdk2dfYdXPffU6nVkLw4FSTkTaIE7mymeeW8oPUSh5A==}
     peerDependencies:
-      '@credo-ts/anoncreds': 0.8.0-alpha-20261027143516
+      '@credo-ts/anoncreds': 0.8.0-alpha-20261030133527
     peerDependenciesMeta:
       '@credo-ts/anoncreds':
         optional: true
@@ -2375,9 +2375,6 @@ packages:
   '@peculiar/asn1-schema@2.11.1':
     resolution: {integrity: sha512-jaU9OaCcbZUdyXx9hMETZB9xoNmxTGjOGFqd3cOwKFkpKnyKd9WxF3uqj4PvX4cyOMP9bSdHg5YyML2qtx/d/g==}
     engines: {node: '>=14'}
-
-  '@peculiar/asn1-schema@2.8.0':
-    resolution: {integrity: sha512-7YT0U/ze0tF2QOBbE15gKZwy5tvgGyLRiRHLzhlbOpf7BT032oBSd0haZqXn5W6l26WLlu3dyxzjM+2638/z2Q==}
 
   '@peculiar/asn1-x509-attr@2.11.1':
     resolution: {integrity: sha512-n7RKFrbTzt8pGBlZ90kmKEn1qsLTTyw7lrvHMK0xsA42kQugPk/GXYpNbEcl7DkkdVsU/one5UX7KQPfxLj8vQ==}
@@ -3523,9 +3520,6 @@ packages:
   '@types/jsesc@2.5.1':
     resolution: {integrity: sha512-9VN+6yxLOPLOav+7PwjZbxiID2bVaeq0ED4qSQmdQTdjnXJSaCVKTR58t15oqH1H5t8Ng2ZX1SabJVoN9Q34bw==}
 
-  '@types/node@26.0.0':
-    resolution: {integrity: sha512-vf2YFi1iY9lHGwNJMs01biZFbKJkrZR1T6/MlzjhJLPdntOHLhTrDSnSVcdtvjihi4VQNlrFRIxLsDBlQpAipA==}
-
   '@types/node@26.6.5':
     resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
 
@@ -4003,10 +3997,6 @@ packages:
 
   content-disposition@2.0.1:
     resolution: {integrity: sha512-e+H0ZXHSWYrENhQzw1LPuP4oF5MzVKmDU6d3hxlvaPEYLLg62MxtQNPRx4SYSuYJSBUgnQIG4HIN2tEtNv7Dog==}
-    engines: {node: '>=18'}
-
-  content-type@2.0.0:
-    resolution: {integrity: sha512-j/O/d7GcZCyNl7/hwZAb606rzqkyvaDctLmckbxLzHvFBzTJHuGEdodATcP3yIRoDrLHkIATJuvzbFlp/ki2cQ==}
     engines: {node: '>=18'}
 
   content-type@2.1.0:
@@ -6580,9 +6570,6 @@ packages:
   unconfig-core@7.5.0:
     resolution: {integrity: sha512-Su3FauozOGP44ZmKdHy2oE6LPjk51M/TRRjHv2HNCWiDvfvCoxC2lno6jevMA91MYAdCdwP05QnWdWpSbncX/w==}
 
-  undici-types@8.3.0:
-    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
-
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
@@ -6860,10 +6847,10 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  '@animo-id/eudi-wallet-functionality@0.1.0(@credo-ts/core@0.8.0-alpha-20261027143516(typescript@6.0.3))(@credo-ts/openid4vc@0.8.0-alpha-20261027143516(typescript@6.0.3))':
+  '@animo-id/eudi-wallet-functionality@0.1.0(@credo-ts/core@0.8.0-alpha-20261030133527(typescript@6.0.3))(@credo-ts/openid4vc@0.8.0-alpha-20261030133527(typescript@6.0.3))':
     dependencies:
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
-      '@credo-ts/openid4vc': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
+      '@credo-ts/openid4vc': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       zod: 4.6.7
 
   '@animo-id/expo-digital-credentials-api@0.6.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
@@ -7783,11 +7770,11 @@ snapshots:
       - react
       - react-native
 
-  '@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)':
+  '@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)':
     dependencies:
       '@astronautlabs/jsonpath': 1.1.2
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
-      '@credo-ts/didcomm': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
+      '@credo-ts/didcomm': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@hyperledger/anoncreds-shared': 0.5.0-alpha-20261027094647
       '@sphereon/pex-models': 2.3.2
       class-transformer: 0.5.1
@@ -7797,9 +7784,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/askar@0.8.0-alpha-20261027143516(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)':
+  '@credo-ts/askar@0.8.0-alpha-20261030133527(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@noble/curves': 2.3.0
       '@openwallet-foundation/askar-shared': 0.7.0-alpha-20261023221824
       '@panva/hpke-noble': 1.1.4(hpke@1.1.4)
@@ -7812,14 +7799,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/cheqd@0.8.0-alpha-20261027143516(@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)':
+  '@credo-ts/cheqd@0.8.0-alpha-20261030133527(@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)':
     dependencies:
       '@cheqd/sdk': '@cheqd/sdk-esm@5.5.1'
       '@cheqd/ts-proto': 4.2.1
       '@cosmjs/crypto': 0.36.2
       '@cosmjs/proto-signing': 0.36.2
       '@cosmjs/stargate': 0.36.2
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@stablelib/ed25519': 2.1.0
       buffer: 6.0.3
       class-transformer: 0.5.1
@@ -7827,14 +7814,14 @@ snapshots:
       rxjs: 7.8.2
       tsyringe: 4.10.0
     optionalDependencies:
-      '@credo-ts/anoncreds': 0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
+      '@credo-ts/anoncreds': 0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - typescript
       - utf-8-validate
 
-  '@credo-ts/core@0.8.0-alpha-20261027143516(typescript@6.0.3)':
+  '@credo-ts/core@0.8.0-alpha-20261030133527(typescript@6.0.3)':
     dependencies:
       '@animo-id/pex': 6.1.1
       '@astronautlabs/jsonpath': 1.1.2
@@ -7881,9 +7868,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/didcomm@0.8.0-alpha-20261027143516(typescript@6.0.3)':
+  '@credo-ts/didcomm@0.8.0-alpha-20261030133527(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       class-transformer: 0.5.1
       class-validator: 0.14.4
       luxon: 3.7.2
@@ -7893,9 +7880,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/openid4vc@0.8.0-alpha-20261027143516(typescript@6.0.3)':
+  '@credo-ts/openid4vc@0.8.0-alpha-20261030133527(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@openid4vc/oauth2': 0.8.2(patch_hash=8b7742360249eabf4513cdfbb4eaa2cc03a2c34d15934178eef01379d8f2cda7)
       '@openid4vc/openid4vci': 0.8.2
       '@openid4vc/openid4vp': 0.8.2
@@ -7909,9 +7896,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/react-native@0.8.0-alpha-20261027143516(b87c1d348b349d8221d47b21c8ab583c)':
+  '@credo-ts/react-native@0.8.0-alpha-20261030133527(b87c1d348b349d8221d47b21c8ab583c)':
     dependencies:
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       events: 3.3.0
       expo-crypto: 58.0.7(expo@58.0.19)
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
@@ -7924,16 +7911,16 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/webvh@0.8.0-alpha-20261027143516(@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)':
+  '@credo-ts/webvh@0.8.0-alpha-20261030133527(@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)':
     dependencies:
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       class-transformer: 0.5.1
       class-validator: 0.14.4
       didwebvh-ts: 2.8.0
       json-canonicalize: 3.0.0
       tsyringe: 4.10.0
     optionalDependencies:
-      '@credo-ts/anoncreds': 0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
+      '@credo-ts/anoncreds': 0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -8548,7 +8535,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 26.0.0
+      '@types/node': 26.6.5
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -8896,7 +8883,7 @@ snapshots:
       '@peculiar/asn1-pkcs8': 2.11.1
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-cms@2.11.1':
@@ -8904,14 +8891,14 @@ snapshots:
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
       '@peculiar/asn1-x509-attr': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-csr@2.11.1':
     dependencies:
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-ecc@2.11.1':
@@ -8927,14 +8914,14 @@ snapshots:
       '@peculiar/asn1-pkcs8': 2.11.1
       '@peculiar/asn1-rsa': 2.11.1
       '@peculiar/asn1-schema': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-pkcs8@2.11.1':
     dependencies:
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-pkcs9@2.11.1':
@@ -8945,14 +8932,14 @@ snapshots:
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
       '@peculiar/asn1-x509-attr': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-rsa@2.11.1':
     dependencies:
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-schema@2.11.1':
@@ -8961,17 +8948,11 @@ snapshots:
       asn1js: 3.1.0
       tslib: 2.8.1
 
-  '@peculiar/asn1-schema@2.8.0':
-    dependencies:
-      '@peculiar/utils': 2.0.3
-      asn1js: 3.0.10
-      tslib: 2.8.1
-
   '@peculiar/asn1-x509-attr@2.11.1':
     dependencies:
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-x509-post-quantum@2.11.1':
@@ -8979,20 +8960,20 @@ snapshots:
       '@peculiar/asn1-asym-key': 2.11.1
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-x509-qualified-etsi@2.11.1':
     dependencies:
       '@peculiar/asn1-schema': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-x509-qualified@2.11.1':
     dependencies:
       '@peculiar/asn1-schema': 2.11.1
       '@peculiar/asn1-x509': 2.11.1
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   '@peculiar/asn1-x509@2.11.1':
@@ -11370,7 +11351,7 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 26.0.0
+      '@types/node': 26.6.5
 
   '@types/connect@3.4.38':
     dependencies:
@@ -11384,7 +11365,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.1.1':
     dependencies:
-      '@types/node': 26.0.0
+      '@types/node': 26.6.5
       '@types/qs': 6.15.1
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -11408,10 +11389,6 @@ snapshots:
       '@types/istanbul-lib-report': 3.0.3
 
   '@types/jsesc@2.5.1': {}
-
-  '@types/node@26.0.0':
-    dependencies:
-      undici-types: 8.3.0
 
   '@types/node@26.6.5':
     dependencies:
@@ -11444,13 +11421,13 @@ snapshots:
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 26.0.0
+      '@types/node': 26.6.5
 
   '@types/validator@13.15.10': {}
 
   '@types/ws@8.18.2':
     dependencies:
-      '@types/node': 26.0.0
+      '@types/node': 26.6.5
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -11943,8 +11920,6 @@ snapshots:
 
   content-disposition@2.0.1: {}
 
-  content-type@2.0.0: {}
-
   content-type@2.1.0: {}
 
   convert-source-map@2.0.0: {}
@@ -11972,10 +11947,10 @@ snapshots:
 
   credentials-context@2.0.0: {}
 
-  credo-ts-didweb-anoncreds@0.0.2-alpha.6(@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(@credo-ts/core@0.8.0-alpha-20261027143516(typescript@6.0.3)):
+  credo-ts-didweb-anoncreds@0.0.2-alpha.6(@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(@credo-ts/core@0.8.0-alpha-20261030133527(typescript@6.0.3)):
     dependencies:
-      '@credo-ts/anoncreds': 0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
-      '@credo-ts/core': 0.8.0-alpha-20261027143516(typescript@6.0.3)
+      '@credo-ts/anoncreds': 0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
+      '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       canonicalize: 2.1.0
       query-string: 9.4.0
 
@@ -12588,7 +12563,7 @@ snapshots:
       accepts: 2.0.0
       body-parser: 2.4.0
       content-disposition: 2.0.1
-      content-type: 2.0.0
+      content-type: 2.1.0
       cookie: 0.7.2
       cookie-signature: 1.2.2
       debug: 4.4.3
@@ -14765,7 +14740,7 @@ snapshots:
 
   type-is@2.1.0:
     dependencies:
-      content-type: 2.0.0
+      content-type: 2.1.0
       media-typer: 1.1.0
       mime-types: 3.0.2
 
@@ -14789,8 +14764,6 @@ snapshots:
     dependencies:
       '@quansync/fs': 1.0.0
       quansync: 1.0.0
-
-  undici-types@8.3.0: {}
 
   undici-types@8.9.0: {}
 
@@ -14877,10 +14850,10 @@ snapshots:
 
   webcrypto-core@1.9.2:
     dependencies:
-      '@peculiar/asn1-schema': 2.8.0
+      '@peculiar/asn1-schema': 2.11.1
       '@peculiar/json-schema': 1.1.12
       '@peculiar/utils': 2.0.3
-      asn1js: 3.0.10
+      asn1js: 3.1.0
       tslib: 2.8.1
 
   webidl-conversions@3.0.1: {}
