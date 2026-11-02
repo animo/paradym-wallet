@@ -167,6 +167,12 @@ export const commonMessages = {
     message: 'Something went wrong',
     comment: 'General title/message shown when something went wrong',
   }),
+  returnToPreviousApp: defineMessage({
+    // Keeps the id it had in the presentation success slide, so the existing translations are used
+    id: 'presentationSuccess.returnHint',
+    message: 'You can now return to the previous app.',
+    comment: 'Instruction shown when a presentation request is completed, declined or failed',
+  }),
   informationRequestDeclined: defineMessage({
     id: 'common.informationRequestDeclined',
     message: 'Information request has been declined.',

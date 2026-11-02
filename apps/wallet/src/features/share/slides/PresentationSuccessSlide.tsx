@@ -103,9 +103,7 @@ export const PresentationSuccessSlide = ({
       <Stack gap="3" borderTopWidth="0-5" borderColor="grey-200" paddingRight="4" paddingLeft="4" py="2" mx="-4">
         {showReturnToApp && (
           <Paragraph variant="annotation" ta="center">
-            <Trans id="presentationSuccess.returnHint" comment="Instruction shown after presentation is completed">
-              You can now return to the previous app.
-            </Trans>
+            {t(commonMessages.returnToPreviousApp)}
           </Paragraph>
         )}
         <Button.Solid scaleOnPress onPress={onComplete}>

@@ -213,6 +213,7 @@ export function PresentationNotificationScreen({
           flowType={transaction?.type === 'qes_authorization' ? 'sign' : 'verify'}
           reason={errorReason}
           onCancel={onCancel}
+          showReturnToApp
         />
       )}
       isError={!!errorReason}
