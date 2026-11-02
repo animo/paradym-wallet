@@ -1,4 +1,5 @@
 import type { AnonCredsRequestedPredicate } from '@credo-ts/anoncreds'
+import { getLocale } from '../config/locale'
 import { type FormattedAttribute, resolveAttributeLabelForRecord } from '../format/attributes'
 import type {
   FormattedSubmission,
@@ -10,12 +11,21 @@ import type { CredentialRecord } from '../storage/credentials'
 import type { CredentialDisplay } from './credential'
 import { sanitizeString } from './strings'
 
+/**
+ * The display entry for the wallet's locale, matched the way attribute labels are, falling back to
+ * English, then an entry without a locale, then the first.
+ */
 export function findDisplay<Display extends { locale?: string; lang?: string }>(
   display?: Display[]
 ): Display | undefined {
   if (!display) return undefined
 
-  let item = display.find((d) => d.locale?.startsWith('en-') || d.lang?.startsWith('en-'))
+  const locale = getLocale()
+  let item = display.find((d) => {
+    const displayLocale = d.locale ?? d.lang
+    return displayLocale === locale || displayLocale?.startsWith(`${locale}-`)
+  })
+  if (!item) item = display.find((d) => d.locale?.startsWith('en-') || d.lang?.startsWith('en-'))
   if (!item) item = display.find((d) => !d.locale && !d.lang)
   if (!item) item = display[0]
 

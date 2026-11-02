@@ -19,7 +19,12 @@ export const useShouldUsePinForSubmission = (submission?: CredentialsForProofReq
     // the PIN. Not with the cloud HSM, which has no local biometric and is handled above.
     const isHardwareBoundCredentialInSubmission =
       submission?.entries.some((entry) =>
-        entry.isSatisfied ? isHardwareBoundCredentialType(entry.credentials[0].credential.metadata.type) : false
+        entry.isSatisfied
+          ? isHardwareBoundCredentialType([
+              entry.credentials[0].credential.metadata.type,
+              ...(entry.credentials[0].credential.metadata.additionalTypes ?? []),
+            ])
+          : false
       ) ?? false
 
     return !isPidInSubmission && !isHardwareBoundCredentialInSubmission

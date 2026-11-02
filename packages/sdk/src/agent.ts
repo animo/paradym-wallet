@@ -14,6 +14,7 @@ import {
   Kms,
   PeerDidNumAlgo,
   PeerDidResolver,
+  SdJwtVcModule,
   WebDidResolver,
   X509Module,
   type X509ModuleConfigOptions,
@@ -36,6 +37,7 @@ import { anoncreds } from '@hyperledger/anoncreds-react-native'
 import { askar } from '@openwallet-foundation/askar-react-native'
 import { DidWebAnonCredsRegistry } from 'credo-ts-didweb-anoncreds'
 import { defaultWalletId, type ParadymWalletSdkLoggingOptions, type ParadymWalletSdkSharedOptions } from './config'
+import { resolveSdJwtVcTypeMetadata } from './config/typeMetadata'
 import { ParadymWalletMustBeAgentTypeError } from './error'
 import { RsaVerificationKeyManagementService } from './kms/RsaVerificationKeyManagementService'
 import { createLogger, type ParadymWalletSdkLogger } from './logging'
@@ -165,6 +167,7 @@ const getBaseModules = (options: Pick<SetupAgentOptions, 'id' | 'key' | 'storePa
       ],
     }),
     webvh: new WebVhModule(),
+    sdJwtVc: new SdJwtVcModule({ customTypeMetadataResolver: resolveSdJwtVcTypeMetadata }),
   }
 }
 

@@ -47,6 +47,7 @@ import {
 import { getCredentialBindingResolver } from '../openid4vc/credentialBindingResolver'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import { type CredentialsForProofRequest, resolveCredentialRequest } from '../openid4vc/func/resolveCredentialRequest'
+import { addSdJwtVcSvgTemplateToRecord } from '../openid4vc/svgTemplates'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { storePasoCredentialMetadata } from '../paso/credentialMetadata'
 import { getTrustedEntitiesForOpenId4Vci, type TrustedEntity, type TrustMechanism } from '../trust/trustMechanism'
@@ -334,6 +335,8 @@ export const receiveCredentialFromOpenId4VciOffer = async ({
           display: resolvedCredentialOffer.metadata.credentialIssuer.display,
         })
       )
+
+      await addSdJwtVcSvgTemplateToRecord(paradym, record)
 
       if ('credential_metadata_uri' in configuration) {
         paradym.logger.info(`Received a credential with potential SCA payments capabilities`)

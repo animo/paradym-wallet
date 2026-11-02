@@ -10,6 +10,7 @@ import {
 } from '@animo-id/expo-digital-credentials-api'
 import {
   DateOnly,
+  Hasher,
   type Logger,
   type MdocNameSpaces,
   MdocRecord,
@@ -136,23 +137,37 @@ function splitDataUrl(url: string): [metadata: string, data?: string] {
 }
 
 /**
+ * Rasterizes an svg to fit inside 20x20, as a base64 data url.
+ *
+ * An svg with its own width and height is drawn at that size whatever container it gets, so it is
+ * scaled down. One without them takes the container's size, so it gets a 20x20 one.
+ */
+function rasterizeSvg(svgSource: string) {
+  const svg = Skia.SVG.MakeFromString(svgSource)
+  if (!svg) return undefined
+
+  const hasIntrinsicSize = svg.width() > 0 && svg.height() > 0
+  const scale = hasIntrinsicSize ? Math.min(20 / svg.width(), 20 / svg.height()) : 1
+  const surface = hasIntrinsicSize
+    ? Skia.Surface.Make(Math.round(svg.width() * scale), Math.round(svg.height() * scale))
+    : Skia.Surface.Make(20, 20)
+  if (!surface) {
+    throw new Error('Unable to rasterize SVG')
+  }
+
+  const canvas = surface.getCanvas()
+  canvas.scale(scale, scale)
+  canvas.drawSvg(svg, surface.width() / scale, surface.height() / scale)
+  return `data:image/png;base64,${surface.makeImageSnapshot().encodeToBase64(ImageFormat.PNG, 80)}` as const
+}
+
+/**
  * Returns base64 data url
  */
 async function resizeImageWithAspectRatio(logger: Logger, uri: string) {
   try {
     const svgSource = await readSvgSource(uri)
-    if (svgSource !== undefined) {
-      const svg = Skia.SVG.MakeFromString(svgSource)
-      if (!svg) return undefined
-
-      const scale = Math.min(20 / svg.width(), 20 / svg.height()) // Fit inside 20x20
-      const surface = Skia.Surface.Make(Math.round(svg.width() * scale), Math.round(svg.height() * scale))
-      if (!surface) {
-        throw new Error('Unable to rasterize SVG')
-      }
-      surface.getCanvas().drawSvg(svg, surface.width(), surface.height())
-      return `data:image/png;base64,${surface.makeImageSnapshot().encodeToBase64(ImageFormat.PNG, 80)}` as const
-    }
+    if (svgSource !== undefined) return rasterizeSvg(svgSource)
 
     const image = await Image.loadAsync(uri)
 
@@ -217,7 +232,7 @@ async function resolveImageUri(url: string): Promise<string | undefined> {
 }
 
 /**
- * Rasterized icons, keyed by the display url they were built from.
+ * Rasterized icons, keyed by the display url they were built from, or the hash of the svg.
  *
  * Rasterizing is the expensive half of a registration — decoding the image, resizing it and
  * base64-encoding the result, once per credential — and the wallet re-registers its whole set on
@@ -233,6 +248,25 @@ async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
   // Also cached when it could not be built: a remote image expo-image has not cached yet stays
   // unresolvable until it is displayed, and retrying it on every registration never helped.
   iconDataUrlCache.set(url, iconDataUrl)
+
+  return iconDataUrl
+}
+
+/**
+ * The icon for a card's svg template. Keyed by hash because the filled-in svg is unique per
+ * credential and can be hundreds of kilobytes.
+ */
+function loadCachedSvgAsBase64DataUrl(logger: Logger, svg: string) {
+  const key = `svg:${TypedArrayEncoder.toBase64(Hasher.hash(svg, 'sha-256'))}`
+  if (iconDataUrlCache.has(key)) return iconDataUrlCache.get(key)
+
+  let iconDataUrl: CredentialItem['display']['iconDataUrl']
+  try {
+    iconDataUrl = rasterizeSvg(svg)
+  } catch (error) {
+    logger.error('Error rasterizing svg template for DC API', { error })
+  }
+  iconDataUrlCache.set(key, iconDataUrl)
 
   return iconDataUrl
 }
@@ -424,11 +458,13 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
       const sdJwtVc = record.firstCredential
       const { display } = getCredentialForDisplay(record)
 
-      const iconDataUrl = display.backgroundImage?.url
-        ? await loadCachedImageAsBase64DataUrl(paradym.logger, display.backgroundImage?.url)
-        : display.issuer.logo?.url
-          ? await loadCachedImageAsBase64DataUrl(paradym.logger, display.issuer.logo.url)
-          : undefined
+      const iconDataUrl = display.svg
+        ? loadCachedSvgAsBase64DataUrl(paradym.logger, display.svg)
+        : display.backgroundImage?.url
+          ? await loadCachedImageAsBase64DataUrl(paradym.logger, display.backgroundImage?.url)
+          : display.issuer.logo?.url
+            ? await loadCachedImageAsBase64DataUrl(paradym.logger, display.issuer.logo.url)
+            : undefined
 
       const claims = resolveClaimsWithRecordMetadata(record)
 

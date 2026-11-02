@@ -2,7 +2,9 @@ import { ClaimFormat, type Kms, type SdJwtVcRecord, type SdJwtVcTypeMetadata } f
 import {
   type CredentialCategoryMetadata,
   getOpenId4VcCredentialMetadata,
+  getSdJwtVcSvgTemplateMetadata,
   type OpenId4VcCredentialMetadata,
+  type SdJwtVcSvgTemplateMetadata,
 } from '../metadata/credentials'
 import { safeCalculateJwkThumbprint } from '../utils/jwkThumbprint'
 import { findDisplay } from './common'
@@ -11,6 +13,7 @@ import { getAttributesForDocTypeOrVct } from './docTypeOfVct'
 import { recursivelyMapAttributes } from './mdoc'
 import { getOpenId4VcCredentialDisplay, getOpenId4VcIssuerDisplay } from './openid4vc'
 import { sanitizeString } from './strings'
+import { fillSvgTemplate, getStoredSvgTemplateForDisplay } from './svgTemplate'
 
 export function getDisplayInformationForSdJwtCredential(
   credentialRecord: SdJwtVcRecord,
@@ -24,8 +27,13 @@ export function getDisplayInformationForSdJwtCredential(
   const sdJwtTypeMetadata = credentialRecord.typeMetadata
   const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
 
-  const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
-  const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
+  const credentialDisplay = getSdJwtCredentialDisplay(
+    sdJwtVc.prettyClaims,
+    openId4VcMetadata,
+    sdJwtTypeMetadata,
+    getSdJwtVcSvgTemplateMetadata(credentialRecord)
+  )
+  const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims, credentialRecord)
 
   // FIXME: For now, we map attributes to our custom attributes for PID and MDL
   // We should add support for attributes from Type Metadata and OID4VC Metadata
@@ -59,11 +67,13 @@ export function getDisplayInformationForSdJwtCredential(
 }
 
 function getSdJwtTypeMetadataCredentialDisplay(
-  sdJwtTypeMetadata: SdJwtVcTypeMetadata
+  credentialPayload: Record<string, unknown>,
+  sdJwtTypeMetadata: SdJwtVcTypeMetadata,
+  storedSvgTemplate?: SdJwtVcSvgTemplateMetadata | null
 ): Omit<CredentialDisplay, 'issuer' | 'name'> & { name?: string } {
   const typeMetadataDisplay = findDisplay(sdJwtTypeMetadata.display)
 
-  // TODO: support SVG rendering method
+  const svgTemplate = getStoredSvgTemplateForDisplay(typeMetadataDisplay, storedSvgTemplate)
 
   const credentialDisplay = {
     name: typeMetadataDisplay?.name,
@@ -75,6 +85,7 @@ function getSdJwtTypeMetadataCredentialDisplay(
           url: typeMetadataDisplay?.rendering?.simple?.background_image.uri,
         }
       : undefined,
+    svg: svgTemplate ? fillSvgTemplate(svgTemplate, sdJwtTypeMetadata.claims, credentialPayload) : undefined,
   }
 
   return credentialDisplay
@@ -83,14 +94,16 @@ function getSdJwtTypeMetadataCredentialDisplay(
 export function getSdJwtCredentialDisplay(
   credentialPayload: Record<string, unknown>,
   openId4VcMetadata?: OpenId4VcCredentialMetadata | null,
-  typeMetadata?: SdJwtVcTypeMetadata | null
+  typeMetadata?: SdJwtVcTypeMetadata | null,
+  storedSvgTemplate?: SdJwtVcSvgTemplateMetadata | null
 ) {
   let credentialDisplay: Partial<CredentialDisplay> = {}
 
   // TODO: should we combine them? I think not really needed if you have one of them
-  // Type metadata takes precedence.
-  if (typeMetadata) {
-    credentialDisplay = getSdJwtTypeMetadataCredentialDisplay(typeMetadata)
+  // Type metadata takes precedence when it has a display. A type without one, such as a base type
+  // that leaves the design to each issuer, falls back to the OID4VCI display.
+  if (typeMetadata?.display?.length) {
+    credentialDisplay = getSdJwtTypeMetadataCredentialDisplay(credentialPayload, typeMetadata, storedSvgTemplate)
   } else if (openId4VcMetadata) {
     credentialDisplay = getOpenId4VcCredentialDisplay(openId4VcMetadata)
   }

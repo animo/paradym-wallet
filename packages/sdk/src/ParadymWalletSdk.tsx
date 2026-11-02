@@ -19,11 +19,13 @@ import {
   type ParadymWalletSdkLegacyIdsOptions,
   type ParadymWalletSdkLocaleOptions,
   type ParadymWalletSdkSharedOptions,
+  type ParadymWalletSdkTypeMetadataOptions,
   type ParadymWalletSdkWalletInstanceVersionOptions,
 } from './config'
 import { setResolveAttributeLabel } from './config/attributeLabel'
 import { setResolveDcApiDisplay } from './config/dcApiDisplay'
 import { setLocale } from './config/locale'
+import { setSdJwtVcTypeMetadataLocations } from './config/typeMetadata'
 import { setWalletInstanceVersion } from './config/walletInstanceVersion'
 import {
   type DcApiRegisterCredentialsOptions,
@@ -87,7 +89,8 @@ export type ParadymWalletSdkOptions = Omit<SetupAgentOptions, 'openId4VcConfigur
   ParadymWalletSdkDcApiDisplayOptions &
   ParadymWalletSdkWalletInstanceVersionOptions &
   ParadymWalletSdkCredentialKeyOptions &
-  ParadymWalletSdkLegacyIdsOptions
+  ParadymWalletSdkLegacyIdsOptions &
+  ParadymWalletSdkTypeMetadataOptions
 
 export type SetupParadymWalletSdkOptions = Omit<ParadymWalletSdkOptions, 'key'>
 
@@ -114,6 +117,8 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
         ? (false as const)
         : { ...options.openId4VcConfiguration, trustedCertificates: getTrustedX509Certificates(trustMechanisms) }
 
+    // Before the agent: its type metadata resolver reads the locations.
+    setSdJwtVcTypeMetadataLocations(options.sdJwtVcTypeMetadataLocations)
     this.agent = setupAgent({ ...options, openId4VcConfiguration }) as unknown as AgentForAgentType<T>
     this.trustMechanisms = trustMechanisms
     this.legacyWalletIds = (options.legacyIds ?? []).map((legacyId) => getWalletStoreId(legacyId))

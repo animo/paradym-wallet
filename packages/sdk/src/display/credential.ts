@@ -18,6 +18,7 @@ import {
   getCredentialCategoryMetadata,
   getOpenId4VcCredentialMetadata,
   getRefreshCredentialMetadata,
+  getSdJwtVcSvgTemplateMetadata,
 } from '../metadata/credentials'
 import type { CredentialRecord } from '../storage/credentials'
 import { getAttributesAndMetadataForMdocPayload, getMdocCredentialDisplay } from './mdoc'
@@ -43,6 +44,11 @@ export interface CredentialDisplay {
   textColor?: string
   backgroundColor?: string
   backgroundImage?: DisplayImage
+  /**
+   * The SD-JWT VC SVG template for the card, with the claim values filled in. Draw it with a renderer
+   * that runs no scripts and loads no external resources, such as Skia. Never with a WebView.
+   */
+  svg?: string
   issuer: CredentialIssuerDisplay
 }
 
@@ -169,8 +175,13 @@ function deriveCredentialForDisplay(credentialRecord: CredentialRecord): Credent
     const sdJwtTypeMetadata = credentialRecord.typeMetadata
     const issuerDisplay = getOpenId4VcIssuerDisplay(openId4VcMetadata)
 
-    const credentialDisplay = getSdJwtCredentialDisplay(sdJwtVc.prettyClaims, openId4VcMetadata, sdJwtTypeMetadata)
-    const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims)
+    const credentialDisplay = getSdJwtCredentialDisplay(
+      sdJwtVc.prettyClaims,
+      openId4VcMetadata,
+      sdJwtTypeMetadata,
+      getSdJwtVcSvgTemplateMetadata(credentialRecord)
+    )
+    const { attributes, metadata } = getAttributesAndMetadataForSdJwtPayload(sdJwtVc.prettyClaims, credentialRecord)
 
     // Format displayed attributes (only those in claim metadata)
     const formattedAttributes = formatAttributesWithRecordMetadata(attributes, credentialRecord)

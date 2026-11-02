@@ -221,12 +221,14 @@ export function OpenIdPresentationNotificationScreen() {
       // Everything the user had to do to release this transaction is now behind us, which is what
       // [PaSO Risk Signal Registry] Section 2.8 wants both of these to describe.
       const authenticatedAt = new Date()
-      const usedHardwareBoundKey = isHardwareBoundCredentialType(
-        shareRequest.formattedSubmission.entries.find(
-          (entry): entry is FormattedSubmissionEntrySatisfied =>
-            entry.inputDescriptorId === formattedTransactionData?.cardForTransactionId && entry.isSatisfied
-        )?.credentials[0]?.credential.metadata.type
-      )
+      const cardMetadata = shareRequest.formattedSubmission.entries.find(
+        (entry): entry is FormattedSubmissionEntrySatisfied =>
+          entry.inputDescriptorId === formattedTransactionData?.cardForTransactionId && entry.isSatisfied
+      )?.credentials[0]?.credential.metadata
+      const usedHardwareBoundKey = isHardwareBoundCredentialType([
+        cardMetadata?.type,
+        ...(cardMetadata?.additionalTypes ?? []),
+      ])
       const authenticationMethods = resolvePasoAuthenticationMethods({
         usedTransactionPin: shouldUsePin === true,
         usedHardwareBoundKey,

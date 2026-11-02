@@ -11,6 +11,7 @@ import {
   setOpenId4VcCredentialMetadata,
 } from '../../metadata/credentials'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
+import { addSdJwtVcSvgTemplateToRecord } from '../svgTemplates'
 
 export type ReceiveDeferredCredentialFromOpenId4VciOfferOptions = {
   paradym: ParadymWalletSdk
@@ -36,30 +37,38 @@ export const receiveDeferredCredentialFromOpenId4VciOffer = async ({
 
   return {
     deferredCredentials,
-    credentials: parseCredentialResponses(credentials, issuerMetadata),
+    credentials: await parseCredentialResponses(paradym, credentials, issuerMetadata),
   }
 }
 
-const parseCredentialResponses = (credentials: OpenId4VciCredentialResponse[], issuerMetadata: OpenId4VciMetadata) =>
-  credentials.map(({ record, ...credentialResponse }) => {
-    // OpenID4VC metadata
-    const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
-      id: issuerMetadata.credentialIssuer.credential_issuer,
-      display: issuerMetadata.credentialIssuer.display,
-    })
-    setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
-
-    // Match metadata
-    if (credentials.length > 1) {
-      setBatchCredentialMetadata(record, {
-        additionalCredentials: credentials.slice(1).map((c) => c.record.encoded) as
-          | Array<string>
-          | Array<Record<string, unknown>>,
+const parseCredentialResponses = (
+  paradym: ParadymWalletSdk,
+  credentials: OpenId4VciCredentialResponse[],
+  issuerMetadata: OpenId4VciMetadata
+) =>
+  Promise.all(
+    credentials.map(async ({ record, ...credentialResponse }) => {
+      // OpenID4VC metadata
+      const openId4VcMetadata = extractOpenId4VcCredentialMetadata(credentialResponse.credentialConfiguration, {
+        id: issuerMetadata.credentialIssuer.credential_issuer,
+        display: issuerMetadata.credentialIssuer.display,
       })
-    }
+      setOpenId4VcCredentialMetadata(record, openId4VcMetadata)
 
-    return {
-      ...credentialResponse,
-      credential: record,
-    }
-  })
+      await addSdJwtVcSvgTemplateToRecord(paradym, record)
+
+      // Match metadata
+      if (credentials.length > 1) {
+        setBatchCredentialMetadata(record, {
+          additionalCredentials: credentials.slice(1).map((c) => c.record.encoded) as
+            | Array<string>
+            | Array<Record<string, unknown>>,
+        })
+      }
+
+      return {
+        ...credentialResponse,
+        credential: record,
+      }
+    })
+  )

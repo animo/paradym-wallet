@@ -4,6 +4,7 @@ import type { LogLevel, ParadymWalletSdkLogger } from '../logging'
 import type { TrustMechanismConfiguration } from '../trust/trustMechanism'
 import type { ResolveAttributeLabel } from './attributeLabel'
 import type { ResolveDcApiDisplay } from './dcApiDisplay'
+import type { SdJwtVcTypeMetadataLocations } from './typeMetadata'
 
 /**
  *
@@ -64,6 +65,16 @@ export type ParadymWalletSdkAttributeLabelOptions = {
  */
 export type ParadymWalletSdkDcApiDisplayOptions = {
   resolveDcApiDisplay?: ResolveDcApiDisplay
+}
+
+/**
+ *
+ * Where SD-JWT VC type metadata is fetched from for a `vct` whose publisher doesn't serve it yet —
+ * see {@link SdJwtVcTypeMetadataLocations}.
+ *
+ */
+export type ParadymWalletSdkTypeMetadataOptions = {
+  sdJwtVcTypeMetadataLocations?: SdJwtVcTypeMetadataLocations
 }
 
 /**
