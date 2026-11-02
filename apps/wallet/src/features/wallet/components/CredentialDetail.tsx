@@ -64,6 +64,7 @@ export function CredentialDetail({
                 altText: credential.display.backgroundImage?.altText,
               }}
               bgColor={credential.display.backgroundColor ?? 'grey-900'}
+              svg={credential.display.svg}
             />
           </AnimatedStack>
           <Stack gap="2">

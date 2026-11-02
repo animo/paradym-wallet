@@ -375,6 +375,9 @@ importers:
       '@react-native-picker/picker':
         specifier: 'catalog:'
         version: 2.11.4(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+      '@shopify/react-native-skia':
+        specifier: 'catalog:'
+        version: 2.14.0(aa7e36ea83b600c6ca34e1743aa10336)
       babel-plugin-module-resolver:
         specifier: 'catalog:'
         version: 5.0.3
@@ -523,6 +526,9 @@ importers:
       '@paradym/wallet-sdk':
         specifier: workspace:*
         version: link:../sdk
+      '@shopify/react-native-skia':
+        specifier: 'catalog:'
+        version: 2.14.0(aa7e36ea83b600c6ca34e1743aa10336)
       '@tamagui/animations-react-native':
         specifier: 'catalog:'
         version: 3.1.6(07ff7bd1739b5eb8e8b1e39b5a2dd4f0)
@@ -653,6 +659,9 @@ importers:
       credo-ts-didweb-anoncreds:
         specifier: 'catalog:'
         version: 0.0.2-alpha.6(@credo-ts/anoncreds@0.8.0-alpha-20261027143516(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(@credo-ts/core@0.8.0-alpha-20261027143516(typescript@6.0.3))
+      expo:
+        specifier: 'catalog:'
+        version: 58.0.19(@babel/core@7.29.7)(@expo/dom-webview@56.0.5)(@expo/metro-runtime@56.0.15)(expo-router@58.0.26)(react-dom@19.3.0(react@19.3.0))(react-native-web@0.21.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-native-worklets@0.13.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
       expo-crypto:
         specifier: 'catalog:'
         version: 58.0.7(expo@58.0.19)

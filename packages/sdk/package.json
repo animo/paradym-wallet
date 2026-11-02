@@ -60,6 +60,7 @@
 		"@shopify/react-native-skia": "catalog:",
 		"@tanstack/react-query": "catalog:",
 		"credo-ts-didweb-anoncreds": "catalog:",
+		"expo": "catalog:",
 		"expo-crypto": "catalog:",
 		"expo-file-system": "catalog:",
 		"expo-image": "catalog:",

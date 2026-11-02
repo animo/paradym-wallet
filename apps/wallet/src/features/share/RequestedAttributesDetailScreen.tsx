@@ -128,6 +128,7 @@ export function RequestedAttributesDetailScreen({
                     altText: activeCredential.display.backgroundImage?.altText,
                   }}
                   bgColor={activeCredential.display.backgroundColor ?? 'grey-900'}
+                  svg={activeCredential.display.svg}
                 />
               </Stack>
               <Stack gap="4">

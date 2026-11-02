@@ -1,4 +1,4 @@
-import { isHardwareBoundCredentialConfiguration } from '@app/config/paymentAttestation'
+import { isHardwareBoundCredentialConfiguration, sdJwtVcTypeMetadataLocations } from '@app/config/paymentAttestation'
 import { legacyWalletIds, walletId } from '@app/config/wallet'
 import { eudiTrustList, trustedDidEntities, trustedOpenId4VciIssuerEntities, trustedX509Entities } from '@app/constants'
 import { resolveDcApiDisplay } from '@app/utils/dcApiRegisterOptions'
@@ -43,10 +43,11 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   resolveDcApiDisplay,
   // A payment attestation is the possession factor of Strong Customer Authentication, so its key is
   // created in the secure environment. The secure environment only supports P-256.
-  resolveCredentialKeyOptions: ({ credentialConfiguration }) =>
-    isHardwareBoundCredentialConfiguration(credentialConfiguration)
+  resolveCredentialKeyOptions: async ({ credentialConfiguration }) =>
+    (await isHardwareBoundCredentialConfiguration(credentialConfiguration))
       ? { backend: 'secureEnvironment', algorithm: 'ES256' }
       : undefined,
+  sdJwtVcTypeMetadataLocations,
   openId4VcConfiguration: {
     getTrustedCertificatesForVerification: (_agentContext, { certificateChain, verification }) => {
       // Whether the issuer is trusted is decided by the trust mechanisms, so an untrusted issuer resolves as untrusted

@@ -219,6 +219,7 @@ export const CredentialRetrievalSlide = ({
         name={display.name ?? t(commonMessages.unknown)}
         backgroundImage={display.backgroundImage}
         bgColor={display.backgroundColor}
+        svg={credential?.display.svg}
         isLoading={isStoring && !isCompleteAndAllowed}
       />
     </AnimatedStack>

@@ -10,6 +10,7 @@
 		"@package/utils": "workspace:*",
 		"@package/translations": "workspace:*",
 		"@paradym/wallet-sdk": "workspace:*",
+		"@shopify/react-native-skia": "catalog:",
 		"@tamagui/animations-react-native": "catalog:",
 		"@tamagui/colors": "catalog:",
 		"@tamagui/font-inter": "catalog:",

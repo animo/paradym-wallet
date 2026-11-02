@@ -106,7 +106,7 @@ export function CredentialNotificationScreen() {
         // Checked up front: otherwise the user goes through the whole issuer flow, only for the key to
         // fail to be created once the card is requested.
         const credentialConfiguration = Object.values(result.resolvedCredentialOffer.offeredCredentialConfigurations)[0]
-        if (credentialConfiguration && isHardwareBoundCredentialConfiguration(credentialConfiguration)) {
+        if (credentialConfiguration && (await isHardwareBoundCredentialConfiguration(credentialConfiguration))) {
           setIsBiometricsSetupRequired(!(await canCreateHardwareBoundKey()))
         }
 

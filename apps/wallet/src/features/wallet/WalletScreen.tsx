@@ -24,6 +24,7 @@ import { useWindowDimensions } from 'react-native'
 import { FadeIn } from 'react-native-reanimated'
 import { usePasoRenewCredentialMetadata } from '../../hooks/usePasoRenewCredentialMetadata'
 import { useRefreshPaymentTransactionStatuses } from '../../hooks/useRefreshPaymentTransactionStatuses'
+import { useUpdateSdJwtVcSvgTemplates } from '../../hooks/useUpdateSdJwtVcSvgTemplates'
 import { CredentialList } from './CredentialsScreen'
 import { ActionCard } from './components/ActionCard'
 import { AllCardsCard } from './components/AllCardsCard'
@@ -47,6 +48,7 @@ export function WalletScreen() {
   useRefreshedDeferredCredentials()
   useRefreshPaymentTransactionStatuses()
   usePasoRenewCredentialMetadata()
+  useUpdateSdJwtVcSvgTemplates()
 
   const home = (
     <>

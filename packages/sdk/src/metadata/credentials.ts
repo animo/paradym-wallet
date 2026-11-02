@@ -105,6 +105,17 @@ export interface PasoCredentialMetadataRecord {
   localePriorityList?: string[]
 }
 
+/**
+ * The SVG template the card shows, fetched at issuance. Stored unfilled: the claim values go in when
+ * the card is displayed.
+ */
+export interface SdJwtVcSvgTemplateMetadata {
+  uri: string
+  svg: string
+  /** The display locales that use this template. A display entry without a locale isn't listed. */
+  locales: string[]
+}
+
 export type TransactionStatusMetadata = {
   'urn:eudi:sca:eu.europa.ec:payment': {
     transaction_status_token: string
@@ -119,6 +130,7 @@ const transactionStatusMetadataKey = '_paradym/transactionStatusMetadata'
 const batchCredentialMetadataKey = '_paradym/batchCredentialMetadata'
 const credentialCategoryMetadataKey = '_paradym/credentialCategoryMetadata'
 const refreshCredentialMetadataKey = '_paradym/refreshCredentialMetadata'
+const sdJwtVcSvgTemplateMetadataKey = '_paradym/sdJwtVcSvgTemplateMetadata'
 const didCommCredentialExchangeDisplayMetadataKey = '_paradym/credentialDisplayMetadata'
 const didCommProofExchangeDisplayMetadataKey = '_paradym/proofDisplayMetadata'
 
@@ -163,6 +175,14 @@ export function getRefreshCredentialMetadata(credentialRecord: CredentialRecord)
 
 export function setRefreshCredentialMetadata(credentialRecord: CredentialRecord, metadata: RefreshCredentialMetadata) {
   credentialRecord.metadata.set(refreshCredentialMetadataKey, metadata)
+}
+
+export function getSdJwtVcSvgTemplateMetadata(credentialRecord: SdJwtVcRecord): SdJwtVcSvgTemplateMetadata | null {
+  return credentialRecord.metadata.get(sdJwtVcSvgTemplateMetadataKey)
+}
+
+export function setSdJwtVcSvgTemplateMetadata(credentialRecord: SdJwtVcRecord, metadata: SdJwtVcSvgTemplateMetadata) {
+  credentialRecord.metadata.set(sdJwtVcSvgTemplateMetadataKey, metadata)
 }
 
 export function getPaymentsMetadata(credentialRecord: CredentialRecord): PaymentsCredentialMetadata | null {

@@ -20,6 +20,7 @@ import type { DisplayImage } from '@paradym/wallet-sdk'
 import { BlurView } from 'expo-blur'
 import { StyleSheet } from 'react-native'
 import { BlurBadge } from './BlurBadge'
+import { CredentialSvg, getSvgAspectRatio, useSvg } from './CredentialSvg'
 
 type CredentialCardProps = {
   onPress?(): void
@@ -28,6 +29,11 @@ type CredentialCardProps = {
   textColor?: string
   issuerImage?: DisplayImage
   backgroundImage?: DisplayImage
+  /**
+   * SVG that replaces the card design. Drawn with Skia, which runs no scripts and loads no external
+   * resources, so an untrusted template can only draw.
+   */
+  svg?: string
   shadow?: boolean
   isLoading?: boolean
   isExpired?: boolean
@@ -41,12 +47,14 @@ export function CredentialCard({
   bgColor,
   textColor,
   backgroundImage,
+  svg: svgSource,
   shadow = true,
   isLoading,
   isExpired,
   isRevoked,
 }: CredentialCardProps) {
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
+  const svg = useSvg(svgSource)
 
   textColor = textColor ? textColor : bgColor ? getTextColorBasedOnBg(bgColor) : 'grey-100'
 
@@ -64,7 +72,7 @@ export function CredentialCard({
     <AnimatedStack
       shadow={shadow}
       br="8"
-      bg={backgroundImage?.url ? 'transparent' : bgColorValue} // Only set bg color if no background image
+      bg={backgroundImage?.url && !svg ? 'transparent' : bgColorValue} // Only set bg color if no background image
       borderWidth="0-5"
       borderColor="borderTranslucent"
       position="relative"
@@ -80,6 +88,8 @@ export function CredentialCard({
         p="5"
         backgroundColor="transparent"
         overflow="hidden"
+        aspectRatio={svg ? getSvgAspectRatio(svg) : undefined}
+        jc={svg ? 'flex-end' : undefined}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={onPress}
@@ -87,21 +97,30 @@ export function CredentialCard({
         accessibilityRole={onPress ? 'button' : undefined}
         aria-label="Credential"
       >
-        <Card.Header p={0}>
-          <XStack jc="space-between">
-            <YStack f={1}>
-              <Paragraph fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
-                {(name ?? 'TODO name').toLocaleUpperCase()}
-              </Paragraph>
-            </YStack>
-            <XStack>{icon}</XStack>
-          </XStack>
-        </Card.Header>
-        <Spacer size="11" />
+        {!svg && (
+          <>
+            <Card.Header p={0}>
+              <XStack jc="space-between">
+                <YStack f={1}>
+                  <Paragraph fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
+                    {(name ?? t(commonMessages.unknown)).toLocaleUpperCase()}
+                  </Paragraph>
+                </YStack>
+                <XStack>{icon}</XStack>
+              </XStack>
+            </Card.Header>
+            <Spacer size="11" />
+          </>
+        )}
         <Card.Footer h="3" jc="flex-end" ai="flex-end">
           {onPress && <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight color={textColor} />} />}
         </Card.Footer>
-        {backgroundImage?.url && (
+        {svg && (
+          <Card.Background accessible={false}>
+            <CredentialSvg svg={svg} />
+          </Card.Background>
+        )}
+        {!svg && backgroundImage?.url && (
           <Card.Background accessible={false}>
             <Image
               backgroundColor={bgColor ?? 'grey-900'}
