@@ -38,8 +38,8 @@ export function OnboardingIdCardRequestedAttributes({
 
   return (
     <YStack flexBasis={0} flexGrow={1} justifyContent="space-between">
-      <ScrollView mt="-4">
-        <YStack gap="4">
+      <ScrollView mt="-5">
+        <YStack gap="5">
           <Paragraph>{attributesInfo}</Paragraph>
           <CardWithAttributes
             name={t({
@@ -54,7 +54,7 @@ export function OnboardingIdCardRequestedAttributes({
           />
         </YStack>
       </ScrollView>
-      <YStack gap="4" alignItems="center">
+      <YStack gap="5" alignItems="center">
         {onSkipCardSetup && (
           <Button.Text icon={HeroIcons.ArrowRight} scaleOnPress onPress={onSetupLater}>
             {t(commonMessages.setUpLater)}

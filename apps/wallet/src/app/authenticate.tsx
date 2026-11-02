@@ -122,9 +122,9 @@ export default function Authenticate() {
 
   return (
     <FlexPage flex-1 alignItems="center">
-      <YStack fg={1} gap="6" mb={noBottomSafeArea ? -additionalPadding : undefined}>
-        <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="4">
-          <IconContainer h="4" w="4" ai="center" jc="center" icon={<HeroIcons.LockClosedFilled />} />
+      <YStack grow={1} gap="8" mb={noBottomSafeArea ? -additionalPadding : undefined}>
+        <YStack flex-1 alignItems="center" justifyContent="flex-end" gap="5">
+          <IconContainer h="11" w="11" items="center" justify="center" icon={<HeroIcons.LockClosedFilled />} />
           <Heading heading="h2" fontWeight="semiBold">
             {t(commonMessages.enterPin)}
           </Heading>

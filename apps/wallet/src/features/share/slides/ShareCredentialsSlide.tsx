@@ -48,27 +48,27 @@ export const ShareCredentialsSlide = ({
   const shareLabel = t(commonMessages.share)
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="4" fg={1}>
+    <YStack grow={1} justify="space-between">
+      <YStack gap="5" grow={1}>
         <Heading>{t(commonMessages.reviewRequestTitle)}</Heading>
 
         <YStack
-          fg={1}
-          px="4"
-          mx="-4"
+          grow={1}
+          px="5"
+          mx="-5"
           borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
           onLayout={(event) => {
             if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
           }}
-          btw="0-5"
+          borderTopWidth="1"
         >
           <ScrollView
             onScroll={handleScroll}
             scrollEventThrottle={scrollEventThrottle}
-            contentContainerStyle={{ gap: '6' }}
-            px="4"
-            mx="-4"
-            pt="4"
+            contentContainerStyle={{ gap: '8' }}
+            px="5"
+            mx="-5"
+            pt="5"
             maxHeight={scrollViewHeight}
             bg="white"
           >
@@ -98,12 +98,12 @@ export const ShareCredentialsSlide = ({
               />
             )}
             <RequestedAttributesSection submission={submission} />
-            <Spacer />
+            <Spacer size="5" />
           </ScrollView>
         </YStack>
       </YStack>
 
-      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
+      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5" bg="background">
         {submission.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"
@@ -115,7 +115,7 @@ export const ShareCredentialsSlide = ({
           />
         ) : (
           <YStack gap="3">
-            <Paragraph variant="sub" fontWeight="medium" ta="center" color="danger-500">
+            <Paragraph variant="sub" fontWeight="medium" text="center" color="danger-500">
               {t(
                 hasMissingCards(submission)
                   ? commonMessages.missingCardsWarning

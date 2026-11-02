@@ -50,19 +50,19 @@ export function MessageBox({
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
 
   const container = (
-    <XStack gap="2" p="3-5" bg={messageBoxVariants[variant].bg} borderRadius="8">
-      <YStack gap="2" f={1}>
+    <XStack gap="2" p="4" bg={messageBoxVariants[variant].bg} borderRadius="8">
+      <YStack gap="2" flex={1}>
         {title && (
           <Heading heading="sub2" color={messageBoxVariants[variant].color}>
             {title}
           </Heading>
         )}
-        <Paragraph f={1} color={messageBoxVariants[variant].color} variant={textVariant}>
+        <Paragraph flex={1} color={messageBoxVariants[variant].color} variant={textVariant}>
           {message}
         </Paragraph>
       </YStack>
       {icon && (
-        <Stack ai="center" jc="center">
+        <Stack items="center" justify="center">
           {cloneElement(icon, { color: messageBoxVariants[variant].color })}
         </Stack>
       )}

@@ -39,16 +39,16 @@ export function ConfirmationSheet({
   const { t } = useLingui()
   return (
     <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
-      <Stack p="4" gap="4">
-        <XStack jc="space-between">
+      <Stack p="5" gap="5">
+        <XStack justify="space-between">
           <Heading color="grey-900" heading="h2">
             {title || t(defaultTitleMessage)}
           </Heading>
-          <Stack ml="2" br="12" p="2" bg="grey-50" onPress={() => setIsOpen(false)}>
+          <Stack ml="2" rounded="12" p="2" bg="grey-50" onPress={() => setIsOpen(false)}>
             <HeroIcons.X size={16} strokeWidth={2.5} color="grey-500" />
           </Stack>
         </XStack>
-        <Stack borderBottomWidth="0-5" borderColor="grey-100" />
+        <Stack borderBottomWidth="1" borderColor="grey-100" />
         {Array.isArray(description) ? (
           description.map((desc) => <Paragraph key={desc}>{desc}</Paragraph>)
         ) : (

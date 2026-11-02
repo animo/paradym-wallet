@@ -153,14 +153,11 @@ catalog:
   # Tamagui
   "@tamagui/animations-react-native": 3.1.6
   "@tamagui/button": 3.1.6
-  "@tamagui/font-inter": 3.1.6
+  "@tamagui/config": 3.1.6
   "@tamagui/input": 3.1.6
-  "@tamagui/shorthands": 3.1.6
+  "@tamagui/native": 3.1.6
   "@tamagui/switch": 3.1.6
-  "@tamagui/themes": 3.1.6
   "@tamagui/toast": 3.1.6
-  "@tamagui/react-native-media-driver": 3.1.6
-  "@tamagui/colors": 3.1.6
   tamagui: 3.1.6
 
 minimumReleaseAgeExclude:

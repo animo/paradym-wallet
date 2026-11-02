@@ -60,16 +60,16 @@ export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
   return (
     <Animated.View style={pressStyle}>
       <YStack
-        jc="space-between"
+        justify="space-between"
         w="100%"
-        h="15"
-        gap="6"
-        p="5"
+        h={204}
+        gap="8"
+        p="6"
         borderRadius="8"
         overflow="hidden"
         borderColor="#D8DAC8"
         position="relative"
-        bw="0-5"
+        borderWidth="1"
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -91,7 +91,7 @@ export function IdCard({ icon, userName, onPress, hideUserName }: IdCardProps) {
           <XStack justifyContent="flex-start" alignItems="flex-end">
             {IconComponent && (
               <AnimatedStack style={animatedStyle}>
-                <Circle m="-1" size="3-5" backgroundColor="#282C3740">
+                <Circle m="-0-5" size="10" backgroundColor="#282C3740">
                   <IconComponent strokeWidth={2} color="white" size={22} />
                 </Circle>
               </AnimatedStack>

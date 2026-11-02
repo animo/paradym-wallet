@@ -35,11 +35,11 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
   const isRecognized = approvedBy.length > 0 || entityIsTrustAnchor
 
   return (
-    <YStack gap="4">
-      <YStack gap="3" ai="center">
+    <YStack gap="5">
+      <YStack gap="3" items="center">
         {/* `white`, not `background`: the logo is the verifier's artwork, commonly dark on
             transparent, so this is a plate under it rather than a surface of ours to darken. */}
-        <Circle size={72} bw="0-5" borderColor="grey-100" bg="white" overflow="hidden">
+        <Circle size={72} borderWidth="1" borderColor="grey-100" bg="white" overflow="hidden">
           {verifier.logo?.url ? (
             <Image
               src={verifier.logo.url}
@@ -52,7 +52,7 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
             <HeroIcons.BuildingOffice color="grey-800" size={32} />
           )}
         </Circle>
-        <YStack gap="1">
+        <YStack gap="0-5">
           <Heading heading="h2" center numberOfLines={2}>
             {verifier.name
               ? t(commonMessages.doYouTrust(verifier.name))
@@ -84,13 +84,13 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
         {areTrustedEntitiesVisible &&
           (approvedBy.length > 0 ? (
             approvedBy.map((entity) => (
-              <XStack key={entity.entityId} ai="center" br="8" p="3" gap="3" bg="grey-100">
+              <XStack key={entity.entityId} items="center" rounded="8" p="3" gap="3" bg="grey-100">
                 {entity.logoUri && (
-                  <Circle overflow="hidden" size="4" bg="grey-50">
+                  <Circle overflow="hidden" size="11" bg="grey-50">
                     <Image src={entity.logoUri} height="100%" width="100%" />
                   </Circle>
                 )}
-                <YStack f={1} flexShrink={1}>
+                <YStack flex={1} flexShrink={1}>
                   <Heading heading="h3" numberOfLines={2}>
                     {entity.organizationName}
                   </Heading>

@@ -33,7 +33,7 @@ export function BackFooter() {
   if (media.wide) return null
 
   return (
-    <YStack btw="0-5" borderColor="grey-200" pt="3" mx="-4" px="4" bg="background">
+    <YStack borderTopWidth="1" borderColor="grey-200" pt="3" mx="-5" px="5" bg="background">
       <TextBackButton />
     </YStack>
   )

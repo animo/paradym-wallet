@@ -14,8 +14,8 @@ export const CustomToast = ({ toast, index, handleClose }: ToastItemRenderProps)
     <Toast.Item
       toast={toast}
       index={index}
-      p="4"
-      my="1"
+      p="5"
+      my="0-5"
       width="100%"
       // The shadow v2's toast frame had (`elevation="$3"`)
       shadowColor="black"

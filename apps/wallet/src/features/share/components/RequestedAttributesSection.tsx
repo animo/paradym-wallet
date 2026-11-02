@@ -47,7 +47,7 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         : unavailableCardsHeading
 
   return (
-    <YStack gap="4">
+    <YStack gap="5">
       <YStack gap="2">
         <Heading heading="sub2">{firstHeading}</Heading>
         <Paragraph>
@@ -134,7 +134,7 @@ export function SharedCardsList({ submission }: RequestedAttributesSectionProps)
   const satisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntrySatisfied => e.isSatisfied)
 
   return (
-    <YStack gap="4">
+    <YStack gap="5">
       <Heading heading="sub2">
         {t({
           id: 'activity.sharedAttributesHeading',

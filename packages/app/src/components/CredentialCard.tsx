@@ -61,7 +61,7 @@ export function CredentialCard({
   const icon = issuerImage?.url ? (
     <Image src={issuerImage.url} width={36} height={36} />
   ) : (
-    <XStack width={36} height={36} bg="lightTranslucent" ai="center" jc="center" br="12">
+    <XStack width={36} height={36} bg="lightTranslucent" items="center" justify="center" rounded="12">
       <LucideIcons.FileBadge size={20} strokeWidth={2.5} color="grey-100" />
     </XStack>
   )
@@ -71,25 +71,25 @@ export function CredentialCard({
   return (
     <AnimatedStack
       shadow={shadow}
-      br="8"
+      rounded="8"
       bg={backgroundImage?.url && !svg ? 'transparent' : bgColorValue} // Only set bg color if no background image
-      borderWidth="0-5"
+      borderWidth="1"
       borderColor="borderTranslucent"
       position="relative"
-      f={1}
+      flex={1}
       w="100%"
       maxWidth={360}
-      als="center"
+      self="center"
       style={pressStyle}
     >
       <Card
-        f={1}
-        br="8"
-        p="5"
+        flex={1}
+        rounded="8"
+        p="6"
         backgroundColor="transparent"
         overflow="hidden"
         aspectRatio={svg ? getSvgAspectRatio(svg) : undefined}
-        jc={svg ? 'flex-end' : undefined}
+        justify={svg ? 'flex-end' : undefined}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={onPress}
@@ -100,8 +100,8 @@ export function CredentialCard({
         {!svg && (
           <>
             <Card.Header p={0}>
-              <XStack jc="space-between">
-                <YStack f={1}>
+              <XStack justify="space-between">
+                <YStack flex={1}>
                   <Paragraph fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
                     {(name ?? t(commonMessages.unknown)).toLocaleUpperCase()}
                   </Paragraph>
@@ -109,10 +109,10 @@ export function CredentialCard({
                 <XStack>{icon}</XStack>
               </XStack>
             </Card.Header>
-            <Spacer size="11" />
+            <Spacer size={76} />
           </>
         )}
-        <Card.Footer h="3" jc="flex-end" ai="flex-end">
+        <Card.Footer h="9" justify="flex-end" items="flex-end">
           {onPress && <IconContainer onPress={onPress} icon={<HeroIcons.ArrowRight color={textColor} />} />}
         </Card.Footer>
         {svg && (
@@ -133,13 +133,22 @@ export function CredentialCard({
           </Card.Background>
         )}
         {isLoading && (
-          <XStack overflow="hidden" bg="#0000001A" br="12" ai="center" gap="2" bottom="5" left="5" pos="absolute">
+          <XStack
+            overflow="hidden"
+            bg="#0000001A"
+            rounded="12"
+            items="center"
+            gap="2"
+            bottom="6"
+            left="6"
+            position="absolute"
+          >
             <BlurView intensity={20} tint="light" style={StyleSheet.absoluteFill} />
             <Loader variant="dark" />
           </XStack>
         )}
         {(isExpired || isRevoked) && (
-          <Stack pos="absolute" bottom="5" left="5">
+          <Stack position="absolute" bottom="6" left="6">
             <BlurBadge color={textColor} label={isExpired ? t(commonMessages.expired) : t(commonMessages.revoked)} />
           </Stack>
         )}

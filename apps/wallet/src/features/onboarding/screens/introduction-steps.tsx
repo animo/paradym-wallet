@@ -54,9 +54,9 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
   const continueLabel = t(commonMessages.continue)
 
   return (
-    <YStack fg={1} jc="space-between">
+    <YStack grow={1} justify="space-between">
       <YStack flex={1} overflow="hidden">
-        <ScrollableStack gap="2" pb="4" accessible={true} accessibilityRole="list">
+        <ScrollableStack gap="2" pb="5" accessible={true} accessibilityRole="list">
           <OnboardingStepItem
             stepName={step1}
             title={step1Title}
@@ -71,7 +71,7 @@ export function OnboardingIntroductionSteps({ goToNextStep }: OnboardingIntroduc
           />
         </ScrollableStack>
       </YStack>
-      <YStack gap="4" alignItems="center">
+      <YStack gap="5" alignItems="center">
         <Paragraph variant="sub" py="2" textAlign="center">
           {reminder}
         </Paragraph>

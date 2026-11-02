@@ -43,17 +43,17 @@ export interface PinNumberProps extends PinPadProps {
 const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) => {
   return (
     <Stack
-      fg={1}
-      jc="center"
-      ai="center"
+      grow={1}
+      justify="center"
+      items="center"
       accessible={true}
       accessibilityRole="button"
       aria-label={character === PinValues.Backspace ? 'Backspace' : `Pin number ${character}`}
       backgroundColor={`${[PinValues.Backspace, PinValues.Fingerprint, PinValues.FaceId, PinValues.Empty].includes(character) ? 'grey-200' : 'background'} press:grey-100`}
       opacity="1 press:0.5"
-      h="6"
+      h="16"
       w="33.33%"
-      borderRightWidth="0-5"
+      borderRightWidth="1"
       borderColor="grey-200"
       onPress={() => onPressPinNumber(character)}
       disabled={disabled}
@@ -65,7 +65,7 @@ const PinNumber = ({ character, onPressPinNumber, disabled }: PinNumberProps) =>
       ) : character === PinValues.FaceId ? (
         <CustomIcons.FaceId color="grey-900" size={24} />
       ) : (
-        <YStack ai="center" gap="1">
+        <YStack items="center" gap="0-5">
           {/* NOTE: using fontSize $ values will crash on android due to an issue with react-native-reanimated (it seems the string value is sent to the native side, which shouldn't happen) */}
           <Text maxFontSizeMultiplier={1.2} color="grey-900" fontWeight="500" fontSize={24}>
             {character}
@@ -102,14 +102,14 @@ export const PinPad = ({ onPressPinNumber, useBiometricsPad, disabled, biometric
   const pinNumbers = pinValues.map((rowItems, rowIndex) => (
     <XStack
       key={rowIndex}
-      borderTopWidth="0-5"
-      borderBottomWidth={rowIndex === pinValues.length - 1 ? '0-5' : 0}
+      borderTopWidth="1"
+      borderBottomWidth={rowIndex === pinValues.length - 1 ? '1' : 0}
       // Closes the pad on the left where it doesn't reach the screen edge, such as in wide windows
-      borderLeftWidth="0-5"
+      borderLeftWidth="1"
       borderColor="grey-200"
       w="100%"
       justifyContent="center"
-      bc="grey-200"
+      bg="grey-200"
     >
       {rowItems.map((value, columnIndex) => (
         <PinNumber

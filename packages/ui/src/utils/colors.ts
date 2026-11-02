@@ -13,9 +13,7 @@ export function getTextColorBasedOnBg(bgColor: string) {
  * used to dynamically create onPress styling for custom colors
  */
 export function darken(color: string | ColorTokens, percent: number): string {
-  const hexColor = color.startsWith('#')
-    ? color
-    : ((hexColors as Record<string, string>)[color.startsWith('$') ? color.slice(1) : color] as string)
+  const hexColor = color.startsWith('#') ? color : ((hexColors as Record<string, string>)[color] as string)
   const f = Number.parseInt(hexColor.slice(1), 16)
   const t = percent < 0 ? 0 : 255
   const p = percent < 0 ? percent * -1 : percent

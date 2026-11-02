@@ -28,9 +28,9 @@ export const PresentationSuccessSlide = ({
   const { ownsWideLayout } = useWizard()
 
   const illustration = (
-    <YStack mx="-4" px="4" ai="center" bbw="0-5" borderBottomColor="grey-200">
-      <YStack position="relative" w="100%" maxWidth={300} ai="center" overflow="hidden">
-        <AnimatedStack entering={useSpringify(FadeInDown).delay(600)} w="90%" h={128} bg="primary-200" br="6" />
+    <YStack mx="-5" px="5" items="center" borderBottomWidth="1" borderBottomColor="grey-200">
+      <YStack position="relative" w="100%" maxWidth={300} items="center" overflow="hidden">
+        <AnimatedStack entering={useSpringify(FadeInDown).delay(600)} w="90%" h={128} bg="primary-200" rounded="6" />
         <AnimatedStack
           entering={useSpringify(FadeInDown).delay(450)}
           top={12}
@@ -38,35 +38,35 @@ export const PresentationSuccessSlide = ({
           w="95%"
           h={100}
           bg="primary-300"
-          br="6"
+          rounded="6"
         />
         <AnimatedStack
           entering={useSpringify(FadeIn).delay(150)}
           flexDirection="row"
           position="absolute"
           top={58}
-          jc="space-between"
+          justify="space-between"
           p="3"
           w="100%"
           h={128}
-          br="6"
+          rounded="6"
           borderBottomEndRadius={0}
           borderBottomLeftRadius={0}
           bg="primary-400"
         >
-          <Stack w="40%" bg="primary-300" h="1-5" br="6" />
-          <Stack h="3" w="3" bg="primary-300" br="12" />
+          <Stack w="40%" bg="primary-300" h="6" rounded="6" />
+          <Stack h="9" w="9" bg="primary-300" rounded="12" />
         </AnimatedStack>
         <AnimatedStack
           entering={ZoomIn.springify().delay(150)}
           position="absolute"
-          jc="center"
-          ai="center"
+          justify="center"
+          items="center"
           top={20}
-          h="4"
-          w="4"
+          h="11"
+          w="11"
           bg="grey-900"
-          br="12"
+          rounded="12"
         >
           <HeroIcons.Interaction color="white" size={26} strokeWidth={2} />
         </AnimatedStack>
@@ -75,15 +75,15 @@ export const PresentationSuccessSlide = ({
   )
 
   const content = (
-    <YStack fg={1} jc="space-between">
-      <YStack fg={1} mt="6" gap="4" key="12345" jc={ownsWideLayout ? 'center' : undefined}>
+    <YStack grow={1} justify="space-between">
+      <YStack grow={1} mt="8" gap="5" key="12345" justify={ownsWideLayout ? 'center' : undefined}>
         {!ownsWideLayout && illustration}
-        <YStack gap="4" p="4" ai="center">
+        <YStack gap="5" p="5" items="center">
           {/* The same mark as a stored card gets, where the illustration doesn't show */}
           {ownsWideLayout && <HeroIcons.ShieldCheckFilled color="primary-500" size={48} />}
           <Heading>{t(commonMessages.success)}</Heading>
 
-          <Paragraph ta="center">
+          <Paragraph text="center">
             {verifierName ? (
               <Trans
                 id="presentationSuccess.messageWithVerifier"
@@ -100,9 +100,9 @@ export const PresentationSuccessSlide = ({
         </YStack>
       </YStack>
 
-      <Stack gap="3" borderTopWidth="0-5" borderColor="grey-200" paddingRight="4" paddingLeft="4" py="2" mx="-4">
+      <Stack gap="3" borderTopWidth="1" borderColor="grey-200" paddingRight="5" paddingLeft="5" py="2" mx="-5">
         {showReturnToApp && (
-          <Paragraph variant="annotation" ta="center">
+          <Paragraph variant="annotation" text="center">
             {t(commonMessages.returnToPreviousApp)}
           </Paragraph>
         )}
@@ -119,9 +119,9 @@ export const PresentationSuccessSlide = ({
       <TwoPane
         start={
           <SlidePane>
-            <YStack pt="4" gap="6">
+            <YStack pt="5" gap="8">
               {payment && (
-                <YStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="1" p="4" ai="center">
+                <YStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="0-5" p="5" items="center">
                   <Heading textTransform="none" color="grey-800">
                     {payment.amount}
                   </Heading>

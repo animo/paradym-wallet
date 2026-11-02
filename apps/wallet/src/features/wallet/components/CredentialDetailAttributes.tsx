@@ -77,7 +77,7 @@ export function CredentialDetailAttributes({ credential, onDelete }: CredentialD
         })}
       />
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack px="4" gap="4" marginBottom={bottom}>
+        <YStack px="5" gap="5" marginBottom={bottom}>
           <CustomCredentialAttributes credential={credential} scrollRef={scrollViewRef} />
           <AnimatedStack
             key={isShareableAttributesVisible ? 'visible-shareable-attributes' : 'hidden-shareable-attributes'}

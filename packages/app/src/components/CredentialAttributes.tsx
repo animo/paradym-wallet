@@ -81,7 +81,7 @@ const useTruncatedValue = ({
     rowRef,
 
     collapsibleButton: truncate ? (
-      <XStack ai="center" gap="1">
+      <XStack items="center" gap="0-5">
         {isExpanded ? (
           <HeroIcons.ChevronUp size={14} color="grey-500" />
         ) : (
@@ -117,7 +117,7 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
 
   if (!headerTitle && attributes.length === 1 && (attributes[0].type === 'object' || attributes[0].type === 'array')) {
     return (
-      <YStack gap="4">
+      <YStack gap="5">
         {attributes[0].label && <Heading heading="sub2">{attributes[0].label}</Heading>}
 
         <TableContainer>
@@ -135,9 +135,9 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
   }
 
   return (
-    <YStack gap="6">
+    <YStack gap="8">
       {primitiveItems.length > 0 && (
-        <YStack gap="4">
+        <YStack gap="5">
           {headerTitle && <Heading heading="sub2">{headerTitle}</Heading>}
 
           <TableContainer>
@@ -149,7 +149,7 @@ export function CredentialAttributes({ attributes, headerTitle, scrollRef }: Cre
       )}
 
       {objectItems.map((item, index) => (
-        <YStack key={`object-${index}-${item.path.join('.')}`} gap="4">
+        <YStack key={`object-${index}-${item.path.join('.')}`} gap="5">
           {item.label && <Heading heading="sub2">{item.label}</Heading>}
           <TableContainer>
             {(item.type === 'array' &&
@@ -263,13 +263,13 @@ const NestedRow = ({ item, parentName }: { item: FormattedAttribute; parentName?
       borderBottomWidth={1}
       borderBottomColor="tableBorderColor"
       backgroundColor="tableBackgroundColor press:grey-100"
-      gap="1-5"
+      gap="1"
       paddingRight="2-5"
-      pl="4"
+      pl="5"
       py="2"
       w="100%"
-      jc="space-between"
-      ai="center"
+      justify="space-between"
+      items="center"
       onPress={onPress}
     >
       <Paragraph flexShrink={1} color="grey-900">
@@ -296,8 +296,8 @@ const ImageRow = ({ label, value }: { label?: string; value: string }) => {
         py="2"
         borderBottomWidth={1}
         borderBottomColor="tableBorderColor"
-        ai="center"
-        jc="space-between"
+        items="center"
+        justify="space-between"
         onPress={handleOpen}
       >
         <YStack>
@@ -312,22 +312,22 @@ const ImageRow = ({ label, value }: { label?: string; value: string }) => {
             </Trans>
           </Paragraph>
         </YStack>
-        <YStack br="2" overflow="hidden">
+        <YStack rounded="2" overflow="hidden">
           <Image height={36} width={36} src={value} alt={label} />
         </YStack>
       </XStack>
       <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
-        <Stack p="4" gap="4">
-          <XStack jc="space-between">
+        <Stack p="5" gap="5">
+          <XStack justify="space-between">
             <Heading color="grey-900" heading="h2">
               {label}
             </Heading>
-            <Stack br="12" p="2" bg="grey-50" onPress={() => setIsOpen(false)}>
+            <Stack rounded="12" p="2" bg="grey-50" onPress={() => setIsOpen(false)}>
               <HeroIcons.X size={16} strokeWidth={2.5} color="grey-500" />
             </Stack>
           </XStack>
-          <Stack borderBottomWidth="0-5" borderColor="grey-100" />
-          <Stack gap="2" ai="center">
+          <Stack borderBottomWidth="1" borderColor="grey-100" />
+          <Stack gap="2" items="center">
             <Image height={150} width={150} src={value} alt={label} />
           </Stack>
         </Stack>
@@ -354,9 +354,9 @@ const NamelessValueRow = ({
       bg={onPress ? 'tableBackgroundColor press:grey-100' : 'tableBackgroundColor'}
       borderBottomWidth={1}
       borderBottomColor="tableBorderColor"
-      gap="1-5"
+      gap="1"
       paddingRight="2-5"
-      pl="4"
+      pl="5"
       py="2"
       onPress={onPress}
     >
@@ -387,7 +387,7 @@ const ValueRow = ({
     <YStack
       ref={rowRef}
       bg={onPress ? 'tableBackgroundColor press:grey-100' : 'tableBackgroundColor'}
-      gap="1-5"
+      gap="1"
       px="2-5"
       py="2"
       borderBottomWidth={1}
@@ -424,7 +424,7 @@ const MultiValueRow = ({
     <YStack
       ref={rowRef}
       bg={onPress ? 'tableBackgroundColor press:grey-100' : 'tableBackgroundColor'}
-      gap="1-5"
+      gap="1"
       px="2-5"
       py="2"
       borderBottomWidth={1}

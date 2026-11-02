@@ -63,7 +63,7 @@ export function TrustDetailScreen({
       />
 
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack px="4" gap="4" marginBottom={bottom}>
+        <YStack px="5" gap="5" marginBottom={bottom}>
           <MessageBox
             variant="light"
             message={t({
@@ -74,13 +74,29 @@ export function TrustDetailScreen({
             icon={<HeroIcons.ExclamationTriangleFilled />}
           />
 
-          <XStack gap="4" pt="2" ai="center">
+          <XStack gap="5" pt="2" items="center">
             {logo ? (
-              <Circle overflow="hidden" ai="center" jc="center" size="6" bw={1} borderColor="grey-200" bg="grey-100">
+              <Circle
+                overflow="hidden"
+                items="center"
+                justify="center"
+                size="16"
+                borderWidth={1}
+                borderColor="grey-200"
+                bg="grey-100"
+              >
                 <Image src={logo} height="100%" width="100%" />
               </Circle>
             ) : (
-              <Circle overflow="hidden" ai="center" jc="center" size="6" bw={1} borderColor="grey-200" bg="grey-100">
+              <Circle
+                overflow="hidden"
+                items="center"
+                justify="center"
+                size="16"
+                borderWidth={1}
+                borderColor="grey-200"
+                bg="grey-100"
+              >
                 <HeroIcons.BuildingOffice color="grey-700" />
               </Circle>
             )}
@@ -94,7 +110,7 @@ export function TrustDetailScreen({
             </Heading>
           </XStack>
 
-          <YStack gap="4" py="2">
+          <YStack gap="5" py="2">
             <YStack gap="2">
               <Heading heading="sub2">
                 <Trans id="trust.trustedBy" comment="Subheading for list of organizations that trust the current one">
@@ -133,13 +149,13 @@ export function TrustDetailScreen({
 
             <YStack gap="2">
               {trustedEntities.map((entity) => (
-                <XStack ai="center" key={entity.entityId} br="8" p="3-5" gap="3" bg="grey-100">
+                <XStack items="center" key={entity.entityId} rounded="8" p="4" gap="3" bg="grey-100">
                   {entity.logoUri && (
-                    <Circle overflow="hidden" size="4" bg="grey-50">
+                    <Circle overflow="hidden" size="11" bg="grey-50">
                       <Image src={entity.logoUri} height="100%" width="100%" />
                     </Circle>
                   )}
-                  <XStack gap="2" display="flex" f={1} justifyContent="space-between" ai="center">
+                  <XStack gap="2" display="flex" flex={1} justifyContent="space-between" items="center">
                     <YStack flexShrink={1}>
                       <Heading heading="h3" numberOfLines={3} textOverflow="ellipsis">
                         {entity.organizationName}

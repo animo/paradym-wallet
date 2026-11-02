@@ -26,7 +26,7 @@ export function AboutScreen() {
           comment: 'Screen header shown on the about page of the wallet',
         })}
       />
-      <YStack fg={1} px="4" gap="4">
+      <YStack grow={1} px="5" gap="5">
         <YStack gap="2">
           <Paragraph color="grey-700">{t(about.description)}</Paragraph>
           <Paragraph>
@@ -41,7 +41,7 @@ export function AboutScreen() {
             .
           </Paragraph>
         </YStack>
-        <YStack gap="2" fg={1} jc="space-between">
+        <YStack gap="2" grow={1} justify="space-between">
           <InfoButton
             variant="view"
             title={t({
@@ -57,7 +57,7 @@ export function AboutScreen() {
             routingType="external"
             onPress={openPrivacyPolicy}
           />
-          <Paragraph py="4" mx="auto" variant="sub" fontSize={13} fontWeight="medium">
+          <Paragraph py="5" mx="auto" variant="sub" fontSize={13} fontWeight="medium">
             {Application.applicationName} {Application.nativeApplicationVersion} ({Application.nativeBuildVersion})
           </Paragraph>
         </YStack>

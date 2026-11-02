@@ -43,13 +43,13 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType, showReturnTo
             })
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="6" fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
-        <ScrollView fg={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '4' }}>
-          <YStack gap="4">
+    <YStack grow={1} justify="space-between">
+      <YStack gap="8" grow={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
+        <ScrollView grow={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '5' }}>
+          <YStack gap="5">
             <Heading>{t(commonMessages.somethingWentWrong)}</Heading>
             <Stack alignSelf="flex-start">
-              <XStack p="4" bg="grey-100" borderRadius="4">
+              <XStack p="5" bg="grey-100" borderRadius="4">
                 <HeroIcons.NoSymbol color="grey-800" size={32} />
               </XStack>
             </Stack>
@@ -67,9 +67,9 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType, showReturnTo
         </ScrollView>
       </YStack>
 
-      <Stack gap="3" borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
+      <Stack gap="3" borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5">
         {showReturnToApp && (
-          <Paragraph variant="annotation" ta="center">
+          <Paragraph variant="annotation" text="center">
             {t(commonMessages.returnToPreviousApp)}
           </Paragraph>
         )}

@@ -98,10 +98,10 @@ export function RequestedAttributesDetailScreen({
   return (
     <>
       <YStack bg="background" height="100%" pb={bottom}>
-        <Spacer size="13" />
-        <YStack borderBottomWidth="0-5" borderColor={isScrolledByOffset ? 'grey-200' : 'background'} />
+        <Spacer size={104} />
+        <YStack borderBottomWidth="1" borderColor={isScrolledByOffset ? 'grey-200' : 'background'} />
         <YStack
-          fg={1}
+          grow={1}
           onLayout={(e) => {
             if (scrollViewHeight === 0) {
               setScrollViewHeight(e.nativeEvent.layout.height)
@@ -114,8 +114,8 @@ export function RequestedAttributesDetailScreen({
             scrollEventThrottle={scrollEventThrottle}
             height={scrollViewHeight}
           >
-            <YStack gap="6" pad="lg" py="4">
-              <Stack width="100%" mt="-3" mb="-5" scale={0.75}>
+            <YStack gap="8" pad="lg" py="5">
+              <Stack width="100%" mt="-3" mb="-6" scale={0.75}>
                 <CredentialCard
                   issuerImage={{
                     url: activeCredential.display.issuer.logo?.url,
@@ -131,16 +131,16 @@ export function RequestedAttributesDetailScreen({
                   svg={activeCredential.display.svg}
                 />
               </Stack>
-              <Stack gap="4">
+              <Stack gap="5">
                 <Stack gap="2">
-                  <Heading ta="center" heading="h1">
+                  <Heading text="center" heading="h1">
                     {t({
                       id: 'requestedAttributes.heading',
                       message: 'Requested attributes',
                       comment: 'Heading above list of attributes shown to the user',
                     })}
                   </Heading>
-                  <Paragraph ta="center">
+                  <Paragraph text="center">
                     {t({
                       id: 'requestedAttributes.subheading',
                       message: `${disclosedAttributeLength} from ${activeCredential.display.name}`,

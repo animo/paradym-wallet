@@ -32,13 +32,13 @@ export function OnboardingIdCardScan({
 
   return (
     <>
-      <YStack fg={1} jc="space-between">
-        <YStack f={1} ai="center" onLayout={onLayout}>
-          <YStack height={height} mt="4">
+      <YStack grow={1} justify="space-between">
+        <YStack flex={1} items="center" onLayout={onLayout}>
+          <YStack height={height} mt="5">
             <ScanCard />
           </YStack>
         </YStack>
-        <YStack gap="4" alignItems="center" opacity={onStartScanning ? 1 : 0}>
+        <YStack gap="5" alignItems="center" opacity={onStartScanning ? 1 : 0}>
           <Button.Solid scaleOnPress onPress={onStartScanning}>
             {startScanningLabel}
           </Button.Solid>

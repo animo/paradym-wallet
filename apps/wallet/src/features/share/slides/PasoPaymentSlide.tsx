@@ -154,23 +154,23 @@ export const PasoPaymentSlide = ({
   }
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="4" fg={1}>
+    <YStack grow={1} justify="space-between">
+      <YStack gap="5" grow={1}>
         <Heading>{transaction.transactionTitle ?? t(commonMessages.paymentHeading)}</Heading>
 
         {/* The slide sits in the wizard's own scroll view, where a flex child grows with its content
             instead of being capped. The scroll view is laid over the space the flex area is given
             rather than inside it, so its content can't push the buttons off the screen. */}
         <YStack
-          fg={1}
-          mx="-4"
+          grow={1}
+          mx="-5"
           borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
-          pos="relative"
+          position="relative"
           onLayout={(event) => markSeen(event.nativeEvent.layout.height)}
-          btw="0-5"
+          borderTopWidth="1"
         >
           <ScrollView
-            pos="absolute"
+            position="absolute"
             top={0}
             left={0}
             right={0}
@@ -178,15 +178,15 @@ export const PasoPaymentSlide = ({
             onScroll={onScroll}
             onLayout={onScrollViewLayout}
             scrollEventThrottle={scrollEventThrottle}
-            contentContainerStyle={{ gap: '6' }}
-            px="4"
-            py="4"
+            contentContainerStyle={{ gap: '8' }}
+            px="5"
+            py="5"
           >
             {/* Everything PaSO requires to have been displayed, measured as one block. */}
-            <YStack gap="4" onLayout={onTransactionDataLayout}>
+            <YStack gap="5" onLayout={onTransactionDataLayout}>
               {showVerifierHeader && (
-                <XStack ai="center" px="6" jc="center" flexDirection="column">
-                  <Circle size={88} bw="0-5" borderColor="grey-100" bg="white">
+                <XStack items="center" px="8" justify="center" flexDirection="column">
+                  <Circle size={88} borderWidth="1" borderColor="grey-100" bg="white">
                     {verifier.logo?.url ? (
                       <Image
                         circle
@@ -200,7 +200,7 @@ export const PasoPaymentSlide = ({
                       <HeroIcons.BuildingOffice color="grey-800" size={36} />
                     )}
                   </Circle>
-                  <Paragraph variant="sub" ta="center">
+                  <Paragraph variant="sub" text="center">
                     <Trans
                       id="paso.payment.description"
                       comment="Explanation that the user is about to authorize a payment"
@@ -212,8 +212,8 @@ export const PasoPaymentSlide = ({
               )}
 
               {/* The rulebook claims, in the normative claim order: amount, payee, payee logo. */}
-              <YStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4">
-                <YStack gap="1" ai="center">
+              <YStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5">
+                <YStack gap="0-5" items="center">
                   <Paragraph variant="annotation">{transaction.amount.label ?? amountFallbackLabel}</Paragraph>
                   <Heading textTransform="none" color="grey-800">
                     {transaction.amount.value}
@@ -221,15 +221,15 @@ export const PasoPaymentSlide = ({
                 </YStack>
               </YStack>
 
-              <XStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4" ai="center">
-                <YStack f={1} gap="1">
+              <XStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5" items="center">
+                <YStack flex={1} gap="0-5">
                   <Paragraph variant="annotation">{transaction.payee.label ?? payeeFallbackLabel}</Paragraph>
                   <Heading heading="h3" textTransform="none" color="grey-800">
                     {transaction.payee.value}
                   </Heading>
                 </YStack>
                 {transaction.payeeLogo && (
-                  <Circle size={60} bw="0-5" borderColor="grey-100" bg="white">
+                  <Circle size={60} borderWidth="1" borderColor="grey-100" bg="white">
                     <Image
                       src={transaction.payeeLogo.dataUrl}
                       alt={transaction.payeeLogo.label ?? payeeFallbackLabel}
@@ -243,9 +243,17 @@ export const PasoPaymentSlide = ({
 
               {/* Shown exactly as the Attestation Provider wrote it. Never translated, never edited. */}
               {transaction.securityHint && (
-                <XStack br="6" bg="warning-300" bw={1} borderColor="warning-400" gap="3" p="4" ai="flex-start">
+                <XStack
+                  rounded="6"
+                  bg="warning-300"
+                  borderWidth={1}
+                  borderColor="warning-400"
+                  gap="3"
+                  p="5"
+                  items="flex-start"
+                >
                   <HeroIcons.ExclamationTriangleFilled color="warning-600" size={20} />
-                  <Paragraph f={1} variant="sub" size="2" color="grey-900">
+                  <Paragraph flex={1} variant="sub" size="2" color="grey-900">
                     {transaction.securityHint}
                   </Paragraph>
                 </XStack>
@@ -255,7 +263,7 @@ export const PasoPaymentSlide = ({
             {/* Below here is context, not transaction data: which card pays, and what else is asked. */}
             {cardForPayment && (
               <YStack gap="2">
-                <XStack ai="center" jc="space-between" gap="2">
+                <XStack items="center" justify="space-between" gap="2">
                   <Heading heading="sub2">
                     <Trans id="paso.payment.cardHeading" comment="Heading above the card used to authorize a payment">
                       Payment card
@@ -263,9 +271,9 @@ export const PasoPaymentSlide = ({
                   </Heading>
                   {paymentCards.length > 1 && (
                     <Button.Solid
-                      h="3"
-                      px="3-5"
-                      br="12"
+                      h="9"
+                      px="4"
+                      rounded="12"
                       bg="grey-100"
                       color="grey-900"
                       fontSize="2"
@@ -280,7 +288,7 @@ export const PasoPaymentSlide = ({
                     </Button.Solid>
                   )}
                 </XStack>
-                <XStack p="3" br="6" bw={1} borderColor="grey-200">
+                <XStack p="3" rounded="6" borderWidth={1} borderColor="grey-200">
                   <PaymentCardRow card={cardForPayment} />
                 </XStack>
               </YStack>
@@ -289,12 +297,12 @@ export const PasoPaymentSlide = ({
             {submission && otherEntries.length > 0 && (
               <RequestedAttributesSection submission={{ ...submission, entries: otherEntries }} />
             )}
-            <Spacer />
+            <Spacer size="5" />
           </ScrollView>
         </YStack>
       </YStack>
 
-      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
+      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5" bg="background">
         {submission?.areAllSatisfied ? (
           <YStack gap="2">
             <DualResponseButtons
@@ -317,7 +325,7 @@ export const PasoPaymentSlide = ({
               isAcceptDisabled={!hasSeenTransactionData || isResolvingTransaction}
             />
             {!hasSeenTransactionData && (
-              <Paragraph variant="annotation" ta="center">
+              <Paragraph variant="annotation" text="center">
                 <Trans
                   id="paso.payment.scrollToConfirm"
                   comment="Shown while the user has not yet scrolled through all payment details"
@@ -329,7 +337,7 @@ export const PasoPaymentSlide = ({
           </YStack>
         ) : (
           <YStack gap="3">
-            <Paragraph variant="sub" fontWeight="medium" ta="center" color="danger-500">
+            <Paragraph variant="sub" fontWeight="medium" text="center" color="danger-500">
               {t(
                 !submission || hasMissingCards(submission)
                   ? commonMessages.missingCardsWarning

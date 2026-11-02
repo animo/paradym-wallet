@@ -82,8 +82,8 @@ export const NfcScannerModalAndroid = ({ onCancel, open, scanningState, progress
         />
       </XStack>
 
-      <YStack gap="4" p="4" justifyContent="space-between" flex-1>
-        <YStack gap="2" alignItems="center" px="5">
+      <YStack gap="5" p="5" justifyContent="space-between" flex-1>
+        <YStack gap="2" alignItems="center" px="6">
           <Heading heading="h2" textAlign="center">
             {title}
           </Heading>

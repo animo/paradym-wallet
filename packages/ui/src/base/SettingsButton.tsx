@@ -32,10 +32,10 @@ export function SettingsButton({ label, disabled, icon, description, beta, onPre
 
   return (
     <AnimatedYStack gap="2" onPressIn={onPressIn} onPressOut={onPressOut} disabled={disabled} style={pressStyle}>
-      <XStack jc="space-between" ai="center">
-        <XStack gap="3" ai="center">
+      <XStack justify="space-between" items="center">
+        <XStack gap="3" items="center">
           {icon && (
-            <XStack bg="primary-100" p="1-5" br="4">
+            <XStack bg="primary-100" p="1" rounded="4">
               {cloneElement(icon, { size: 20, color: 'primary-500' })}
             </XStack>
           )}
@@ -54,7 +54,7 @@ export function SettingsButton({ label, disabled, icon, description, beta, onPre
               {label}
             </Label>
             {beta && (
-              <YStack mt="0-5" justifyContent="center">
+              <YStack mt="px" justifyContent="center">
                 <BetaTag />
               </YStack>
             )}

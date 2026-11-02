@@ -10,7 +10,7 @@ export function OnboardingIdCardBiometricsDisabled({ goToNextStep }: OnboardingI
   const { t } = useLingui()
 
   return (
-    <YStack jc="space-between" fg={1}>
+    <YStack justify="space-between" grow={1}>
       <IdCard hideUserName icon="biometric" />
       <Button.Solid scaleOnPress onPress={goToNextStep}>
         {t(commonMessages.goToSettings)}

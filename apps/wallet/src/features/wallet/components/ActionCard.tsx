@@ -24,14 +24,14 @@ export function ActionCard({ icon, title, onPress, variant = 'primary' }: Action
       onPressIn={qrHandlePressIn}
       onPressOut={qrHandlePressOut}
       onPress={onPress}
-      jc="center"
+      justify="center"
       bg={variant === 'primary' ? 'grey-900' : 'white'}
       p="3"
-      fg={1}
+      grow={1}
       gap="3"
-      br="6"
+      rounded="6"
     >
-      <XStack jc="space-between" ai="center">
+      <XStack justify="space-between" items="center">
         <Stack />
         {icon}
       </XStack>

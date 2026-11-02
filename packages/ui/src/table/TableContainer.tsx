@@ -10,14 +10,14 @@ interface TableContainerProps {
 export const TableContainer = ({ children, padY, padX }: PropsWithChildren<TableContainerProps>) => {
   return (
     <YStack
-      bw={1}
+      borderWidth={1}
       borderColor="tableBorderColor"
       bg="white"
       width="100%"
       px={padX ?? 0}
       py={padY ?? 0}
       overflow="hidden"
-      br="6"
+      rounded="6"
     >
       {children}
     </YStack>

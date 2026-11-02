@@ -9,7 +9,7 @@ export const Page = styled(Stack, {
   name: 'Page',
   backgroundColor: 'background',
   position: 'absolute',
-  padding: '4',
+  padding: '5',
   top: 0,
   left: 0,
   right: 0,
@@ -22,8 +22,8 @@ const readableContentWidth = 600
 const FlexPageBase = styled(Stack, {
   name: 'FlexPage',
   backgroundColor: 'background',
-  gap: '5',
-  paddingHorizontal: '4',
+  gap: '6',
+  paddingHorizontal: '5',
   'flex-1': true,
   width: '100%',
   maxWidth: readableContentWidth,
@@ -58,10 +58,10 @@ export const FlexPage = createStyledHOC(
 
     return (
       <YStack
-        bg={props.bg ?? props.backgroundColor ?? 'background'}
+        backgroundColor={props.bg ?? props.backgroundColor ?? 'background'}
         h="100%"
         w="100%"
-        ai="center"
+        items="center"
         pt={top}
         pl={left}
         pr={right}
@@ -87,11 +87,11 @@ export function TwoPane({ start, end }: TwoPaneProps) {
   const { left } = useSafeAreaInsets()
 
   return (
-    <XStack f={1}>
-      <YStack w={width / 2 - left} pr="2" borderRightWidth="0-5" borderColor="grey-200">
+    <XStack flex={1}>
+      <YStack w={width / 2 - left} pr="2" borderRightWidth="1" borderColor="grey-200">
         {start}
       </YStack>
-      <YStack f={1} pl="2">
+      <YStack flex={1} pl="2">
         {end}
       </YStack>
     </XStack>

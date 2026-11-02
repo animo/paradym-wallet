@@ -44,9 +44,9 @@ export function InfoSheet({ isOpen, setIsOpen, title, description, onClose, vari
   const { t } = useLingui()
   return (
     <FloatingSheet isOpen={isOpen} setIsOpen={setIsOpen}>
-      <Stack ai="center" jc="center" h="12" bg={infoSheetVariants[variant].background}>
+      <Stack items="center" justify="center" h="36" bg={infoSheetVariants[variant].background}>
         <Circle bg={infoSheetVariants[variant].layer} p="2-5">
-          <Circle bg={infoSheetVariants[variant].accent} size="5">
+          <Circle bg={infoSheetVariants[variant].accent} size={52}>
             {cloneElement(infoSheetVariants[variant].icon, {
               size: 32,
               color: 'white',
@@ -54,7 +54,7 @@ export function InfoSheet({ isOpen, setIsOpen, title, description, onClose, vari
           </Circle>
         </Circle>
       </Stack>
-      <Stack gap="3" p="4">
+      <Stack gap="3" p="5">
         <Heading color="grey-900" heading="h2">
           {title}
         </Heading>

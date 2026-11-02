@@ -61,9 +61,9 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
   }
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="6" fg={1}>
-        <YStack gap="4">
+    <YStack grow={1} justify="space-between">
+      <YStack gap="8" grow={1}>
+        <YStack gap="5">
           <Heading>{content.title}</Heading>
           <Paragraph>{content.subtitle}</Paragraph>
         </YStack>
@@ -75,7 +75,7 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
           backgroundColor={display.backgroundColor ?? 'grey-900'}
         />
       </YStack>
-      <Stack btw={1} borderColor="grey-100" px="4" py="3" mx="-4">
+      <Stack borderTopWidth={1} borderColor="grey-100" px="5" py="3" mx="-5">
         <DualResponseButtons
           align="horizontal"
           onAccept={goToNextSlide}

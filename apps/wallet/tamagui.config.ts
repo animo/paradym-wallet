@@ -1,25 +1,23 @@
-import { radius, size, space, zIndex } from '@tamagui/themes/v5-tokens'
 import { createTamagui, createTokens } from 'tamagui'
-import { configInput, fontOpenSans, fontRaleway, hexColors } from '../../packages/ui/src/config/tamagui.config'
+import {
+  configInput,
+  fontOpenSans,
+  fontRaleway,
+  hexColors,
+  v6Tokens,
+} from '../../packages/ui/src/config/tamagui.config'
 import { APP_THEME } from './src/config/themes'
 
 const themeColors = APP_THEME
 
-export const tokensInput = {
-  color: hexColors,
+const tokens = createTokens({
+  ...v6Tokens,
   radius: {
-    ...radius,
+    ...v6Tokens.radius,
     button: 16,
   },
-  size,
-  zIndex,
-  space,
-} as const
-
-const tokens = createTokens({
-  ...tokensInput,
   size: {
-    ...tokensInput.size,
+    ...v6Tokens.size,
     buttonHeight: 48,
   },
   color: {
@@ -122,7 +120,6 @@ const config = createTamagui({
   fonts: {
     default: fontOpenSans,
     heading: fontRaleway,
-    // Somehow adding body font gives build errors?!
     body: fontOpenSans,
   },
   themes: {

@@ -49,17 +49,17 @@ export function InboxScreen() {
             flexDirection="column"
             entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
             gap="2"
-            jc="center"
-            p="4"
-            fg={1}
+            justify="center"
+            p="5"
+            grow={1}
           >
-            <Heading ta="center" heading="h3" fontWeight="semiBold">
+            <Heading text="center" heading="h3" fontWeight="semiBold">
               {t(commonMessages.noNotificationsTitle)}
             </Heading>
-            <Paragraph ta="center">{t(commonMessages.noNotificationsDescription)}</Paragraph>
+            <Paragraph text="center">{t(commonMessages.noNotificationsDescription)}</Paragraph>
           </AnimatedStack>
         ) : (
-          <YStack overflow="hidden" px="4" gap="4">
+          <YStack overflow="hidden" px="5" gap="5">
             {inboxNotifications.map((notification) => {
               const baseLabel =
                 notification.type === 'DeferredCredentialRecord'
