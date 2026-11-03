@@ -37,6 +37,18 @@ import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
 type Query = { uri: string }
 
+// The authorization code in a redirect to the wallet's own redirect uri
+function getWalletRedirectAuthorizationCode(redirectUri: string) {
+  const url = new URL(redirectUri)
+  const walletRedirectUrl = new URL(walletClient.redirectUri)
+  const isWalletRedirect =
+    url.protocol === walletRedirectUrl.protocol &&
+    url.host === walletRedirectUrl.host &&
+    url.pathname === walletRedirectUrl.pathname
+
+  return isWalletRedirect ? (url.searchParams.get('code') ?? undefined) : undefined
+}
+
 export function CredentialNotificationScreen() {
   const { paradym } = useParadym('unlocked')
 
@@ -129,6 +141,38 @@ export function CredentialNotificationScreen() {
       })
   }, [params.uri, paradym, setErrorReasonWithError, t])
 
+  const acquireCredentialsAuth = useCallback(
+    async (authorizationCode: string) => {
+      if (
+        resolvedCredentialOffer?.flow !== 'auth' &&
+        resolvedCredentialOffer?.flow !== 'auth-presentation-during-issuance'
+      ) {
+        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
+        return
+      }
+
+      // Credentials will be acquired later when presentation is done
+      if (resolvedCredentialOffer?.flow === 'auth-presentation-during-issuance') return
+
+      try {
+        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
+          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
+          resolvedAuthorizationRequest: resolvedCredentialOffer.resolvedAuthorizationRequest,
+          authorizationCode,
+          authorization: walletClient,
+        })
+
+        updateCredentials(acquiredCredentials)
+      } catch (error) {
+        paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
+          error,
+        })
+        setIssuanceErrorReason(error)
+      }
+    },
+    [paradym, setIssuanceErrorReason, t, resolvedCredentialOffer]
+  )
+
   const onPresentationAccept = useCallback(
     async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
       if (!resolvedCredentialOffer || !presentationRequest) {
@@ -171,8 +215,6 @@ export function CredentialNotificationScreen() {
 
           updateCredentials(acquiredCredentials)
         } else {
-          // The authorization continues in the browser at the redirect_uri, which then redirects back with
-          // the authorization code. It's opened from the next step, so the result comes back to the wallet.
           const { redirectUri } = await paradym.openid4vc.shareCredentials({
             resolvedRequest: presentationRequest,
             selectedCredentials: {},
@@ -182,8 +224,15 @@ export function CredentialNotificationScreen() {
             throw new Error('The verifier did not return a redirect_uri to continue the authorization')
           }
 
+          // Otherwise the authorization continues in the browser at the redirect_uri, which then redirects
+          // back with the authorization code. That's opened from the next step, so the result comes back here.
           setAuthorizationPresentationRedirectUri(redirectUri)
           onPinComplete?.()
+
+          // The authorization server can return the authorization code in the redirect_uri to the wallet
+          // right away, which saves opening the browser again.
+          const authorizationCode = getWalletRedirectAuthorizationCode(redirectUri)
+          if (authorizationCode) void acquireCredentialsAuth(authorizationCode)
         }
       } catch (error) {
         if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
@@ -217,6 +266,7 @@ export function CredentialNotificationScreen() {
       paradym.logger.error,
       resolvedCredentialOffer,
       presentationRequest,
+      acquireCredentialsAuth,
     ]
   )
 
@@ -236,38 +286,6 @@ export function CredentialNotificationScreen() {
   const onCancelAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationCancelled)), [t])
 
   const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
-
-  const acquireCredentialsAuth = useCallback(
-    async (authorizationCode: string) => {
-      if (
-        resolvedCredentialOffer?.flow !== 'auth' &&
-        resolvedCredentialOffer?.flow !== 'auth-presentation-during-issuance'
-      ) {
-        setErrorReason(t(commonMessages.credentialInformationCouldNotBeExtracted))
-        return
-      }
-
-      // Credentials will be acquired later when presentation is done
-      if (resolvedCredentialOffer?.flow === 'auth-presentation-during-issuance') return
-
-      try {
-        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
-          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
-          resolvedAuthorizationRequest: resolvedCredentialOffer.resolvedAuthorizationRequest,
-          authorizationCode,
-          authorization: walletClient,
-        })
-
-        updateCredentials(acquiredCredentials)
-      } catch (error) {
-        paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
-          error,
-        })
-        setIssuanceErrorReason(error)
-      }
-    },
-    [paradym, setIssuanceErrorReason, t, resolvedCredentialOffer]
-  )
 
   const acquireCredentialsPreAuth = useCallback(
     async (txCode?: string): Promise<boolean> => {
@@ -504,7 +522,12 @@ export function CredentialNotificationScreen() {
               ),
             }
           : undefined,
-        resolvedCredentialOffer.flow === 'auth' && authorizationPresentationRequest
+        resolvedCredentialOffer.flow === 'auth' &&
+        authorizationPresentationRequest &&
+        !(
+          authorizationPresentationRedirectUri &&
+          getWalletRedirectAuthorizationCode(authorizationPresentationRedirectUri)
+        )
           ? {
               step: 'auth-code-flow-after-presentation',
               progress: 74,
