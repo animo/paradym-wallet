@@ -1,4 +1,5 @@
 import {
+  type Agent,
   MdocRecord,
   MdocRepository,
   type SdJwtVcRecord,
@@ -43,26 +44,30 @@ export async function getCredential(
   throw new Error('Unsupported record type')
 }
 
+/**
+ * Writes the record, without re-registering it with the Digital Credentials API. The credential
+ * request UI uses this: it has no registry to update, and the app re-registers the changed record on
+ * its next start.
+ */
+export async function updateCredentialRecord(
+  agent: Pick<Agent, 'dependencyManager' | 'context'>,
+  credentialRecord: CredentialRecord
+) {
+  if (credentialRecord instanceof W3cCredentialRecord) {
+    await agent.dependencyManager.resolve(W3cCredentialRepository).update(agent.context, credentialRecord)
+  } else if (credentialRecord instanceof W3cV2CredentialRecord) {
+    await agent.dependencyManager.resolve(W3cV2CredentialRepository).update(agent.context, credentialRecord)
+  } else if (credentialRecord instanceof MdocRecord) {
+    await agent.dependencyManager.resolve(MdocRepository).update(agent.context, credentialRecord)
+  } else {
+    await agent.dependencyManager.resolve(SdJwtVcRepository).update(agent.context, credentialRecord)
+  }
+}
+
 export async function updateCredential(
   options: DcApiRegisterCredentialsOptions & { credentialRecord: CredentialRecord }
 ) {
-  if (options.credentialRecord instanceof W3cCredentialRecord) {
-    await options.paradym.agent.dependencyManager
-      .resolve(W3cCredentialRepository)
-      .update(options.paradym.agent.context, options.credentialRecord)
-  } else if (options.credentialRecord instanceof W3cV2CredentialRecord) {
-    await options.paradym.agent.dependencyManager
-      .resolve(W3cV2CredentialRepository)
-      .update(options.paradym.agent.context, options.credentialRecord)
-  } else if (options.credentialRecord instanceof MdocRecord) {
-    await options.paradym.agent.dependencyManager
-      .resolve(MdocRepository)
-      .update(options.paradym.agent.context, options.credentialRecord)
-  } else {
-    await options.paradym.agent.dependencyManager
-      .resolve(SdJwtVcRepository)
-      .update(options.paradym.agent.context, options.credentialRecord)
-  }
+  await updateCredentialRecord(options.paradym.agent, options.credentialRecord)
 
   // The iOS registration is the document identifier and its type, and an update changes neither.
   // Android encodes display and claims into the registry, so there it does have to be rebuilt.

@@ -1,4 +1,4 @@
-import { setWalletServiceProviderPin } from '@app/crypto/WalletServiceProviderClient'
+import { validateWalletPin } from '@app/crypto/walletPin'
 import { useDevelopmentMode } from '@app/hooks'
 import { useShouldUsePinForSubmission } from '@app/hooks/useShouldUsePinForPresentation'
 import { useLingui } from '@lingui/react/macro'
@@ -82,7 +82,7 @@ export function MdocOfflineSharingScreen({ sessionTranscript, deviceRequest }: M
       setIsProcessing(true)
 
       try {
-        await setWalletServiceProviderPin(pin.split('').map(Number))
+        await validateWalletPin(pin)
       } catch (e) {
         setIsProcessing(false)
         if (e instanceof ParadymWalletAuthenticationInvalidPinError) {

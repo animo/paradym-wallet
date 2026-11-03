@@ -323,10 +323,12 @@ export function storeSharedActivityForSubmission(
     name?: string
     logo?: DisplayImage
   },
-  status: Exclude<ActivityStatus, 'pending'>
+  status: Exclude<ActivityStatus, 'pending'>,
+  transaction?: FormattedTransactionData
 ) {
   return storeSharedOrSignedActivity(paradym, {
     status,
+    transaction,
     entity: {
       id: verifier.id,
       name: verifier.name,

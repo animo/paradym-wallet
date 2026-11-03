@@ -106,6 +106,14 @@ export type CredentialKeyOptions = {
    *
    */
   algorithm?: Kms.KnownJwaSignatureAlgorithm
+
+  /**
+   *
+   * Options for the backend's `createKey`. For `'secureEnvironment'` these are the `generateKeypair` options of
+   * `@animo-id/expo-secure-environment`, such as `minimumKeyStorage`.
+   *
+   */
+  backendOptions?: Record<string, unknown>
 }
 
 /**

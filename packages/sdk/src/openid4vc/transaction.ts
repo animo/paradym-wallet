@@ -1,7 +1,6 @@
 import { Hasher, TypedArrayEncoder } from '@credo-ts/core'
 import type { FormattedSubmissionEntrySatisfied } from '../format/submission'
 import { getPaymentsMetadata } from '../metadata/credentials'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { pasoLocalePriorityList } from '../paso/locale'
 import {
   assertPasoCredentialsOnlyForPasoTransactions,
@@ -9,6 +8,7 @@ import {
   hasPasoTransactionData,
   resolvePasoTransactionData,
 } from '../paso/transactionData'
+import type { PasoWallet } from '../paso/types'
 import type { CredentialsForProofRequest } from './func/resolveCredentialRequest'
 
 export type QtspInfo = CredentialsForProofRequest['verifier']
@@ -48,7 +48,7 @@ export type FormattedTransactionData =
  * underneath.
  */
 export const resolveTransactionData = async (
-  paradym: ParadymWalletSdk,
+  paradym: PasoWallet,
   credentialsForRequest?: CredentialsForProofRequest,
   locale?: string
 ): Promise<FormattedTransactionData | undefined> => {

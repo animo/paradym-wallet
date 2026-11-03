@@ -7,6 +7,7 @@ import {
   type JsonObject,
   type MdocNameSpaces,
 } from '@credo-ts/core'
+import type { OpenId4VcHolderApi } from '@credo-ts/openid4vc'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agent'
 import type { FormattedSubmissionEntrySatisfied } from '../../format/submission'
@@ -14,7 +15,7 @@ import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'
 import { createPasoScaResponseClaims } from '../../paso/responseClaims'
 import { assertPasoCredentialsOnlyForPasoTransactions } from '../../paso/transactionData'
-import type { PasoAuthenticationMethod } from '../../paso/types'
+import type { PasoAuthenticationMethod, PasoWallet } from '../../paso/types'
 import { activityStorage, storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
 import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
@@ -87,79 +88,16 @@ export const shareCredentials = async ({
       )
     : undefined
 
-  const dcqlCredentials = resolvedRequest.queryResult
-    ? Object.fromEntries(
-        await Promise.all(
-          Object.entries(
-            Object.keys(selectedCredentials).length > 0
-              ? // FIXME: this method should take into account w3c credentials
-                getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
-              : paradym.agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult, {
-                  // FIXME: we currently allow re-sharing if we don't have new instances anymore
-                  // we should make this configurable maybe? Or dependant on credential type?
-                  useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-                })
-          )
-        )
-      )
-    : undefined
-
-  // The consent screen already refused this, but sharing is where it has to hold.
-  assertPasoCredentialsOnlyForPasoTransactions(resolvedRequest)
-
-  const transactionData = consentedTransactionData ?? (await resolveTransactionData(paradym, resolvedRequest))
-
-  // [PaSO Core] Section 6.2 — the SCA response claims are top-level claims of the KB-JWT, so they go
-  // in as the presentation's additional payload. Credo merges this with the `transaction_data_hashes`
-  // it adds itself, which is why `transaction_data_hash` below agrees with it by construction.
-  if (transactionData?.type === pasoPaymentTransactionDataType && dcqlCredentials) {
-    // Resolved without a card that can authorize it, so it was only ever shown to explain why. The
-    // consent screen keeps its confirmation action out of reach in that state; reaching here anyway
-    // would mean signing a transaction against metadata that was never verified.
-    if (!transactionData.proof) {
-      throw new Error('The PaSO transaction was resolved without a credential that can authorize it')
-    }
-
-    // Present the card the transaction was resolved against: the first candidate of its entry, which
-    // the user may have picked (see `selectPasoPaymentCredential`). Credo's own selection above is not
-    // guaranteed to land on the same one, and its metadata is what `metadata_integrity` refers to.
-    const paymentCredentialEntry = resolvedRequest.formattedSubmission.entries.find(
-      (entry): entry is FormattedSubmissionEntrySatisfied =>
-        entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
-    )
-    const paymentCredentialRecordId = paymentCredentialEntry?.credentials[0]?.credential.record.id
-    if (paymentCredentialRecordId && resolvedRequest.queryResult) {
-      dcqlCredentials[transactionData.cardForTransactionId] = getSelectedCredentialsForRequest(
-        resolvedRequest.queryResult,
-        { [transactionData.cardForTransactionId]: paymentCredentialRecordId }
-      )[transactionData.cardForTransactionId]
-    }
-
-    const presentations = dcqlCredentials[transactionData.cardForTransactionId]
-    if (!presentations) {
-      throw new Error(
-        `Credential query '${transactionData.cardForTransactionId}' authorizes the PaSO transaction but is not part of the presentation`
-      )
-    }
-
-    const scaResponseClaims = await createPasoScaResponseClaims({
-      paradym,
-      proof: transactionData.proof,
-      // Safe: `resolvePasoTransactionData` rejects unsigned requests before we ever get here.
-      signedRequest: resolvedRequest.signedAuthorizationRequest?.compact as string,
-      responseMode:
-        (authorizationRequest.response_mode as string | undefined) ?? (resolvedRequest.origin ? 'dc_api' : 'fragment'),
+  const { dcqlCredentials, transactionData } = await getDcqlCredentialsToShare(
+    { agent: paradym.agent, logger: paradym.logger },
+    {
+      resolvedRequest,
+      selectedCredentials,
+      transactionData: consentedTransactionData,
       authenticationMethods,
       authenticatedAt,
-    })
-
-    for (const presentation of presentations) {
-      // Only SD-JWT VC carries a KB-JWT. The mdoc profile of [PaSO Core] Section 6.3 would need a
-      // `urn:paso:sca:1` DeviceSigned namespace, which Credo has no path to produce.
-      if (presentation.claimFormat !== ClaimFormat.SdJwtDc) continue
-      presentation.additionalPayload = { ...presentation.additionalPayload, ...scaResponseClaims }
     }
-  }
+  )
 
   const result = await paradym.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
     authorizationRequestPayload: authorizationRequest,
@@ -228,6 +166,106 @@ export const shareCredentials = async ({
   }
 
   return result
+}
+
+/** What sharing over OpenID4VP needs from a wallet: the app's SDK, or the one the credential request UI runs. */
+export type OpenId4VpSharingWallet = PasoWallet & {
+  agent: { openid4vc: { holder: Pick<OpenId4VcHolderApi, 'selectCredentialsForDcqlRequest'> } }
+}
+
+/**
+ * The DCQL credentials to present and the transaction they authorize, with the PaSO SCA response
+ * claims added. Shared by the app's share flow and the credential request UI.
+ */
+export async function getDcqlCredentialsToShare(
+  paradym: OpenId4VpSharingWallet,
+  {
+    resolvedRequest,
+    selectedCredentials,
+    transactionData: consentedTransactionData,
+    authenticationMethods = ['swk'],
+    authenticatedAt = new Date(),
+  }: Pick<
+    ShareCredentialsOptions,
+    'resolvedRequest' | 'selectedCredentials' | 'transactionData' | 'authenticationMethods' | 'authenticatedAt'
+  >
+) {
+  const dcqlCredentials = resolvedRequest.queryResult
+    ? Object.fromEntries(
+        await Promise.all(
+          Object.entries(
+            Object.keys(selectedCredentials).length > 0
+              ? // FIXME: this method should take into account w3c credentials
+                getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
+              : paradym.agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult, {
+                  // FIXME: we currently allow re-sharing if we don't have new instances anymore
+                  // we should make this configurable maybe? Or dependant on credential type?
+                  useMode: CredentialMultiInstanceUseMode.NewOrFirst,
+                })
+          )
+        )
+      )
+    : undefined
+
+  // The consent screen already refused this, but sharing is where it has to hold.
+  assertPasoCredentialsOnlyForPasoTransactions(resolvedRequest)
+
+  const transactionData = consentedTransactionData ?? (await resolveTransactionData(paradym, resolvedRequest))
+
+  // [PaSO Core] Section 6.2 — the SCA response claims are top-level claims of the KB-JWT, so they go
+  // in as the presentation's additional payload. Credo merges this with the `transaction_data_hashes`
+  // it adds itself, which is why `transaction_data_hash` below agrees with it by construction.
+  if (transactionData?.type === pasoPaymentTransactionDataType && dcqlCredentials) {
+    // Resolved without a card that can authorize it, so it was only ever shown to explain why. The
+    // consent screen keeps its confirmation action out of reach in that state; reaching here anyway
+    // would mean signing a transaction against metadata that was never verified.
+    if (!transactionData.proof) {
+      throw new Error('The PaSO transaction was resolved without a credential that can authorize it')
+    }
+
+    // Present the card the transaction was resolved against: the first candidate of its entry, which
+    // the user may have picked (see `selectPasoPaymentCredential`). Credo's own selection above is not
+    // guaranteed to land on the same one, and its metadata is what `metadata_integrity` refers to.
+    const paymentCredentialEntry = resolvedRequest.formattedSubmission.entries.find(
+      (entry): entry is FormattedSubmissionEntrySatisfied =>
+        entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
+    )
+    const paymentCredentialRecordId = paymentCredentialEntry?.credentials[0]?.credential.record.id
+    if (paymentCredentialRecordId && resolvedRequest.queryResult) {
+      dcqlCredentials[transactionData.cardForTransactionId] = getSelectedCredentialsForRequest(
+        resolvedRequest.queryResult,
+        { [transactionData.cardForTransactionId]: paymentCredentialRecordId }
+      )[transactionData.cardForTransactionId]
+    }
+
+    const presentations = dcqlCredentials[transactionData.cardForTransactionId]
+    if (!presentations) {
+      throw new Error(
+        `Credential query '${transactionData.cardForTransactionId}' authorizes the PaSO transaction but is not part of the presentation`
+      )
+    }
+
+    const scaResponseClaims = await createPasoScaResponseClaims({
+      paradym,
+      proof: transactionData.proof,
+      // Safe: `resolvePasoTransactionData` rejects unsigned requests before we ever get here.
+      signedRequest: resolvedRequest.signedAuthorizationRequest?.compact as string,
+      responseMode:
+        (resolvedRequest.authorizationRequest.response_mode as string | undefined) ??
+        (resolvedRequest.origin ? 'dc_api' : 'fragment'),
+      authenticationMethods,
+      authenticatedAt,
+    })
+
+    for (const presentation of presentations) {
+      // Only SD-JWT VC carries a KB-JWT. The mdoc profile of [PaSO Core] Section 6.3 would need a
+      // `urn:paso:sca:1` DeviceSigned namespace, which Credo has no path to produce.
+      if (presentation.claimFormat !== ClaimFormat.SdJwtDc) continue
+      presentation.additionalPayload = { ...presentation.additionalPayload, ...scaResponseClaims }
+    }
+  }
+
+  return { dcqlCredentials, transactionData }
 }
 
 /**

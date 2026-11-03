@@ -2,7 +2,6 @@ import { Hasher, TypedArrayEncoder } from '@credo-ts/core'
 import type { FormattedSubmissionEntrySatisfied } from '../format/submission'
 import { getPasoCredentialMetadata } from '../metadata/credentials'
 import type { CredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { loadVerifiedPasoCredentialMetadata } from './credentialMetadata'
 import { ParadymWalletPasoError } from './error'
 import { resolvePasoImageUrl, validatePasoDataUrlImage } from './image'
@@ -16,6 +15,7 @@ import {
 } from './paymentRulebook'
 import { selectPasoRiskSignalsEncryptionKey } from './riskSignalEncryption'
 import { resolveEffectiveRiskSignalSet } from './riskSignals'
+import type { PasoWallet } from './types'
 import {
   isPasoTransactionDataType,
   type PasoClaimMetadata,
@@ -212,7 +212,7 @@ export function assertPasoCredentialsOnlyForPasoTransactions(resolvedRequest: Cr
  * cease processing and inform the user.
  */
 export async function resolvePasoTransactionData(
-  paradym: ParadymWalletSdk,
+  paradym: PasoWallet,
   resolvedRequest: CredentialsForProofRequest,
   localePriorityList: string[]
 ): Promise<FormattedTransactionDataPasoPayment> {
@@ -533,10 +533,7 @@ function assertTrivialCredentialSets(resolvedRequest: CredentialsForProofRequest
  * The Payment rulebook makes the logo optional and lets a dedicated UI skip displaying it, so its
  * absence from the payload is not an error. A logo that is present and does not check out is.
  */
-async function resolveVerifiedLogo(
-  paradym: ParadymWalletSdk,
-  payload: PasoPaymentPayload
-): Promise<string | undefined> {
+async function resolveVerifiedLogo(paradym: PasoWallet, payload: PasoPaymentPayload): Promise<string | undefined> {
   const logo = payload.payee.logo
   if (!logo) return undefined
 

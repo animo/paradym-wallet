@@ -59,8 +59,8 @@ catalog:
   rxjs: ^7.8.2
   query-string: ^9.4.0
   "@animo-id/eudi-wallet-functionality": 0.1.0
-  "@animo-id/expo-secure-environment": 0.1.5
-  "@animo-id/expo-digital-credentials-api": 0.6.0
+  "@animo-id/expo-secure-environment": 0.3.0
+  "@animo-id/expo-digital-credentials-api": 0.7.0
   expo-mdoc-data-transfer: 0.2.0
   "@owf/mdoc": ^0.9.1
   "@owf/cose": ^0.6.0
@@ -176,4 +176,4 @@ minimumReleaseAgeExclude:
   - '@credo-ts/webvh@0.8.0-alpha-20261030133527'
   - expo-mdoc-data-transfer@0.2.0
   - zod@4.6.1
-  - '@animo-id/expo-digital-credentials-api@0.6.0'
+  - '@animo-id/expo-digital-credentials-api@0.7.0'

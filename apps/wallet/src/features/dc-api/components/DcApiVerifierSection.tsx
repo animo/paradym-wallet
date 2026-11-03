@@ -1,45 +1,57 @@
 // Deep imports throughout: the `@package/ui` barrel pulls in the whole kit, and this bundle is
 // separate from the app's.
-import { Trans, useLingui } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
 import { Heading } from '@package/ui/base/Headings'
 import { Paragraph } from '@package/ui/base/Paragraph'
 import { XStack, YStack } from '@package/ui/base/Stacks'
-import { InfoButton } from '@package/ui/components/InfoButton'
 import { HeroIcons } from '@package/ui/content/Icon'
-import { IconContainer } from '@package/ui/content/IconContainer'
 import { Image } from '@package/ui/content/Image'
 import type { RequestVerifier } from '@paradym/wallet-sdk/trust/verifier'
-import { useState } from 'react'
 import { Circle } from 'tamagui'
+import { dcApiMessages as messages } from '../messages'
 
 /**
- * Who is asking, and what the wallet knows about them.
- *
- * The app's `VerifyPartySlide` pushes the list of approving organizations onto its own screen. The
- * request UI has no navigation — it is a single sheet the OS put on top of the verifier's app — so
- * the same list expands in place instead.
+ * Who is asking, and whether the wallet recognizes them. One row, without the list of approving
+ * organizations the app shows: the request UI is a small sheet over the verifier's app.
  */
-export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVerifier; origin?: string }) {
+export function DcApiVerifierSection({
+  verifier,
+  origin,
+  isPayment,
+}: {
+  verifier: RequestVerifier
+  origin?: string
+  /** Whether the request asks to authorize a payment, which the heading says instead of asking for data. */
+  isPayment: boolean
+}) {
   const { t } = useLingui()
-  const [areTrustedEntitiesVisible, setAreTrustedEntitiesVisible] = useState(false)
 
   const entityIsTrustAnchor = verifier.trustedEntities.some((entity) => entity.entityId === verifier.entityId)
   const isDemoTrustedEntity = verifier.trustedEntities.some((entity) => entity.demo)
 
   // The verifier itself is not one of its own approvals.
-  const approvedBy = verifier.trustedEntities
-    .filter((entity) => entity.entityId !== verifier.entityId)
-    .map((entity) => ({ ...entity, demo: isDemoTrustedEntity ? true : entity.demo }))
+  const isApprovedByOthers = verifier.trustedEntities.some((entity) => entity.entityId !== verifier.entityId)
+  const isRecognized = isApprovedByOthers || entityIsTrustAnchor
 
-  const isRecognized = approvedBy.length > 0 || entityIsTrustAnchor
+  // Recognized or not fits on one line under the host. A demo organization gets its own box below: it
+  // outranks recognition, since it says not to share real data.
+  const trust = isRecognized
+    ? {
+        icon: <HeroIcons.CheckCircleFilled size={16} color="positive-500" />,
+        label: t(commonMessages.recognizedOrganization),
+      }
+    : {
+        icon: <HeroIcons.ExclamationTriangleFilled size={16} color="warning-500" />,
+        label: t(commonMessages.unknownOrganization),
+      }
 
   return (
-    <YStack gap="5">
-      <YStack gap="3" items="center">
+    <YStack gap="3">
+      <XStack gap="3" items="center">
         {/* `white`, not `background`: the logo is the verifier's artwork, commonly dark on
             transparent, so this is a plate under it rather than a surface of ours to darken. */}
-        <Circle size={72} borderWidth="1" borderColor="grey-100" bg="white" overflow="hidden">
+        <Circle size={48} borderWidth="1" borderColor="grey-100" bg="white" overflow="hidden">
           {verifier.logo?.url ? (
             <Image
               src={verifier.logo.url}
@@ -49,86 +61,55 @@ export function DcApiVerifierSection({ verifier, origin }: { verifier: RequestVe
               contentFit="contain"
             />
           ) : (
-            <HeroIcons.BuildingOffice color="grey-800" size={32} />
+            <HeroIcons.BuildingOffice color="grey-800" size={24} />
           )}
         </Circle>
-        <YStack gap="0-5">
-          <Heading heading="h2" center numberOfLines={2}>
-            {verifier.name
-              ? t(commonMessages.doYouTrust(verifier.name))
-              : t(commonMessages.organizationNotVerifiedHeading)}
+        <YStack flex={1} gap="0-5">
+          {/* The action, short enough for one line. A payment leaves the name out: the payee is right
+              below, and may be someone other than the organization that asks. */}
+          <Heading heading="h3" numberOfLines={2}>
+            {isPayment
+              ? t(messages.confirmPayment)
+              : verifier.name
+                ? t(messages.shareWith(verifier.name))
+                : t(messages.dataRequest)}
           </Heading>
-          <Paragraph variant="annotation" center>
+          <Paragraph variant="annotation" numberOfLines={1}>
             {verifier.hostName ?? origin ?? verifier.entityId}
           </Paragraph>
+          {!isDemoTrustedEntity && (
+            <XStack gap="0-5" items="center">
+              {trust.icon}
+              <Paragraph variant="annotation" flex={1}>
+                {trust.label}
+              </Paragraph>
+            </XStack>
+          )}
         </YStack>
-      </YStack>
+      </XStack>
 
-      <YStack gap="2">
-        <InfoButton
-          variant={isRecognized ? (entityIsTrustAnchor ? 'positive' : 'info') : 'warning'}
-          routingType="modal"
-          title={isRecognized ? t(commonMessages.recognizedOrganization) : t(commonMessages.unknownOrganization)}
-          description={
-            isRecognized
-              ? approvedBy.length === 1
-                ? t(commonMessages.approvedByOneOrganization)
-                : approvedBy.length > 1
-                  ? t(commonMessages.approvedByOrganizations(approvedBy.length))
-                  : undefined
-              : t(commonMessages.organizationNotVerifiedDescription)
-          }
-          onPress={() => setAreTrustedEntitiesVisible((isVisible) => !isVisible)}
-        />
-
-        {areTrustedEntitiesVisible &&
-          (approvedBy.length > 0 ? (
-            approvedBy.map((entity) => (
-              <XStack key={entity.entityId} items="center" rounded="8" p="3" gap="3" bg="grey-100">
-                {entity.logoUri && (
-                  <Circle overflow="hidden" size="11" bg="grey-50">
-                    <Image src={entity.logoUri} height="100%" width="100%" />
-                  </Circle>
-                )}
-                <YStack flex={1} flexShrink={1}>
-                  <Heading heading="h3" numberOfLines={2}>
-                    {entity.organizationName}
-                  </Heading>
-                  {entity.demo && <Paragraph variant="sub">{t(commonMessages.demoOrganization)}</Paragraph>}
-                </YStack>
-                <IconContainer
-                  icon={
-                    entity.demo ? (
-                      <HeroIcons.ExclamationTriangleFilled size={26} color="warning-500" />
-                    ) : (
-                      <HeroIcons.CheckCircleFilled size={26} color="positive-500" />
-                    )
-                  }
-                />
-              </XStack>
-            ))
-          ) : (
-            <Paragraph variant="annotation" px="2">
-              {verifier.name ? (
-                <Trans id="dcApi.verifier.noApprovals">
-                  No organization has approved {verifier.name}. Consider carefully whether you want to share with them.
-                </Trans>
-              ) : (
-                <Trans id="dcApi.verifier.noApprovalsUnknown">
-                  No organization has approved this one. Consider carefully whether you want to share with them.
-                </Trans>
-              )}
+      {isDemoTrustedEntity && (
+        <XStack
+          rounded="6"
+          bg="warning-300"
+          borderWidth={1}
+          borderColor="warning-400"
+          gap="3"
+          px="3"
+          py="2"
+          items="center"
+        >
+          <HeroIcons.ExclamationTriangleFilled size={20} color="warning-600" />
+          <YStack flex={1}>
+            <Paragraph variant="sub" fontWeight="semiBold" color="grey-900">
+              {t(commonMessages.demoOrganization)}
             </Paragraph>
-          ))}
-
-        {isDemoTrustedEntity && (
-          <InfoButton
-            variant="warning"
-            title={t(commonMessages.demoOrganization)}
-            description={t(commonMessages.demoOrganizationWarning)}
-          />
-        )}
-      </YStack>
+            <Paragraph variant="annotation" color="grey-800">
+              {t(commonMessages.demoOrganizationWarning)}
+            </Paragraph>
+          </YStack>
+        </XStack>
+      )}
     </YStack>
   )
 }

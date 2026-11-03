@@ -5,9 +5,10 @@ import {
   setPasoCredentialMetadata,
 } from '../metadata/credentials'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
-import { type CredentialRecord, updateCredential } from '../storage/credentials'
+import { type CredentialRecord, updateCredential, updateCredentialRecord } from '../storage/credentials'
 import { pasoLocalePriorityList } from './locale'
 import { computeSriIntegrity } from './sri'
+import type { PasoWallet } from './types'
 import {
   isPasoTransactionDataType,
   type PasoCredentialMetadata,
@@ -213,7 +214,7 @@ function getUnverifiedExpiry(compact: string): number {
  * no retrieval to compare against.
  */
 export async function verifyPasoCredentialMetadataJwt(
-  sdk: ParadymWalletSdk,
+  sdk: PasoWallet,
   options: {
     compact: string
     binding: PasoCredentialBinding
@@ -385,7 +386,7 @@ export async function storePasoCredentialMetadata(
  * supersedes whatever an older list produced.
  */
 async function refetchAndStore(
-  paradym: ParadymWalletSdk,
+  paradym: PasoWallet,
   credentialRecord: CredentialRecord,
   credentialMetadataUri: string,
   binding: PasoCredentialBinding
@@ -399,7 +400,8 @@ async function refetchAndStore(
     credentialMetadataUri: verified.payload.credential_metadata_uri,
     localePriorityList,
   })
-  await updateCredential({ paradym, credentialRecord })
+  if ('dcApi' in paradym) await updateCredential({ paradym: paradym as ParadymWalletSdk, credentialRecord })
+  else await updateCredentialRecord(paradym.agent, credentialRecord)
 
   return verified
 }
@@ -416,7 +418,7 @@ async function refetchAndStore(
  * so `requiredType` not being covered by any of them is also grounds to go and ask again.
  */
 export async function loadVerifiedPasoCredentialMetadata(
-  paradym: ParadymWalletSdk,
+  paradym: PasoWallet,
   options: {
     credentialRecord: CredentialRecord
     requiredType?: string

@@ -68,6 +68,7 @@ export function getCredentialBindingResolver({
           .createKeyForSignatureAlgorithm({
             algorithm: signatureAlgorithm,
             backend,
+            backendOptions: keyOptions?.backendOptions,
           })
           .then((key) => Kms.PublicJwk.fromUnknown(key.publicJwk))
       )

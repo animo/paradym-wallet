@@ -1,4 +1,4 @@
-import { resetWalletServiceProviderState } from '@app/crypto/WalletServiceProviderClient'
+import { resetWalletPinValidation } from '@app/crypto/walletPin'
 import { useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -24,7 +24,7 @@ export const useWalletReset = () => {
           text: t(commonMessages.yes),
           onPress: withHaptics(async () => {
             await paradym.reset()
-            await resetWalletServiceProviderState()
+            await resetWalletPinValidation()
             router.replace('/onboarding?reset=true')
           }),
         },

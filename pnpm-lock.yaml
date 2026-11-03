@@ -10,11 +10,11 @@ catalogs:
       specifier: 0.1.0
       version: 0.1.0
     '@animo-id/expo-digital-credentials-api':
-      specifier: 0.6.0
-      version: 0.6.0
+      specifier: 0.7.0
+      version: 0.7.0
     '@animo-id/expo-secure-environment':
-      specifier: 0.1.5
-      version: 0.1.5
+      specifier: 0.3.0
+      version: 0.3.0
     '@astronautlabs/jsonpath':
       specifier: ^1.1.2
       version: 1.1.2
@@ -311,7 +311,7 @@ importers:
     dependencies:
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
-        version: 0.6.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.7.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@credo-ts/askar':
         specifier: 'catalog:'
         version: 0.8.0-alpha-20261030133527(@openwallet-foundation/askar-shared@0.7.0-alpha-20261023221824)(typescript@6.0.3)
@@ -320,7 +320,7 @@ importers:
         version: 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@credo-ts/react-native':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261030133527(b87c1d348b349d8221d47b21c8ab583c)
+        version: 0.8.0-alpha-20261030133527(5a638956bb48ccfd987eca9d5a728503)
       '@expo-google-fonts/open-sans':
         specifier: 'catalog:'
         version: 0.4.2
@@ -583,10 +583,10 @@ importers:
         version: 0.1.0(@credo-ts/core@0.8.0-alpha-20261030133527(typescript@6.0.3))(@credo-ts/openid4vc@0.8.0-alpha-20261030133527(typescript@6.0.3))
       '@animo-id/expo-digital-credentials-api':
         specifier: 'catalog:'
-        version: 0.6.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.7.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@animo-id/expo-secure-environment':
         specifier: 'catalog:'
-        version: 0.1.5(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+        version: 0.3.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@astronautlabs/jsonpath':
         specifier: 'catalog:'
         version: 1.1.2
@@ -610,7 +610,7 @@ importers:
         version: 0.8.0-alpha-20261030133527(typescript@6.0.3)
       '@credo-ts/react-native':
         specifier: 'catalog:'
-        version: 0.8.0-alpha-20261030133527(b87c1d348b349d8221d47b21c8ab583c)
+        version: 0.8.0-alpha-20261030133527(5a638956bb48ccfd987eca9d5a728503)
       '@credo-ts/webvh':
         specifier: 'catalog:'
         version: 0.8.0-alpha-20261030133527(@credo-ts/anoncreds@0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3))(typescript@6.0.3)
@@ -766,17 +766,17 @@ packages:
       '@credo-ts/core': '*'
       '@credo-ts/openid4vc': '*'
 
-  '@animo-id/expo-digital-credentials-api@0.6.0':
-    resolution: {integrity: sha512-BMRKZ7Ufb+7ICQgY+fCkAnAAizNIC1EY88UIYaOaJgLDEpLq88t3ddmhBWuhH5NjIOCIjS/pksE82KqMJLUv6g==}
+  '@animo-id/expo-digital-credentials-api@0.7.0':
+    resolution: {integrity: sha512-fETnNA+kMn0XN+4JdG6QhebWyfwjFgEOWDQvja2/JwkiU/79RGYGOKf5IQXT1ZDvXbhpEmI0AYihxKbtsPnz+A==}
     peerDependencies:
       expo: '>=55'
       react: 19.3.0
       react-native: 0.88.0
 
-  '@animo-id/expo-secure-environment@0.1.5':
-    resolution: {integrity: sha512-fqAU+/4gekexE5z2i1v2WQ4uNHtk8b+3OXfRxxib2pKHi2MomZIUiCiPLX88Q5+5IN6eavTnGTCLLGe8Nwh9Ww==}
+  '@animo-id/expo-secure-environment@0.3.0':
+    resolution: {integrity: sha512-Hy9KnqhsCgUJ1Masol5+8xYVLxOR2jtvsiIlojGFzDIideSEyaWhrRXVGrwIE5k+TO/7FXdkJ+00c3n59xl6kA==}
     peerDependencies:
-      expo: '*'
+      expo: '>=53.0.0'
       react: 19.3.0
       react-native: 0.88.0
 
@@ -6882,14 +6882,14 @@ snapshots:
       '@credo-ts/openid4vc': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       zod: 4.6.7
 
-  '@animo-id/expo-digital-credentials-api@0.6.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
+  '@animo-id/expo-digital-credentials-api@0.7.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@expo/plist': 0.5.4
       expo: 58.0.19(@babel/core@7.29.7)(@expo/dom-webview@56.0.5)(@expo/metro-runtime@56.0.15)(expo-router@58.0.26)(react-dom@19.3.0(react@19.3.0))(react-native-web@0.21.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-native-worklets@0.13.0(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
       react: 19.3.0
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
 
-  '@animo-id/expo-secure-environment@0.1.5(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
+  '@animo-id/expo-secure-environment@0.3.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@peculiar/asn1-ecc': 2.11.1
       '@peculiar/asn1-schema': 2.11.1
@@ -7925,7 +7925,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@credo-ts/react-native@0.8.0-alpha-20261030133527(b87c1d348b349d8221d47b21c8ab583c)':
+  '@credo-ts/react-native@0.8.0-alpha-20261030133527(5a638956bb48ccfd987eca9d5a728503)':
     dependencies:
       '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       events: 3.3.0
@@ -7933,7 +7933,7 @@ snapshots:
       react-native: 0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0)
       react-native-get-random-values: 2.0.0(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))
     optionalDependencies:
-      '@animo-id/expo-secure-environment': 0.1.5(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
+      '@animo-id/expo-secure-environment': 0.3.0(expo@58.0.19)(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       '@dr.pogodin/react-native-fs': 2.40.4(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)
       react-native-fs: '@dr.pogodin/react-native-fs@2.40.4(react-native@0.88.0(patch_hash=fd46fd69a6299aa88fade9d8627bdca377c8a8e2d040380fc28100f993e0e275)(@babel/core@7.29.7)(@react-native/metro-config@0.88.0(@babel/core@7.29.7))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)'
     transitivePeerDependencies:

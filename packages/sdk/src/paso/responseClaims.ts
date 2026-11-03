@@ -1,11 +1,10 @@
 import { utils } from '@credo-ts/core'
 import { getWalletInstanceVersion } from '../config/walletInstanceVersion'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { encryptPasoRiskSignals } from './riskSignalEncryption'
 import { collectPasoRiskSignals } from './riskSignals'
 import { computeSriIntegrity } from './sri'
 import type { FormattedTransactionDataPasoPayment } from './transactionData'
-import type { PasoAuthenticationMethod, PasoScaResponseClaims } from './types'
+import type { PasoAuthenticationMethod, PasoScaResponseClaims, PasoWallet } from './types'
 
 /**
  * The holder binding proof claims, per [PaSO Core] Section 6.
@@ -20,7 +19,7 @@ import type { PasoAuthenticationMethod, PasoScaResponseClaims } from './types'
  * enumeration requires them. See {@link ./riskSignals.ts}.
  */
 export async function createPasoScaResponseClaims(options: {
-  paradym: ParadymWalletSdk
+  paradym: PasoWallet
   /** The resolved proof material of the transaction the user consented to. */
   proof: NonNullable<FormattedTransactionDataPasoPayment['proof']>
   /** The signed Authorization Request ([JAR] Request Object) in compact serialisation. */

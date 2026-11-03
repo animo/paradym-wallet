@@ -1,3 +1,4 @@
+import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../../agent'
 import { ParadymWalletNoRequestToResolveError } from '../../error'
 import { getFormattedSubmission } from '../../format/submission'
@@ -43,18 +44,7 @@ export const resolveCredentialRequest = async ({
       allowUntrusted,
     })
 
-    return {
-      ...resolved.presentationExchange,
-      ...resolved.dcql,
-      origin,
-      authorizationRequest: resolved.authorizationRequestPayload,
-      // Carries the compact JAR JWT, which PaSO hashes into the `request_integrity` proof claim.
-      signedAuthorizationRequest: resolved.signedAuthorizationRequest,
-      formattedSubmission: getFormattedSubmission(resolved),
-      transactionData: resolved.transactionData,
-      trustMechanism,
-      verifier,
-    }
+    return getCredentialsForProofRequest(resolved, { origin, trustMechanism, verifier })
   } catch (error) {
     paradym.logger.error('Error getting credentials for request', {
       error,
@@ -64,4 +54,26 @@ export const resolveCredentialRequest = async ({
   }
 }
 
-export type CredentialsForProofRequest = Awaited<ReturnType<typeof resolveCredentialRequest>>
+/**
+ * A resolved request in the shape the share flow works with. The credential request UI builds the
+ * same from its own resolve, so both share through the same code.
+ */
+export function getCredentialsForProofRequest(
+  resolved: OpenId4VpResolvedAuthorizationRequest,
+  { origin, trustMechanism, verifier }: { origin?: string } & Awaited<ReturnType<typeof getVerifierForOpenId4VpRequest>>
+) {
+  return {
+    ...resolved.presentationExchange,
+    ...resolved.dcql,
+    origin,
+    authorizationRequest: resolved.authorizationRequestPayload,
+    // Carries the compact JAR JWT, which PaSO hashes into the `request_integrity` proof claim.
+    signedAuthorizationRequest: resolved.signedAuthorizationRequest,
+    formattedSubmission: getFormattedSubmission(resolved),
+    transactionData: resolved.transactionData,
+    trustMechanism,
+    verifier,
+  }
+}
+
+export type CredentialsForProofRequest = ReturnType<typeof getCredentialsForProofRequest>

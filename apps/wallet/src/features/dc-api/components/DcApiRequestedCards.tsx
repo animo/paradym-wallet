@@ -27,6 +27,7 @@ import {
 } from '@paradym/wallet-sdk/display/common'
 import { useState } from 'react'
 import { dcApiMessages as messages } from '../messages'
+import { dcApiCardArtwork } from './dcApiCardArtwork'
 
 /**
  * The cards a request would be answered with, and the attributes they would disclose.
@@ -177,6 +178,7 @@ function RequestedCard({ credential }: { credential: FormattedSubmissionEntrySat
       name={display.name ?? t(commonMessages.unknown)}
       backgroundColor={display.backgroundColor}
       backgroundImage={display.backgroundImage?.url}
+      artwork={dcApiCardArtwork(display.svg)}
       issuerImage={display.issuer.logo?.url}
       textColor={display.textColor}
       attributeNames={getDisclosedAttributeNamesForDisplay(credential).map((name) =>
@@ -198,6 +200,8 @@ type CardProps = {
   name: string
   backgroundColor?: string
   backgroundImage?: string
+  /** The card's rendered SVG template, in place of the background image. */
+  artwork?: React.ReactNode
   issuerImage?: string
   textColor?: string
   attributeNames: string[]
@@ -212,6 +216,7 @@ function Card({
   name,
   backgroundColor,
   backgroundImage,
+  artwork,
   issuerImage,
   textColor,
   attributeNames,
@@ -236,10 +241,16 @@ function Card({
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
       <Stack px="5" py="3" position="relative" bg={backgroundColor ?? 'grey-900'}>
-        {backgroundImage && (
+        {artwork ? (
           <Stack position="absolute" top={0} left={0} right={0} bottom={0}>
-            <Image src={backgroundImage} contentFit="cover" height="100%" width="100%" />
+            {artwork}
           </Stack>
+        ) : (
+          backgroundImage && (
+            <Stack position="absolute" top={0} left={0} right={0} bottom={0}>
+              <Image src={backgroundImage} contentFit="cover" height="100%" width="100%" />
+            </Stack>
+          )
         )}
         <XStack items="center" justify="space-between" gap="2">
           <Heading

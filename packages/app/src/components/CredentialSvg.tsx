@@ -16,7 +16,8 @@ export function getSvgAspectRatio(svg: SkSVG) {
   return Number.isFinite(aspectRatio) && aspectRatio > 0 ? Math.min(Math.max(aspectRatio, 1), 2) : id1AspectRatio
 }
 
-export function CredentialSvg({ svg }: { svg: SkSVG }) {
+/** `cover` crops the template to the box, for rows narrower or wider than the card. */
+export function CredentialSvg({ svg, fit = 'contain' }: { svg: SkSVG; fit?: 'contain' | 'cover' }) {
   const [size, setSize] = useState({ width: 0, height: 0 })
   const hasIntrinsicSize = svg.width() > 0 && svg.height() > 0
 
@@ -26,7 +27,7 @@ export function CredentialSvg({ svg }: { svg: SkSVG }) {
       <Canvas style={StyleSheet.absoluteFill}>
         {hasIntrinsicSize ? (
           // Skia draws an svg with its own width and height at that size, so scale it to the card.
-          <FitBox src={rect(0, 0, svg.width(), svg.height())} dst={rect(0, 0, size.width, size.height)}>
+          <FitBox fit={fit} src={rect(0, 0, svg.width(), svg.height())} dst={rect(0, 0, size.width, size.height)}>
             <ImageSVG svg={svg} x={0} y={0} width={svg.width()} height={svg.height()} />
           </FitBox>
         ) : (
@@ -35,4 +36,17 @@ export function CredentialSvg({ svg }: { svg: SkSVG }) {
       </Canvas>
     </View>
   )
+}
+
+/**
+ * A card's svg template from its source, cropped to fill the small card rows. Nothing when there is no template;
+ * a template Skia can't parse leaves the row's plain background.
+ */
+export function credentialSvgArtwork(svgSource?: string) {
+  return svgSource ? <CredentialSvgFromSource svgSource={svgSource} /> : undefined
+}
+
+function CredentialSvgFromSource({ svgSource }: { svgSource: string }) {
+  const svg = useSvg(svgSource)
+  return svg ? <CredentialSvg svg={svg} fit="cover" /> : null
 }

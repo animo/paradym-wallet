@@ -1,10 +1,10 @@
 import type { DcApiRequest } from '@animo-id/expo-digital-credentials-api/request-handler'
-// Deep import: `@app/hooks` pulls in the over-asking AI and the payment hooks, none of which this
-// bundle links. The setting itself lives in the shared MMKV, so the request UI reads what the app
-// wrote — in its own process.
+import { isHardwareBoundCredentialType } from '@app/config/paymentAttestation'
+// Deep import: `@app/hooks` pulls in the payment hooks, which this bundle doesn't link. The setting
+// itself lives in the shared MMKV, so the request UI reads what the app wrote — in its own process.
 import { useDevelopmentMode } from '@app/hooks/useDevelopmentMode'
 import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
-import { useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 // Deep imports throughout: the `@package/ui` and `@package/app` barrels pull in the whole kit —
 // the icon sets alone are thousands of modules — and this bundle is separate from the app's.
 import { PinDotsInput, type PinDotsInputRef } from '@package/app/components/PinDotsInput'
@@ -17,7 +17,7 @@ import { Stack, XStack, YStack } from '@package/ui/base/Stacks'
 import { HeroIcons } from '@package/ui/content/Icon'
 import { IconContainer } from '@package/ui/content/IconContainer'
 import { Spinner } from '@package/ui/content/Spinner'
-import type { DcApiReview, ParadymDcApiSdk } from '@paradym/wallet-sdk/dcApi/ParadymDcApiSdk'
+import type { DcApiReview, DcApiShareOptions, ParadymDcApiSdk } from '@paradym/wallet-sdk/dcApi/ParadymDcApiSdk'
 import { hasMissingCards } from '@paradym/wallet-sdk/display/common'
 import {
   ParadymWalletAuthenticationInvalidPinError,
@@ -25,6 +25,8 @@ import {
   ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletNoStoreError,
 } from '@paradym/wallet-sdk/error'
+import { ParadymWalletPasoError } from '@paradym/wallet-sdk/paso/error'
+import { pasoPaymentTransactionDataType } from '@paradym/wallet-sdk/paso/paymentRulebook'
 import { getIsBiometricsEnabled } from '@paradym/wallet-sdk/storage/sharedMmkv'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Platform, useColorScheme } from 'react-native'
@@ -32,8 +34,14 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { TamaguiProvider } from 'tamagui'
 import tamaguiConfig from '../../../tamagui.config'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
+import { PaymentCardRow } from '../share/components/PaymentCardRow'
+import { PaymentTransactionDetails } from '../share/components/PaymentTransactionDetails'
+import { resolvePasoAuthenticationMethods } from '../share/pasoAuthenticationMethods'
+import { usePasoRefusalMessage } from '../share/pasoRefusalMessage'
+import { useTransactionDataSeen } from '../share/useTransactionDataSeen'
 import { DcApiRequestedCards } from './components/DcApiRequestedCards'
 import { DcApiVerifierSection } from './components/DcApiVerifierSection'
+import { dcApiCardArtwork } from './components/dcApiCardArtwork'
 import { dcApiMessages as messages } from './messages'
 
 // Credo, askar and keychain are imported lazily: anything they throw while initializing would
@@ -112,6 +120,11 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
   const [phase, setPhase] = useState<Phase>({ name: 'unlock' })
   const [error, setError] = useState<string>()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
+  const pasoRefusalMessage = usePasoRefusalMessage()
+  const { hasSeenTransactionData, onTransactionDataLayout, onViewportLayout, onScroll } = useTransactionDataSeen()
+
+  // How the wallet was opened for this request, which PaSO reports as how the payment was released.
+  const unlockMethodRef = useRef<UnlockMethod | undefined>(undefined)
 
   // The SDK holds the askar store open, so it outlives the phase it was created in.
   const sdkRef = useRef<ParadymDcApiSdk | undefined>(undefined)
@@ -160,6 +173,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           locale: i18n.locale,
         })
         sdkRef.current = sdk
+        unlockMethodRef.current = method
       } catch (unlockError) {
         isUnlockingRef.current = false
         setPhase({ name: 'unlock' })
@@ -183,10 +197,18 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         setPhase({ name: 'review', review })
       } catch (reviewError) {
         console.error('Error reviewing request', reviewError)
-        setPhase({ name: 'failed', description: t(messages.requestFailed), reason: message(reviewError) })
+        // A PaSO refusal is a decision the spec asks the wallet to explain, not a failure.
+        setPhase({
+          name: 'failed',
+          description:
+            reviewError instanceof ParadymWalletPasoError
+              ? pasoRefusalMessage(reviewError.code)
+              : t(messages.requestFailed),
+          reason: message(reviewError),
+        })
       }
     },
-    [request, t, isDevelopmentModeEnabled]
+    [request, t, isDevelopmentModeEnabled, pasoRefusalMessage]
   )
 
   const unlockUsingPin = useCallback(
@@ -215,7 +237,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
       setPhase({ name: 'sharing', review })
 
       try {
-        await review.share()
+        await review.share(getShareOptions(review, unlockMethodRef.current))
       } catch (shareError) {
         console.error('Error sharing credentials', shareError)
         // A dismissed biometric prompt sent nothing, so the request is still open: back to the
@@ -306,12 +328,36 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           // space instead, so the buttons stay at the bottom of the screen.
           flexShrink={1}
           flexGrow={drawsOwnSheet ? 0 : 1}
-          contentContainerStyle={{ gap: '6', paddingBottom: '5' }}
+          contentContainerStyle={{ gap: '5', paddingBottom: '2' }}
           showsVerticalScrollIndicator={false}
           bounces={false}
+          onLayout={onViewportLayout}
+          onScroll={onScroll}
+          scrollEventThrottle={48}
         >
-          <DcApiVerifierSection verifier={phase.review.verifier} origin={request.origin} />
-          <DcApiRequestedCards submission={phase.review.submission} />
+          <DcApiVerifierSection
+            verifier={phase.review.verifier}
+            origin={request.origin}
+            isPayment={getPayment(phase.review) !== undefined}
+          />
+          {getPayment(phase.review) ? (
+            <PaymentTransactionDetails
+              transaction={getPayment(phase.review) as NonNullable<ReturnType<typeof getPayment>>}
+              onLayout={onTransactionDataLayout}
+              compact
+            >
+              {/* The card that pays, in the payment's own box rather than among the requested cards. */}
+              {getPaymentCard(phase.review) ? (
+                <PaymentCardRow
+                  card={getPaymentCard(phase.review) as NonNullable<ReturnType<typeof getPaymentCard>>}
+                  artwork={dcApiCardArtwork(getPaymentCard(phase.review)?.credential.display.svg)}
+                />
+              ) : null}
+            </PaymentTransactionDetails>
+          ) : null}
+          {getOtherEntries(phase.review).length > 0 ? (
+            <DcApiRequestedCards submission={{ ...phase.review.submission, entries: getOtherEntries(phase.review) }} />
+          ) : null}
         </ScrollView>
       ) : null}
 
@@ -387,16 +433,44 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           </Button.Solid>
         </YStack>
       ) : phase.name === 'review' || phase.name === 'sharing' ? (
-        <XStack gap="2" borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="5">
-          {/* Both are disabled while the response is being built: it cannot be taken back once
-              `approve()` has released the request, so there is nothing a second press could do. */}
-          <Button.Outline grow={1} disabled={phase.name === 'sharing'} onPress={() => decline(phase.review)}>
-            {t(commonMessages.declineButton)}
-          </Button.Outline>
-          <Button.Solid grow={1} disabled={phase.name === 'sharing'} onPress={() => share(phase.review)}>
-            {phase.name === 'sharing' ? <Spinner variant="dark" /> : t(messages.share)}
-          </Button.Solid>
-        </XStack>
+        <YStack gap="2" borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="5">
+          <XStack gap="2">
+            {/* Both are disabled while the response is being built: it cannot be taken back once
+                `approve()` has released the request, so there is nothing a second press could do. */}
+            <Button.Outline grow={1} disabled={phase.name === 'sharing'} onPress={() => decline(phase.review)}>
+              {pasoLabels(phase.review)?.denialActionLabel ?? t(commonMessages.declineButton)}
+            </Button.Outline>
+            <Button.Solid
+              grow={1}
+              // A payment has to have been on screen before it can be authorized, as in the app.
+              disabled={phase.name === 'sharing' || (getPayment(phase.review) !== undefined && !hasSeenTransactionData)}
+              onPress={() => share(phase.review)}
+            >
+              {phase.name === 'sharing' ? (
+                <Spinner variant="dark" />
+              ) : getPayment(phase.review) ? (
+                (pasoLabels(phase.review)?.affirmativeActionLabel ??
+                t({
+                  id: 'paso.payment.accept',
+                  message: 'Pay',
+                  comment: 'Fallback label for the button that authorizes a PaSO payment',
+                }))
+              ) : (
+                t(messages.share)
+              )}
+            </Button.Solid>
+          </XStack>
+          {getPayment(phase.review) && !hasSeenTransactionData ? (
+            <Paragraph variant="annotation" text="center">
+              <Trans
+                id="paso.payment.scrollToConfirm"
+                comment="Shown while the user has not yet scrolled through all payment details"
+              >
+                Scroll down to review all payment details.
+              </Trans>
+            </Paragraph>
+          ) : null}
+        </YStack>
       ) : null}
     </YStack>
   )
@@ -416,6 +490,67 @@ function showsPinPad(phase: Phase) {
  */
 function isUnlocking(phase: Phase) {
   return phase.name === 'unlock' || phase.name === 'opening'
+}
+
+/** The payment the request asks the user to authorize, if it is one. */
+function getPayment(review: DcApiReview) {
+  const transaction = review.transactionData
+  return transaction?.type === pasoPaymentTransactionDataType ||
+    transaction?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1'
+    ? transaction
+    : undefined
+}
+
+/** The card the payment is authorized with, when the wallet holds one. */
+function getPaymentCard(review: DcApiReview) {
+  const payment = getPayment(review)
+  return review.submission.entries.find(
+    (entry): entry is typeof entry & { isSatisfied: true } =>
+      entry.inputDescriptorId === payment?.cardForTransactionId && entry.isSatisfied
+  )?.credentials[0]
+}
+
+/**
+ * The requested cards apart from the payment card, which has its own section. Without a card for the
+ * payment its entry stays, to say which card is missing.
+ */
+function getOtherEntries(review: DcApiReview) {
+  const paymentCard = getPaymentCard(review)
+  return review.submission.entries.filter(
+    (entry) => !paymentCard || entry.inputDescriptorId !== getPayment(review)?.cardForTransactionId
+  )
+}
+
+/** The issuer's button labels for a PaSO payment, which [PaSO View] Section 2 has the wallet use. */
+function pasoLabels(review: DcApiReview) {
+  return review.transactionData?.type === pasoPaymentTransactionDataType ? review.transactionData : undefined
+}
+
+/**
+ * How the user released a PaSO payment, for its `urn:paso:risk:global:amr:1` risk signal. The pin
+ * opened the wallet for this request alone, so it counts as entered for this transaction; see
+ * `resolvePasoAuthenticationMethods` for the rest.
+ */
+function getShareOptions(review: DcApiReview, unlockMethod: UnlockMethod | undefined): DcApiShareOptions | undefined {
+  const transaction = review.transactionData
+  if (transaction?.type !== pasoPaymentTransactionDataType) return undefined
+
+  const cardMetadata = review.submission.entries.find(
+    (entry): entry is typeof entry & { isSatisfied: true } =>
+      entry.inputDescriptorId === transaction.cardForTransactionId && entry.isSatisfied
+  )?.credentials[0]?.credential.metadata
+  const usedHardwareBoundKey = isHardwareBoundCredentialType([
+    cardMetadata?.type,
+    ...(cardMetadata?.additionalTypes ?? []),
+  ])
+
+  return {
+    authenticationMethods: resolvePasoAuthenticationMethods({
+      usedTransactionPin: unlockMethod === 'pin',
+      usedHardwareBoundKey,
+    }),
+    authenticatedAt: new Date(),
+  }
 }
 
 /** Every requested card has to have a credential behind it before anything can be shared. */

@@ -21,6 +21,22 @@ export const dcApiMessages = {
     message: 'Biometric unlock is not set up. Enter your PIN instead.',
   }),
   share: commonMessages.share,
+  confirmPayment: defineMessage({
+    id: 'dcApi.confirmPayment',
+    comment: 'Heading of a request to authorize a payment. The payee and amount are shown below it.',
+    message: 'Confirm payment',
+  }),
+  shareWith: (name: string) =>
+    defineMessage({
+      id: 'dcApi.shareWith',
+      comment: 'Heading of a request to share information, naming the organization that asks',
+      message: `Share with ${name}`,
+    }),
+  dataRequest: defineMessage({
+    id: 'dcApi.dataRequest',
+    comment: 'Heading of a request to share information, when the organization that asks is unknown',
+    message: 'Data request',
+  }),
   entryCount: (count: number) =>
     defineMessage({
       id: 'dcApi.entryCount',

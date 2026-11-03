@@ -6,7 +6,7 @@ import type {
   Openid4vpProtocolRequest,
 } from '@animo-id/expo-digital-credentials-api/request-handler'
 import { AskarKeyManagementService, AskarModule, AskarStoreInvalidKeyError } from '@credo-ts/askar'
-import { Agent, CredoError, Kms, type X509Certificate, X509Module } from '@credo-ts/core'
+import { Agent, CredoError, type DcqlQueryResult, Kms, type X509Certificate, X509Module } from '@credo-ts/core'
 import { OpenId4VcModule } from '@credo-ts/openid4vc'
 import { agentDependencies, SecureEnvironmentKeyManagementService } from '@credo-ts/react-native'
 import { NativeAskar } from '@openwallet-foundation/askar-react-native'
@@ -18,7 +18,7 @@ import {
   type ParadymWalletSdkSharedOptions,
 } from '../config'
 import { setResolveAttributeLabel } from '../config/attributeLabel'
-import { setLocale } from '../config/locale'
+import { getLocale, setLocale } from '../config/locale'
 import {
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
@@ -26,8 +26,13 @@ import {
 } from '../error'
 import { withBiometricAuthenticationErrors } from '../error/withBiometricAuthenticationErrors'
 import { getSubmissionForMdocRequest } from '../format/mdocDeviceRequest'
-import { type FormattedSubmission, getFormattedSubmission } from '../format/submission'
-import { createLogger } from '../logging'
+import type { FormattedSubmission } from '../format/submission'
+import { createLogger, type ParadymWalletSdkLogger } from '../logging'
+import { getCredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
+import { getDcqlCredentialsToShare } from '../openid4vc/func/shareCredentials'
+import { type FormattedTransactionData, resolveTransactionData } from '../openid4vc/transaction'
+import { selectPasoPaymentCredential } from '../paso/transactionData'
+import type { PasoAuthenticationMethod } from '../paso/types'
 import { resolveMdocDeviceRequest } from '../proximity/resolveMdocDeviceRequest'
 import { storeSharedActivityForSubmission } from '../storage/activityStore'
 import {
@@ -87,6 +92,12 @@ export type DcApiReview = {
   trustMechanism: TrustMechanism
 
   /**
+   * The transaction the request asks the user to authorize, such as a payment. Show it before
+   * sharing: sharing authorizes it.
+   */
+  transactionData?: FormattedTransactionData
+
+  /**
    * Answers the request. Everything platform- and protocol-specific was decided while building the
    * review, so the caller only has to call this once the user approved.
    *
@@ -94,7 +105,7 @@ export type DcApiReview = {
    * biometric prompt of a key in the secure environment. Nothing was sent then, so this can be
    * called again, or the request declined.
    */
-  share: () => Promise<void>
+  share: (options?: DcApiShareOptions) => Promise<void>
 
   /**
    * Declines the request, after recording it in the activity log the way the app records a declined
@@ -106,12 +117,19 @@ export type DcApiReview = {
   decline: (reason?: string) => Promise<void>
 }
 
+export type DcApiShareOptions = {
+  /** How the user released the transaction, for the PaSO `urn:paso:risk:global:amr:1` risk signal. */
+  authenticationMethods?: PasoAuthenticationMethod[]
+  /** When the user completed that authentication. */
+  authenticatedAt?: Date
+}
+
 /**
  * A review as the platform- and protocol-specific paths build it, before it is recorded. Its `share`
  * builds the response and returns the call that sends it, so the share can be recorded in between.
  */
 type ResolvedReview = Omit<DcApiReview, 'decline' | 'share'> & {
-  share: () => Promise<() => Promise<void>>
+  share: (options?: DcApiShareOptions) => Promise<() => Promise<void>>
 }
 
 /**
@@ -128,6 +146,10 @@ export class ParadymDcApiSdk {
     public readonly agent: ParadymDcApiAgent,
     private readonly configuration: Pick<ParadymDcApiSdkOptions, 'openId4VcConfiguration' | 'trustMechanisms'>
   ) {}
+
+  public get logger() {
+    return this.agent.config.logger as ParadymWalletSdkLogger
+  }
 
   /** The trust mechanisms the wallet is configured with, the app's list unchanged. */
   public get trustMechanisms(): TrustMechanismConfiguration[] {
@@ -230,10 +252,10 @@ export class ParadymDcApiSdk {
 
     return {
       ...review,
-      share: async () => {
+      share: async (options) => {
         let respond: () => Promise<void>
         try {
-          respond = await withBiometricAuthenticationErrors(review.share())
+          respond = await withBiometricAuthenticationErrors(review.share(options))
         } catch (error) {
           // The request is still open after a cancelled prompt: whatever the user does next is what
           // gets recorded.
@@ -274,7 +296,8 @@ export class ParadymDcApiSdk {
           name: review.verifier.name,
           logo: review.verifier.logo,
         },
-        status
+        status,
+        review.transactionData
       )
     } catch (error) {
       this.agent.config.logger.error('Failed to store the activity for a digital credentials request', { error })
@@ -346,20 +369,49 @@ export class ParadymDcApiSdk {
       throw new Error('Only DCQL requests are supported over the digital credentials API')
     }
 
-    const credentials = this.agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolved.dcql.queryResult)
+    const verifier = await getVerifierForOpenId4VpRequest({
+      agentContext: this.agent.context,
+      trustMechanisms: this.trustMechanisms,
+      resolvedAuthorizationRequest: resolved,
+    })
+
+    // The cards picked in the credential picker go to the front of their entries, so what is shown,
+    // what a transaction is resolved against and what is presented are the same cards.
+    const selectedCredentials = getPickedCredentials(resolved.dcql.queryResult, request.selection?.credentialIds)
+    const credentialsForRequest = Object.entries(selectedCredentials).reduce(
+      (current, [credentialQueryId, credentialRecordId]) =>
+        selectPasoPaymentCredential(current, credentialQueryId, credentialRecordId),
+      getCredentialsForProofRequest(resolved, { origin: request.origin, ...verifier })
+    )
+    const transactionData = await resolveTransactionData(this, credentialsForRequest, getLocale())
+    // Payments are what the request UI shows. Anything else would be signed without being seen.
+    if (transactionData && transactionData.type === 'qes_authorization') {
+      throw new Error(
+        `Transactions of type '${transactionData.type}' are not supported over the digital credentials API`
+      )
+    }
 
     return {
-      submission: getFormattedSubmission(resolved),
-      ...(await getVerifierForOpenId4VpRequest({
-        agentContext: this.agent.context,
-        trustMechanisms: this.trustMechanisms,
-        resolvedAuthorizationRequest: resolved,
-      })),
-      share: async () => {
+      submission: credentialsForRequest.formattedSubmission,
+      transactionData,
+      ...verifier,
+      share: async ({ authenticationMethods, authenticatedAt } = {}) => {
+        const { dcqlCredentials } = await getDcqlCredentialsToShare(this, {
+          resolvedRequest: credentialsForRequest,
+          selectedCredentials,
+          transactionData,
+          authenticationMethods,
+          authenticatedAt,
+        })
+        if (!dcqlCredentials) throw new Error('The request carries no DCQL query')
+
         const { authorizationResponse } = await this.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
           authorizationRequestPayload: resolved.authorizationRequestPayload,
           origin: request.origin,
-          dcql: { credentials },
+          dcql: { credentials: dcqlCredentials },
+          transactionData: transactionData?.cardForTransactionId
+            ? [{ credentialId: transactionData.cardForTransactionId }]
+            : undefined,
         })
 
         return () => request.respond({ protocol: protocolRequest.protocol, data: authorizationResponse })
@@ -479,4 +531,29 @@ function getModules({
         : undefined,
     }),
   }
+}
+
+/**
+ * The credentials picked in the Android credential picker, by the DCQL query they answer. The picker
+ * reports a record id per slot rather than the query, so each goes to the first query it is a valid
+ * match for that has no credential yet. Empty when nothing was picked, or when a pick matches no
+ * query: the wallet then selects the credentials itself, as it did before the picker reported any.
+ */
+function getPickedCredentials(queryResult: DcqlQueryResult, recordIds: string[] = []) {
+  const selected: Record<string, string> = {}
+
+  for (const recordId of recordIds) {
+    const credentialQueryId = Object.entries(queryResult.credential_matches).find(
+      ([queryId, match]) =>
+        !(queryId in selected) &&
+        match.success &&
+        match.valid_credentials.some(
+          (credential) => (credential as { record?: { id: string } }).record?.id === recordId
+        )
+    )?.[0]
+    if (!credentialQueryId) return {}
+    selected[credentialQueryId] = recordId
+  }
+
+  return selected
 }

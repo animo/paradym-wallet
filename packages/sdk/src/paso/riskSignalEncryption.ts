@@ -1,10 +1,10 @@
 import { JweService, Kms, TypedArrayEncoder } from '@credo-ts/core'
-import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import type {
   PasoCredentialMetadata,
   PasoPublishedJwk,
   PasoRiskSignalEnvelope,
   PasoRiskSignalsEncryptionKey,
+  PasoWallet,
 } from './types'
 
 /**
@@ -71,7 +71,7 @@ function isBaselineEncryptionKey(jwk: PasoPublishedJwk): jwk is PasoRiskSignalsE
  * there is no copy left that could decrypt what the wallet just sent.
  */
 export async function encryptPasoRiskSignals(
-  paradym: ParadymWalletSdk,
+  paradym: PasoWallet,
   options: {
     riskSignals: PasoRiskSignalEnvelope[]
     encryptionKey: PasoRiskSignalsEncryptionKey
