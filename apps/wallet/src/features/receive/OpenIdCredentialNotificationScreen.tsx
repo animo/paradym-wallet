@@ -6,7 +6,12 @@ import { useLingui } from '@lingui/react/macro'
 import { SlideWizard, usePushToWallet } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import type { CredentialForDisplay, DeferredCredentialBefore, ResolveCredentialOfferReturn } from '@paradym/wallet-sdk'
+import type {
+  CredentialForDisplay,
+  CredentialsForProofRequest,
+  DeferredCredentialBefore,
+  ResolveCredentialOfferReturn,
+} from '@paradym/wallet-sdk'
 import {
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
@@ -20,6 +25,7 @@ import { validateWalletPin } from '../../crypto/walletPin'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { type OnPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
+import { getPushedAuthorizationPresentationRequestUri } from './issuanceAuthorizationPresentationRequest'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { BiometricsRequiredSlide, canCreateHardwareBoundKey } from './slides/BiometricsRequiredSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
@@ -31,6 +37,18 @@ import { TxCodeSlide } from './slides/TxCodeSlide'
 import { VerifyPartySlide } from './slides/VerifyPartySlide'
 
 type Query = { uri: string }
+
+// The authorization code in a redirect to the wallet's own redirect uri
+function getWalletRedirectAuthorizationCode(redirectUri: string) {
+  const url = new URL(redirectUri)
+  const walletRedirectUrl = new URL(walletClient.redirectUri)
+  const isWalletRedirect =
+    url.protocol === walletRedirectUrl.protocol &&
+    url.host === walletRedirectUrl.host &&
+    url.pathname === walletRedirectUrl.pathname
+
+  return isWalletRedirect ? (url.searchParams.get('code') ?? undefined) : undefined
+}
 
 export function CredentialNotificationScreen() {
   const { paradym } = useParadym('unlocked')
@@ -54,12 +72,23 @@ export function CredentialNotificationScreen() {
   const [isSharingPresentation, setIsSharingPresentation] = useState(false)
   const [deferredCredential, setDeferredCredential] = useState<DeferredCredentialBefore>()
   const [receivedCredential, setReceivedCredential] = useState<CredentialForDisplay>()
+  // The presentation the authorization server requests from the browser in the authorization code flow,
+  // and the redirect_uri the verifier returns to continue the authorization in the browser after sharing.
+  const [authorizationPresentationRequest, setAuthorizationPresentationRequest] = useState<CredentialsForProofRequest>()
+  const [authorizationPresentationRedirectUri, setAuthorizationPresentationRedirectUri] = useState<string>()
 
-  const shouldUsePinForPresentation = useShouldUsePinForSubmission(
+  const presentationRequest =
     resolvedCredentialOffer?.flow === 'auth-presentation-during-issuance'
-      ? resolvedCredentialOffer.credentialsForProofRequest.formattedSubmission
-      : undefined
-  )
+      ? resolvedCredentialOffer.credentialsForProofRequest
+      : authorizationPresentationRequest
+  const shouldUsePinForPresentation = useShouldUsePinForSubmission(presentationRequest?.formattedSubmission)
+  // The authorization server returned the presentation request from the pushed authorization request, so there's
+  // no need to open the browser to start the authorization
+  const hasPushedPresentationRequest =
+    resolvedCredentialOffer?.flow === 'auth' &&
+    getPushedAuthorizationPresentationRequestUri(
+      resolvedCredentialOffer.resolvedAuthorizationRequest.authorizationRequestUrl
+    ) !== undefined
 
   const onCancel = () => pushToWallet()
   const onGoToWallet = () => pushToWallet()
@@ -90,6 +119,18 @@ export function CredentialNotificationScreen() {
     [setErrorReasonWithError, t]
   )
 
+  const onAuthorizationPresentationRequest = useCallback(
+    async (requestUri: string) => {
+      try {
+        setAuthorizationPresentationRequest(await paradym.openid4vc.resolveCredentialRequest({ uri: requestUri }))
+      } catch (error) {
+        paradym.logger.error('Error resolving presentation request during authorization', { error })
+        setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
+      }
+    },
+    [paradym, setErrorReasonWithError, t]
+  )
+
   // The authorization challenge / presentation request_uri the issuer hands us during
   // resolve is one-shot on the server side, so re-firing this effect would 404 the second call.
   const resolvingOfferUriRef = useRef<string | undefined>(undefined)
@@ -110,6 +151,12 @@ export function CredentialNotificationScreen() {
           setIsBiometricsSetupRequired(!(await canCreateHardwareBoundKey()))
         }
 
+        const pushedPresentationRequestUri =
+          result.flow === 'auth'
+            ? getPushedAuthorizationPresentationRequestUri(result.resolvedAuthorizationRequest.authorizationRequestUrl)
+            : undefined
+        if (pushedPresentationRequestUri) await onAuthorizationPresentationRequest(pushedPresentationRequestUri)
+
         setResolvedCredentialOffer(result)
       })
       .catch((error) => {
@@ -118,86 +165,7 @@ export function CredentialNotificationScreen() {
           error,
         })
       })
-  }, [params.uri, paradym, setErrorReasonWithError, t])
-
-  const onPresentationAccept = useCallback(
-    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
-      if (resolvedCredentialOffer?.flow !== 'auth-presentation-during-issuance') {
-        setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
-        return
-      }
-
-      setIsSharingPresentation(true)
-
-      if (shouldUsePinForPresentation) {
-        if (!pin) {
-          setErrorReason('PIN is required to accept the presentation.')
-          return
-        }
-        try {
-          await validateWalletPin(pin)
-        } catch (error) {
-          if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
-            onPinError?.()
-            setIsSharingPresentation(false)
-            toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
-            return
-          }
-
-          setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
-          return
-        }
-      }
-
-      try {
-        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
-          authorization: walletClient,
-          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
-          resolvedAuthorizationRequest: resolvedCredentialOffer.resolvedAuthorizationRequest,
-          credentialsForRequest: resolvedCredentialOffer.credentialsForProofRequest,
-        })
-
-        onPinComplete?.()
-
-        updateCredentials(acquiredCredentials)
-      } catch (error) {
-        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
-          setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
-          return
-        }
-        if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
-          setErrorReason(t(commonMessages.biometricAuthenticationMustBeEnabledInSettings))
-          return
-        }
-        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
-          onPinError?.()
-          toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
-          return
-        }
-
-        paradym.logger.error('Error accepting presentation', {
-          error,
-        })
-        setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
-      } finally {
-        setIsSharingPresentation(false)
-      }
-    },
-    [
-      t,
-      paradym,
-      shouldUsePinForPresentation,
-      toast.show,
-      setErrorReasonWithError,
-      paradym.logger.error,
-      resolvedCredentialOffer,
-    ]
-  )
-
-  // These are callbacks to not change on every render
-  const onCancelAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationCancelled)), [t])
-
-  const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
+  }, [params.uri, paradym, setErrorReasonWithError, t, onAuthorizationPresentationRequest])
 
   const acquireCredentialsAuth = useCallback(
     async (authorizationCode: string) => {
@@ -230,6 +198,108 @@ export function CredentialNotificationScreen() {
     },
     [paradym, setIssuanceErrorReason, t, resolvedCredentialOffer]
   )
+
+  const onPresentationAccept = useCallback(
+    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+      if (!resolvedCredentialOffer || !presentationRequest) {
+        setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
+        return
+      }
+
+      setIsSharingPresentation(true)
+
+      if (shouldUsePinForPresentation) {
+        if (!pin) {
+          setErrorReason('PIN is required to accept the presentation.')
+          return
+        }
+        try {
+          await validateWalletPin(pin)
+        } catch (error) {
+          if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
+            onPinError?.()
+            setIsSharingPresentation(false)
+            toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
+            return
+          }
+
+          setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
+          return
+        }
+      }
+
+      try {
+        if (resolvedCredentialOffer.flow === 'auth-presentation-during-issuance') {
+          const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
+            authorization: walletClient,
+            resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
+            resolvedAuthorizationRequest: resolvedCredentialOffer.resolvedAuthorizationRequest,
+            credentialsForRequest: resolvedCredentialOffer.credentialsForProofRequest,
+          })
+
+          onPinComplete?.()
+
+          updateCredentials(acquiredCredentials)
+        } else {
+          const { redirectUri } = await paradym.openid4vc.shareCredentials({
+            resolvedRequest: presentationRequest,
+            selectedCredentials: {},
+            openRedirectUri: false,
+          })
+          if (!redirectUri) {
+            throw new Error('The verifier did not return a redirect_uri to continue the authorization')
+          }
+
+          // Otherwise the authorization continues in the browser at the redirect_uri, which then redirects
+          // back with the authorization code. That's opened from the next step, so the result comes back here.
+          setAuthorizationPresentationRedirectUri(redirectUri)
+          onPinComplete?.()
+
+          // The authorization server can return the authorization code in the redirect_uri to the wallet
+          // right away, which saves opening the browser again.
+          const authorizationCode = getWalletRedirectAuthorizationCode(redirectUri)
+          if (authorizationCode) void acquireCredentialsAuth(authorizationCode)
+        }
+      } catch (error) {
+        if (error instanceof ParadymWalletBiometricAuthenticationCancelledError) {
+          setErrorReason(t(commonMessages.biometricAuthenticationCancelled))
+          return
+        }
+        if (error instanceof ParadymWalletBiometricAuthenticationNotEnabledError) {
+          setErrorReason(t(commonMessages.biometricAuthenticationMustBeEnabledInSettings))
+          return
+        }
+        if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
+          onPinError?.()
+          toast.show(t(commonMessages.invalidPinEntered), { customData: { preset: 'warning' } })
+          return
+        }
+
+        paradym.logger.error('Error accepting presentation', {
+          error,
+        })
+        setErrorReasonWithError(t(commonMessages.presentationCouldNotBeShared), error)
+      } finally {
+        setIsSharingPresentation(false)
+      }
+    },
+    [
+      t,
+      paradym,
+      shouldUsePinForPresentation,
+      toast.show,
+      setErrorReasonWithError,
+      paradym.logger.error,
+      resolvedCredentialOffer,
+      presentationRequest,
+      acquireCredentialsAuth,
+    ]
+  )
+
+  // These are callbacks to not change on every render
+  const onCancelAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationCancelled)), [t])
+
+  const onErrorAuthorization = useCallback(() => setErrorReason(t(commonMessages.authorizationFailed)), [t])
 
   const acquireCredentialsPreAuth = useCallback(
     async (txCode?: string): Promise<boolean> => {
@@ -390,7 +460,7 @@ export function CredentialNotificationScreen() {
             />
           ),
         },
-        resolvedCredentialOffer.flow === 'auth'
+        resolvedCredentialOffer.flow === 'auth' && !hasPushedPresentationRequest
           ? {
               step: 'auth-code-flow',
               progress: 49.5,
@@ -405,12 +475,13 @@ export function CredentialNotificationScreen() {
                     domain: resolvedCredentialOffer.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
                   }}
                   onAuthFlowCallback={acquireCredentialsAuth}
+                  onPresentationRequest={onAuthorizationPresentationRequest}
                   onCancel={onCancelAuthorization}
                   onError={onErrorAuthorization}
                 />
               ),
             }
-          : resolvedCredentialOffer.flow === 'auth-presentation-during-issuance'
+          : resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' || hasPushedPresentationRequest
             ? {
                 step: 'check-card',
                 progress: 49.5,
@@ -433,6 +504,63 @@ export function CredentialNotificationScreen() {
                   />
                 ),
               },
+        resolvedCredentialOffer.flow === 'auth' && authorizationPresentationRequest
+          ? {
+              step: 'authorization-presentation',
+              progress: 58,
+              backIsCancel: true,
+              screen: (
+                <ShareCredentialsSlide
+                  key="authorization-presentation"
+                  onAccept={shouldUsePinForPresentation ? undefined : onPresentationAccept}
+                  logo={authorizationPresentationRequest.verifier.logo}
+                  submission={authorizationPresentationRequest.formattedSubmission}
+                  isAccepting={isSharingPresentation}
+                  onDecline={onProofDecline}
+                />
+              ),
+            }
+          : undefined,
+        resolvedCredentialOffer.flow === 'auth' && authorizationPresentationRequest && shouldUsePinForPresentation
+          ? {
+              step: 'authorization-presentation-pin-enter',
+              progress: 66,
+              screen: (
+                <PinSlide
+                  key="authorization-presentation-pin-enter"
+                  isLoading={isSharingPresentation}
+                  onPinSubmit={onPresentationAccept}
+                />
+              ),
+            }
+          : undefined,
+        resolvedCredentialOffer.flow === 'auth' &&
+        authorizationPresentationRequest &&
+        !(
+          authorizationPresentationRedirectUri &&
+          getWalletRedirectAuthorizationCode(authorizationPresentationRedirectUri)
+        )
+          ? {
+              step: 'auth-code-flow-after-presentation',
+              progress: 74,
+              backIsCancel: true,
+              screen: (
+                <AuthCodeFlowSlide
+                  key="auth-code-flow-after-presentation"
+                  display={resolvedCredentialOffer.credentialDisplay}
+                  authCodeFlowDetails={{
+                    openUrl: authorizationPresentationRedirectUri ?? '',
+                    redirectUri: walletClient.redirectUri,
+                    domain: resolvedCredentialOffer.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer,
+                  }}
+                  onAuthFlowCallback={acquireCredentialsAuth}
+                  onCancel={onCancelAuthorization}
+                  onError={onErrorAuthorization}
+                  autoOpen
+                />
+              ),
+            }
+          : undefined,
         resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' && shouldUsePinForPresentation
           ? {
               step: 'presentation-during-issuance',

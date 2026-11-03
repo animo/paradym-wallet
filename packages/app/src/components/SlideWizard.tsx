@@ -120,8 +120,14 @@ export const SlideWizard = forwardRef(
       transform: [{ translateX: translateX.value }],
     }))
 
+    // Read when the transition ends rather than when it starts: a slide can add the steps that follow it
+    // and continue in the same handler, before the new steps have rendered.
+    const stepsRef = useRef(steps)
+    stepsRef.current = steps
+
     const updateStep = useCallback(
       (increment: number, slide?: string) => {
+        const steps = stepsRef.current
         if (slide) {
           const idx = steps.findIndex((step) => step.step === slide)
           if (idx !== -1) {
@@ -138,7 +144,7 @@ export const SlideWizard = forwardRef(
           })
         }
       },
-      [steps, media.wide]
+      [media.wide]
     )
 
     const animateTransition = useCallback(
