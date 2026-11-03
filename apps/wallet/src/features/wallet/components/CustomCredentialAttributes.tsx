@@ -157,20 +157,20 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
     headerImage = raw.portrait
   }
   return (
-    <Stack gap="4">
+    <Stack gap="5">
       <YStack gap="3" position="relative">
-        {headerImage && <Stack h="1" />}
-        <Stack pos="relative" ai="center">
+        {headerImage && <Stack h="5" />}
+        <Stack position="relative" items="center">
           {headerImage && (
             <Circle
-              zi={5}
+              z={5}
               borderWidth={2}
               borderColor="white"
-              top="-5"
+              top="-6"
               bg="idCardBackground"
               overflow="hidden"
-              size="8"
-              pos="absolute"
+              size={84}
+              position="absolute"
             >
               <Image width={80} height={80} src={headerImage} />
             </Circle>
@@ -178,16 +178,16 @@ export function ArfPidCredentialAttributes({ credential }: CustomCredentialAttri
           <TableContainer>
             <YStack
               bg="tableBackgroundColor"
-              gap="4"
+              gap="5"
               px="2-5"
               py="3"
               borderBottomWidth={2}
               borderBottomColor="tableBorderColor"
-              ai="center"
+              items="center"
             >
-              {headerImage && <Stack h="3" />}
-              <YStack gap="2" ai="center">
-                <Heading ta="center" heading="h3">
+              {headerImage && <Stack h="9" />}
+              <YStack gap="2" items="center">
+                <Heading text="center" heading="h3">
                   {personalInfoCard.name}
                 </Heading>
                 <Paragraph>{personalInfoCard.born}</Paragraph>
@@ -272,20 +272,20 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
   }
 
   return (
-    <Stack gap="6">
+    <Stack gap="8">
       <YStack gap="3" position="relative">
-        {raw.portrait && <Stack h="1" />}
-        <Stack pos="relative" ai="center">
+        {raw.portrait && <Stack h="5" />}
+        <Stack position="relative" items="center">
           {raw.portrait && (
             <Circle
-              zi={5}
+              z={5}
               borderWidth={2}
               borderColor="white"
-              top="-5"
+              top="-6"
               bg="idCardBackground"
               overflow="hidden"
-              size="8"
-              pos="absolute"
+              size={84}
+              position="absolute"
             >
               <Image width={80} height={80} src={raw.portrait} />
             </Circle>
@@ -293,15 +293,15 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
           <TableContainer>
             <YStack
               bg="tableBackgroundColor"
-              gap="4"
+              gap="5"
               px="2-5"
               py="3"
               borderBottomWidth={2}
               borderBottomColor="tableBorderColor"
-              ai="center"
+              items="center"
             >
-              {raw.portrait && <Stack h="3" />}
-              <YStack gap="2" ai="center">
+              {raw.portrait && <Stack h="9" />}
+              <YStack gap="2" items="center">
                 <Heading heading="h3">{mainCard.name}</Heading>
                 <Paragraph>
                   {/* Führerschein in german */}
@@ -341,7 +341,7 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
                   ...(privilege.expiry_date ? [t(commonMessages.fields.expires_at)] : []),
                 ]}
                 values={[
-                  <XStack key={privilege.vehicle_category_code} ai="center" gap="3">
+                  <XStack key={privilege.vehicle_category_code} items="center" gap="3">
                     <Paragraph color="grey-900" fontWeight="semiBold" fontSize={18}>
                       {privilege.vehicle_category_code}
                     </Paragraph>

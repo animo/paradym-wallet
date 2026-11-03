@@ -43,9 +43,9 @@ export const TxCodeSlide = ({ txCode, onTxCode }: TxCodeSlideProps) => {
   }
 
   return (
-    <YStack fg={1} gap="6">
-      <ScrollView contentContainerStyle={{ gap: '6' }} scrollEnabled={txCode.description !== undefined}>
-        <YStack gap="4">
+    <YStack grow={1} gap="8">
+      <ScrollView contentContainerStyle={{ gap: '8' }} scrollEnabled={txCode.description !== undefined}>
+        <YStack gap="5">
           <Heading>
             {t({
               id: 'txCodeSlide.title',

@@ -34,8 +34,8 @@ export function BiometricsRequiredSlide() {
   }, [onNext])
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="4">
+    <YStack grow={1} justify="space-between">
+      <YStack gap="5">
         <Heading>
           {t({
             id: 'biometricsRequiredSlide.title',
@@ -44,7 +44,7 @@ export function BiometricsRequiredSlide() {
           })}
         </Heading>
         <Stack alignSelf="flex-start">
-          <XStack p="4" bg="grey-100" borderRadius="4">
+          <XStack p="5" bg="grey-100" borderRadius="4">
             {biometricsType === 'face' ? (
               <CustomIcons.FaceId color="grey-800" size={32} />
             ) : (
@@ -62,7 +62,7 @@ export function BiometricsRequiredSlide() {
         </Paragraph>
       </YStack>
 
-      <YStack borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
+      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5">
         <Button.Solid scaleOnPress onPress={() => Linking.openSettings()}>
           {t(commonMessages.openSettingsButton)}
         </Button.Solid>

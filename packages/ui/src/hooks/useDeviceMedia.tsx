@@ -1,5 +1,5 @@
-import { useMedia } from '@tamagui/web'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useMedia } from 'tamagui'
 
 const SHORT_DEVICE_PADDING = 16
 const LONG_DEVICE_PADDING = 24

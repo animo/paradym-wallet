@@ -44,7 +44,7 @@ const driver = createAnimations(
 // A preset name (`transition="quick"`) animates only the keys the native driver supports, the rest is applied
 // directly. Components that pass a transition object choose their keys themselves.
 // Style updates without a re-render (press and other states) don't check the transition's keys, so those only get the
-// native driver keys. A state that changes another key, like `bw="1 press:2"`, won't apply.
+// native driver keys. A state that changes another key, like `borderWidth="1 press:2"`, won't apply.
 const nativeDriverStyleKeys = new Set([
   'transform',
   'opacity',

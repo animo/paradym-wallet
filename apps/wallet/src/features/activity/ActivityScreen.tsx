@@ -89,29 +89,29 @@ export function ActivityScreen({ entityId, initialSelectedId }: { entityId?: str
           flexDirection="column"
           entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
           gap="2"
-          jc="center"
-          p="4"
-          fg={1}
+          justify="center"
+          p="5"
+          grow={1}
         >
-          <Heading ta="center" heading="h3" fontWeight="semiBold">
+          <Heading text="center" heading="h3" fontWeight="semiBold">
             {t(activityMessages.noActivityTitle)}
           </Heading>
-          <Paragraph ta="center">{t(activityMessages.noActivityDescription)}</Paragraph>
+          <Paragraph text="center">{t(activityMessages.noActivityDescription)}</Paragraph>
         </AnimatedStack>
       ) : isLoadingActivities ? (
-        <YStack fg={1} ai="center" jc="center">
+        <YStack grow={1} items="center" justify="center">
           <Loader />
-          <Spacer size="12" />
+          <Spacer size={88} />
         </YStack>
       ) : (
         <ScrollView onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
-          <YStack fg={1} px="4" gap="4">
+          <YStack grow={1} px="5" gap="5">
             {Object.entries(groupedActivities).map(([key, groupActivities]) => {
               const [year, month] = key.split('-')
               const date = new Date(Number.parseInt(year, 10), Number.parseInt(month, 10))
               return (
                 <React.Fragment key={key}>
-                  <Stack bbw={1} btw={1} borderColor="grey-200" px="4" py="3" mx={-18}>
+                  <Stack borderBottomWidth={1} borderTopWidth={1} borderColor="grey-200" px="5" py="3" mx={-18}>
                     <Heading heading="sub2">
                       {date.toLocaleString(i18n.locale, { month: 'long', year: 'numeric' })}
                     </Heading>

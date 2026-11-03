@@ -126,9 +126,9 @@ export const AuthCodeFlowSlide = ({
   }
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack fg={1} gap="6">
-        <YStack gap="4">
+    <YStack grow={1} justify="space-between">
+      <YStack grow={1} gap="8">
+        <YStack gap="5">
           <Heading>
             <Trans id="authCodeFlowSlide.heading" comment="Heading shown when user is about to authenticate">
               Verify your account
@@ -149,7 +149,7 @@ export const AuthCodeFlowSlide = ({
           backgroundColor={display.backgroundColor ?? 'grey-900'}
         />
       </YStack>
-      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
+      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5" bg="background">
         <DualResponseButtons
           align="horizontal"
           acceptText={t({

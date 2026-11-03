@@ -285,12 +285,12 @@ export const SlideWizard = forwardRef(
         <FlexPage
           safeArea={['t', 'l', 'r']}
           p="0"
-          jc="space-between"
+          justify="space-between"
           gap="0"
           background="background"
           {...((isCombined || isOwnWideLayout) && { maxWidth: '100%' })}
         >
-          <Stack px="4" pb="2" bbw={1} borderColor={isScrolledByOffset ? 'grey-100' : 'background'}>
+          <Stack px="5" pb="2" borderBottomWidth={1} borderColor={isScrolledByOffset ? 'grey-100' : 'background'}>
             <ProgressHeader
               progress={isCompleted || isError ? 100 : isCombined ? steps[currentStepIndex + 1].progress : progress}
               onBack={onBack}
@@ -298,7 +298,7 @@ export const SlideWizard = forwardRef(
               color={isError ? 'danger' : 'primary'}
             />
           </Stack>
-          <AnimatedStack style={animatedStyles} f={1} pos="relative" jc="space-between">
+          <AnimatedStack style={animatedStyles} flex={1} position="relative" justify="space-between">
             {isCombined && NextScreen ? (
               <TwoPane
                 start={
@@ -330,8 +330,8 @@ export const SlideWizard = forwardRef(
                     ? { flex: 1 }
                     : { flexGrow: 1, paddingBottom: Math.max(bottom, 16) },
                 }}
-                fg={1}
-                px={isOwnWideLayout ? '0' : '4'}
+                grow={1}
+                px={isOwnWideLayout ? '0' : '5'}
               >
                 {renderScreen(Screen)}
               </ScrollableStack>
@@ -358,8 +358,8 @@ export function SlidePane({ children }: { children: React.ReactNode }) {
   return (
     <ScrollableStack
       scrollViewProps={{ contentContainerStyle: { flexGrow: 1, paddingBottom: Math.max(bottom, 16) } }}
-      fg={1}
-      px="4"
+      grow={1}
+      px="5"
     >
       {children}
     </ScrollableStack>

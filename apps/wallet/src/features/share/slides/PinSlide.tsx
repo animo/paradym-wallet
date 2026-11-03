@@ -33,8 +33,8 @@ export const PinSlide = ({ onPinSubmit, isLoading }: PinSlideProps) => {
   }
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="4">
+    <YStack grow={1} justify="space-between">
+      <YStack gap="5">
         <Heading>
           <Trans
             id="pinSlide.title"
@@ -49,7 +49,7 @@ export const PinSlide = ({ onPinSubmit, isLoading }: PinSlideProps) => {
           </Trans>
         </Paragraph>
       </YStack>
-      <YStack fg={1} mt="10">
+      <YStack grow={1} mt={60}>
         <PinDotsInput
           onPinComplete={onPinEnterComplete}
           isLoading={isLoading || isSubmitting}

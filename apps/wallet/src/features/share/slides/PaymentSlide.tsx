@@ -29,29 +29,29 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
   )?.credentials[0]
 
   return (
-    <YStack fg={1} jc="space-between">
+    <YStack grow={1} justify="space-between">
       <YStack
-        fg={1}
-        px="4"
-        mx="-4"
+        grow={1}
+        px="5"
+        mx="-5"
         borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
         onLayout={(event) => {
           if (!scrollViewHeight) setScrollViewHeight(event.nativeEvent.layout.height)
         }}
-        btw="0-5"
+        borderTopWidth="1"
       >
         <ScrollView
           onScroll={handleScroll}
           scrollEventThrottle={scrollEventThrottle}
-          contentContainerStyle={{ gap: '6' }}
-          px="4"
-          mx="-4"
-          py="4"
+          contentContainerStyle={{ gap: '8' }}
+          px="5"
+          mx="-5"
+          py="5"
           maxHeight={scrollViewHeight}
         >
-          <YStack gap="4">
-            <XStack ai="center" pt="4" px="6" jc="center" flexDirection="column">
-              <Circle size={88} bw="0-5" borderColor="grey-100" bg="white">
+          <YStack gap="5">
+            <XStack items="center" pt="5" px="8" justify="center" flexDirection="column">
+              <Circle size={88} borderWidth="1" borderColor="grey-100" bg="white">
                 {verifier.logo?.url ? (
                   <Image
                     circle
@@ -67,7 +67,7 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
                   <HeroIcons.BuildingOffice color="grey-800" size={36} />
                 )}
               </Circle>
-              <Paragraph variant="sub" ta="center">
+              <Paragraph variant="sub" text="center">
                 <Trans
                   id="payment.description"
                   comment="Explanation that the user is about to pay an amount to the payee"
@@ -84,8 +84,8 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
                 </Trans>
               </Paragraph>
             </YStack>
-            <XStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4">
-              <YStack f={1} gap="2" ai="center">
+            <XStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5">
+              <YStack flex={1} gap="2" items="center">
                 <Heading textTransform="none" color="grey-800">
                   {transaction.amount}
                 </Heading>
@@ -102,8 +102,8 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
                 </Trans>
               </Heading>
             </YStack>
-            <XStack br="6" bg="grey-50" bw={1} borderColor="grey-200" gap="4" p="4">
-              <YStack f={1} gap="2">
+            <XStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5">
+              <YStack flex={1} gap="2">
                 <Heading heading="h3" textTransform="none" color="grey-800">
                   {transaction.payee.name}
                 </Heading>
@@ -111,19 +111,19 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
                   variant="sub"
                   size="2"
                   onPress={() => Linking.openURL(transaction.payee.website)}
-                  jc="center"
+                  justify="center"
                 >
                   <Trans>
                     Website <HeroIcons.Link size={12} color="grey-700" />
                   </Trans>
                 </Paragraph>
               </YStack>
-              <Circle size={60} bw="0-5" borderColor="grey-100" bg="white">
+              <Circle size={60} borderWidth="1" borderColor="grey-100" bg="white">
                 <Image src={transaction.payee.logo} height="100%" width="100%" contentFit="contain" />
               </Circle>
             </XStack>
             {cardForPayment && (
-              <YStack mb="4">
+              <YStack mb="5">
                 <YStack gap="2">
                   <Heading heading="sub2">
                     <Trans id="payShare.cardHeading" comment="Heading above the card to be used for authorization">
@@ -148,7 +148,7 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
           </YStack>
         </ScrollView>
       </YStack>
-      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
+      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5" bg="background">
         <DualResponseButtons
           align="horizontal"
           acceptText={t(commonMessages.continue)}

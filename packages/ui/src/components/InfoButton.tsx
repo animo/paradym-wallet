@@ -86,23 +86,23 @@ export function InfoButton({
       flexDirection="row"
       gap="3"
       bg={isPressable ? 'grey-50' : 'background'}
-      px="3-5"
+      px="4"
       py="3"
       borderColor="grey-100"
-      br="8"
-      bw="0-5"
+      rounded="8"
+      borderWidth="1"
       accessible={true}
       accessibilityRole={onPress ? 'button' : undefined}
       aria-label={ariaLabel ?? `${title}. ${description}`}
       onPress={onPress}
     >
       {!noIcon && (
-        <Circle size="3" br="12" bg={infoButtonVariants[variant].accent}>
+        <Circle size="9" rounded="12" bg={infoButtonVariants[variant].accent}>
           {image ? <Image src={image.src} alt={image.alt} width={24} height={24} /> : infoButtonVariants[variant].icon}
         </Circle>
       )}
-      <XStack fg={1} f={1} ai="center">
-        <YStack gap="1" f={1} fg={1}>
+      <XStack grow={1} flex={1} items="center">
+        <YStack gap="0-5" flex={1} grow={1}>
           <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} heading="sub1">
             {title}
           </Heading>

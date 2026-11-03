@@ -8,10 +8,10 @@ export function NoContentInbox() {
   const { t } = useLingui()
 
   return (
-    <YStack jc="space-between" px="4" height="80%">
-      <Spacer />
+    <YStack justify="space-between" px="5" height="80%">
+      <Spacer size="5" />
       <YStack>
-        <YStack jc="center" ai="center" gap="2">
+        <YStack justify="center" items="center" gap="2">
           <Heading heading="h2" fontWeight="medium" letterSpacing={-0.5}>
             {t(commonMessages.noNotificationsTitle)}
           </Heading>
@@ -25,7 +25,7 @@ export function NoContentInbox() {
           </Trans>
         </Button.Text>
       </YStack>
-      <Spacer size="8" />
+      <Spacer size="12" />
     </YStack>
   )
 }

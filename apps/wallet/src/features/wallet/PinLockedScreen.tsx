@@ -31,9 +31,9 @@ export const PinLockedScreen = () => {
   }
 
   return (
-    <FlexPage gap="2" jc="space-between">
-      <YStack fg={1} gap="6" mt="6">
-        <YStack gap="6">
+    <FlexPage gap="2" justify="space-between">
+      <YStack grow={1} gap="8" mt="8">
+        <YStack gap="8">
           <Heading heading="h1">
             <Trans id="pinLocked.title" comment="Heading shown when the user has entered too many incorrect PINs">
               Too many incorrect attempts

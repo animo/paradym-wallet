@@ -58,12 +58,12 @@ export const OnboardingIdCardPinEnter = forwardRef(({ goToNextStep }: Onboarding
   })
 
   return (
-    <YStack fg={1} jc="space-between" mb={noBottomSafeArea ? -additionalPadding : undefined}>
+    <YStack grow={1} justify="space-between" mb={noBottomSafeArea ? -additionalPadding : undefined}>
       {/* Overflow issue only present on smaller devices, so set to max height */}
       <ScrollView flex={1} maxHeight={media.short ? 150 : undefined}>
-        <Stack jc="center">
+        <Stack justify="center">
           <IdCard icon={isLoading ? 'loading' : 'locked'} hideUserName />
-          <XStack pos="absolute" gap="3" justifyContent="center" w="100%">
+          <XStack position="absolute" gap="3" justifyContent="center" w="100%">
             {pinValues.map((digit, index) => (
               <YStack key={index} maxWidth={24} flex-1 justifyContent="center" alignItems="center">
                 <Paragraph lineHeight="32px" size="6" color="grey-900" fontWeight="medium">

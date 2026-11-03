@@ -19,7 +19,7 @@ export function Provider({
 >) {
   return (
     <TranslationProvider customLocale={customLocale}>
-      <TamaguiProvider disableInjectCSS defaultTheme={defaultTheme} {...rest}>
+      <TamaguiProvider defaultTheme={defaultTheme} {...rest}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Toast position="top-center" swipeDirection="up" duration={6000} visibleToasts={1}>
             <SafeAreaProvider style={{ backgroundColor: 'white' }}>{children}</SafeAreaProvider>

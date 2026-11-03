@@ -158,10 +158,10 @@ export function OfflineQrScreen() {
   }
 
   return (
-    <Page bg="black" ai="center">
+    <Page bg="black" items="center">
       <SystemBars style="light" />
-      <AnimatedStack pt="8" maxWidth="90%" gap="2">
-        <Heading heading="h1" lineHeight="36px" ta="center" dark>
+      <AnimatedStack pt="12" maxWidth="90%" gap="2">
+        <Heading heading="h1" lineHeight="36px" text="center" dark>
           <Trans id="offlineQr.heading" comment="Main heading for offline QR sharing screen">
             Share with QR code
           </Trans>
@@ -173,9 +173,9 @@ export function OfflineQrScreen() {
         </Paragraph>
       </AnimatedStack>
 
-      <AnimatedStack fg={1} pb="12" jc="center">
+      <AnimatedStack grow={1} pb={88} justify="center">
         {qrCodeData ? (
-          <Stack bg="white" br="8" p="5">
+          <Stack bg="white" rounded="8" p="6">
             <QRCode
               logoBorderRadius={12}
               logoMargin={4}
@@ -189,23 +189,23 @@ export function OfflineQrScreen() {
         )}
       </AnimatedStack>
 
-      <YStack jc="center" ai="center" gap="4">
+      <YStack justify="center" items="center" gap="5">
         <XStack>
           <Button.Solid
-            h="3-5"
-            px="5"
+            h="10"
+            px="6"
             bg="grey-100"
             color="grey-900"
             flexDirection="row"
             alignSelf="center"
-            br="12"
+            rounded="12"
             onPress={() => back()}
             scaleOnPress
           >
             {t(commonMessages.cancel)}
           </Button.Solid>
         </XStack>
-        <Spacer />
+        <Spacer size="5" />
       </YStack>
     </Page>
   )

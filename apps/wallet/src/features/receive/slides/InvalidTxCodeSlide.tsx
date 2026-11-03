@@ -12,10 +12,10 @@ export const InvalidTxCodeSlide = ({ onCancel }: InvalidTxCodeSlideProps) => {
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="6" fg={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
-        <ScrollView fg={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '4' }}>
-          <YStack gap="4">
+    <YStack grow={1} justify="space-between">
+      <YStack gap="8" grow={1} onLayout={(event) => setScrollViewHeight(event.nativeEvent.layout.height)}>
+        <ScrollView grow={1} maxHeight={scrollViewHeight} contentContainerStyle={{ gap: '5' }}>
+          <YStack gap="5">
             <Heading>
               {t({
                 id: 'invalidTxCode.title',
@@ -24,7 +24,7 @@ export const InvalidTxCodeSlide = ({ onCancel }: InvalidTxCodeSlideProps) => {
               })}
             </Heading>
             <Stack alignSelf="flex-start">
-              <XStack p="4" bg="grey-100" borderRadius="4">
+              <XStack p="5" bg="grey-100" borderRadius="4">
                 <HeroIcons.NoSymbol color="grey-800" size={32} />
               </XStack>
             </Stack>
@@ -40,7 +40,7 @@ export const InvalidTxCodeSlide = ({ onCancel }: InvalidTxCodeSlideProps) => {
         </ScrollView>
       </YStack>
 
-      <Stack borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
+      <Stack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5">
         <Button.Solid scaleOnPress onPress={onCancel}>
           {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
         </Button.Solid>

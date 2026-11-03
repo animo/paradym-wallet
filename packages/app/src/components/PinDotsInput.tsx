@@ -93,10 +93,10 @@ const PinDot = ({ filled, index, totalDots, progress }: PinDotProps) => {
   return (
     <Animated.View style={{ transform: [{ translateY }] }}>
       <Circle
-        size="1-5"
+        size="6"
         backgroundColor={filled ? 'primary-500' : 'background'}
         borderColor="primary-500"
-        borderWidth="1"
+        borderWidth="2"
       />
     </Animated.View>
   )
@@ -208,7 +208,7 @@ export const PinDotsInput = forwardRef(
     }
 
     return (
-      <YStack flexGrow={1} gap="8" jc="space-between" onPress={() => inputRef.current?.focus()}>
+      <YStack flexGrow={1} gap="12" justify="space-between" onPress={() => inputRef.current?.focus()}>
         <Animated.View style={{ transform: [{ translateX: shakeAnimation }] }}>
           <XStack justifyContent="center" gap="2">
             {Array.from({ length: pinLength }, (_, i) => (

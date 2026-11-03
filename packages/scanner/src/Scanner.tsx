@@ -58,7 +58,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
   }
 
   return (
-    <Page f={1} fd="column" jc="space-between" bg="black">
+    <Page flex={1} flexDirection="column" justify="space-between" bg="black">
       <SystemBars style="light" />
       {hasPermission && (
         <CameraView
@@ -69,13 +69,13 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
           }}
         />
       )}
-      <YStack zi="5" ai="center">
-        <Heading heading="h1" lineHeight="36px" ta="center" dark py="8" maxWidth="80%">
+      <YStack z={500} items="center">
+        <Heading heading="h1" lineHeight="36px" text="center" dark py="12" maxWidth="80%">
           <Trans id="qrScanner.instructionHeading" comment="Instruction heading for scanning a QR code">
             Use the camera to scan a QR code
           </Trans>
         </Heading>
-        <XStack maxHeight="10">
+        <XStack maxHeight={104}>
           <AnimatePresence>
             {helpText && (
               <XStack
@@ -85,11 +85,11 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
                 scale="1 enter:0.5 exit:1"
                 transition="quick"
                 bg="warning-500"
-                br="12"
+                rounded="12"
                 px="3"
-                py="1-5"
+                py="1"
                 gap="2"
-                ai="center"
+                items="center"
               >
                 <HeroIcons.ExclamationTriangleFilled size={16} color="grey-900" />
                 <Paragraph color="grey-900" numberOfLines={1} variant="caption">
@@ -103,30 +103,30 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
       <MaskedView
         style={StyleSheet.absoluteFill}
         maskElement={
-          <YStack f={1}>
-            <YStack f={1} bg="black" />
-            <XStack f={2} borderTopWidth="12" borderBottomWidth="12">
+          <YStack flex={1}>
+            <YStack flex={1} bg="black" />
+            <XStack flex={2} borderTopWidth={88} borderBottomWidth={88}>
               <YStack p={24} bg="black" />
-              <YStack f={1} />
+              <YStack flex={1} />
               <YStack p={24} bg="black" />
             </XStack>
-            <YStack f={1} bg="black" />
+            <YStack flex={1} bg="black" />
           </YStack>
         }
       >
         <XStack style={StyleSheet.absoluteFill} bg="darkTranslucent" />
       </MaskedView>
-      <YStack jc="center" ai="center" gap="4">
+      <YStack justify="center" items="center" gap="5">
         {onCancel && (
           <XStack>
             <Button.Solid
-              h="3-5"
-              px="5"
+              h="10"
+              px="6"
               bg="grey-100"
               color="grey-900"
               flexDirection="row"
               alignSelf="center"
-              br="12"
+              rounded="12"
               onPress={onCancel}
               scaleOnPress
             >
@@ -134,7 +134,7 @@ export const QrScanner = ({ onScan, onCancel, helpText }: BarcodeScannerProps) =
             </Button.Solid>
           </XStack>
         )}
-        <Spacer />
+        <Spacer size="5" />
       </YStack>
     </Page>
   )

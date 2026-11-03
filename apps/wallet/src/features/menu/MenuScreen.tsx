@@ -38,13 +38,13 @@ const MenuListItem = ({ variant = 'regular', onPress, icon, label, action = 'rou
       onPressOut={handlePressOut}
       onPress={onPress}
       flexDirection="row"
-      ai="center"
-      jc="space-between"
-      gap="4"
-      px="4"
+      items="center"
+      justify="space-between"
+      gap="5"
+      px="5"
       py="2"
     >
-      <XStack ai="center" gap="4">
+      <XStack items="center" gap="5">
         <IconContainer icon={icon} radius="normal" variant={variant} />
         <Heading heading="h3" fontWeight="semiBold" color={variant === 'regular' ? 'grey-900' : 'danger-600'}>
           {label}
@@ -77,10 +77,10 @@ export function MenuScreen() {
         })}
       />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack fg={1} gap="6" jc="space-between">
+        <YStack grow={1} gap="8" justify="space-between">
           <Stack my="-3" />
           <YStack gap="3">
-            <Heading px="4" heading="sub2" fontWeight="semiBold">
+            <Heading px="5" heading="sub2" fontWeight="semiBold">
               {t({
                 id: 'menu.section.wallet',
                 message: 'WALLET',
@@ -102,7 +102,7 @@ export function MenuScreen() {
           </YStack>
 
           <YStack gap="3">
-            <Heading px="4" heading="sub2" fontWeight="semiBold">
+            <Heading px="5" heading="sub2" fontWeight="semiBold">
               {t({
                 id: 'menu.section.app',
                 message: 'APP',

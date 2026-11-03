@@ -33,10 +33,10 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
 
   return (
     <YStack gap="2">
-      <XStack jc="space-between" ai="center">
-        <XStack gap="3" ai="center">
+      <XStack justify="space-between" items="center">
+        <XStack gap="3" items="center">
           {icon && (
-            <XStack bg={value ? 'primary-100' : 'grey-200'} p="1-5" br="4">
+            <XStack bg={value ? 'primary-100' : 'grey-200'} p="1" rounded="4">
               {cloneElement(icon, { size: 20, color: value ? 'primary-500' : 'grey-500' })}
             </XStack>
           )}
@@ -52,7 +52,7 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
               {label}
             </Label>
             {beta && (
-              <YStack mt="0-5" justifyContent="center">
+              <YStack mt="px" justifyContent="center">
                 <BetaTag />
               </YStack>
             )}
@@ -69,7 +69,7 @@ export function Switch({ id, label, value, disabled, onChange, icon, description
           onPressOut={handlePressOut}
           style={pressStyle}
         >
-          <TamaguiSwitch.Thumb bw={1} scale={0.9} borderColor="grey-200" bg="white" transition="quick" />
+          <TamaguiSwitch.Thumb borderWidth={1} scale={0.9} borderColor="grey-200" bg="white" transition="quick" />
         </AnimatedSwitch>
       </XStack>
       {description && <Paragraph variant="annotation">{description}</Paragraph>}

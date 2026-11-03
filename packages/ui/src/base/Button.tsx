@@ -85,9 +85,9 @@ export const SolidButton = styled(Btn, {
   variants: {
     small: {
       true: {
-        h: '3-5',
-        px: '5',
-        br: '12',
+        h: '10',
+        px: '6',
+        rounded: '12',
       },
     },
     light: {
@@ -114,24 +114,24 @@ export const TextButton = styled(Btn, {
   borderWidth: 0,
 })
 
-// The wrapper is what the button is laid out against — the button itself is `fg={1}` inside it —
+// The wrapper is what the button is laid out against — the button itself is `grow={1}` inside it —
 // so it stays even though the scale now runs on the button.
 export const AnimatedSolidButton = ({ ...props }: React.ComponentProps<typeof SolidButton>) => (
   <View style={{ flexDirection: 'row', flexGrow: props.flexGrow ? 1 : undefined }}>
-    <SolidButton transition="quick" scaleOnPress fg={1} {...props} />
+    <SolidButton transition="quick" scaleOnPress grow={1} {...props} />
   </View>
 )
 
 const AnimatedOutlineButton = ({ ...props }: React.ComponentProps<typeof OutlineButton>) => (
   <View style={{ flexDirection: 'row', flexGrow: props.flexGrow ? 1 : undefined }}>
-    <OutlineButton transition="quick" scaleOnPress fg={1} {...props} />
+    <OutlineButton transition="quick" scaleOnPress grow={1} {...props} />
   </View>
 )
 
 const AnimatedTextButton = ({ ...props }: React.ComponentProps<typeof TextButton>) => (
   <View style={{ flexDirection: 'row', flexGrow: props.flexGrow ? 1 : undefined }}>
     {/* Text has no background to press against, so it takes a deeper scale than the filled ones. */}
-    <TextButton transition="quick" opacity={1} scale="1 press:0.95" fg={1} {...props} />
+    <TextButton transition="quick" opacity={1} scale="1 press:0.95" grow={1} {...props} />
   </View>
 )
 

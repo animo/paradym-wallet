@@ -45,13 +45,13 @@ export function CredentialDetail({
       <YStack
         w="100%"
         top={0}
-        p="4"
-        borderBottomWidth="0-5"
+        p="5"
+        borderBottomWidth="1"
         borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
       />
       <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
-        <YStack ai="center" gap="6" p="4" marginBottom={bottom}>
-          <AnimatedStack width="100%" mt="-3" mb="-5" scale={0.75}>
+        <YStack items="center" gap="8" p="5" marginBottom={bottom}>
+          <AnimatedStack width="100%" mt="-3" mb="-6" scale={0.75}>
             <CredentialCard
               issuerImage={{
                 url: credential.display.issuer.logo?.url,
@@ -68,12 +68,12 @@ export function CredentialDetail({
             />
           </AnimatedStack>
           <Stack gap="2">
-            <Heading ta="center" heading="h1">
+            <Heading text="center" heading="h1">
               <Trans id="credentials.detailsTitle" comment="Title of the credential details screen">
                 Card details
               </Trans>
             </Heading>
-            <Paragraph numberOfLines={2} ta="center">
+            <Paragraph numberOfLines={2} text="center">
               <Trans id="common.issuedBy" comment="Prefix before issuer name">
                 Issued by {credential.display.issuer.name}.
               </Trans>

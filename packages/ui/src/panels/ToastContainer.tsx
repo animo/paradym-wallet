@@ -52,16 +52,16 @@ export const ToastContainer = ({ title, message, variant = 'none', onClose }: To
       shadow="sm"
       borderRadius="5"
       padding="3"
-      f={1}
-      bw={1}
-      fg={1}
+      flex={1}
+      borderWidth={1}
+      grow={1}
       w="100%"
       gap="2"
-      jc="space-between"
+      justify="space-between"
     >
-      <XStack gap="3" f={1}>
+      <XStack gap="3" flex={1}>
         <Stack>{icon}</Stack>
-        <YStack gap="1" f={1}>
+        <YStack gap="0-5" flex={1}>
           <Toast.Title color="white" size="3">
             {title}
           </Toast.Title>
@@ -76,7 +76,7 @@ export const ToastContainer = ({ title, message, variant = 'none', onClose }: To
       <Toast.Close
         role="button"
         aria-label="Close"
-        m="-1"
+        m="-0-5"
         width="auto"
         height="auto"
         alignItems="flex-start"

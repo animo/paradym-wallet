@@ -1,20 +1,10 @@
-import { shorthands } from '@tamagui/shorthands'
-import { radius, size, space, zIndex } from '@tamagui/themes/v5-tokens'
-import { type CreateTamaguiProps, createTamagui, createTokens } from 'tamagui'
+import { shorthands, tokens as v6Tokens } from '@tamagui/config/v6-base'
+import type { CreateTamaguiProps } from 'tamagui'
 
 import { animations } from '../animations'
 
-import { fontInter, fontOpenSans, fontRaleway } from './font'
-
-export { fontInter, fontOpenSans, fontRaleway }
-
-export const absoluteFill = {
-  position: 'absolute',
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-}
+export { fontOpenSans, fontRaleway } from './font'
+export { v6Tokens }
 
 export const hexColors = {
   'grey-100': '#F8F8FA',
@@ -62,29 +52,9 @@ export const hexColors = {
   borderTranslucent: 'rgba(224, 227, 232, 0.5)', // grey-300 with opacity
 }
 
-export const tokensInput = {
-  color: {
-    ...hexColors,
-    background: hexColors['grey-200'],
-  },
-  size: {
-    ...size,
-    buttonHeight: size[4],
-  },
-  radius: {
-    ...radius,
-    button: 8,
-  },
-  zIndex,
-  space,
-} as const
-export const tokens = createTokens(tokensInput)
-
 export const configInput = {
   settings: {
     styleCompat: 'react-native',
-    shouldAddPrefersColorThemes: true,
-    addThemeClassName: 'body',
     // v2 defaults to 'static'; v1 effectively used 'relative'. Keeping 'relative'
     // preserves layout semantics for absolutely-positioned children (e.g. sheets,
     // sticky overlays) that assumed v1 behavior.
@@ -92,21 +62,6 @@ export const configInput = {
   },
   animations,
   shorthands,
-  fonts: {
-    // By default we use the same font for headings and body
-    default: fontInter,
-    heading: fontInter,
-    // Somehow adding body font gives build errors?!
-    body: fontInter,
-  },
-  tokens,
-  themes: {
-    light: {
-      ...tokens.color,
-      tableBackgroundColor: tokens.color.white,
-      tableBorderColor: tokens.color['grey-200'],
-    },
-  },
   media: {
     short: {
       maxHeight: 756,
@@ -117,5 +72,3 @@ export const configInput = {
     },
   },
 } as const satisfies CreateTamaguiProps
-
-export const config = createTamagui(configInput)

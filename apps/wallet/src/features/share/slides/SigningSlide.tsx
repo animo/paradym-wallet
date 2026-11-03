@@ -16,8 +16,8 @@ export function SigningSlide({ documentName }: SigningSlideProps) {
   const { t } = useLingui()
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="4">
+    <YStack grow={1} justify="space-between">
+      <YStack gap="5">
         <Heading>
           <Trans id="signing.title" comment="Heading above the document signing screen">
             Signing a document
@@ -30,14 +30,14 @@ export function SigningSlide({ documentName }: SigningSlideProps) {
         </Paragraph>
       </YStack>
 
-      <YStack fg={1} jc="center" ai="center" onLayout={onLayout}>
+      <YStack grow={1} justify="center" items="center" onLayout={onLayout}>
         <YStack height={height}>
           <SigningSvg />
         </YStack>
-        <YStack h="4" />
+        <YStack h="11" />
       </YStack>
 
-      <YStack btw="0-5" borderColor="grey-200" py="3" mx="-4" px="4" bg="background">
+      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5" bg="background">
         <DualResponseButtons
           align="horizontal"
           acceptText={t(commonMessages.continue)}

@@ -19,20 +19,20 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
   const getStartedLabel = t(commonMessages.getStarted)
 
   return (
-    <YStack fg={1} pos="relative">
-      <YStack pos="absolute" h="50%" w="100%">
+    <YStack grow={1} position="relative">
+      <YStack position="absolute" h="50%" w="100%">
         <Blob />
         <YStack
           transform={[{ translateX: -48 }]} // Half of the image width (96/2)
-          pos="absolute"
+          position="absolute"
           top="40%"
           left="50%"
-          ai="center"
-          jc="center"
+          items="center"
+          justify="center"
         >
           <Stack
-            br="7"
-            ov="hidden"
+            rounded="7"
+            overflow="hidden"
             bg="primary-500"
             shadowOffset={{ width: 5, height: 5 }}
             shadowColor="grey-400"
@@ -43,11 +43,11 @@ export default function OnboardingWelcome({ goToNextStep }: OnboardingWelcomePro
           </Stack>
         </YStack>
       </YStack>
-      <FlexPage fg={1} jc="space-between" backgroundColor="transparent">
+      <FlexPage grow={1} justify="space-between" backgroundColor="transparent">
         <Stack h="40%" />
-        <YStack gap="4" ai="center">
+        <YStack gap="5" items="center">
           <Heading fontSize={32}>{ExpoConstants.expoConfig?.name}</Heading>
-          <Paragraph px="2" ta="center">
+          <Paragraph px="2" text="center">
             {introText}
           </Paragraph>
         </YStack>

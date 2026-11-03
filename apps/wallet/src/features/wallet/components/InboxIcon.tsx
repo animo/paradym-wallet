@@ -22,7 +22,7 @@ export function InboxIcon() {
   return (
     <Stack onPress={pushToInbox}>
       {hasInboxNotifications && (
-        <AnimatedStack zi={5} pos="absolute" top="-1" right="-1" entering={ZoomIn} exiting={ZoomOut}>
+        <AnimatedStack z={5} position="absolute" top="-0-5" right="-0-5" entering={ZoomIn} exiting={ZoomOut}>
           <Circle size={12} backgroundColor="primary-500" />
         </AnimatedStack>
       )}

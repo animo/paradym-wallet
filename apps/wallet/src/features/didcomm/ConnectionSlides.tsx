@@ -51,16 +51,16 @@ const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProp
   const { t } = useLingui()
 
   return (
-    <YStack fg={1} jc="space-between">
-      <YStack gap="6" fg={1} ai="center" jc="center">
-        <AnimatedStack entering={useSpringify(ZoomIn)} h="8" jc="center" ai="center" pos="relative">
-          <Circle pos="absolute" size={96} bg="positive-500" opacity={0.1} />
-          <Circle pos="absolute" size={72} bg="positive-500" opacity={0.2} />
-          <Circle size="5" bg="positive-500">
+    <YStack grow={1} justify="space-between">
+      <YStack gap="8" grow={1} items="center" justify="center">
+        <AnimatedStack entering={useSpringify(ZoomIn)} h={84} justify="center" items="center" position="relative">
+          <Circle position="absolute" size={96} bg="positive-500" opacity={0.1} />
+          <Circle position="absolute" size={72} bg="positive-500" opacity={0.2} />
+          <Circle size={52} bg="positive-500">
             <HeroIcons.ShieldCheckFilled strokeWidth={2} size={30} color="white" />
           </Circle>
         </AnimatedStack>
-        <YStack gap="4" ai="center">
+        <YStack gap="5" items="center">
           <Heading>
             <Trans
               id="connection.successTitle"
@@ -69,7 +69,7 @@ const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProp
               Connection established
             </Trans>
           </Heading>
-          <Paragraph ta="center">
+          <Paragraph text="center">
             <Trans
               id="connection.successParagraph"
               comment="Explains that the user can now receive notifications from the connected issuer"
@@ -79,9 +79,9 @@ const ConnectionSuccessSlide = ({ name, onComplete }: ConnectionSuccessSlideProp
             </Trans>
           </Paragraph>
         </YStack>
-        <Spacer />
+        <Spacer size="5" />
       </YStack>
-      <Stack borderTopWidth="0-5" borderColor="grey-200" py="3" mx="-4" px="4">
+      <Stack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5">
         <Button.Solid scaleOnPress onPress={onComplete}>
           {t(commonMessages.goToWallet)} <HeroIcons.ArrowRight size={20} color="white" />
         </Button.Solid>

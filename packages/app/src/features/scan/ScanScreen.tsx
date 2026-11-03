@@ -72,8 +72,8 @@ export function QrScannerScreen({ credentialDataHandlerOptions }: QrScannerScree
           opacity="0.7 enter:0 exit:0"
           bg="black"
           transition="lazy"
-          jc="center"
-          ai="center"
+          justify="center"
+          items="center"
           g="md"
         >
           <Spinner variant="dark" />

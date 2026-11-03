@@ -106,32 +106,32 @@ export function CredentialList({
           flexDirection="column"
           entering={FadeInDown.delay(300).springify().mass(1).damping(16).stiffness(140).restSpeedThreshold(0.1)}
           gap="2"
-          jc="center"
-          p="4"
-          fg={1}
+          justify="center"
+          p="5"
+          grow={1}
         >
-          <Heading ta="center" heading="h3" fontWeight="semiBold">
+          <Heading text="center" heading="h3" fontWeight="semiBold">
             {t(commonMessages.nothingHereYet)}
           </Heading>
-          <Paragraph ta="center" px="2">
+          <Paragraph text="center" px="2">
             <Trans id="credentials.emptyDescription" comment="Subtext explaining that credentials will appear later">
               Credentials will appear here once you receive them.
             </Trans>
           </Paragraph>
         </AnimatedStack>
       ) : isLoadingCredentials ? (
-        <YStack fg={1} ai="center" jc="center">
+        <YStack grow={1} items="center" justify="center">
           <Loader />
-          <Spacer size="12" />
+          <Spacer size={88} />
         </YStack>
       ) : (
-        <ScrollView px="4" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <ScrollView px="5" onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
           <Stack position="relative">
             <Input
               value={searchQuery}
               onChangeText={setSearchQuery}
-              pl="7"
-              mb="4"
+              pl="10"
+              mb="5"
               bg="grey-50"
               placeholderTextColor="grey-500"
               borderColor="borderTranslucent"
@@ -150,7 +150,7 @@ export function CredentialList({
               left="3"
             />
           </Stack>
-          <YStack fg={1} gap="2">
+          <YStack grow={1} gap="2">
             {filteredCredentials.length > 0 ? (
               filteredCredentials.map((credential) => (
                 <CredentialRowCard
@@ -167,7 +167,7 @@ export function CredentialList({
                 />
               ))
             ) : (
-              <Paragraph mt="8" ta="center">
+              <Paragraph mt="12" text="center">
                 <Trans id="common.noResultsSearch" comment="Shown when search yields no results; includes query string">
                   No cards found for "{searchQuery}"
                 </Trans>
@@ -205,7 +205,7 @@ export function CredentialRowCard({
   const icon = logo?.url ? (
     <Image src={logo.url} width={36} height={36} />
   ) : (
-    <XStack width={36} height={36} bg="lightTranslucent" ai="center" jc="center" br="12">
+    <XStack width={36} height={36} bg="lightTranslucent" items="center" justify="center" rounded="12">
       <LucideIcons.FileBadge size={20} strokeWidth={2.5} color="grey-100" />
     </XStack>
   )
@@ -214,25 +214,25 @@ export function CredentialRowCard({
     <AnimatedStack
       flexDirection="row"
       bg={backgroundColor}
-      gap="4"
-      ai="center"
-      borderWidth="0-5"
+      gap="5"
+      items="center"
+      borderWidth="1"
       borderColor="borderTranslucent"
       outlineWidth={isSelected ? 2 : 0}
       outlineColor="primary-500"
       outlineStyle="solid"
       outlineOffset={2}
-      br="6"
-      p="4"
+      rounded="6"
+      p="5"
       style={pressStyle}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={onPress}
-      fg={1}
+      grow={1}
     >
       {icon}
-      <YStack gap="1" jc="center" fg={1} f={1}>
-        <Paragraph mt="-1-5" fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
+      <YStack gap="0-5" justify="center" grow={1} flex={1}>
+        <Paragraph mt="-1" fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
           {name.toLocaleUpperCase()}
         </Paragraph>
         {issuedAt && (

@@ -52,8 +52,8 @@ export function LocaleSelect() {
 
   return (
     <YStack>
-      <XStack gap="3" ai="center">
-        <XStack bg="primary-100" p="1-5" br="4">
+      <XStack gap="3" items="center">
+        <XStack bg="primary-100" p="1" rounded="4">
           <HeroIcons.Langugae size={20} color="primary-500" />
         </XStack>
         <XStack gap="2">
@@ -68,7 +68,7 @@ export function LocaleSelect() {
           >
             <Trans id="selectLanguage.label">Language</Trans>{' '}
           </Label>
-          <YStack mt="0-5">
+          <YStack mt="px">
             <BetaTag />
           </YStack>
         </XStack>
@@ -174,8 +174,8 @@ export function SettingsScreen() {
         scrollEventThrottle={scrollEventThrottle}
         contentContainerStyle={{ flexGrow: 1 }}
       >
-        <YStack fg={1} px="4" jc="space-between">
-          <YStack gap="4" py="2">
+        <YStack grow={1} px="5" justify="space-between">
+          <YStack gap="5" py="2">
             <Switch
               id="biometrics-enabled"
               label={t({

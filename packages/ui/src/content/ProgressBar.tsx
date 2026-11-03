@@ -2,7 +2,7 @@ import { type ColorTokens, createStyledHOC, type GetProps, Progress, styled, wit
 
 const _ProgressBar = styled(Progress, {
   name: 'ProgressBar',
-  size: '4',
+  size: '11',
   backgroundColor: 'grey-200',
 })
 

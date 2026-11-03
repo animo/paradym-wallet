@@ -34,14 +34,14 @@ export function OnboardingBiometrics({ goToNextStep, actionText, skipText }: Onb
   }
 
   return (
-    <YStack fg={1} jc="space-between" gap="6">
-      <YStack f={1} ai="center" onLayout={onLayout}>
-        <YStack height={height} mt="4">
+    <YStack grow={1} justify="space-between" gap="8">
+      <YStack flex={1} items="center" onLayout={onLayout}>
+        <YStack height={height} mt="5">
           <SetUpBiometrics />
         </YStack>
       </YStack>
       <YStack>
-        <Button.Solid fg={1} scaleOnPress disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
+        <Button.Solid grow={1} scaleOnPress disabled={isLoading} alignSelf="stretch" onPress={onEnableBiometrics}>
           {isLoading ? <Spinner variant="dark" /> : actionText}
         </Button.Solid>
 

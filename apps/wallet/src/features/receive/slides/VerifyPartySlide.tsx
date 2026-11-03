@@ -104,11 +104,11 @@ export const VerifyPartySlide = ({
   })
 
   return (
-    <YStack fg={1} jc="space-between">
-      <ScrollView contentContainerStyle={{ gap: media.short ? '4' : '6' }}>
-        <YStack gap="4">
-          <XStack ai="center" pt="4" jc="center">
-            <Circle size={64} bw="0-5" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
+    <YStack grow={1} justify="space-between">
+      <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8' }}>
+        <YStack gap="5">
+          <XStack items="center" pt="5" justify="center">
+            <Circle size={64} borderWidth="1" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
               {logo?.url ? (
                 <Image
                   circle
@@ -130,7 +130,7 @@ export const VerifyPartySlide = ({
               {name ? t(commonMessages.doYouTrust(name)) : t(commonMessages.organizationNotVerifiedHeading)}
             </Heading>
             {type === 'offer' ? (
-              <Paragraph center px="4">
+              <Paragraph center px="5">
                 {name ? (
                   <Trans id="verifyPartySlide.offerCardSubtitle">{name} wants to offer you a card.</Trans>
                 ) : (
@@ -140,7 +140,7 @@ export const VerifyPartySlide = ({
                 )}
               </Paragraph>
             ) : type === 'signing' ? (
-              <Paragraph center px="4">
+              <Paragraph center px="5">
                 {name ? (
                   <Trans id="verifyPartySlide.signingSubtitle">
                     {name} wants to interact to create a digital signature for a document.
@@ -152,7 +152,7 @@ export const VerifyPartySlide = ({
                 )}
               </Paragraph>
             ) : type === 'request' ? (
-              <Paragraph center px="4">
+              <Paragraph center px="5">
                 {name ? (
                   <Trans id="verifyPartySlide.requestSubtitle">{name} wants to request information from you.</Trans>
                 ) : (
@@ -162,7 +162,7 @@ export const VerifyPartySlide = ({
                 )}
               </Paragraph>
             ) : type === 'connect' ? (
-              <Paragraph center px="4">
+              <Paragraph center px="5">
                 {name ? (
                   <Trans id="verifyPartySlide.connectSubtitle">{name} wants to connect with you.</Trans>
                 ) : (
@@ -175,7 +175,7 @@ export const VerifyPartySlide = ({
           </Stack>
         </YStack>
 
-        <YStack gap="4">
+        <YStack gap="5">
           {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
             <InfoButton
               variant={entityIsTrustAnchor ? 'positive' : 'info'}
@@ -233,7 +233,7 @@ export const VerifyPartySlide = ({
         </YStack>
       </ScrollView>
       {!isCombined && (
-        <Stack btw={1} borderColor="grey-100" px="4" py="3" mx="-4">
+        <Stack borderTopWidth={1} borderColor="grey-100" px="5" py="3" mx="-5">
           <DualResponseButtons
             align="horizontal"
             onAccept={handleContinue}

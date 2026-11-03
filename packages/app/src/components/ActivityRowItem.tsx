@@ -168,27 +168,27 @@ export function ActivityRowItem({ activity, isSelected, onPress }: ActivityRowIt
         accessible={true}
         accessibilityRole="button"
         aria-label={`${Title} activity from ${subtitle}`}
-        ai="center"
-        gap="4"
+        items="center"
+        gap="5"
         p="2"
         m="-2"
-        br="6"
+        rounded="6"
         bg={isSelected ? 'grey-100' : 'transparent'}
         onPress={onLinkPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <Stack pos="relative">
+        <Stack position="relative">
           <Stack
-            jc="center"
-            ai="center"
+            justify="center"
+            items="center"
             w={48}
             h={48}
             bg={backgroundColor ?? 'grey-50'}
             borderColor="grey-100"
             overflow="hidden"
-            br="12"
-            bw={logo?.url ? 0.5 : 0}
+            rounded="12"
+            borderWidth={logo?.url ? 0.5 : 0}
           >
             {logo?.url ? (
               <Image src={logo.url} alt={logo.altText} width="100%" height="100%" contentFit="contain" />
@@ -196,12 +196,20 @@ export function ActivityRowItem({ activity, isSelected, onPress }: ActivityRowIt
               <HeroIcons.BuildingOffice strokeWidth={2} color="grey-500" />
             )}
           </Stack>
-          <Stack overflow="hidden" pos="absolute" bg={Icon.color} br="12" p="1" bw="1" boc="white">
+          <Stack
+            overflow="hidden"
+            position="absolute"
+            bg={Icon.color}
+            rounded="12"
+            p="0-5"
+            borderWidth="2"
+            borderColor="white"
+          >
             <Icon.icon strokeWidth={3} size={10} color="white" />
           </Stack>
         </Stack>
-        <YStack gap="0-5" jc="space-between" fg={1} w="75%">
-          <XStack jc="space-between">
+        <YStack gap="px" justify="space-between" grow={1} w="75%">
+          <XStack justify="space-between">
             <Paragraph>{Title}</Paragraph>
             <Paragraph variant="annotation" color="grey-500" fontWeight="regular">
               {formatRelativeDate(date)}

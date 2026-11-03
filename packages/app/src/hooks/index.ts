@@ -1,6 +1,5 @@
 export * from './useCredentialDataHandler'
 export * from './useDebounce'
-export * from './useFonts'
 export * from './useHaptics'
 export * from './useHasInternetConnection'
 export * from './useHasInternetConnection'

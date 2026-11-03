@@ -49,9 +49,9 @@ export function IconContainer({
       scale={isPressable && scaleOnPress ? '1 press:0.9' : undefined}
       aria-label={ariaLabel}
       bg={variantStyles[variant].bg}
-      br={radius === 'full' ? '12' : '4'}
+      rounded={radius === 'full' ? '12' : '4'}
       p="2"
-      mx="-1"
+      mx="-0-5"
       {...props}
     >
       {cloneElement(icon, {

@@ -57,7 +57,7 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
   })
 
   return (
-    <YStack gap="4">
+    <YStack gap="5">
       <YStack gap="2">
         <Heading heading="sub2">{t(title)}</Heading>
         <Paragraph>{t(subtitle)}</Paragraph>
@@ -225,8 +225,8 @@ function Card({
 
   return (
     <Stack
-      br="6"
-      borderWidth="0-5"
+      rounded="6"
+      borderWidth="1"
       borderColor="borderTranslucent"
       overflow="hidden"
       transition={onToggle ? 'quick' : undefined}
@@ -235,20 +235,20 @@ function Card({
       role={onToggle ? 'button' : undefined}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="4" py="3" pos="relative" bg={backgroundColor ?? 'grey-900'}>
+      <Stack px="5" py="3" position="relative" bg={backgroundColor ?? 'grey-900'}>
         {backgroundImage && (
-          <Stack pos="absolute" top={0} left={0} right={0} bottom={0}>
+          <Stack position="absolute" top={0} left={0} right={0} bottom={0}>
             <Image src={backgroundImage} contentFit="cover" height="100%" width="100%" />
           </Stack>
         )}
-        <XStack ai="center" jc="space-between" gap="2">
+        <XStack items="center" justify="space-between" gap="2">
           <Heading
             heading="sub2"
             fontSize={14}
             fontWeight="bold"
             numberOfLines={1}
             color={textColor ?? 'grey-200'}
-            f={1}
+            flex={1}
           >
             {name.toLocaleUpperCase()}
           </Heading>
@@ -256,11 +256,11 @@ function Card({
         </XStack>
       </Stack>
 
-      <YStack px="4" pt="3" pb="4" gap="3" bg="background">
+      <YStack px="5" pt="3" pb="5" gap="3" bg="background">
         {isExpanded ? (
           children
         ) : (
-          <YStack gap="2" pr="4">
+          <YStack gap="2" pr="5">
             {columns.map(([first, second]) => (
               <XStack key={`${first.name}-${second?.name}`} gap="3">
                 <Stack flexGrow={1} flexBasis={0}>
@@ -275,7 +275,7 @@ function Card({
         )}
 
         {onToggle && (
-          <XStack jc="flex-end">
+          <XStack justify="flex-end">
             {isExpanded ? (
               <HeroIcons.ChevronUp size={20} color="grey-500" />
             ) : (
@@ -310,7 +310,7 @@ function AttributeRow({ attribute, isNested = false }: { attribute: FormattedAtt
         <Paragraph variant="sub" fontWeight="medium">
           {label}
         </Paragraph>
-        <YStack gap="2" pl="3" bw={0} blw="0-5" borderColor="grey-200">
+        <YStack gap="2" pl="3" borderWidth={0} borderLeftWidth="1" borderColor="grey-200">
           {attribute.value.map((nested, index) => (
             <AttributeRow key={`${nested.path.join('.')}-${index}`} attribute={nested} isNested />
           ))}
@@ -321,7 +321,7 @@ function AttributeRow({ attribute, isNested = false }: { attribute: FormattedAtt
 
   if (attribute.type === 'image') {
     return (
-      <XStack gap="4" jc="space-between" ai="flex-start">
+      <XStack gap="5" justify="space-between" items="flex-start">
         <Paragraph variant="sub" flexShrink={1}>
           {label}
         </Paragraph>
@@ -338,7 +338,7 @@ function AttributeRow({ attribute, isNested = false }: { attribute: FormattedAtt
       : formatPlainValue(attribute, t)
 
   return (
-    <XStack gap="4" jc="space-between" ai="flex-start">
+    <XStack gap="5" justify="space-between" items="flex-start">
       <Paragraph variant="sub" flexShrink={1}>
         {label}
       </Paragraph>
@@ -368,8 +368,8 @@ function AttributeValue({ value }: { value: string }) {
   const isLong = value.length > 100
 
   return (
-    <YStack flexShrink={1} ai="flex-end" gap="1">
-      <Paragraph fontWeight="medium" ta="right" numberOfLines={isLong && !isExpanded ? 2 : undefined}>
+    <YStack flexShrink={1} items="flex-end" gap="0-5">
+      <Paragraph fontWeight="medium" text="right" numberOfLines={isLong && !isExpanded ? 2 : undefined}>
         {value}
       </Paragraph>
       {isLong && (

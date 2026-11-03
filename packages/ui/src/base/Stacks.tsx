@@ -47,7 +47,7 @@ export const Stack = styled(TStack, {
     },
     g: {
       xs: {
-        gap: '1',
+        gap: '0-5',
       },
       sm: {
         gap: '2',
@@ -56,24 +56,24 @@ export const Stack = styled(TStack, {
         gap: '3',
       },
       lg: {
-        gap: '4',
+        gap: '5',
       },
       xl: {
-        gap: '6',
-      },
-      '2xl': {
         gap: '8',
       },
+      '2xl': {
+        gap: '12',
+      },
       '3xl': {
-        gap: '10',
+        gap: 60,
       },
       '4xl': {
-        gap: '12',
+        gap: 88,
       },
     },
     pad: {
       xs: {
-        padding: '1',
+        padding: '0-5',
       },
       sm: {
         padding: '2',
@@ -82,10 +82,10 @@ export const Stack = styled(TStack, {
         padding: '3',
       },
       lg: {
-        padding: '4',
+        padding: '5',
       },
       xl: {
-        padding: '6',
+        padding: '8',
       },
     },
   } as const,
