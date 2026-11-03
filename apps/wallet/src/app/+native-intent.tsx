@@ -1,4 +1,5 @@
 import { allowedRedirectBaseUrls, appScheme } from '@app/constants'
+import { handleIssuanceAuthorizationPresentationRequest } from '@app/features/receive/issuanceAuthorizationPresentationRequest'
 import { TypedArrayEncoder } from '@credo-ts/core'
 import { deeplinkSchemes } from '@package/app'
 import { LogLevel, ParadymWalletSdkConsoleLogger, parseInvitationUrlSync } from '@paradym/wallet-sdk'
@@ -73,6 +74,16 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
         logger.warn(`Invitation type ${invitationData.type} is not allowed. Routing to home screen`)
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
         return '/'
+      }
+
+      // The issuer requests a presentation from the browser of an authorization code flow. The
+      // issuance screen that opened the browser handles it, so we don't route to any screen.
+      if (
+        invitationData.type === 'openid-authorization-request' &&
+        handleIssuanceAuthorizationPresentationRequest(invitationData.data)
+      ) {
+        logger.debug('Link is an OpenID4VP request during the authorization of an issuance. Not routing to any screen')
+        return null
       }
 
       if (invitationData.type === 'openid-credential-offer') {

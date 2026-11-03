@@ -171,7 +171,7 @@ export const CredentialRetrievalSlide = ({
           exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
         >
           <AnimatedStack style={animatedTextStyle}>
-            {isCompleted ? (
+            {isCompleteAndAllowed ? (
               <Heading text="center">{t(commonMessages.success)}</Heading>
             ) : isStoring ? (
               <Heading></Heading>
@@ -194,7 +194,7 @@ export const CredentialRetrievalSlide = ({
           exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
         >
           <AnimatedStack style={animatedTextStyle}>
-            {isCompleted ? (
+            {isCompleteAndAllowed ? (
               <Paragraph text="center" mt="-2" mb="8">
                 <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
               </Paragraph>

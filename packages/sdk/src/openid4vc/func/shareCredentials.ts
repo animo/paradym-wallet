@@ -46,6 +46,13 @@ export type ShareCredentialsOptions = {
   authenticationMethods?: PasoAuthenticationMethod[]
   /** When the user completed that authentication, which Section 2.8 makes the signal's `collected_at`. */
   authenticatedAt?: Date
+  /**
+   * Whether to open the `redirect_uri` the verifier returns in the system browser. Defaults to `true`.
+   *
+   * Turn it off to open the returned `redirectUri` yourself, e.g. to continue an OpenID4VCI authorization
+   * in the browser session it started from.
+   */
+  openRedirectUri?: boolean
 }
 
 export const shareCredentials = async ({
@@ -56,6 +63,7 @@ export const shareCredentials = async ({
   transactionData: consentedTransactionData,
   authenticationMethods = ['swk'],
   authenticatedAt = new Date(),
+  openRedirectUri = true,
 }: ShareCredentialsOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')
 
@@ -120,7 +128,7 @@ export const shareCredentials = async ({
 
   // if redirect_uri is provided, open it in the browser
   // Even if the response returned an error, we must open this uri
-  if (result.redirectUri) {
+  if (result.redirectUri && openRedirectUri) {
     await Linking.openURL(result.redirectUri)
   }
 
