@@ -9,6 +9,7 @@ import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
+import { type AuthSessionResult, openAuthSessionAsync } from '../../../../modules/auth-tab'
 import {
   handleIssuanceAuthorizationPresentationRequest,
   setIssuanceAuthorizationPresentationRequestHandler,
@@ -60,7 +61,7 @@ export const AuthCodeFlowSlide = ({
   const { credentialAuthorizationCode } = useGlobalSearchParams<{
     credentialAuthorizationCode?: string
   }>()
-  const [browserResult, setBrowserResult] = useState<WebBrowser.WebBrowserAuthSessionResult>()
+  const [browserResult, setBrowserResult] = useState<AuthSessionResult>()
   const [hasHandledResult, setHasHandledResult] = useState(false)
   const [isResolvingPresentationRequest, setIsResolvingPresentationRequest] = useState(false)
   // A ref, as the browser result can arrive before a re-render after the presentation request
@@ -169,7 +170,7 @@ export const AuthCodeFlowSlide = ({
       setIssuanceAuthorizationPresentationRequestHandler(onPresentationRequestReceived)
     }
 
-    const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
+    const result = await openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
     // iOS can end the auth session with the redirect to the OpenID4VP request, instead of opening it as a deeplink
     if (result.type === 'success' && isOpenIdAuthorizationRequest(result.url)) {
       handleIssuanceAuthorizationPresentationRequest(result.url)

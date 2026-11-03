@@ -101,6 +101,9 @@ web-build/
 # We don't want the output of prebuild to be committed
 ios
 android
+# Native code of local Expo modules is source, not prebuild output
+!apps/wallet/modules/*/ios
+!apps/wallet/modules/*/android
 
 # build output
 dist/
