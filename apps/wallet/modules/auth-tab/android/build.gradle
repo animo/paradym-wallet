@@ -1,0 +1,19 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'id.paradym.authtab'
+version = '1.0.0'
+
+android {
+  namespace "id.paradym.authtab"
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+dependencies {
+  implementation "androidx.browser:browser:1.10.0"
+}

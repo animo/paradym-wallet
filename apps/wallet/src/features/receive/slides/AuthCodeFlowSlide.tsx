@@ -9,6 +9,7 @@ import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useEffect, useState } from 'react'
 import { Platform } from 'react-native'
+import { type AuthSessionResult, openAuthSessionAsync } from '../../../../modules/auth-tab'
 
 export type AuthCodeFlowDetails = {
   domain: string
@@ -39,7 +40,7 @@ export const AuthCodeFlowSlide = ({
   const { credentialAuthorizationCode } = useGlobalSearchParams<{
     credentialAuthorizationCode?: string
   }>()
-  const [browserResult, setBrowserResult] = useState<WebBrowser.WebBrowserAuthSessionResult>()
+  const [browserResult, setBrowserResult] = useState<AuthSessionResult>()
   const [hasHandledResult, setHasHandledResult] = useState(false)
 
   useEffect(() => {
@@ -121,7 +122,7 @@ export const AuthCodeFlowSlide = ({
   ])
 
   const onPressContinue = async () => {
-    const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
+    const result = await openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
     setBrowserResult(result)
   }
 

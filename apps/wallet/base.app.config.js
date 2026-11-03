@@ -297,7 +297,8 @@ const createBaseConfig = (appSpecific) => {
           },
         ],
       },
-      associatedDomains: associatedDomains.map((host) => `applinks:${host}`),
+      // webcredentials is required for the HTTPS callback of the iOS auth session
+      associatedDomains: associatedDomains.flatMap((host) => [`applinks:${host}`, `webcredentials:${host}`]),
     },
     android: {
       edgeToEdgeEnabled: true,
