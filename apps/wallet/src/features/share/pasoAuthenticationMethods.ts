@@ -38,15 +38,10 @@ export function resolvePasoAuthenticationMethods(options: {
   usedTransactionPin: boolean
   /** Whether the credential that authorizes the transaction is bound to a hardware key. */
   usedHardwareBoundKey: boolean
-  /**
-   * Whether that key only signs after a strong biometric: the device's own secure environment does,
-   * the cloud HSM fallback does not — it authenticates the user with the PIN instead.
-   */
-  usedKeyBiometric: boolean
 }): PasoAuthenticationMethod[] {
   const methods: PasoAuthenticationMethod[] = [options.usedHardwareBoundKey ? 'hwk' : 'swk']
 
-  if (options.usedHardwareBoundKey && options.usedKeyBiometric) methods.push('bio_strong')
+  if (options.usedHardwareBoundKey) methods.push('bio_strong')
   if (options.usedTransactionPin) methods.push('pin')
 
   return methods

@@ -1,6 +1,7 @@
 import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
+import { credentialSvgArtwork } from '@package/app/components/CredentialSvg'
 import { commonMessages } from '@package/translations'
 import { Button, Circle, Heading, HeroIcons, Image, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import {
@@ -9,10 +10,12 @@ import {
   type FormattedTransactionDataPasoPayment,
   hasMissingCards,
 } from '@paradym/wallet-sdk'
-import { useCallback, useRef, useState } from 'react'
-import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
+import { useState } from 'react'
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { PaymentCardRow, PaymentCardSheet } from '../components/PaymentCardSheet'
+import { PaymentTransactionDetails } from '../components/PaymentTransactionDetails'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
+import { useTransactionDataSeen } from '../useTransactionDataSeen'
 
 interface PasoPaymentSlideProps {
   transaction: FormattedTransactionDataPasoPayment
@@ -55,22 +58,8 @@ export const PasoPaymentSlide = ({
   const { onNext, onCancel } = useWizard()
   const { t } = useLingui()
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
-  const [hasSeenTransactionData, setHasSeenTransactionData] = useState(false)
   const [isProcessing, setIsProcessing] = useState(isAccepting)
   const [isCardSheetOpen, setIsCardSheetOpen] = useState(false)
-
-  // The Attestation Provider's labels normally name these claims, in the locale the proof reports.
-  // The fallbacks are for the one case where there is no card and so no metadata to read them from.
-  const amountFallbackLabel = t({
-    id: 'paso.payment.amountLabel',
-    message: 'Amount',
-    comment: 'Label above the amount of a payment, when the card supplies no label of its own',
-  })
-  const payeeFallbackLabel = t({
-    id: 'paso.payment.payeeLabel',
-    message: 'Payee',
-    comment: 'Label above the payee of a payment, when the card supplies no label of its own',
-  })
 
   // Every card that can authorize the payment. The first is the one the transaction was resolved
   // against and will be presented; picking another moves it to the front (`selectPasoPaymentCredential`).
@@ -92,54 +81,11 @@ export const PasoPaymentSlide = ({
   // payee shown right below it, so the header is left out rather than naming them twice.
   const showVerifierHeader = verifier.name.trim().toLowerCase() !== transaction.payee.value.trim().toLowerCase()
 
-  /**
-   * [PaSO Core] Section 5.3 and [PaSO View] Section 2: the claims designated for display, and the
-   * `security_hint`, have to have been *shown* before the confirmation action is enabled.
-   *
-   * What has to have been seen is the transaction data — not the bottom of the screen. The card
-   * preview and the requested attributes below it are not transaction data, so gating on reaching the
-   * end of the scroll area asks for more than the rule does. It also breaks: when the content happens
-   * to fit there is nothing to scroll, so an escape hatch has to recognise that, and if the
-   * measurement behind it never reports the user is left with a confirmation action that can never
-   * be enabled and nothing on screen explaining why.
-   *
-   * Hence two things. The measurement is of the transaction data block itself — `y + height` is where
-   * it ends within the scrollable content — and *three* independent measurements feed how much of the
-   * content has been seen: the container height, the scroll view's own height, and the visible region
-   * reported while scrolling. Any one of them opens the gate, so no single platform callback failing
-   * to fire can wedge the screen. On a normal screen the block is in view from the first layout and
-   * the action is enabled immediately; on a small one, or with large accessibility text, it correctly
-   * takes a scroll.
-   */
-  const transactionDataEnd = useRef<number | undefined>(undefined)
-  const seenContentDepth = useRef(0)
+  const { hasSeenTransactionData, onTransactionDataLayout, onViewportLayout, onScroll } = useTransactionDataSeen()
 
-  // The content container's vertical padding sits between the block's own coordinates and the
-  // measurements of the viewport, so the comparison carries a tolerance rather than depending on the
-  // exact value of the padding token.
-  const measurementTolerance = 24
-
-  const markSeen = useCallback((contentDepth: number) => {
-    seenContentDepth.current = Math.max(seenContentDepth.current, contentDepth)
-
-    const end = transactionDataEnd.current
-    if (end !== undefined && seenContentDepth.current + measurementTolerance >= end) {
-      setHasSeenTransactionData(true)
-    }
-  }, [])
-
-  const onTransactionDataLayout = (event: LayoutChangeEvent) => {
-    const { y, height } = event.nativeEvent.layout
-    transactionDataEnd.current = y + height
-    markSeen(0)
-  }
-
-  const onScrollViewLayout = (event: LayoutChangeEvent) => markSeen(event.nativeEvent.layout.height)
-
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const handleScrollEvent = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     handleScroll(event)
-    const { contentOffset, layoutMeasurement } = event.nativeEvent
-    markSeen(contentOffset.y + layoutMeasurement.height)
+    onScroll(event)
   }
 
   const handleAccept = async () => {
@@ -166,7 +112,7 @@ export const PasoPaymentSlide = ({
           mx="-5"
           borderColor={isScrolledByOffset ? 'grey-200' : 'background'}
           position="relative"
-          onLayout={(event) => markSeen(event.nativeEvent.layout.height)}
+          onLayout={onViewportLayout}
           borderTopWidth="1"
         >
           <ScrollView
@@ -175,8 +121,8 @@ export const PasoPaymentSlide = ({
             left={0}
             right={0}
             bottom={0}
-            onScroll={onScroll}
-            onLayout={onScrollViewLayout}
+            onScroll={handleScrollEvent}
+            onLayout={onViewportLayout}
             scrollEventThrottle={scrollEventThrottle}
             contentContainerStyle={{ gap: '8' }}
             px="5"
@@ -211,53 +157,7 @@ export const PasoPaymentSlide = ({
                 </XStack>
               )}
 
-              {/* The rulebook claims, in the normative claim order: amount, payee, payee logo. */}
-              <YStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5">
-                <YStack gap="0-5" items="center">
-                  <Paragraph variant="annotation">{transaction.amount.label ?? amountFallbackLabel}</Paragraph>
-                  <Heading textTransform="none" color="grey-800">
-                    {transaction.amount.value}
-                  </Heading>
-                </YStack>
-              </YStack>
-
-              <XStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5" items="center">
-                <YStack flex={1} gap="0-5">
-                  <Paragraph variant="annotation">{transaction.payee.label ?? payeeFallbackLabel}</Paragraph>
-                  <Heading heading="h3" textTransform="none" color="grey-800">
-                    {transaction.payee.value}
-                  </Heading>
-                </YStack>
-                {transaction.payeeLogo && (
-                  <Circle size={60} borderWidth="1" borderColor="grey-100" bg="white">
-                    <Image
-                      src={transaction.payeeLogo.dataUrl}
-                      alt={transaction.payeeLogo.label ?? payeeFallbackLabel}
-                      height="100%"
-                      width="100%"
-                      contentFit="contain"
-                    />
-                  </Circle>
-                )}
-              </XStack>
-
-              {/* Shown exactly as the Attestation Provider wrote it. Never translated, never edited. */}
-              {transaction.securityHint && (
-                <XStack
-                  rounded="6"
-                  bg="warning-300"
-                  borderWidth={1}
-                  borderColor="warning-400"
-                  gap="3"
-                  p="5"
-                  items="flex-start"
-                >
-                  <HeroIcons.ExclamationTriangleFilled color="warning-600" size={20} />
-                  <Paragraph flex={1} variant="sub" size="2" color="grey-900">
-                    {transaction.securityHint}
-                  </Paragraph>
-                </XStack>
-              )}
+              <PaymentTransactionDetails transaction={transaction} />
             </YStack>
 
             {/* Below here is context, not transaction data: which card pays, and what else is asked. */}
@@ -289,7 +189,10 @@ export const PasoPaymentSlide = ({
                   )}
                 </XStack>
                 <XStack p="3" rounded="6" borderWidth={1} borderColor="grey-200">
-                  <PaymentCardRow card={cardForPayment} />
+                  <PaymentCardRow
+                    card={cardForPayment}
+                    artwork={credentialSvgArtwork(cardForPayment.credential.display.svg)}
+                  />
                 </XStack>
               </YStack>
             )}

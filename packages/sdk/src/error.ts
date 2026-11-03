@@ -70,12 +70,21 @@ export class ParadymWalletBiometricAuthenticationError extends ParadymWalletSdkE
 
 export class ParadymWalletBiometricAuthenticationCancelledError extends ParadymWalletBiometricAuthenticationError {
   public static isBiometricAuthenticationCancelledError(error: unknown) {
-    return error instanceof Error && cancelMessages.some((m) => error.message.toLowerCase().includes(m))
+    return (
+      error instanceof Error &&
+      // `UserAuthenticationCanceledError` from @animo-id/expo-secure-environment, matched by name so the SDK doesn't import it
+      (error.name === 'UserAuthenticationCanceledError' ||
+        cancelMessages.some((m) => error.message.toLowerCase().includes(m)))
+    )
   }
 }
 
 export class ParadymWalletBiometricAuthenticationNotEnabledError extends ParadymWalletBiometricAuthenticationError {
   public static isBiometricAuthenticationNotEnabledError(error: unknown) {
-    return error instanceof Error && notEnabledMessages.some((m) => error.message.toLowerCase().includes(m))
+    return (
+      error instanceof Error &&
+      (error.name === 'UserAuthenticationUnavailableError' ||
+        notEnabledMessages.some((m) => error.message.toLowerCase().includes(m)))
+    )
   }
 }

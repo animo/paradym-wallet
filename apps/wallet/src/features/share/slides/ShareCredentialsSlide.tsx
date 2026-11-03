@@ -1,4 +1,3 @@
-import type { OverAskingResponse } from '@app/use-cases/OverAskingApi'
 import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
@@ -17,7 +16,6 @@ interface ShareCredentialsSlideProps {
   submission: FormattedSubmission
   isAccepting: boolean
   isOffline?: boolean
-  overAskingResponse?: OverAskingResponse
 }
 
 export const ShareCredentialsSlide = ({
@@ -27,7 +25,6 @@ export const ShareCredentialsSlide = ({
   onDecline,
   isAccepting,
   isOffline,
-  overAskingResponse,
 }: ShareCredentialsSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -42,8 +39,6 @@ export const ShareCredentialsSlide = ({
     await onAccept?.()
     onNext()
   }
-
-  const fallbackPurpose = t(commonMessages.noPurposeProvided)
 
   const shareLabel = t(commonMessages.share)
 
@@ -88,15 +83,9 @@ export const ShareCredentialsSlide = ({
                 })}
                 icon={<HeroIcons.ExclamationTriangleFilled />}
               />
-            ) : (
-              <RequestPurposeSection
-                purpose={submission.purpose ?? fallbackPurpose}
-                overAskingResponse={
-                  submission.areAllSatisfied ? overAskingResponse : { validRequest: 'could_not_determine', reason: '' }
-                }
-                logo={logo}
-              />
-            )}
+            ) : submission.purpose ? (
+              <RequestPurposeSection purpose={submission.purpose} logo={logo} />
+            ) : null}
             <RequestedAttributesSection submission={submission} />
             <Spacer size="5" />
           </ScrollView>

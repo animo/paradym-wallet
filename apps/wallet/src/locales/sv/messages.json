@@ -5,7 +5,7 @@
 		"comments": [
 			"Label shown after an organization name if it is a demo version"
 		],
-		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 90]],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 106]],
 		"translation": "(Demo)"
 	},
 	"credentials.totalLabelPlural": {
@@ -23,7 +23,7 @@
 			"0": ["verifier.name"]
 		},
 		"comments": ["Explanation that the user is about to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 204]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 150]],
 		"translation": "{0} vill att du godkänner en betalning."
 	},
 	"payment.description": {
@@ -43,7 +43,7 @@
 			"amountShared": ["amountShared"]
 		},
 		"comments": ["Shown when multiple credentials were successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 247]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 246]],
 		"translation": "{amountShared} kort delades."
 	},
 	"inbox.notificationType.fromLabel": {
@@ -64,7 +64,7 @@
 		"comments": [
 			"Value shown for a list the request UI does not expand, such as the categories of a driving licence."
 		],
-		"origin": [["src/features/dc-api/messages.ts", 25]],
+		"origin": [["src/features/dc-api/messages.ts", 41]],
 		"translation": "{count, plural, one {# post} other {# poster}}"
 	},
 	"dateFormatting.mulitpleDays": {
@@ -83,7 +83,7 @@
 			"disclosedAttributeLength": ["disclosedAttributeLength"]
 		},
 		"comments": ["Subheading under attribute list: X from Y"],
-		"origin": [["src/features/share/RequestedAttributesDetailScreen.tsx", 143]],
+		"origin": [["src/features/share/RequestedAttributesDetailScreen.tsx", 144]],
 		"translation": "{disclosedAttributeLength} från {0}"
 	},
 	"credentialCardSlide.subtitle.default": {
@@ -144,7 +144,7 @@
 		"message": "1 credential was shared.",
 		"placeholders": {},
 		"comments": ["Shown when one credential was successfully shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 252]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 251]],
 		"translation": "1 kort delades."
 	},
 	"dateFormatting.oneDay": {
@@ -162,7 +162,7 @@
 		"comments": [
 			"A sentence that introduces a list of organizations that approved the current party"
 		],
-		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 108]],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 124]],
 		"translation": "En lista över organisationer som litar på {name}."
 	},
 	"trust.approvedListWithoutOrganizationName": {
@@ -171,7 +171,7 @@
 		"comments": [
 			"A sentence that introduces a list of organizations that approved the current party, but the organization name is not known"
 		],
-		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 113]],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 129]],
 		"translation": "En lista över organisationer som litar på denna okända organisation."
 	},
 	"offlineQr.instruction": {
@@ -224,7 +224,7 @@
 		"message": "Activate Biometrics",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 279]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 274]],
 		"translation": "Aktivera biometri"
 	},
 	"onboarding.biometrics.subtitle": {
@@ -240,7 +240,7 @@
 		"comments": [
 			"Name of the activity screen, listing shared and received cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 599]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 594]],
 		"translation": "Aktivitet"
 	},
 	"activity.emptyDescription": {
@@ -279,14 +279,14 @@
 		"message": "Address",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 650]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 645]],
 		"translation": "Adress"
 	},
 	"common.fields.age": {
 		"message": "Age",
 		"placeholders": {},
 		"comments": ["The age of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 682]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 677]],
 		"translation": "Ålder"
 	},
 	"common.fields.ageOver": {
@@ -295,7 +295,7 @@
 		"comments": [
 			"Used as prefix to indicate the age of a person is over a certain age."
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 692]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 687]],
 		"translation": "Över"
 	},
 	"credentials.allCardsTitle": {
@@ -320,7 +320,9 @@
 		"comments": [
 			"Label above the amount of a payment, when the card supplies no label of its own"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 64]],
+		"origin": [
+			["src/features/share/components/PaymentTransactionDetails.tsx", 38]
+		],
 		"translation": "Belopp"
 	},
 	"interactionError.message.connect": {
@@ -365,13 +367,6 @@
 		"comments": ["Error message when signing fails with selected credentials"],
 		"origin": [["src/features/receive/slides/InteractionErrorSlide.tsx", 38]],
 		"translation": "Ett fel uppstod vid signering med din kortinformation. Be verifieraren generera en ny QR-kod eller försök igen senare."
-	},
-	"aiOverAking.errorReason": {
-		"message": "An error occurred while validating the verification",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/use-cases/OverAskingApi.ts", 62]],
-		"translation": "Ett fel uppstod vid validering av verifieringen"
 	},
 	"common.errorEnablingBiometrics": {
 		"message": "An unknown error occurred while changing the biometric authentication settings.",
@@ -423,7 +418,7 @@
 		"comments": [
 			"Shown when several trusted organizations approved the organization behind a request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 555]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 550]],
 		"translation": "Betrodd av {count} organisationer"
 	},
 	"common.approvedByOneOrganization": {
@@ -432,7 +427,7 @@
 		"comments": [
 			"Shown when one trusted organization approved the organization behind a request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 549]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 544]],
 		"translation": "Betrodd av en organisation"
 	},
 	"common.archiveCardTitle": {
@@ -502,7 +497,7 @@
 		"placeholders": {},
 		"comments": ["Shown when authentication with PIN fails for other reasons"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 87]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 83]
 		],
 		"translation": "Autentisering misslyckades"
 	},
@@ -618,14 +613,14 @@
 		"message": "Birth year",
 		"placeholders": {},
 		"comments": ["The birth year of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 687]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 682]],
 		"translation": "Födelseår"
 	},
 	"common.fields.born": {
 		"message": "Born",
 		"placeholders": {},
 		"comments": ["Used a prefix for when a person is born"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 762]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 757]],
 		"translation": "Född"
 	},
 	"common.deleteDeferredCredentialDescription": {
@@ -668,7 +663,7 @@
 			"Title shown in header for the credential detail attributes screen"
 		],
 		"origin": [
-			["src/features/wallet/components/CredentialDetail.tsx", 90],
+			["src/features/wallet/components/CredentialDetail.tsx", 91],
 			["src/features/wallet/components/CredentialDetailAttributes.tsx", 73]
 		],
 		"translation": "Kortuppgifter"
@@ -677,7 +672,7 @@
 		"message": "Card details",
 		"placeholders": {},
 		"comments": ["Title of the credential details screen"],
-		"origin": [["src/features/wallet/components/CredentialDetail.tsx", 71]],
+		"origin": [["src/features/wallet/components/CredentialDetail.tsx", 72]],
 		"translation": "Kortdetaljer"
 	},
 	"cardLifecycle.limitedByDate.expired.title": {
@@ -802,7 +797,7 @@
 		"comments": [
 			"Name of the screen listing the cards in the wallet, and heading above a list of cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 604]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 599]],
 		"translation": "Kort"
 	},
 	"onboarding.pin.title": {
@@ -827,14 +822,14 @@
 		"comments": [
 			"Title of the sheet where the user picks the card to authorize a payment with"
 		],
-		"origin": [["src/features/share/components/PaymentCardSheet.tsx", 57]],
+		"origin": [["src/features/share/components/PaymentCardSheet.tsx", 31]],
 		"translation": "Välj betalkort"
 	},
 	"common.fields.city": {
 		"message": "City",
 		"placeholders": {},
 		"comments": ["The city where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 667]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 662]],
 		"translation": "Stad"
 	},
 	"common.close": {
@@ -848,14 +843,14 @@
 		"message": "Code",
 		"placeholders": {},
 		"comments": ["The code of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 785]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 780]],
 		"translation": "Kod"
 	},
 	"common.credentials.mdl.codes": {
 		"message": "Codes",
 		"placeholders": {},
 		"comments": ["The codes of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 800]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 795]],
 		"translation": "Koder"
 	},
 	"pidSetup.idCardVerify.title": {
@@ -864,6 +859,15 @@
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 57]],
 		"translation": "Bekräfta att det är du"
+	},
+	"dcApi.confirmPayment": {
+		"message": "Confirm payment",
+		"placeholders": {},
+		"comments": [
+			"Heading of a request to authorize a payment. The payee and amount are shown below it."
+		],
+		"origin": [["src/features/dc-api/messages.ts", 24]],
+		"translation": "Bekräfta betalning"
 	},
 	"connection.successTitle": {
 		"message": "Connection established",
@@ -892,7 +896,7 @@
 		"message": "Country",
 		"placeholders": {},
 		"comments": ["The country where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 672]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 667]],
 		"translation": "Land"
 	},
 	"common.credential": {
@@ -922,14 +926,14 @@
 		"message": "Credential not found",
 		"placeholders": {},
 		"comments": ["Shown if a credential is missing or cannot be loaded"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 572]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 567]],
 		"translation": "Kort inte hittat"
 	},
 	"common.fields.credentialType": {
 		"message": "Credential type",
 		"placeholders": {},
 		"comments": ["The type of credential, usually a complex url structure"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 737]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 732]],
 		"translation": "Korttyp"
 	},
 	"credentials.emptyDescription": {
@@ -946,6 +950,15 @@
 		"origin": [["../../packages/app/src/components/NoContentWallet.tsx", 19]],
 		"translation": "Kort kommer att visas här."
 	},
+	"dcApi.dataRequest": {
+		"message": "Data request",
+		"placeholders": {},
+		"comments": [
+			"Heading of a request to share information, when the organization that asks is unknown"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 35]],
+		"translation": "Begäran om uppgifter"
+	},
 	"common.dataRequest": {
 		"message": "Data Request",
 		"placeholders": {},
@@ -957,7 +970,7 @@
 		"message": "Date of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 646]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 641]],
 		"translation": "Födelsedatum"
 	},
 	"common.declineButton": {
@@ -994,7 +1007,7 @@
 		"message": "Demo organization",
 		"placeholders": {},
 		"comments": ["Shown to indicate that an organization is a demo"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 560]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 555]],
 		"translation": "Demoorganisation"
 	},
 	"settings.developmentMode": {
@@ -1017,7 +1030,7 @@
 		"message": "Do not share real data",
 		"placeholders": {},
 		"comments": ["Warning shown with a demo organization"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 565]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 560]],
 		"translation": "Dela inte riktig data"
 	},
 	"common.doYouTrust": {
@@ -1026,7 +1039,7 @@
 			"name": ["name"]
 		},
 		"comments": ["Heading above the organization behind a request"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 529]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 524]],
 		"translation": "Litar du på {name}?"
 	},
 	"receiveCredential.checkInformationHeader": {
@@ -1042,14 +1055,14 @@
 		"message": "Document",
 		"placeholders": {},
 		"comments": ["Section heading above a document that is, or was, signed"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 501]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 496]],
 		"translation": "Dokument"
 	},
 	"common.credentials.mdl.documentNumber": {
 		"message": "Document number",
 		"placeholders": {},
 		"comments": ["The document number of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 780]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 775]],
 		"translation": "Dokumentnummer"
 	},
 	"common.documentSigned": {
@@ -1063,14 +1076,14 @@
 		"message": "Driving License",
 		"placeholders": {},
 		"comments": ["The title of a driving license"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 770]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 765]],
 		"translation": "Körkort"
 	},
 	"common.credentials.mdl.drivingPrivileges": {
 		"message": "Driving privileges",
 		"placeholders": {},
 		"comments": ["The title of driving privileges"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 775]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 770]],
 		"translation": "Körbehörighet"
 	},
 	"eidCard.requestAttributesTitle": {
@@ -1128,13 +1141,6 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 431]],
 		"translation": "Fel vid borttagning av väntande kort"
 	},
-	"aiOverAking.errorReasonFallback": {
-		"message": "Error determining if the request is valid.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [["src/hooks/useOverAskingAi.tsx", 10]],
-		"translation": "Fel vid bedömning av om förfrågan är giltig."
-	},
 	"credentialDetail.errorTitle": {
 		"message": "Error getting credential details",
 		"placeholders": {},
@@ -1146,7 +1152,7 @@
 		"message": "Error occurred during onboarding",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 251]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 246]],
 		"translation": "Fel uppstod under inställningen"
 	},
 	"notification.errorParsingInvitation": {
@@ -1178,7 +1184,7 @@
 		"message": "Expires at",
 		"placeholders": {},
 		"comments": ["The time at which a credential expires"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 732]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 727]],
 		"translation": "Giltig till"
 	},
 	"cardLifecycle.limitedByDate.willExpire.description": {
@@ -1235,7 +1241,7 @@
 		"message": "Family name",
 		"placeholders": {},
 		"comments": ["The family name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 697]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 692]],
 		"translation": "Efternamn"
 	},
 	"menu.item.feedback": {
@@ -1270,7 +1276,7 @@
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to begin or finish onboarding"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 616]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 611]],
 		"translation": "Kom igång"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
@@ -1291,7 +1297,7 @@
 		"message": "Given name",
 		"placeholders": {},
 		"comments": ["The given name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 702]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 697]],
 		"translation": "Förnamn"
 	},
 	"noContentInbox.goBack": {
@@ -1342,14 +1348,14 @@
 		"message": "Hello!",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 63]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 65]],
 		"translation": "Hej!"
 	},
 	"common.hideMetadataAttributes": {
 		"message": "Hide metadata attributes",
 		"placeholders": {},
 		"comments": ["Option that hides the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 587]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 582]],
 		"translation": "Dölj metadata"
 	},
 	"credentials.hideShareableAttributes": {
@@ -1369,7 +1375,7 @@
 		"comments": [
 			"The holder identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 747]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 742]],
 		"translation": "Innehavare"
 	},
 	"onboardingWalletExplanation.slide3.title": {
@@ -1392,7 +1398,7 @@
 		"comments": [
 			"Description in the confirmation dialog shown when the user stops a data sharing request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 516]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 511]],
 		"translation": "Om du stoppar delas ingen data."
 	},
 	"didcommCancelFlow.connect.description": {
@@ -1410,7 +1416,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 342],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 504]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 503]
 		],
 		"translation": "Om du stoppar kommer intygserbjudandet att avbrytas."
 	},
@@ -1447,7 +1453,7 @@
 		"comments": [
 			"Message shown when the request is offline and verifier is unknown"
 		],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 83]],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 78]],
 		"translation": "Information om verifieraren kunde inte visas. Överväg noga om du litar på denna part."
 	},
 	"common.presentationShared": {
@@ -1530,7 +1536,7 @@
 		"message": "Issued at",
 		"placeholders": {},
 		"comments": ["The time at which a credential is issued"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 722]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 717]],
 		"translation": "Utfärdat"
 	},
 	"common.issuedBy": {
@@ -1549,8 +1555,8 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 107],
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 330],
-			["src/features/wallet/components/CredentialDetail.tsx", 76]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 331],
+			["src/features/wallet/components/CredentialDetail.tsx", 77]
 		],
 		"translation": "Utfärdat av {0}."
 	},
@@ -1580,21 +1586,21 @@
 		"comments": [
 			"The issuer identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 742]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 737]],
 		"translation": "Utfärdare"
 	},
 	"common.fields.issuingAuthority": {
 		"message": "Issuing authority",
 		"placeholders": {},
 		"comments": ["The issuing authority of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 712]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 707]],
 		"translation": "Utfärdande myndighet"
 	},
 	"common.fields.issuingCountry": {
 		"message": "Issuing country",
 		"placeholders": {},
 		"comments": ["The issuing country of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 717]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 712]],
 		"translation": "Utfärdande land"
 	},
 	"selectLanguage.label": {
@@ -1647,7 +1653,7 @@
 		"message": "Locality",
 		"placeholders": {},
 		"comments": ["The locality of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 752]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 747]],
 		"translation": "Ort"
 	},
 	"inbox.menuLabel": {
@@ -1668,7 +1674,7 @@
 		"message": "Metadata",
 		"placeholders": {},
 		"comments": ["Section heading for the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 577]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 572]],
 		"translation": "Metadata"
 	},
 	"common.missingAttributesHeading": {
@@ -1684,14 +1690,14 @@
 		"message": "Nationalities",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 654]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 649]],
 		"translation": "Nationaliteter"
 	},
 	"common.fields.nationality": {
 		"message": "Nationality",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 658]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 653]],
 		"translation": "Nationalitet"
 	},
 	"activity.latest.newCardFallback": {
@@ -1756,7 +1762,7 @@
 			"Shown when the user tries to accept a proof but no credentials are loaded"
 		],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 75]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 71]
 		],
 		"translation": "Inga kort valda"
 	},
@@ -1764,17 +1770,8 @@
 		"message": "No credentials were shared.",
 		"placeholders": {},
 		"comments": ["Shown when sharing failed and no credentials were shared"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 257]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 256]],
 		"translation": "Inga kort delades."
-	},
-	"common.noPurposeProvided": {
-		"message": "No information was provided on the purpose of the data request. Be cautious",
-		"placeholders": {},
-		"comments": [
-			"Shown in place of the purpose when a data request does not state one"
-		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 471]],
-		"translation": "Ingen information gavs om syftet med dataförfrågan. Var försiktig"
 	},
 	"network.noInternet": {
 		"message": "No internet connection. Please check your network settings.",
@@ -1803,50 +1800,12 @@
 		"origin": [["src/features/didcomm/DidCommNotificationScreen.tsx", 32]],
 		"translation": "Ingen inbjudan hittades. Försök igen."
 	},
-	"dcApi.verifier.noApprovals": {
-		"message": "No organization has approved {0}. Consider carefully whether you want to share with them.",
-		"placeholders": {
-			"0": ["verifier.name"]
-		},
-		"comments": [],
-		"origin": [
-			["src/features/dc-api/components/DcApiVerifierSection.tsx", 113]
-		],
-		"translation": "Ingen organisation litar på {0}. Tänk noga efter om du vill dela med dem."
-	},
-	"dcApi.verifier.noApprovalsUnknown": {
-		"message": "No organization has approved this one. Consider carefully whether you want to share with them.",
-		"placeholders": {},
-		"comments": [],
-		"origin": [
-			["src/features/dc-api/components/DcApiVerifierSection.tsx", 117]
-		],
-		"translation": "Ingen organisation litar på den här. Tänk noga efter om du vill dela med dem."
-	},
 	"verifyPartySlide.hasNoPreviousInteractionsDescription": {
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
 		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 226]],
 		"translation": "Inga tidigare interaktioner hittades"
-	},
-	"onboardingDataProtection.toast.secureDevice": {
-		"message": "Now using {0} for PID cryptographic keys.",
-		"placeholders": {
-			"0": ["Platform.OS === 'ios' ? 'Secure Enclave' : 'Strongbox'"]
-		},
-		"comments": [
-			"Toast shown when switching to local secure storage (e.g. Secure Enclave or Strongbox)"
-		],
-		"origin": [["src/features/onboarding/screens/data-protection.tsx", 30]],
-		"translation": "Använder nu {0} för PID-kryptografiska nycklar."
-	},
-	"onboardingDataProtection.toast.cloudHsm": {
-		"message": "Now using Cloud HSM for PID cryptographic keys.",
-		"placeholders": {},
-		"comments": ["Toast shown when Cloud HSM is selected for key storage"],
-		"origin": [["src/features/onboarding/screens/data-protection.tsx", 24]],
-		"translation": "Använder nu Cloud HSM för PID-kryptografiska nycklar."
 	},
 	"network.onlineAgain": {
 		"message": "Online again.",
@@ -1875,7 +1834,7 @@
 		"message": "Open the wallet app once before sharing from it.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/dc-api/messages.ts", 34]],
+		"origin": [["src/features/dc-api/messages.ts", 50]],
 		"translation": "Öppna plånboksappen en gång innan du delar från den."
 	},
 	"common.organizationNotVerifiedDescription": {
@@ -1884,7 +1843,7 @@
 		"comments": [
 			"Description shown when the organization behind a request could not be verified"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 544]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 539]],
 		"translation": "Organisationen är inte verifierad"
 	},
 	"common.organizationNotVerifiedHeading": {
@@ -1893,17 +1852,8 @@
 		"comments": [
 			"Heading shown when the organization behind a request could not be verified"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 539]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 534]],
 		"translation": "Organisation ej verifierad"
-	},
-	"requestPurpose.infoSheet.title": {
-		"message": "Overasking detected",
-		"placeholders": {},
-		"comments": [
-			"Title of the info sheet that appears when the user taps the warning about overasking"
-		],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 50]],
-		"translation": "Överdrivet begärande upptäckt"
 	},
 	"presentationSuccess.paidTo": {
 		"message": "Paid to {0}",
@@ -1918,9 +1868,13 @@
 		"message": "Pay",
 		"placeholders": {},
 		"comments": [
+			"Fallback label for the button that authorizes a PaSO payment",
 			"Fallback label for the button that authorizes a PaSO payment"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 307]],
+		"origin": [
+			["src/features/dc-api/DcApiScreen.tsx", 453],
+			["src/features/share/slides/PasoPaymentSlide.tsx", 218]
+		],
 		"translation": "Betala"
 	},
 	"payShare.accept": {
@@ -1930,23 +1884,15 @@
 		"origin": [["src/features/share/slides/PayAndShareSlide.tsx", 47]],
 		"translation": "Betal & dela"
 	},
-	"paso.payment.chooseCardHeading": {
-		"message": "Pay with",
-		"placeholders": {},
-		"comments": [
-			"Heading above the cards the user can choose from to authorize a payment"
-		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 258]],
-		"translation": "Betala med",
-		"obsolete": true
-	},
 	"paso.payment.payeeLabel": {
 		"message": "Payee",
 		"placeholders": {},
 		"comments": [
 			"Label above the payee of a payment, when the card supplies no label of its own"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 69]],
+		"origin": [
+			["src/features/share/components/PaymentTransactionDetails.tsx", 43]
+		],
 		"translation": "Betalningsmottagare"
 	},
 	"TKFmBL": {
@@ -1963,14 +1909,14 @@
 		"message": "Payment",
 		"placeholders": {},
 		"comments": ["Section heading above a payment that is, or was, authorized"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 506]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 501]],
 		"translation": "Betalning"
 	},
 	"paso.payment.cardHeading": {
 		"message": "Payment card",
 		"placeholders": {},
 		"comments": ["Heading above the card used to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 260]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 168]],
 		"translation": "Betalkort"
 	},
 	"payShare.cardHeading": {
@@ -2075,7 +2021,7 @@
 		"placeholders": {},
 		"comments": ["Shown when PIN is required but not provided"],
 		"origin": [
-			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 81]
+			["src/features/share/OpenIdPresentationNotificationScreen.tsx", 77]
 		],
 		"translation": "PIN-autentisering misslyckades"
 	},
@@ -2083,7 +2029,7 @@
 		"message": "Pin entries do not match",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/onboarding/onboardingContext.tsx", 134]],
+		"origin": [["src/features/onboarding/onboardingContext.tsx", 130]],
 		"translation": "PIN-koderna stämmer inte överens"
 	},
 	"common.pinRequiredToAcceptPresentation": {
@@ -2097,7 +2043,7 @@
 		"message": "Place of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 642]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 637]],
 		"translation": "Födelseort"
 	},
 	"common.placeDeviceOnIdCard": {
@@ -2106,7 +2052,7 @@
 		"comments": [
 			"Instruction shown when the eID card is about to be scanned with NFC"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 592]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 587]],
 		"translation": "Placera din enhet ovanpå ditt eID-kort för att skanna det."
 	},
 	"offlineQr.allowBluetoothAccessTitle": {
@@ -2152,21 +2098,21 @@
 		"message": "Portrait",
 		"placeholders": {},
 		"comments": ["The portrait of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 707]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 702]],
 		"translation": "Porträtt"
 	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
 		"placeholders": {},
 		"comments": ["The postal code where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 677]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 672]],
 		"translation": "Postnummer"
 	},
 	"home.presentInPersonButton": {
 		"message": "Present In-person",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 79]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 81]],
 		"translation": "Visa personligen"
 	},
 	"common.presentationCouldNotBeShared": {
@@ -2219,7 +2165,7 @@
 		"message": "PURPOSE",
 		"placeholders": {},
 		"comments": ["Heading above the stated purpose of the data request"],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 44]],
+		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 13]],
 		"translation": "SYFTE"
 	},
 	"paradymWallet.about.emailHeader": {
@@ -2233,7 +2179,7 @@
 		"message": "Read the Privacy Policy",
 		"placeholders": {},
 		"comments": ["Button label to open the privacy policy"],
-		"origin": [["src/features/onboarding/screens/data-protection.tsx", 36]],
+		"origin": [["src/features/onboarding/screens/data-protection.tsx", 19]],
 		"translation": "Läs integritetspolicyn"
 	},
 	"nfcScanner.readyToScan.title": {
@@ -2249,14 +2195,14 @@
 		"message": "Reason:",
 		"placeholders": {},
 		"comments": ["Label before the underlying error message"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 521]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 516]],
 		"translation": "Anledning:"
 	},
 	"home.receiveOrShare": {
 		"message": "Receive or share from your wallet",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 66]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 68]],
 		"translation": "Ta emot eller dela från din plånbok"
 	},
 	"activity.receivedFailed": {
@@ -2265,7 +2211,7 @@
 			"0": ["activity.entity.name"]
 		},
 		"comments": ["Shown in activity detail when receiving credentials failed"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 152]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 151]],
 		"translation": "Det gick inte att ta emot korten från {0}."
 	},
 	"activity.receivedStopped": {
@@ -2276,7 +2222,7 @@
 		"comments": [
 			"Shown in activity detail when receiving credentials was cancelled by the user"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 159]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 158]],
 		"translation": "Mottagningen av korten från {0} avbröts."
 	},
 	"activity.latest.title": {
@@ -2292,7 +2238,7 @@
 		"comments": [
 			"Shown when the organization behind a request is recognized by a trusted party"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 534]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 529]],
 		"translation": "Betrodd organisation"
 	},
 	"cardLifecycle.refreshCardButton": {
@@ -2306,7 +2252,7 @@
 		"message": "Region",
 		"placeholders": {},
 		"comments": ["The region of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 757]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 752]],
 		"translation": "Region"
 	},
 	"onboarding.pinReenter.title": {
@@ -2327,14 +2273,14 @@
 		"message": "Requested attributes",
 		"placeholders": {},
 		"comments": ["Heading above list of attributes shown to the user"],
-		"origin": [["src/features/share/RequestedAttributesDetailScreen.tsx", 136]],
+		"origin": [["src/features/share/RequestedAttributesDetailScreen.tsx", 137]],
 		"translation": "Begärda uppgifter"
 	},
 	"common.requestedCardsHeading": {
 		"message": "REQUESTED CARDS",
 		"placeholders": {},
 		"comments": ["Heading shown above a list of requested cards the user has"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 476]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 471]],
 		"translation": "BEGÄRDA KORT"
 	},
 	"activity.requestedInformationHeading": {
@@ -2343,7 +2289,7 @@
 		"comments": [
 			"Heading shown when the request did not result in attributes being shared"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 135]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 134]],
 		"translation": "Begärd information"
 	},
 	"onboarding.resetAlert.title": {
@@ -2410,7 +2356,7 @@
 		"message": "Scan QR-code",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/wallet/WalletScreen.tsx", 73]],
+		"origin": [["src/features/wallet/WalletScreen.tsx", 75]],
 		"translation": "Skanna QR-kod"
 	},
 	"nfcScanner.complete.title": {
@@ -2454,9 +2400,13 @@
 		"message": "Scroll down to review all payment details.",
 		"placeholders": {},
 		"comments": [
+			"Shown while the user has not yet scrolled through all payment details",
 			"Shown while the user has not yet scrolled through all payment details"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 321]],
+		"origin": [
+			["src/features/dc-api/DcApiScreen.tsx", 465],
+			["src/features/share/slides/PasoPaymentSlide.tsx", 232]
+		],
 		"translation": "Skrolla ner för att granska alla betalningsuppgifter."
 	},
 	"common.search": {
@@ -2518,7 +2468,7 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Name of the settings screen"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 609]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 604]],
 		"translation": "Inställningar"
 	},
 	"common.share": {
@@ -2529,6 +2479,17 @@
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 466]],
 		"translation": "Dela"
+	},
+	"dcApi.shareWith": {
+		"message": "Share with {name}",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"Heading of a request to share information, naming the organization that asks"
+		],
+		"origin": [["src/features/dc-api/messages.ts", 30]],
+		"translation": "Dela med {name}"
 	},
 	"offlineQr.heading": {
 		"message": "Share with QR code",
@@ -2554,7 +2515,7 @@
 			"Heading shown when attributes were successfully shared in an activity"
 		],
 		"origin": [
-			["src/features/activity/ActivityDetailScreen.tsx", 130],
+			["src/features/activity/ActivityDetailScreen.tsx", 129],
 			["src/features/share/components/RequestedAttributesSection.tsx", 139]
 		],
 		"translation": "Delade uppgifter"
@@ -2598,7 +2559,7 @@
 		"message": "Show metadata attributes",
 		"placeholders": {},
 		"comments": ["Option that shows the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 582]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 577]],
 		"translation": "Visa metadata"
 	},
 	"common.showMore": {
@@ -2623,7 +2584,7 @@
 		"message": "Sign",
 		"placeholders": {},
 		"comments": ["The sign of a driving privilege in an mDL (e.g. >=)"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 795]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 790]],
 		"translation": "Tecken"
 	},
 	"signShare.accept": {
@@ -2637,7 +2598,7 @@
 		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 815]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 810]],
 		"translation": "Signatur"
 	},
 	"activity.latest.signedDocument": {
@@ -2694,7 +2655,7 @@
 		"comments": [
 			"Shown below a document name to indicate the user signed it with a specific QTSP"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 286]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 283]],
 		"translation": "Signerar med {0}"
 	},
 	"common.simulatorEidCardActivated": {
@@ -2788,7 +2749,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 338],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 500]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 499]
 		],
 		"translation": "Stoppa intygserbjudande?"
 	},
@@ -2805,14 +2766,14 @@
 		"comments": [
 			"Title of the confirmation dialog shown when the user stops a data sharing request"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 511]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 506]],
 		"translation": "Stoppa delning?"
 	},
 	"common.fields.street": {
 		"message": "Street",
 		"placeholders": {},
 		"comments": ["The street where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 662]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 657]],
 		"translation": "Gata"
 	},
 	"common.success": {
@@ -2828,7 +2789,7 @@
 		"comments": [
 			"Button that opens the other cards the user can authorize the payment with"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 275]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 183]],
 		"translation": "Byt"
 	},
 	"common.tapToView": {
@@ -2859,7 +2820,7 @@
 		"comments": [
 			"Shown in activity detail when the received credentials are pending"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 166]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 165]],
 		"translation": "Korten från {0} är inte redo än och kommer att hämtas senare."
 	},
 	"paso.refusal.metadataViolatesConstraints": {
@@ -2882,14 +2843,14 @@
 		"message": "The document was not signed.",
 		"placeholders": {},
 		"comments": ["Shown after a failed digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 125]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 124]],
 		"translation": "Dokumentet signerades inte."
 	},
 	"activity.documentSigned": {
 		"message": "The document was signed.",
 		"placeholders": {},
 		"comments": ["Shown after a successful digital signature"],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 120]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 119]],
 		"translation": "Dokumentet signerades."
 	},
 	"cardLifecycle.limitedByDate.expired.description": {
@@ -2923,7 +2884,7 @@
 		"message": "The following cards will be shared.",
 		"placeholders": {},
 		"comments": ["Description when the user has all requested cards"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 486]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 481]],
 		"translation": "Följande kort kommer att delas."
 	},
 	"signShare.documentIntro": {
@@ -3031,20 +2992,11 @@
 		"origin": [["src/features/share/pasoRefusalMessage.ts", 54]],
 		"translation": "Betalningsuppgifterna för ditt kort kunde inte verifieras. Försök igen senare."
 	},
-	"requestPurpose.overaskingWarning": {
-		"message": "The purpose given does not match the data requested.",
-		"placeholders": {},
-		"comments": [
-			"Warning shown when the declared purpose does not align with the data requested by the organization"
-		],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 38]],
-		"translation": "Det angivna syftet stämmer inte överens med den begärda datan."
-	},
 	"dcApi.nothingRequested": {
 		"message": "The request asks for no documents.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/dc-api/messages.ts", 30]],
+		"origin": [["src/features/dc-api/messages.ts", 46]],
 		"translation": "Begäran gäller inga dokument."
 	},
 	"notifications.errorBoundary.description": {
@@ -3064,7 +3016,7 @@
 		"comments": [
 			"Reason passed to the OS when the user declines; not shown to the user"
 		],
-		"origin": [["src/features/dc-api/messages.ts", 38]],
+		"origin": [["src/features/dc-api/messages.ts", 54]],
 		"translation": "Begäran avvisades"
 	},
 	"invalidTxCode.message": {
@@ -3096,7 +3048,7 @@
 		"comments": [
 			"A message shown when there are no organizations that approved the current party"
 		],
-		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 120]],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 136]],
 		"translation": "Det finns inga organisationer som litar på {name}."
 	},
 	"trust.noApprovalsWithoutOrganizationName": {
@@ -3105,7 +3057,7 @@
 		"comments": [
 			"A message shown when there are no organizations that approved the current party, but the organization name is not known"
 		],
-		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 125]],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 141]],
 		"translation": "Det finns inga organisationer som litar på denna okända organisation."
 	},
 	"common.nothingHereYet": {
@@ -3114,7 +3066,7 @@
 		"comments": [
 			"Heading shown when a list, such as the cards or the activity, is still empty"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 626]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 621]],
 		"translation": "Inget här ännu"
 	},
 	"onboardingIdCardRequestedAttributes.description": {
@@ -3209,7 +3161,7 @@
 		"message": "This is an offline request",
 		"placeholders": {},
 		"comments": ["Title shown for offline message"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 78]],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 73]],
 		"translation": "Detta är en offlineförfrågan"
 	},
 	"pidSetup.idCardPin.subtitle": {
@@ -3232,15 +3184,8 @@
 		"comments": [
 			"Heading introducing the wallet, in onboarding and on the empty wallet screen"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 621]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 616]],
 		"translation": "Det här är din plånbok"
-	},
-	"requestPurpose.infoSheet.description": {
-		"message": "This organization seems to be asking for different or more data than their purpose suggests. Read the request carefully. You can deny the request if you do not agree with the data asked.",
-		"placeholders": {},
-		"comments": ["Description text in the overasking info sheet"],
-		"origin": [["src/features/share/components/RequestPurposeSection.tsx", 56]],
-		"translation": "Denna organisation verkar begära annan eller mer data än vad deras syfte antyder. Läs förfrågan noggrant. Du kan avvisa förfrågan om du inte håller med om den begärda datan."
 	},
 	"paso.refusal.noSupportedLocale": {
 		"message": "This payment cannot be shown in a language you understand.",
@@ -3291,7 +3236,7 @@
 		"comments": [
 			"Shown when the request could not be read, before the user was asked to approve anything"
 		],
-		"origin": [["src/features/dc-api/messages.ts", 43]],
+		"origin": [["src/features/dc-api/messages.ts", 59]],
 		"translation": "Den här förfrågan kunde inte läsas. Be verifieraren skicka en ny förfrågan och försök igen."
 	},
 	"common.archiveCardDescription": {
@@ -3313,7 +3258,7 @@
 			]
 		},
 		"comments": [],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 311]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 308]],
 		"translation": "Kwa {0}"
 	},
 	"pidSetup.enableBiometrics.subtitle": {
@@ -3401,14 +3346,14 @@
 		"comments": [
 			"Subheading for list of organizations that trust the current one"
 		],
-		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 100]],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 116]],
 		"translation": "Betrodd av"
 	},
 	"common.credentials.mdl.unDistinguishingSign": {
 		"message": "UN sign",
 		"placeholders": {},
 		"comments": ["The United Nations distinguishing sign of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 810]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 805]],
 		"translation": "FN-märke"
 	},
 	"common.unableToRetrieveInvitation": {
@@ -3424,7 +3369,7 @@
 		"comments": [
 			"Heading shown above a list of requested cards the user does not have"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 481]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 476]],
 		"translation": "OTILLGÄNGLIGA KORT"
 	},
 	"common.unknown": {
@@ -3500,21 +3445,21 @@
 		"message": "Valid from",
 		"placeholders": {},
 		"comments": ["The time ƒrom which a credential is valid"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 727]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 722]],
 		"translation": "Giltig från"
 	},
 	"common.credentials.mdl.value": {
 		"message": "Value",
 		"placeholders": {},
 		"comments": ["The value of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 790]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 785]],
 		"translation": "Värde"
 	},
 	"common.credentials.mdl.vehicleCategoryCode": {
 		"message": "Vehicle category code",
 		"placeholders": {},
 		"comments": ["The vehicle category code of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 805]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 800]],
 		"translation": "Fordonskategorikod"
 	},
 	"cardLifecycle.batch.description": {
@@ -3535,7 +3480,7 @@
 		"message": "View attributes of the card",
 		"placeholders": {},
 		"comments": ["Description text for the attributes button"],
-		"origin": [["src/features/wallet/components/CredentialDetail.tsx", 95]],
+		"origin": [["src/features/wallet/components/CredentialDetail.tsx", 96]],
 		"translation": "Visa kortets uppgifter"
 	},
 	"menu.section.wallet": {
@@ -3691,35 +3636,27 @@
 		],
 		"translation": "Du hade inte de kort som krävdes för att dela."
 	},
-	"paso.refusal.noMatchingCard": {
-		"message": "You do not have a card in this wallet that can authorize this payment.",
-		"placeholders": {},
-		"comments": ["Shown when no credential satisfies the PaSO payment request"],
-		"origin": [["src/features/share/pasoRefusalMessage.ts", 50]],
-		"translation": "Du har inget kort i den här plånboken som kan godkänna den här betalningen.",
-		"obsolete": true
-	},
 	"common.someRequestedCardsMissingDescription": {
 		"message": "You don't have all of the requested cards.",
 		"placeholders": {},
 		"comments": [
 			"Description when the user has some but not all requested cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 496]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 491]],
 		"translation": "Du har inte alla begärda kort."
 	},
 	"common.noNotificationsDescription": {
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
 		"comments": ["Message shown when the user has no notifications"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 636]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 631]],
 		"translation": "Du har inga aviseringar just nu."
 	},
 	"common.noRequestedCardsDescription": {
 		"message": "You don't have the requested card(s).",
 		"placeholders": {},
 		"comments": ["Description when the user has none of the requested cards"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 491]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 486]],
 		"translation": "Du har inte de begärda korten."
 	},
 	"common.missingCardsWarning": {
@@ -3748,7 +3685,7 @@
 		"comments": [
 			"Shown in activity detail when one credential has been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 180]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 179]],
 		"translation": "Du har tagit emot följande kort från {0}."
 	},
 	"activity.receivedMultiple": {
@@ -3759,7 +3696,7 @@
 		"comments": [
 			"Shown in activity detail when multiple credentials have been received"
 		],
-		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 174]],
+		"origin": [["src/features/activity/ActivityDetailScreen.tsx", 173]],
 		"translation": "Du har tagit emot följande kort från {0}."
 	},
 	"pidSetup.enableBiometrics.title": {
@@ -3780,7 +3717,7 @@
 		"message": "You're all caught up",
 		"placeholders": {},
 		"comments": ["Heading shown when the user has no notifications"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 631]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 626]],
 		"translation": "Du är ikapp med allt"
 	},
 	"dcApi.shareFailed": {
@@ -3789,7 +3726,7 @@
 		"comments": [
 			"Shown when the card could not be shared, after the user already approved the request"
 		],
-		"origin": [["src/features/dc-api/messages.ts", 48]],
+		"origin": [["src/features/dc-api/messages.ts", 64]],
 		"translation": "Ditt kort kunde inte delas. Be verifieraren skicka en ny förfrågan och försök igen."
 	},
 	"common.missingAttributesWarning": {
@@ -3815,7 +3752,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 260]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 261]
 		],
 		"translation": "Dina kort är inte klara ännu. Vi kollar med jämna mellanrum i bakgrunden och hämtar dem så snart de är redo."
 	},

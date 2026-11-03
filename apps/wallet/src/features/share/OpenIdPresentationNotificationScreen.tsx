@@ -1,6 +1,5 @@
 import { isHardwareBoundCredentialType } from '@app/config/paymentAttestation'
-import { useDevelopmentMode, useOverAskingAi } from '@app/hooks'
-import { formatPredicate } from '@app/utils/formatePredicate'
+import { useDevelopmentMode } from '@app/hooks'
 import { useLingui } from '@lingui/react/macro'
 import { usePushToWallet } from '@package/app'
 import { commonMessages, useLocale } from '@package/translations'
@@ -8,7 +7,6 @@ import { useToastController } from '@package/ui'
 import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk'
 import {
   type FormattedTransactionData,
-  getDisclosedAttributeNamesForDisplay,
   Openid4vpAuthorizationRequestError,
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
@@ -20,9 +18,8 @@ import {
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { validateWalletPin } from '../../crypto/walletPin'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
-import { useShouldUseCloudHsm } from '../onboarding/useShouldUseCloudHsm'
 import { PresentationNotificationScreen } from './PresentationNotificationScreen'
 import { resolvePasoAuthenticationMethods } from './pasoAuthenticationMethods'
 import { usePasoRefusalMessage } from './pasoRefusalMessage'
@@ -64,7 +61,6 @@ export function OpenIdPresentationNotificationScreen() {
     [resolvedRequest, paymentCredential]
   )
   const shouldUsePin = useShouldUsePinForSubmission(shareRequest?.formattedSubmission)
-  const [shouldUseCloudHsm] = useShouldUseCloudHsm()
 
   const handleError = useCallback(({ reason, description }: { reason: string; description?: string }) => {
     setIsSharing(false)
@@ -149,43 +145,8 @@ export function OpenIdPresentationNotificationScreen() {
     }
   }, [shareRequest, paradym, locale, handleError, isDevelopmentModeEnabled, pasoRefusalMessage, t])
 
-  const { checkForOverAsking, isProcessingOverAsking, overAskingResponse, stopOverAsking } = useOverAskingAi()
-
-  useEffect(() => {
-    if (!resolvedRequest?.formattedSubmission?.areAllSatisfied) {
-      return
-    }
-
-    if (isProcessingOverAsking || overAskingResponse) {
-      // Already generating or already has result
-      return
-    }
-
-    const submission = resolvedRequest.formattedSubmission
-    const requestedCards = submission.entries
-      .filter((entry): entry is FormattedSubmissionEntrySatisfied => entry.isSatisfied)
-      .flatMap((entry) => entry.credentials)
-
-    void checkForOverAsking({
-      verifier: {
-        name: resolvedRequest.verifier.name ?? 'No name provided',
-        domain: resolvedRequest.verifier.hostName ?? 'No domain provided',
-      },
-      name: submission.name ?? 'No name provided',
-      purpose: submission.purpose ?? 'No purpose provided',
-      cards: requestedCards.map((credential) => ({
-        name: credential.credential.display.name ?? 'Card name',
-        subtitle: credential.credential.display.description ?? 'Card description',
-        requestedAttributes: getDisclosedAttributeNamesForDisplay(credential).map((c) =>
-          typeof c === 'string' ? c : formatPredicate(c)
-        ),
-      })),
-    })
-  }, [resolvedRequest, checkForOverAsking, isProcessingOverAsking, overAskingResponse])
-
   const onProofAccept = useCallback(
     async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
-      stopOverAsking()
       if (!shareRequest) return handleError({ reason: reasonNoCredentials })
 
       setIsSharing(true)
@@ -197,7 +158,7 @@ export function OpenIdPresentationNotificationScreen() {
         }
 
         try {
-          await setWalletServiceProviderPin(pin.split('').map(Number))
+          await validateWalletPin(pin)
         } catch (e) {
           setIsSharing(false)
           if (e instanceof ParadymWalletAuthenticationInvalidPinError) {
@@ -232,7 +193,6 @@ export function OpenIdPresentationNotificationScreen() {
       const authenticationMethods = resolvePasoAuthenticationMethods({
         usedTransactionPin: shouldUsePin === true,
         usedHardwareBoundKey,
-        usedKeyBiometric: usedHardwareBoundKey && !shouldUseCloudHsm,
       })
 
       try {
@@ -274,8 +234,6 @@ export function OpenIdPresentationNotificationScreen() {
       shareRequest,
       paradym,
       shouldUsePin,
-      shouldUseCloudHsm,
-      stopOverAsking,
       toast,
       isDevelopmentModeEnabled,
       handleError,
@@ -288,7 +246,6 @@ export function OpenIdPresentationNotificationScreen() {
   )
 
   const onProofDecline = useCallback(async () => {
-    stopOverAsking()
     // The transaction goes along so the declined activity records what was turned down. Resolving
     // a PaSO transaction is asynchronous, so leaving this out would record the refusal of a
     // payment as the refusal of a bare information request.
@@ -305,7 +262,7 @@ export function OpenIdPresentationNotificationScreen() {
       message: redirectUri ? undefined : t(commonMessages.returnToPreviousApp),
       customData: { preset: 'danger' },
     })
-  }, [shareRequest, pushToWallet, stopOverAsking, t, toast, paradym, formattedTransactionData])
+  }, [shareRequest, pushToWallet, t, toast, paradym, formattedTransactionData])
 
   const replace = useCallback(() => pushToWallet(), [pushToWallet])
 
@@ -337,7 +294,6 @@ export function OpenIdPresentationNotificationScreen() {
       trustMechanism={resolvedRequest?.trustMechanism}
       onComplete={replace}
       onCancel={onErrorCancel}
-      overAskingResponse={overAskingResponse}
       transaction={formattedTransactionData}
       isResolvingTransaction={isResolvingTransaction}
       onSelectPaymentCredential={onSelectPaymentCredential}

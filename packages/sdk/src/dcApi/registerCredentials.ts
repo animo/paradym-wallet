@@ -8,6 +8,8 @@ import {
   registerCredentials,
   removeCredential,
 } from '@animo-id/expo-digital-credentials-api'
+// The matcher is registered along with the credentials, so a new one has to be registered again.
+import dcApiPackage from '@animo-id/expo-digital-credentials-api/package.json'
 import {
   DateOnly,
   Hasher,
@@ -33,8 +35,9 @@ import {
   resolveAttributeLabelForPath,
   resolveClaimsWithRecordMetadata,
 } from '../format/attributes'
-import { getPasoCredentialMetadata } from '../metadata/credentials'
+import { getPasoCredentialMetadata, getPaymentsMetadata } from '../metadata/credentials'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import { pasoPaymentTransactionDataType } from '../paso/paymentRulebook'
 import type { CredentialRecord } from '../storage/credentials'
 import { getSharedMmkv } from '../storage/sharedMmkv'
 
@@ -137,20 +140,27 @@ function splitDataUrl(url: string): [metadata: string, data?: string] {
 }
 
 /**
- * Rasterizes an svg to fit inside 20x20, as a base64 data url.
+ * The height of the icons registered for the credential picker, as Multipaz registers them. The
+ * credentials and the matcher are sent to the OS in one Binder call of at most about 1 MB, so the
+ * icons stay small: a 76x48 PNG is a few kilobytes.
+ */
+const iconHeight = 48
+
+/**
+ * Rasterizes an svg to {@link iconHeight}, keeping its aspect ratio, as a base64 data url.
  *
  * An svg with its own width and height is drawn at that size whatever container it gets, so it is
- * scaled down. One without them takes the container's size, so it gets a 20x20 one.
+ * scaled. One without them takes the container's size, so it gets a square one.
  */
 function rasterizeSvg(svgSource: string) {
   const svg = Skia.SVG.MakeFromString(svgSource)
   if (!svg) return undefined
 
   const hasIntrinsicSize = svg.width() > 0 && svg.height() > 0
-  const scale = hasIntrinsicSize ? Math.min(20 / svg.width(), 20 / svg.height()) : 1
+  const scale = hasIntrinsicSize ? iconHeight / svg.height() : 1
   const surface = hasIntrinsicSize
-    ? Skia.Surface.Make(Math.round(svg.width() * scale), Math.round(svg.height() * scale))
-    : Skia.Surface.Make(20, 20)
+    ? Skia.Surface.Make(Math.round(svg.width() * scale), iconHeight)
+    : Skia.Surface.Make(iconHeight, iconHeight)
   if (!surface) {
     throw new Error('Unable to rasterize SVG')
   }
@@ -171,18 +181,8 @@ async function resizeImageWithAspectRatio(logger: Logger, uri: string) {
 
     const image = await Image.loadAsync(uri)
 
-    // Calculate new dimensions maintaining aspect ratio
-    let width: number
-    let height: number
-    if (image.width >= image.height) {
-      // If width is the larger dimension
-      width = 20
-      height = Math.round((image.height / image.width) * 20)
-    } else {
-      // If height is the larger dimension
-      height = 20
-      width = Math.round((image.width / image.height) * 20)
-    }
+    const height = iconHeight
+    const width = Math.round((image.width / image.height) * iconHeight)
 
     // Only the dimensions were needed, and holding a full-size decoded bitmap until GC is wasteful
     // when this runs once per credential.
@@ -339,6 +339,13 @@ export type DcApiRegisterCredentialsOptions = {
 const registrationFingerprintKey = 'dcApiRegistrationFingerprint'
 
 /**
+ * Bumped when Android registers something else for the same records, such as a new field per
+ * credential, so an updated app registers again rather than keep the old set. A new matcher comes
+ * with a new version of the digital credentials package, which is part of the fingerprint as well.
+ */
+const androidRegistrationVersion = 5
+
+/**
  * What the registered set is derived from, so an unchanged set can skip the work of rebuilding it.
  *
  * Records rather than the built registrations, because the point is to decide before building them:
@@ -369,7 +376,9 @@ function getRegistrationFingerprint(
     .sort()
     .join(',')
 
-  return Platform.OS === 'ios' ? `${registrationStatus}|${entries}` : `${registrationStatus}|${getLocale()}|${entries}`
+  return Platform.OS === 'ios'
+    ? `${registrationStatus}|${entries}`
+    : `${androidRegistrationVersion}|${dcApiPackage.version}|${registrationStatus}|${getLocale()}|${entries}`
 }
 
 export async function dcApiRegisterCredentials(options: DcApiRegisterCredentialsOptions) {
@@ -382,14 +391,7 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
 
     const mdocRecords = records?.mdoc ?? (await paradym.agent.mdoc.getAll())
     // iOS only matches ISO 18013-7 mdocs, so building the sd-jwt entries would be wasted work.
-    // PaSO Credentials stay out: they may only be presented to authorize a PaSO transaction, and PaSO
-    // over the Digital Credentials API is not implemented — see `assertPasoCredentialsOnlyForPasoTransactions`.
-    const sdJwtVcRecords =
-      Platform.OS === 'ios'
-        ? []
-        : (records?.sdJwtVc ?? (await paradym.agent.sdJwtVc.getAll())).filter(
-            (record) => getPasoCredentialMetadata(record) === null
-          )
+    const sdJwtVcRecords = Platform.OS === 'ios' ? [] : (records?.sdJwtVc ?? (await paradym.agent.sdJwtVc.getAll()))
 
     // Reading the records is cheap; everything after this is not. Registering an unchanged set
     // rebuilds it for no reason, and the wallet did that on every unlock.
@@ -472,6 +474,8 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
         id: record.id,
         credential: {
           vct: record.getTags().vct,
+          // A request for a type this one extends matches it, as Credo's own DCQL matching does.
+          extendedVcts: record.extendedVctValues,
           format: 'dc+sd-jwt',
           // biome-ignore lint/suspicious/noExplicitAny: no explanation
           claims: sdJwtVc.prettyClaims as any,
@@ -488,6 +492,7 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
           ),
           iconDataUrl,
         },
+        android: getTransactionDataOptions(record),
       } as const satisfies DcApiCredential
     })
 
@@ -510,6 +515,21 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
       error,
     })
   }
+}
+
+/**
+ * The payment types a card authorizes, which the matcher only offers it for. A PaSO Credential may
+ * only be presented to authorize a PaSO transaction (see `assertPasoCredentialsOnlyForPasoTransactions`),
+ * and a TS 12 card is only registered for its payments, so the picker can show them as one.
+ */
+function getTransactionDataOptions(record: SdJwtVcRecord) {
+  const transactionDataTypes = getPasoCredentialMetadata(record)
+    ? [pasoPaymentTransactionDataType]
+    : getPaymentsMetadata(record)
+      ? ['urn:eudi:sca:eu.europa.ec:payment:single:1']
+      : undefined
+
+  return transactionDataTypes ? { transactionDataTypes, transactionDataOnly: true } : undefined
 }
 
 /**

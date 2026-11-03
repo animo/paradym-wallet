@@ -1,4 +1,3 @@
-import type { OverAskingResponse } from '@app/use-cases/OverAskingApi'
 import { useLingui } from '@lingui/react/macro'
 import { type SlideStep, SlideWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
@@ -26,7 +25,6 @@ interface PresentationNotificationScreenProps {
   entityId?: string
   verifierName?: string
   logo?: DisplayImage
-  overAskingResponse?: OverAskingResponse
   trustedEntities?: Array<TrustedEntity>
   trustMechanism?: TrustMechanism
   submission?: FormattedSubmission
@@ -54,7 +52,6 @@ export function PresentationNotificationScreen({
   isAccepting,
   submission,
   onComplete,
-  overAskingResponse,
   trustedEntities,
   trustMechanism,
   transaction,
@@ -174,7 +171,6 @@ export function PresentationNotificationScreen({
                             submission={submission}
                             onDecline={onDecline}
                             isAccepting={isAccepting}
-                            overAskingResponse={overAskingResponse}
                           />
                         ),
                       },

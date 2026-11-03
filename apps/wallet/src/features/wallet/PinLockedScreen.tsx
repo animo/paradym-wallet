@@ -1,4 +1,4 @@
-import { resetWalletServiceProviderState } from '@app/crypto/WalletServiceProviderClient'
+import { resetWalletPinValidation } from '@app/crypto/walletPin'
 import { resetAppState } from '@app/utils/resetAppState'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
@@ -20,7 +20,7 @@ export const PinLockedScreen = () => {
         onPress: () => {
           paradym
             .reset()
-            .then(() => resetWalletServiceProviderState())
+            .then(() => resetWalletPinValidation())
             .then(() => {
               resetAppState()
               router.replace('onboarding')

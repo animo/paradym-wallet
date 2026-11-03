@@ -42,10 +42,15 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
   // The picker wording, so the SDK's own issuance flows can register without the app in the middle.
   resolveDcApiDisplay,
   // A payment attestation is the possession factor of Strong Customer Authentication, so its key is
-  // created in the secure environment. The secure environment only supports P-256.
+  // created in the secure environment. The secure environment only supports P-256. The TEE is enough:
+  // requiring StrongBox, the library's default, would rule out most Android phones.
   resolveCredentialKeyOptions: async ({ credentialConfiguration }) =>
     (await isHardwareBoundCredentialConfiguration(credentialConfiguration))
-      ? { backend: 'secureEnvironment', algorithm: 'ES256' }
+      ? {
+          backend: 'secureEnvironment',
+          algorithm: 'ES256',
+          backendOptions: { minimumKeyStorage: 'trustedEnvironment' },
+        }
       : undefined,
   sdJwtVcTypeMetadataLocations,
   openId4VcConfiguration: {

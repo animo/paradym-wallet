@@ -123,7 +123,6 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
               onDecline={onProofDecline}
               submission={submission as FormattedSubmission}
               isAccepting={acceptStatus !== 'idle'}
-              overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
             />
           ),
         },

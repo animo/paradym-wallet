@@ -12,6 +12,15 @@
  * {@link ./index.ts}.
  */
 
+import type { Agent } from '@credo-ts/core'
+import type { ParadymWalletSdkLogger } from '../logging'
+
+/** What PaSO needs from a wallet: the app's SDK, or the one the credential request UI runs. */
+export type PasoWallet = {
+  agent: Pick<Agent, 'context' | 'dependencyManager' | 'kms'>
+  logger: ParadymWalletSdkLogger
+}
+
 /** [PaSO Core] Section 5.2 — transaction data type identifiers. */
 export const pasoTransactionDataTypePrefix = 'urn:paso:sca:'
 

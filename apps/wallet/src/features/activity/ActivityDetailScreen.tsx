@@ -116,7 +116,6 @@ const activityMessages = {
     message: 'Deleted credential',
     comment: 'Shown when a credential no longer exists in the wallet',
   }),
-  noPurposeGiven: commonMessages.noPurposeProvided,
   documentSigned: defineMessage({
     id: 'activity.documentSigned',
     message: 'The document was signed.',
@@ -262,11 +261,9 @@ export function SharedActivityDetailSection({
 
   return (
     <Stack gap="8">
-      <RequestPurposeSection
-        purpose={activity.request.purpose ?? t(activityMessages.noPurposeGiven)}
-        logo={activity.entity.logo}
-        overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
-      />
+      {activity.request.purpose && (
+        <RequestPurposeSection purpose={activity.request.purpose} logo={activity.entity.logo} />
+      )}
       {activity && activity.type === 'signed' ? (
         <YStack gap="5">
           <YStack gap="2">

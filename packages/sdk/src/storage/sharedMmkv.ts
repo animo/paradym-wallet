@@ -13,7 +13,6 @@ const sharedKeys = {
   biometricsEnabled: 'boolean',
   hasFinishedOnboarding: 'boolean',
   hasSeenIntroTooltip: 'boolean',
-  shouldUseCloudHsm: 'boolean',
   useDevelopmentMode: 'boolean',
   useStoredLocale: 'string',
   walletKeyVersion: 'number',

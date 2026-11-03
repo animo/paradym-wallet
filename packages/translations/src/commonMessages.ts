@@ -468,11 +468,6 @@ export const commonMessages = {
     message: 'Share',
     comment: 'Button label to accept a request and share the requested cards',
   }),
-  noPurposeProvided: defineMessage({
-    id: 'common.noPurposeProvided',
-    message: 'No information was provided on the purpose of the data request. Be cautious',
-    comment: 'Shown in place of the purpose when a data request does not state one',
-  }),
   requestedCardsHeading: defineMessage({
     id: 'common.requestedCardsHeading',
     message: 'REQUESTED CARDS',

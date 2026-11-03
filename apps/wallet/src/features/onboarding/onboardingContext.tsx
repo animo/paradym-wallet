@@ -1,9 +1,5 @@
 import { paradymWalletSdkOptions } from '@app/config/paradym'
-import {
-  resetWalletServiceProviderState,
-  setupWalletServiceProvider,
-  setWalletServiceProviderPin,
-} from '@app/crypto/WalletServiceProviderClient'
+import { resetWalletPinValidation, validateWalletPin } from '@app/crypto/walletPin'
 import { resetAppState } from '@app/utils/resetAppState'
 import type { OnboardingPage, OnboardingStep } from '@app/utils/sharedPidSetup'
 import { useLingui } from '@lingui/react/macro'
@@ -63,7 +59,7 @@ export function OnboardingContextProvider({
         : // Without a salt no PIN opens a store, so one left behind (e.g. by an interrupted onboarding
           // in an earlier version) would make the unlock after the PIN step fail.
           resetWalletStore(undefined, paradymWalletSdkOptions),
-      resetWalletServiceProviderState(),
+      resetWalletPinValidation(),
     ]).catch((error) => console.error('Resetting the stale wallet failed', error))
     if (hasStaleState) resetAppState()
   }, [paradym])
@@ -151,7 +147,7 @@ export function OnboardingContextProvider({
       if (paradym.state === 'unlocked' || paradym.state === 'locked' || paradym.state === 'acquired-wallet-key') {
         await paradym.reset()
       }
-      await resetWalletServiceProviderState()
+      await resetWalletPinValidation()
       resetAppState()
       return
     }
@@ -159,7 +155,7 @@ export function OnboardingContextProvider({
     try {
       await staleWalletReset.current
       await paradym.setPin(walletPin as string)
-      await setWalletServiceProviderPin((walletPin as string).split('').map(Number))
+      await validateWalletPin(walletPin as string)
       goToNextStep()
     } catch (e) {
       reset({ error: e, resetToStep: 'welcome' })
@@ -182,7 +178,6 @@ export function OnboardingContextProvider({
     let sdk: ParadymWalletSdk | undefined
     try {
       sdk = await paradym.unlock({ enableBiometrics })
-      await setupWalletServiceProvider(sdk, true)
 
       goToNextStep()
     } catch (error) {
@@ -235,7 +230,7 @@ export function OnboardingContextProvider({
         await paradym.reset()
       }
       // Otherwise the new PIN can't open the validation store the previous one created.
-      await resetWalletServiceProviderState()
+      await resetWalletPinValidation()
 
       if (paradym.state !== 'initializing') {
         paradym.reinitialize()

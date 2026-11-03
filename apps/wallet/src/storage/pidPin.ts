@@ -3,8 +3,12 @@ import { EASYPID_WALLET_PID_PIN_KEY_ID } from '@app/constants'
 import { Key, KeyAlgorithm } from '@openwallet-foundation/askar-react-native'
 
 export const deviceKeyPair = {
-  generate: () => generateKeypair(EASYPID_WALLET_PID_PIN_KEY_ID, false),
-  sign: async (message: Uint8Array) => sign(EASYPID_WALLET_PID_PIN_KEY_ID, message, false),
+  generate: () =>
+    generateKeypair(EASYPID_WALLET_PID_PIN_KEY_ID, {
+      userAuthentication: false,
+      minimumKeyStorage: 'trustedEnvironment',
+    }),
+  sign: async (message: Uint8Array) => sign(EASYPID_WALLET_PID_PIN_KEY_ID, message),
   publicKey: () => getPublicBytesForKeyId(EASYPID_WALLET_PID_PIN_KEY_ID),
   asJwkInBytes: async () =>
     Key.fromPublicBytes({

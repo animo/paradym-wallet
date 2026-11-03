@@ -16,7 +16,7 @@ import {
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { setWalletServiceProviderPin } from '../../crypto/WalletServiceProviderClient'
+import { validateWalletPin } from '../../crypto/walletPin'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { type OnPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
@@ -135,7 +135,7 @@ export function CredentialNotificationScreen() {
           return
         }
         try {
-          await setWalletServiceProviderPin(pin.split('').map(Number))
+          await validateWalletPin(pin)
         } catch (error) {
           if (error instanceof ParadymWalletAuthenticationInvalidPinError) {
             onPinError?.()
@@ -447,7 +447,6 @@ export function CredentialNotificationScreen() {
                   isAccepting={isSharingPresentation}
                   onDecline={onProofDecline}
                   // Not supported for this flow atm
-                  overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
                 />
               ),
             }
