@@ -1,6 +1,6 @@
 {
 	"name": "paradym-wallet",
-	"version": "1.22.3",
+	"version": "1.23.0",
 	"main": "index.ts",
 	"private": true,
 	"type": "module",
