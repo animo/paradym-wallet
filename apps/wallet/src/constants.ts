@@ -16,20 +16,23 @@ export const walletClient = {
 
 export const trustedX509Entities = [
   {
-    entityId: 'eudi-payments.animo.id',
-    certificate:
-      'MIIB4DCCAYWgAwIBAgIQXXMM3GvTV+Y205WOFDjYVTAKBggqhkjOPQQDAjAdMQ4wDAYDVQQDEwVBbmltbzELMAkGA1UEBhMCTkwwHhcNMjUwMTE2MjIyMTE5WhcNMjkwMTE2MjIyMTE5WjAdMQ4wDAYDVQQDEwVBbmltbzELMAkGA1UEBhMCTkwwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARZA0ip3d/WTVVsgPpOUQZa3MYHlIk2yYdHoN4+6d7RnBcbwbqbvq17mJyWmFkCAmETaJfP/GmJccsAWJuYS3OOo4GmMIGjMB0GA1UdDgQWBBTBXOGIQn1/MK2b2tkDV/3Gmj9bbjAOBgNVHQ8BAf8EBAMCAQYwKQYDVR0SBCIwIIYeaHR0cHM6Ly9ldWRpLXBheW1lbnRzLmFuaW1vLmlkMBIGA1UdEwEB/wQIMAYBAf8CAQAwMwYDVR0fBCwwKjAooCagJIYiaHR0cHM6Ly9ldWRpLXBheW1lbnRzLmFuaW1vLmlkL2NybDAKBggqhkjOPQQDAgNJADBGAiEAzg+RsYs3gF+QUm3D0StEQt/4FE5rgB/qy2EB8X8kBQMCIQDMCRiQFLHpKuDxEfSnAxVGJ3Tp9CPDfV6wJwla+jLC2w==',
-    name: 'Animo Payments Playground',
-    logoUri: 'https://eudi-payments.animo.id/assets/verifiers/animo/verifier.jpg',
-    url: 'https://eudi-payments.animo.id',
-    demo: true,
-  },
-  {
     entityId: 'playground.animo.id',
-    certificate:
-      'MIIB2zCCAYCgAwIBAgIRALanVqNUK4dgPlUmlAasZ24wCgYIKoZIzj0EAwIwHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMB4XDTI0MTEyODE2MjgzMFoXDTI4MTEyODE2MjgzMFowHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwDpb2uNodErbJfEWteLF6pGiqaxNfF9rFyttjJy+No0gmzn4wkgYqvGtcX5W4blXT1PQubGml5QUmpm5d41zd6OBoDCBnTAdBgNVHQ4EFgQUVC5XW1PTYNo6yWnkJGgvBVCtWZUwDgYDVR0PAQH/BAQDAgEGMCYGA1UdEgQfMB2GG2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZDASBgNVHRMBAf8ECDAGAQH/AgEAMDAGA1UdHwQpMCcwJaAjoCGGH2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZC9jcmwwCgYIKoZIzj0EAwIDSQAwRgIhAJvXTWWteCIeZPbzn+Y++Lpf4eFTmxP2M5o4phGsLuZcAiEAuiL89d9a2CQbQo8dzNpnV+P9JrUnKRQuP5ZZ9VJcoJI=',
     name: 'Animo Playground',
-    logoUri: 'https://playground.animo.id/assets/verifiers/animo/verifier.jpg',
+    certificate: `-----BEGIN CERTIFICATE-----
+MIICNzCCAd2gAwIBAgIQIOONR6QLKFUEhhhlVgfaLDAKBggqhkjOPQQDAjBMMR4w
+HAYDVQQDExVBbmltbyBQbGF5Z3JvdW5kIFJvb3QxCzAJBgNVBAYTAk5MMR0wGwYD
+VQQKExRBbmltbyBTb2x1dGlvbnMgQi5WLjAeFw0yNTExMDMxNjQzNDlaFw0yOTEx
+MDMxNjQzNDlaMEwxHjAcBgNVBAMTFUFuaW1vIFBsYXlncm91bmQgUm9vdDELMAkG
+A1UEBhMCTkwxHTAbBgNVBAoTFEFuaW1vIFNvbHV0aW9ucyBCLlYuMFkwEwYHKoZI
+zj0CAQYIKoZIzj0DAQcDQgAEia0hAIuIR6bKL5DU1TuiTckPfkP0OXvmzan2/nyw
+oY4X8FQFMuFC7OWlXFsdRmaYFoeXdRzoLz4XxS4pV3NEmKOBoDCBnTAdBgNVHQ4E
+FgQUv3MC+XWLbT4Suj06nUJZvBfwwwswDgYDVR0PAQH/BAQDAgEGMCYGA1UdEgQf
+MB2GG2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZDASBgNVHRMBAf8ECDAGAQH/
+AgEAMDAGA1UdHwQpMCcwJaAjoCGGH2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5p
+ZC9jcmwwCgYIKoZIzj0EAwIDSAAwRQIhANtSsiC903N5GgDhnI11xvk72oWIL2kT
+f2OFbcw+pN6yAiAXswddnRXwjJYrRHaM9Cq1MStIotWFhMw6V3DvQAAexA==
+-----END CERTIFICATE-----`,
+    logoUri: 'https://playground.animo.id/logo.svg',
     url: 'https://playground.animo.id',
     demo: true,
   },
@@ -107,15 +110,6 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
     url: 'https://www.netlight.com/',
     logoUri:
       'https://media.licdn.com/dms/image/v2/D4D0BAQHZ2gM5cWHJxQ/company-logo_200_200/company-logo_200_200/0/1708350843808/netlight_consulting_logo?e=1762992000&v=beta&t=2Qpgj26VRA_7AOWGvzQL7_xvyQ2c1Ic8auzAce6lVS8',
-    demo: true,
-  },
-  {
-    name: 'Animo Playground',
-    url: 'https://playground.animo.id',
-    certificate:
-      'MIIB2zCCAYCgAwIBAgIRALanVqNUK4dgPlUmlAasZ24wCgYIKoZIzj0EAwIwHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMB4XDTI0MTEyODE2MjgzMFoXDTI4MTEyODE2MjgzMFowHTEOMAwGA1UEAxMFQW5pbW8xCzAJBgNVBAYTAk5MMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwDpb2uNodErbJfEWteLF6pGiqaxNfF9rFyttjJy+No0gmzn4wkgYqvGtcX5W4blXT1PQubGml5QUmpm5d41zd6OBoDCBnTAdBgNVHQ4EFgQUVC5XW1PTYNo6yWnkJGgvBVCtWZUwDgYDVR0PAQH/BAQDAgEGMCYGA1UdEgQfMB2GG2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZDASBgNVHRMBAf8ECDAGAQH/AgEAMDAGA1UdHwQpMCcwJaAjoCGGH2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5pZC9jcmwwCgYIKoZIzj0EAwIDSQAwRgIhAJvXTWWteCIeZPbzn+Y++Lpf4eFTmxP2M5o4phGsLuZcAiEAuiL89d9a2CQbQo8dzNpnV+P9JrUnKRQuP5ZZ9VJcoJI=',
-    logoUri: 'https://playground.animo.id/logo.svg',
-    entityId: 'playground.animo.id',
     demo: true,
   },
   {
