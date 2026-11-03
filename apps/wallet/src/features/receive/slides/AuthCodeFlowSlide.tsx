@@ -7,8 +7,9 @@ import type { CredentialDisplay } from '@paradym/wallet-sdk'
 import { useParadym } from '@paradym/wallet-sdk'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
+import { setIssuanceAuthorizationPresentationRequestHandler } from '../issuanceAuthorizationPresentationRequest'
 
 export type AuthCodeFlowDetails = {
   domain: string
@@ -20,16 +21,25 @@ interface AuthCodeFlowSlideProps {
   display: CredentialDisplay
   authCodeFlowDetails: AuthCodeFlowDetails
   onAuthFlowCallback: (authorizationCode: string) => void
+  /**
+   * Called with the OpenID4VP request the authorization server redirects to from the browser, to request
+   * a presentation as part of the authorization. Continues to the next step once it resolves.
+   */
+  onPresentationRequest?: (requestUri: string) => Promise<void>
   onCancel: (errorMessage?: string) => void
   onError: (errorMessage?: string) => void
+  // Open the browser when the slide shows, e.g. to continue an authorization after a presentation
+  autoOpen?: boolean
 }
 
 export const AuthCodeFlowSlide = ({
   authCodeFlowDetails,
   onAuthFlowCallback,
+  onPresentationRequest,
   onCancel,
   onError,
   display,
+  autoOpen,
 }: AuthCodeFlowSlideProps) => {
   const { paradym } = useParadym('unlocked')
   const toast = useToastController()
@@ -41,6 +51,11 @@ export const AuthCodeFlowSlide = ({
   }>()
   const [browserResult, setBrowserResult] = useState<WebBrowser.WebBrowserAuthSessionResult>()
   const [hasHandledResult, setHasHandledResult] = useState(false)
+  const [isResolvingPresentationRequest, setIsResolvingPresentationRequest] = useState(false)
+  // A ref, as the browser result can arrive before a re-render after the presentation request
+  const hasReceivedPresentationRequest = useRef(false)
+
+  useEffect(() => () => setIssuanceAuthorizationPresentationRequestHandler(undefined), [])
 
   useEffect(() => {
     if (hasHandledResult) return
@@ -120,10 +135,43 @@ export const AuthCodeFlowSlide = ({
     t,
   ])
 
+  const onPresentationRequestReceived = (requestUri: string) => {
+    if (!onPresentationRequest) return
+
+    hasReceivedPresentationRequest.current = true
+    setHasHandledResult(true)
+    setIsResolvingPresentationRequest(true)
+
+    // The browser is left for the presentation. After sharing, the authorization continues in a new
+    // browser session at the redirect_uri the verifier returns. Android closes the browser itself.
+    if (Platform.OS === 'ios') {
+      WebBrowser.dismissAuthSession()
+    }
+
+    onPresentationRequest(requestUri)
+      .then(() => onNext())
+      .finally(() => setIsResolvingPresentationRequest(false))
+  }
+
   const onPressContinue = async () => {
+    if (onPresentationRequest) {
+      setIssuanceAuthorizationPresentationRequestHandler(onPresentationRequestReceived)
+    }
+
     const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
+    setIssuanceAuthorizationPresentationRequestHandler(undefined)
+
+    // Leaving the browser for the presentation request dismisses it, which is not a failed authorization
+    if (hasReceivedPresentationRequest.current) return
     setBrowserResult(result)
   }
+
+  const hasAutoOpened = useRef(false)
+  useEffect(() => {
+    if (!autoOpen || hasAutoOpened.current) return
+    hasAutoOpened.current = true
+    void onPressContinue()
+  })
 
   return (
     <YStack grow={1} justify="space-between">
@@ -160,6 +208,7 @@ export const AuthCodeFlowSlide = ({
           declineText={t(commonMessages.stop)}
           onAccept={onPressContinue}
           onDecline={wizardOnCancel}
+          isLoading={isResolvingPresentationRequest}
         />
       </YStack>
     </YStack>
