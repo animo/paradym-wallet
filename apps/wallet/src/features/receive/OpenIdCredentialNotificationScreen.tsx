@@ -517,8 +517,6 @@ export function CredentialNotificationScreen() {
                   submission={authorizationPresentationRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
                   onDecline={onProofDecline}
-                  // Not supported for this flow atm
-                  overAskingResponse={{ validRequest: 'could_not_determine', reason: '' }}
                 />
               ),
             }

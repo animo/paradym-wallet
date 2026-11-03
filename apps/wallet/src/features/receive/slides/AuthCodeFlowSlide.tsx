@@ -4,12 +4,23 @@ import { DualResponseButtons, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { Heading, MiniCardRowItem, Paragraph, useToastController, YStack } from '@package/ui'
 import type { CredentialDisplay } from '@paradym/wallet-sdk'
-import { useParadym } from '@paradym/wallet-sdk'
+import { parseInvitationUrlSync, useParadym } from '@paradym/wallet-sdk'
 import { useGlobalSearchParams } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useEffect, useRef, useState } from 'react'
 import { Platform } from 'react-native'
-import { setIssuanceAuthorizationPresentationRequestHandler } from '../issuanceAuthorizationPresentationRequest'
+import {
+  handleIssuanceAuthorizationPresentationRequest,
+  setIssuanceAuthorizationPresentationRequestHandler,
+} from '../issuanceAuthorizationPresentationRequest'
+
+function isOpenIdAuthorizationRequest(url: string) {
+  try {
+    return parseInvitationUrlSync(url).type === 'openid-authorization-request'
+  } catch {
+    return false
+  }
+}
 
 export type AuthCodeFlowDetails = {
   domain: string
@@ -159,6 +170,10 @@ export const AuthCodeFlowSlide = ({
     }
 
     const result = await WebBrowser.openAuthSessionAsync(authCodeFlowDetails.openUrl, authCodeFlowDetails.redirectUri)
+    // iOS can end the auth session with the redirect to the OpenID4VP request, instead of opening it as a deeplink
+    if (result.type === 'success' && isOpenIdAuthorizationRequest(result.url)) {
+      handleIssuanceAuthorizationPresentationRequest(result.url)
+    }
     setIssuanceAuthorizationPresentationRequestHandler(undefined)
 
     // Leaving the browser for the presentation request dismisses it, which is not a failed authorization
