@@ -25,6 +25,7 @@ import { validateWalletPin } from '../../crypto/walletPin'
 import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPresentation'
 import { type OnPinSubmitProps, PinSlide } from '../share/slides/PinSlide'
 import { ShareCredentialsSlide } from '../share/slides/ShareCredentialsSlide'
+import { getPushedAuthorizationPresentationRequestUri } from './issuanceAuthorizationPresentationRequest'
 import { AuthCodeFlowSlide } from './slides/AuthCodeFlowSlide'
 import { BiometricsRequiredSlide, canCreateHardwareBoundKey } from './slides/BiometricsRequiredSlide'
 import { CredentialCardSlide } from './slides/CredentialCardSlide'
@@ -81,6 +82,13 @@ export function CredentialNotificationScreen() {
       ? resolvedCredentialOffer.credentialsForProofRequest
       : authorizationPresentationRequest
   const shouldUsePinForPresentation = useShouldUsePinForSubmission(presentationRequest?.formattedSubmission)
+  // The authorization server returned the presentation request from the pushed authorization request, so there's
+  // no need to open the browser to start the authorization
+  const hasPushedPresentationRequest =
+    resolvedCredentialOffer?.flow === 'auth' &&
+    getPushedAuthorizationPresentationRequestUri(
+      resolvedCredentialOffer.resolvedAuthorizationRequest.authorizationRequestUrl
+    ) !== undefined
 
   const onCancel = () => pushToWallet()
   const onGoToWallet = () => pushToWallet()
@@ -111,6 +119,18 @@ export function CredentialNotificationScreen() {
     [setErrorReasonWithError, t]
   )
 
+  const onAuthorizationPresentationRequest = useCallback(
+    async (requestUri: string) => {
+      try {
+        setAuthorizationPresentationRequest(await paradym.openid4vc.resolveCredentialRequest({ uri: requestUri }))
+      } catch (error) {
+        paradym.logger.error('Error resolving presentation request during authorization', { error })
+        setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
+      }
+    },
+    [paradym, setErrorReasonWithError, t]
+  )
+
   // The authorization challenge / presentation request_uri the issuer hands us during
   // resolve is one-shot on the server side, so re-firing this effect would 404 the second call.
   const resolvingOfferUriRef = useRef<string | undefined>(undefined)
@@ -131,6 +151,12 @@ export function CredentialNotificationScreen() {
           setIsBiometricsSetupRequired(!(await canCreateHardwareBoundKey()))
         }
 
+        const pushedPresentationRequestUri =
+          result.flow === 'auth'
+            ? getPushedAuthorizationPresentationRequestUri(result.resolvedAuthorizationRequest.authorizationRequestUrl)
+            : undefined
+        if (pushedPresentationRequestUri) await onAuthorizationPresentationRequest(pushedPresentationRequestUri)
+
         setResolvedCredentialOffer(result)
       })
       .catch((error) => {
@@ -139,7 +165,7 @@ export function CredentialNotificationScreen() {
           error,
         })
       })
-  }, [params.uri, paradym, setErrorReasonWithError, t])
+  }, [params.uri, paradym, setErrorReasonWithError, t, onAuthorizationPresentationRequest])
 
   const acquireCredentialsAuth = useCallback(
     async (authorizationCode: string) => {
@@ -268,18 +294,6 @@ export function CredentialNotificationScreen() {
       presentationRequest,
       acquireCredentialsAuth,
     ]
-  )
-
-  const onAuthorizationPresentationRequest = useCallback(
-    async (requestUri: string) => {
-      try {
-        setAuthorizationPresentationRequest(await paradym.openid4vc.resolveCredentialRequest({ uri: requestUri }))
-      } catch (error) {
-        paradym.logger.error('Error resolving presentation request during authorization', { error })
-        setErrorReasonWithError(t(commonMessages.presentationInformationCouldNotBeExtracted), error)
-      }
-    },
-    [paradym, setErrorReasonWithError, t]
   )
 
   // These are callbacks to not change on every render
@@ -446,7 +460,7 @@ export function CredentialNotificationScreen() {
             />
           ),
         },
-        resolvedCredentialOffer.flow === 'auth'
+        resolvedCredentialOffer.flow === 'auth' && !hasPushedPresentationRequest
           ? {
               step: 'auth-code-flow',
               progress: 49.5,
@@ -467,7 +481,7 @@ export function CredentialNotificationScreen() {
                 />
               ),
             }
-          : resolvedCredentialOffer.flow === 'auth-presentation-during-issuance'
+          : resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' || hasPushedPresentationRequest
             ? {
                 step: 'check-card',
                 progress: 49.5,
