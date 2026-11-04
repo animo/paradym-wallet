@@ -37,7 +37,7 @@ export function SigningSlide({ documentName }: SigningSlideProps) {
         <YStack h="11" />
       </YStack>
 
-      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5" bg="background">
+      <YStack borderTopWidth="1" borderColor="grey-200" pt="3" mx="-5" px="5" bg="background">
         <DualResponseButtons
           align="horizontal"
           acceptText={t(commonMessages.continue)}

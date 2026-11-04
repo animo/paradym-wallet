@@ -74,6 +74,7 @@ export function PresentationNotificationScreen({
             progress: 33,
             backIsCancel: true,
             combineWithNext: true,
+            scrollsOwnContent: true,
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"

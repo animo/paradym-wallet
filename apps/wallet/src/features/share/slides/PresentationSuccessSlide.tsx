@@ -100,7 +100,7 @@ export const PresentationSuccessSlide = ({
         </YStack>
       </YStack>
 
-      <Stack gap="3" borderTopWidth="1" borderColor="grey-200" paddingRight="5" paddingLeft="5" py="2" mx="-5">
+      <Stack gap="3" borderTopWidth="1" borderColor="grey-200" paddingRight="5" paddingLeft="5" pt="2" mx="-5">
         {showReturnToApp && (
           <Paragraph variant="annotation" text="center">
             {t(commonMessages.returnToPreviousApp)}
