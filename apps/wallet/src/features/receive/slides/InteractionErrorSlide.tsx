@@ -67,7 +67,7 @@ export const InteractionErrorSlide = ({ reason, onCancel, flowType, showReturnTo
         </ScrollView>
       </YStack>
 
-      <Stack gap="3" borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5">
+      <Stack gap="3" borderTopWidth="1" borderColor="grey-200" pt="3" mx="-5" px="5">
         {showReturnToApp && (
           <Paragraph variant="annotation" text="center">
             {t(commonMessages.returnToPreviousApp)}

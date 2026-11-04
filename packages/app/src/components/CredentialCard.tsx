@@ -35,6 +35,8 @@ type CredentialCardProps = {
    */
   svg?: string
   shadow?: boolean
+  // A smaller card with the same proportions, for screens where the attributes below it need the room
+  compact?: boolean
   isLoading?: boolean
   isExpired?: boolean
   isRevoked?: boolean
@@ -49,6 +51,7 @@ export function CredentialCard({
   backgroundImage,
   svg: svgSource,
   shadow = true,
+  compact = false,
   isLoading,
   isExpired,
   isRevoked,
@@ -78,14 +81,14 @@ export function CredentialCard({
       position="relative"
       flex={1}
       w="100%"
-      maxWidth={360}
+      maxWidth={compact ? 280 : 360}
       self="center"
       style={pressStyle}
     >
       <Card
         flex={1}
         rounded="8"
-        p="6"
+        p={compact ? '5' : '6'}
         backgroundColor="transparent"
         overflow="hidden"
         aspectRatio={svg ? getSvgAspectRatio(svg) : undefined}
@@ -102,14 +105,14 @@ export function CredentialCard({
             <Card.Header p={0}>
               <XStack justify="space-between">
                 <YStack flex={1}>
-                  <Paragraph fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
+                  <Paragraph fontSize={compact ? 12 : 14} fontWeight="bold" color={textColor} numberOfLines={1}>
                     {(name ?? t(commonMessages.unknown)).toLocaleUpperCase()}
                   </Paragraph>
                 </YStack>
                 <XStack>{icon}</XStack>
               </XStack>
             </Card.Header>
-            <Spacer size={76} />
+            <Spacer size={compact ? 44 : 76} />
           </>
         )}
         <Card.Footer h="9" justify="flex-end" items="flex-end">

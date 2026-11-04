@@ -75,7 +75,7 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
           backgroundColor={display.backgroundColor ?? 'grey-900'}
         />
       </YStack>
-      <Stack borderTopWidth={1} borderColor="grey-100" px="5" py="3" mx="-5">
+      <Stack borderTopWidth={1} borderColor="grey-100" px="5" pt="3" mx="-5">
         <DualResponseButtons
           align="horizontal"
           onAccept={goToNextSlide}

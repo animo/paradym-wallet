@@ -51,7 +51,7 @@ interface CredentialRetrievalSlideProps {
   onAccept: () => Promise<void>
   onGoToWallet: () => void
   isAccepting?: boolean
-  // Wide windows show its custom layout, when it has one, instead of the plain attributes
+  // Shows its custom layout, when it has one, instead of the plain attributes
   credential?: CredentialForDisplay
 }
 
@@ -68,7 +68,9 @@ export const CredentialRetrievalSlide = ({
   const { completeProgressBar, onCancel, ownsWideLayout } = useWizard()
   const scale = useSharedValue(1)
   const textOpacity = useSharedValue(0)
-  const [scrollViewHeight, setScrollViewHeight] = useState<number>()
+  // Measured again when the device folds, as the attributes then move to a pane of another height
+  const [detailsLayout, setDetailsLayout] = useState<{ height: number; isWide: boolean }>()
+  const scrollViewHeight = detailsLayout?.isWide === !!ownsWideLayout ? detailsLayout.height : undefined
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
   const scrollViewRef = useRef<ScrollViewRefType>(null)
   const { t } = useLingui()
@@ -220,6 +222,7 @@ export const CredentialRetrievalSlide = ({
         backgroundImage={display.backgroundImage}
         bgColor={display.backgroundColor}
         svg={credential?.display.svg}
+        compact={!ownsWideLayout}
         isLoading={isStoring && !isCompleteAndAllowed}
       />
     </AnimatedStack>
@@ -235,7 +238,7 @@ export const CredentialRetrievalSlide = ({
       onLayout={(event) => {
         // Set the initial height of the stack to define the maxHeight of the scrollView
         if (!scrollViewHeight) {
-          setScrollViewHeight(event.nativeEvent.layout.height)
+          setDetailsLayout({ height: event.nativeEvent.layout.height, isWide: !!ownsWideLayout })
         }
       }}
     >
@@ -252,7 +255,7 @@ export const CredentialRetrievalSlide = ({
         >
           {scrollViewHeight && isAllowedToAccept ? (
             <AnimatedStack key="credential-attributes" entering={FadeIn.duration(200)}>
-              {ownsWideLayout && credential && hasCustomCredentialDisplay(credential.metadata.type) ? (
+              {credential && hasCustomCredentialDisplay(credential.metadata.type) ? (
                 <CustomCredentialAttributes credential={credential} scrollRef={scrollViewRef} />
               ) : attributes ? (
                 <CredentialAttributes attributes={attributes} scrollRef={scrollViewRef} />
@@ -286,7 +289,8 @@ export const CredentialRetrievalSlide = ({
         exiting={FadeOut.duration(100)}
         borderTopWidth="1"
         borderColor={isStoringOrCompleted ? 'background' : 'grey-200'}
-        p="5"
+        px="5"
+        pt="3"
         mx="-5"
         bg="background"
       >
