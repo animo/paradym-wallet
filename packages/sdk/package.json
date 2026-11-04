@@ -40,7 +40,6 @@
 		"build": "tsdown"
 	},
 	"dependencies": {
-		"@animo-id/eudi-wallet-functionality": "catalog:",
 		"@animo-id/expo-digital-credentials-api": "catalog:",
 		"@animo-id/expo-secure-environment": "catalog:",
 		"@astronautlabs/jsonpath": "catalog:",
@@ -56,7 +55,10 @@
 		"@openid4vc/oauth2": "catalog:",
 		"@openid4vc/openid4vp": "catalog:",
 		"@openwallet-foundation/askar-react-native": "catalog:",
+		"@owf/eudi-access-certificate": "catalog:",
+		"@owf/eudi-lote": "catalog:",
 		"@owf/eudi-sca": "catalog:",
+		"@owf/x509": "catalog:",
 		"@shopify/react-native-skia": "catalog:",
 		"@tanstack/react-query": "catalog:",
 		"credo-ts-didweb-anoncreds": "catalog:",

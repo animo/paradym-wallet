@@ -1,4 +1,5 @@
 // src/i18n/messages.ts
+import type { MessageDescriptor } from '@lingui/core'
 import { defineMessage } from '@lingui/core/macro'
 import type { SupportedLocale } from './i18n'
 
@@ -541,17 +542,25 @@ export const commonMessages = {
     message: 'Organization is not verified',
     comment: 'Description shown when the organization behind a request could not be verified',
   }),
-  approvedByOneOrganization: defineMessage({
-    id: 'common.approvedByOneOrganization',
-    message: 'Approved by one organization',
-    comment: 'Shown when one trusted organization approved the organization behind a request',
-  }),
-  approvedByOrganizations: (count: number) =>
+  approvedBy: (organizationName: string) =>
     defineMessage({
-      id: 'common.approvedByOrganizations',
-      message: `Approved by ${count} organizations`,
-      comment: 'Shown when several trusted organizations approved the organization behind a request',
+      id: 'common.approvedBy',
+      message: `Approved by ${organizationName}`,
+      comment:
+        'Shown when a trusted organization approved the organization behind a request, with the name of the approving organization',
     }),
+  approvedByInTerritory: (organizationName: string, territory: string) =>
+    defineMessage({
+      id: 'common.approvedByInTerritory',
+      message: `Approved by ${organizationName} (${territory})`,
+      comment:
+        'Shown when a trusted organization approved the organization behind a request, with the name of the approving organization and its country',
+    }),
+  // The countries of the organizations on the wallet's trusted lists, by their ISO 3166-1 code
+  trustedListTerritories: {
+    DE: defineMessage({ id: 'common.trustedListTerritories.DE', message: 'Germany', comment: 'The country Germany' }),
+    FR: defineMessage({ id: 'common.trustedListTerritories.FR', message: 'France', comment: 'The country France' }),
+  } as Record<string, MessageDescriptor | undefined>,
   demoOrganization: defineMessage({
     id: 'common.demoOrganization',
     message: 'Demo organization',
@@ -559,7 +568,7 @@ export const commonMessages = {
   }),
   demoOrganizationWarning: defineMessage({
     id: 'common.demoOrganizationWarning',
-    message: 'Do not share real data',
+    message: 'Information may be incorrect. Do not share real data',
     comment: 'Warning shown with a demo organization',
   }),
 

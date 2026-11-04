@@ -1,4 +1,9 @@
-import type { TrustedDidEntity, TrustedOpenId4VciEntity, TrustedX509Entity, TrustList } from '@paradym/wallet-sdk'
+import type {
+  TrustedDidEntity,
+  TrustedListConfiguration,
+  TrustedOpenId4VciEntity,
+  TrustedX509Entity,
+} from '@paradym/wallet-sdk'
 import ExpoConstants from 'expo-constants'
 
 export const mediatorDid = ExpoConstants.expoConfig?.extra?.mediatorDid
@@ -235,28 +240,66 @@ export const mdlSchemes = {
   mdlMdocDoctypes: ['org.iso.18013.5.1.mDL'],
 }
 
-export const eudiTrustList: TrustList = {
-  entityId: 'EU',
-  organizationName: 'European Union',
-  logoUri: require('../assets/eu.png'),
-  demo: true,
-  trustList: [
-    {
-      entityId: 'germany',
-      organizationName: 'German Government',
-      logoUri: require('../assets/germany.png'),
-      demo: true,
-      trustedRelyingPartyRegistrars: [
-        {
-          entityId: 'funke-wallet.de',
-          logoUri: 'https://funke.animo.id/assets/verifiers/bunde.png',
-          organizationName: 'Funke Registrar',
-          demo: true,
-        },
-      ],
-    },
-  ],
-}
+// The sandbox lists of access certificate providers. The signer certificates are the ones the
+// scheme operators publish, next to their SHA-256 fingerprint. The German production list
+// (https://trustlists.eudihub.de/wrpac-provider.jwt) is not published yet.
+export const trustedLists = [
+  {
+    // SHA-256 56a70ff70cc47b4e91216b8da7b93ffacad34883cded5d881dea8e73d1982f56
+    url: 'https://trustlists-sandbox.eudihub.de/wrpac-provider.jwt',
+    territory: 'DE',
+    demo: true,
+    signerCertificate: `-----BEGIN CERTIFICATE-----
+MIIEyjCCArSgAwIBAgIIJeTjiEtogGgwCwYJKoZIhvcNAQENMIGBMQswCQYDVQQG
+EwJERTETMBEGA1UECgwKU0lHTjggR21iSDEXMBUGA1UECwwOVHJ1c3QgU2Vydmlj
+ZXMxITAfBgNVBGEMGE5UUkRFLURFRDI2MDFWLkhSQjI3MTU3MzEhMB8GA1UEAwwY
+U0lHTjggVUFUIFFFUyBTRUFMIENBIDAyMB4XDTI2MDkwOTE0MjIxN1oXDTMxMDkw
+ODE0MjIxN1owVTELMAkGA1UEBhMCREUxGjAYBgNVBAoMEUNvbW1vbiBDb2RlcyBH
+bWJIMQ4wDAYDVQRhDAVOVFJERTEaMBgGA1UEAwwRQ29tbW9uIENvZGVzIEdtYkgw
+WTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQ01Nh+9vG+rcTJLfbYeLOJYNbhw05m
+DtocOcaRvuyXY+/lO3qnhZVS0EHPTLlI3rjjqlREhUgM/rFvAwepq8Njo4IBPjCC
+ATowDgYDVR0PAQH/BAQDAgZAMAkGA1UdEwQCMAAwHQYDVR0OBBYEFDHelckkKde4
+CABozuinCZbj3CegMDMGA1UdIAQsMCowHQYLKwYBBAGDxlUBBAAwDjAMBggrBgEF
+BQcCARYAMAkGBwQAi+xAAQMwWwYIKwYBBQUHAQEETzBNMCYGCCsGAQUFBzABhhpo
+dHRwOi8vb2NzcC1xLnVhdC5zaWduOC5ldTAjBggrBgEFBQcwAoYXaHR0cHM6Ly9z
+aWduOC5ldS90cnVzdC8wSwYIKwYBBQUHAQMEPzA9MAgGBgQAjkYBATAIBgYEAI5G
+AQQwEgYGBACORgEFMAgwBhYADAJERTATBgYEAI5GAQYwCQYHBACORgEGAjAfBgNV
+HSMEGDAWgBTUCi74G1ljfUZsShpFhz20Mqy1/zALBgkqhkiG9w0BAQ0DggIBAJqD
+eY2OmObmG0DbGZ7EYRYrRlvXAtm3+UeDgA8i09pU4Scd0AxUFepUH8oRPOsHl3aw
+DN+lnXxyouCM07KR/YJZ/QHtjJ/BWlQF0KS9CEmJiACqRi3AOAYT2H7XhsTvavs5
+0kn4V+/GsRYEhOzV+nq3djz2f9a7B5KKTXyamhb6VUyLnolNjjxldkPxwj3UJzsX
+uRlBnsmBDtNV5fwWICJuf5dADmk1P1/qZypVrPLQILVCnongn0yBDfQWtO0J794M
+TNQvrXC0QcORG0lAUeHUKIT4qnD2li+BGcEomUmmrfnu/ozWPwy9nty9ETZ4gmEa
+l2UUaw1LvC44gdn++I/8bsG+ma3xPY6LQ2O9UIhEoM5/As9x7JvATgMDldM7Wdf1
+NE+2dO6M8HJDFL/VK+azx8+YWf1SV8vP2Xi0SDoxLnNvJBX7ZQDvdavTcgIbTCBK
+5C/pnCDoHy/8u2S+dTJmLQibl8LhNPmrNmy7NB8xJTC68Wz1slPCHQ3DBg/3Gjwf
+R/yKhxWt6HaWpv5Rp5F4n2E45SEfXCx9DpZW7bqW5OUFKosk3OahEGuNsTy+5Zb7
+nsUmeQPHiGN/zAeqKxWAXRr0ubbuaKfmkK1bGh8fQYbzCRjurjK5PlIpp5dJMw6I
+qoI6gTbwDPRKKWpmkMxjRpvYIr5GuqgOYn3pHY96
+-----END CERTIFICATE-----`,
+  },
+  {
+    // SHA-256 3095f937179eb6d8675c28c201a09392f56fe662835f8e8434afe43af8dae8e1, the `signerSha256` of
+    // https://api.playground.france-identite.gouv.fr/france-titres/registry/lote
+    url: 'https://api.playground.france-identite.gouv.fr/france-titres/registry/lote/WRPACProviders.jwt',
+    territory: 'FR',
+    demo: true,
+    signerCertificate: `-----BEGIN CERTIFICATE-----
+MIICITCCAcegAwIBAgIUTu60fxFkc37CawnbULH5o+2iLmIwCgYIKoZIzj0EAwIw
+VjELMAkGA1UEBhMCRlIxHTAbBgNVBAoMFERlbW8gRVVESVcgUmVnaXN0cmFyMSgw
+JgYDVQQDDB9EZW1vIEVVRElXIFJlZ2lzdHJhciBUU0wgc2lnbmVyMB4XDTI2MDgx
+ODExMTgxOVoXDTI5MDgxNzExMTgxOVowVjELMAkGA1UEBhMCRlIxHTAbBgNVBAoM
+FERlbW8gRVVESVcgUmVnaXN0cmFyMSgwJgYDVQQDDB9EZW1vIEVVRElXIFJlZ2lz
+dHJhciBUU0wgc2lnbmVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECMoCoaSA
+NSIlmsC9X/TOq+RqFymLxm8UxZ1PfcYLoeAaNjIUYjMi3ro/iTC74WvshGgcF1yP
+HHtIaze2tC8GA6NzMHEwHwYDVR0jBBgwFoAUqsMeXIdGk+x1hd9Fi7EPPJoMy2kw
+DAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwEQYDVR0lBAowCAYGBACRNwMA
+MB0GA1UdDgQWBBSqwx5ch0aT7HWF30WLsQ88mgzLaTAKBggqhkjOPQQDAgNIADBF
+AiEAleEay77B07lrKKjSE3R3HMEy/Q7+GGAQW1/mKFoPv5cCIGXzn9wcVyQzsY14
+ngmh/MNelSyrr54Xm9QWc0NXyD1q
+-----END CERTIFICATE-----`,
+  },
+] satisfies Array<TrustedListConfiguration>
 
 const BASE_URL = 'https://funke.animo.id/oid4vp'
 

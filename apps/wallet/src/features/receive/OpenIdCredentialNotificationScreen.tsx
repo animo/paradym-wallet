@@ -455,7 +455,6 @@ export function CredentialNotificationScreen() {
                     }
                   : undefined
               }
-              trustMechanism={resolvedCredentialOffer.trustMechanism}
               trustedEntities={resolvedCredentialOffer.trustedEntities}
             />
           ),

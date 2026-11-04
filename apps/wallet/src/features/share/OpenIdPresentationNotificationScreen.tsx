@@ -291,7 +291,6 @@ export function OpenIdPresentationNotificationScreen() {
       verifierName={resolvedRequest?.verifier.name}
       logo={resolvedRequest?.verifier.logo}
       trustedEntities={resolvedRequest?.verifier.trustedEntities}
-      trustMechanism={resolvedRequest?.trustMechanism}
       onComplete={replace}
       onCancel={onErrorCancel}
       transaction={formattedTransactionData}

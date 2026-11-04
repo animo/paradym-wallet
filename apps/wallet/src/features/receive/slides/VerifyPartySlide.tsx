@@ -15,7 +15,7 @@ import {
   YStack,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { DisplayImage, TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk'
+import type { DisplayImage, TrustedEntity } from '@paradym/wallet-sdk'
 import { useActivities } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -32,7 +32,6 @@ interface VerifyPartySlideProps {
   onContinue?: () => Promise<void>
   onDecline?: () => void
   trustedEntities?: Array<TrustedEntity>
-  trustMechanism?: TrustMechanism
 }
 
 export const VerifyPartySlide = ({
@@ -44,7 +43,6 @@ export const VerifyPartySlide = ({
   onContinue,
   onDecline,
   trustedEntities,
-  trustMechanism = 'none',
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
@@ -58,13 +56,14 @@ export const VerifyPartySlide = ({
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
+  const trustedEntitiesWithoutSelf = trustedEntities?.filter((entity) => entity.entityId !== entityId)
 
-  const trustedEntitiesWithoutSelf = trustedEntities
-    ?.filter((entity) => entity.entityId !== entityId)
-    .map((entity) => ({
-      ...entity,
-      demo: isDemoTrustedEntity ? true : entity.demo,
-    }))
+  // With the country of its trusted list, as several countries can list the same kind of organization
+  const approvedBy = trustedEntitiesWithoutSelf?.[0]
+  const territoryMessage = approvedBy?.territory
+    ? commonMessages.trustedListTerritories[approvedBy.territory]
+    : undefined
+  const approvedByTerritory = territoryMessage ? t(territoryMessage) : approvedBy?.territory
 
   // Next to the next step in a wide window, that step's buttons continue this one
   useEffect(() => {
@@ -85,19 +84,6 @@ export const VerifyPartySlide = ({
     onDecline?.()
     onCancel()
   }
-
-  const onPressVerifiedIssuer = withHaptics(() => {
-    const searchParams = new URLSearchParams({
-      trustedEntities: JSON.stringify(trustedEntitiesWithoutSelf ?? []),
-      trustMechanism,
-      isDemoTrustedEntity: `${isDemoTrustedEntity}`,
-    })
-
-    if (logo?.url) searchParams.set('logo', logo.url)
-    if (name) searchParams.set('name', name)
-
-    router.push(`trust?${searchParams}`)
-  })
 
   const onPressInteraction = withHaptics(() => {
     router.push(`/activity?entityId=${entityId}`)
@@ -178,23 +164,21 @@ export const VerifyPartySlide = ({
         <YStack gap="5">
           {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
             <InfoButton
-              variant={entityIsTrustAnchor ? 'positive' : 'info'}
+              variant="positive"
               title={t(commonMessages.recognizedOrganization)}
               description={
-                trustedEntitiesWithoutSelf.length > 1
-                  ? t(commonMessages.approvedByOrganizations(trustedEntitiesWithoutSelf.length))
-                  : trustedEntitiesWithoutSelf.length === 1
-                    ? t(commonMessages.approvedByOneOrganization)
-                    : undefined
+                approvedBy
+                  ? approvedByTerritory
+                    ? t(commonMessages.approvedByInTerritory(approvedBy.organizationName, approvedByTerritory))
+                    : t(commonMessages.approvedBy(approvedBy.organizationName))
+                  : undefined
               }
-              onPress={onPressVerifiedIssuer}
             />
           ) : (
             <InfoButton
               variant="warning"
               title={t(commonMessages.unknownOrganization)}
               description={t(commonMessages.organizationNotVerifiedDescription)}
-              onPress={onPressVerifiedIssuer}
             />
           )}
           {isDemoTrustedEntity && (

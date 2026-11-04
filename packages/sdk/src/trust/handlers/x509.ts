@@ -7,6 +7,7 @@ import {
   X509ModuleConfig,
 } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import { findTrustedListEntities } from '../trustedLists'
 import type {
   TrustContext,
   TrustedEntity,
@@ -111,8 +112,20 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
         if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
       }
 
-      organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
-      logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
+      const trustedListEntities = trustedEntity
+        ? undefined
+        : await findTrustedListEntities(agentContext, trustMechanismConfiguration.trustedLists ?? [], signer.x5c)
+      // The access certificate provider vouches for the party, not the wallet
+      if (trustedListEntities) trustedEntities.push(...trustedListEntities.trustedEntities)
+
+      // The access certificate provider vouches for the name in the certificate, while only the verifier
+      // itself vouches for the client metadata. Its logo would sit next to a name it didn't choose.
+      if (trustedListEntities) {
+        organizationName = trustedListEntities.organizationName
+      } else {
+        organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
+        logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
+      }
     }
   } catch (_error) {
     // no-op
@@ -134,6 +147,7 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
 ): Promise<TrustedIssuerEntity | undefined> => {
   // Checked in the caller
   const signer = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.signer as JwsSignerX5c
+  const metadataDisplay = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.jwt.payload.display?.[0]
   try {
     const trustedEntity = await findTrustedX509Entity(
       options.agentContext,
@@ -143,7 +157,6 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
 
     if (trustedEntity) {
       // Prefer display data from the signed metadata over the hardcoded entity
-      const metadataDisplay = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.jwt.payload.display?.[0]
       const organizationName = metadataDisplay?.name ?? trustedEntity.name
       const logoUri = metadataDisplay?.logo?.uri ?? trustedEntity.logoUri
 
@@ -166,6 +179,25 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
           entityId: trustedEntity.entityId,
         },
         trustedEntities,
+      }
+    }
+
+    const trustedListEntities = await findTrustedListEntities(
+      options.agentContext,
+      options.trustMechanismConfiguration.trustedLists ?? [],
+      signer.x5c
+    )
+    if (trustedListEntities) {
+      const entityId = options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
+      return {
+        issuer: {
+          // The access certificate provider vouches for the name in the certificate, so the logo from the
+          // issuer's own metadata is left out
+          organizationName: trustedListEntities.organizationName ?? metadataDisplay?.name ?? entityId,
+          entityId,
+        },
+        // The access certificate provider vouches for the issuer, not the wallet
+        trustedEntities: trustedListEntities.trustedEntities,
       }
     }
   } catch {

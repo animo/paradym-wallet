@@ -7,7 +7,6 @@ import {
   type FormattedTransactionData,
   pasoPaymentTransactionDataType,
   type TrustedEntity,
-  type TrustMechanism,
 } from '@paradym/wallet-sdk'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
@@ -26,7 +25,6 @@ interface PresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   trustedEntities?: Array<TrustedEntity>
-  trustMechanism?: TrustMechanism
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
@@ -53,7 +51,6 @@ export function PresentationNotificationScreen({
   submission,
   onComplete,
   trustedEntities,
-  trustMechanism,
   transaction,
   isResolvingTransaction,
   onSelectPaymentCredential,
@@ -82,7 +79,6 @@ export function PresentationNotificationScreen({
                 name={verifierName}
                 logo={logo}
                 trustedEntities={trustedEntities}
-                trustMechanism={trustMechanism}
               />
             ),
           },

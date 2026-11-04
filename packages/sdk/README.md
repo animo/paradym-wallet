@@ -229,7 +229,7 @@ await disableBiometricUnlock()  // removes the biometric-protected key
 
 ### Trust
 
-When a credential offer or presentation request comes in, the SDK detects the mechanism it uses (`eudi_rp_authentication`, `x509`, `did`, or `none`). Then it looks up the matching entry in `trustMechanisms`. The result shows up as `trustMechanism` and `trustedEntities` on resolved offers and requests, so your UI can show who is asking and who vouches for them.
+When a credential offer or presentation request comes in, the SDK detects the mechanism it uses (`x509`, `did`, or `none`). Then it looks up the matching entry in `trustMechanisms`. The result shows up as `trustMechanism` and `trustedEntities` on resolved offers and requests, so your UI can show who is asking and who vouches for them.
 
 If an offer or request uses a mechanism you didn't configure, resolving it throws. Add a `none` entry to accept parties the wallet can't place.
 
@@ -237,9 +237,6 @@ If an offer or request uses a mechanism you didn't configure, resolving it throw
 import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
 
 const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
-  // EUDI relying party registration certificates, checked against a trust list
-  { trustMechanism: 'eudi_rp_authentication', trustList, trustedX509Entities },
-
   // Signed requests and issuer metadata with an x5c chain
   {
     trustMechanism: 'x509',
@@ -250,6 +247,14 @@ const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
         logoUri: 'https://issuer.example.com/logo.png',
         url: 'https://issuer.example.com',
         certificate: 'MIIBzzCC...', // base64 DER
+      },
+    ],
+    // EUDI access certificates, checked against the lists of access certificate providers
+    trustedLists: [
+      {
+        url: 'https://trustlists.eudihub.de/wrpac-provider.jwt',
+        territory: 'DE',
+        signerCertificate: '-----BEGIN CERTIFICATE-----...', // the certificate the list is signed with
       },
     ],
   },
@@ -266,6 +271,8 @@ const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
 ```
 
 The certificates in the `x509` entry also become the agent's trusted roots for credential verification. You don't need to list them again in `openId4VcConfiguration`.
+
+`trustedLists` are lists of wallet-relying party access certificate providers (ETSI TS 119 602), signed by the pinned `signerCertificate` and checked against the WRPAC providers list profile in compat mode. `territory` is the country that publishes the list, or `EU`; the list itself may declare that country or `EU`. A chain that leads to none of the `trustedX509Entities` is validated against the providers on these lists, revocation included. On a match, the provider is the only trusted entity, with its country as `territory`: the country of its certificate on the list, or else the list's `territory`. `walletTrustedEntity` isn't added, and the party's name comes from its access certificate. The logo from its own metadata is left out. A list is kept in the wallet store. It's fetched when the agent is initialized and the stored list is missing, and again once a day or when its next update is due. Only a request that comes in before a list was ever loaded waits for it: an update is fetched in the background, and if fetching fails, the list fetched before stays in use.
 
 ### Verification callbacks
 

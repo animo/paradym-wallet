@@ -1,6 +1,6 @@
 import { isHardwareBoundCredentialConfiguration, sdJwtVcTypeMetadataLocations } from '@app/config/paymentAttestation'
 import { legacyWalletIds, walletId } from '@app/config/wallet'
-import { eudiTrustList, trustedDidEntities, trustedOpenId4VciIssuerEntities, trustedX509Entities } from '@app/constants'
+import { trustedDidEntities, trustedLists, trustedOpenId4VciIssuerEntities, trustedX509Entities } from '@app/constants'
 import { resolveDcApiDisplay } from '@app/utils/dcApiRegisterOptions'
 import { resolveAttributeLabel } from '@app/utils/resolveAttributeLabel'
 import type { SetupParadymWalletSdkOptions } from '@paradym/wallet-sdk'
@@ -85,8 +85,7 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
     return { trustedIssuers: [{ method: 'x509', issuance: [leafCertificate.toString('pem')] }] }
   },
   trustMechanisms: [
-    { trustMechanism: 'eudi_rp_authentication', trustList: eudiTrustList, trustedX509Entities },
-    { trustMechanism: 'x509', trustedX509Entities },
+    { trustMechanism: 'x509', trustedX509Entities, trustedLists },
     { trustMechanism: 'did', trustedDidEntities },
     { trustMechanism: 'none', trustedEntities: trustedOpenId4VciIssuerEntities },
     {
