@@ -1,0 +1,44 @@
+# @paradym/wallet-sdk
+
+## 0.0.1
+
+### Patch Changes
+
+- 0c1eddb: Update `@credo-ts/*` to 0.8.0-alpha-20261027143516, `@openid4vc/*` to 0.8.2, `@owf/mdoc` to 0.9.1 and `@owf/cose` to 0.6.0.
+  
+  - DIDComm issue credential v1 and present proof v1, the legacy indy credential formats and legacy connection invitations (`c_i`) are no longer supported, as Credo 0.8 removed them. Pending v1 offers and requests are left out of the inbox.
+  - ISO mdoc requests are answered by their use cases (ISO/IEC 18013-5 second edition, ISO/IEC TS 23220-4), over proximity and the digital credentials API on Android and iOS. A use case can be answered with several documents, and a requested element with one of its alternative sets. The review shows the documents and elements that are sent.
+- 1d63616: Payments over the Digital Credentials API on Android, for PaSO (`urn:paso:sca:global:payment:1`) and TS 12 (`urn:eudi:sca:eu.europa.ec:payment:single:1`).
+  
+  - PaSO Credentials are now registered, and payment cards only match requests that carry their payment type. The credential picker shows the payee and the amount.
+  - `DcApiReview.transactionData` is the payment to show before sharing, and `share` takes the authentication methods for the PaSO risk signals. Other transaction types are refused.
+  - The card picked in the credential picker is the card that is presented.
+  
+  Updates `@animo-id/expo-digital-credentials-api` to 0.7.0, whose matcher shows payments and matches the vcts a credential type extends.
+- 0c1eddb: A share answered through the DC API request UI is now written to the activity log before the response is sent. Sending the response closes the request UI, and on Android its process ends with it, so an entry written afterwards could be lost.
+- 946ccae: Declare `query-string` as a dependency. The invitation parser imported it without listing it, so it only resolved when another package installed it.
+- 5042b94: `declineCredentialRequest` now sends an OpenID4VP `access_denied` error response to the verifier with Credo's `declineOpenId4VpAuthorizationRequest`, and opens the `redirect_uri` the verifier returns. It also accepts the `Openid4vpAuthorizationRequestError` that `resolveCredentialRequest` throws for an invalid request, to send that error to the verifier. The `redirect_uri` of a verifier that could not be authenticated is not opened. The result has the `redirectUri` that was opened. Without one, the user has to go back to the app that started the request themselves.
+- efcd804: Credential and issuer display (name, description, colours, background image, logo) now follows the wallet's locale, like attribute labels already did. Before, the English entry was always used. The fallback stays the same: English, then an entry without a locale, then the first.
+- c61b1d4: Update to Expo SDK 58: `expo-crypto`, `expo-file-system`, `expo-image`, `expo-image-manipulator` and `expo-secure-store` to 58.x and `@shopify/react-native-skia` to 2.14.0. Update `@openwallet-foundation/askar-react-native` to 0.7.0-alpha and `@hyperledger/anoncreds-react-native` to 0.5.0-alpha, which support React Native 0.87 and later.
+- 1d63616: Update `@animo-id/expo-secure-environment` to 0.3.0, which Credo 0.8 requires.
+  
+  - `CredentialKeyOptions.backendOptions` is passed to the backend's `createKey`. For `'secureEnvironment'` these are the `generateKeypair` options, such as `minimumKeyStorage`. The library defaults to StrongBox on Android, which most phones don't have.
+  - A canceled or unavailable user authentication from the new library is reported as `ParadymWalletBiometricAuthenticationCancelledError` or `ParadymWalletBiometricAuthenticationNotEnabledError`, as before.
+  - The `shouldUseCloudHsm` setting is no longer shared with the credential request UI.
+- 05bda9e: Add the `legacyIds` option, for wallets that change their store id. On unlock, when no store exists under `id` yet, the store under the first legacy id that has one is moved to `id`. A reset removes the stores under the legacy ids as well. `moveLegacyStore` does the same for other stores the wallet keeps.
+- 1403da7: Resetting a locked wallet, or one whose wallet key was acquired but not unlocked, now removes the wallet store too. Before, it only removed the salt. A store left behind from an interrupted onboarding then couldn't be opened with the next PIN, so onboarding failed every time. `reset` takes the wallet configuration as a second argument, to find the store without an unlocked `ParadymWalletSdk`.
+- efcd804: Support the `svg_templates` rendering method of SD-JWT VC type metadata. When an OpenID4VCI credential is received, the template its card shows in the current locale is fetched once and checked. It must be https or a `data:` uri, at most 512 KiB, match its `uri#integrity`, declare no XML entities, and render with Skia. Then it is stored on the record with the locales it serves. `CredentialDisplay.svg` holds the template with the claim values filled in, XML escaped. It is left out when the spec says not to render the template, for example for a placeholder without claim metadata. The template is untrusted: draw it with a renderer that runs no scripts and loads no external resources, such as Skia, and never in a WebView.
+  
+  `updateSdJwtVcSvgTemplates` fetches the template of every credential whose stored one isn't for the current locale. Call it after a language switch, not when a card is shown.
+  
+  On Android the filled-in template is also the credential's icon in the OS credential picker. SVG icons are now scaled into the 20x20 icon. Before, one with its own width and height was cropped to its top-left corner, and one without failed to rasterize.
+- efcd804: Add the `sdJwtVcTypeMetadataLocations` option, which maps a `vct` to the URL its type metadata is fetched from instead. Use it for a type whose publisher doesn't serve its type metadata yet: a type that extends it can't be resolved without it, and issuance of such a credential fails.
+  
+  `resolveSdJwtVcTypes` returns a `vct` and every type it extends, for deciding on a credential by its type before it is issued. `CredentialMetadata.additionalTypes` now holds the types a received SD-JWT VC extends. Before, it was always empty.
+  
+  An SD-JWT VC whose type metadata has no `display` now uses the OID4VCI display. Before, it showed a name derived from the `vct`.
+- 9fd7f86: `shareCredentials` accepts `openRedirectUri: false` to not open the `redirect_uri` the verifier returns in the system browser. The result still has the `redirectUri`, so the wallet can open it itself, for example to continue an OpenID4VCI authorization that requested a presentation in the browser session it started from.
+- 0c1eddb: Update `@animo-id/expo-digital-credentials-api` to 0.6.0, which runs the Android request UI in a process of its own. The shared MMKV store now opens in multi-process mode on Android as well, so the app and the request UI can write the same settings at the same time.
+- c61b1d4: `unlock({ enableBiometrics: false })` now turns biometric unlock off. Before, biometrics counted as enabled until something set them, so the next unlock stored the wallet key for biometrics and the unlock after that asked for a biometric.
+- 56c0aa0: Resolving a credential offer no longer fails when the issuer metadata is signed with an x509 certificate or DID the wallet doesn't trust. The issuer resolves as untrusted, unless it matches a trusted issuer URL.
+- 946ccae: Update `@tanstack/react-query` to 5.105.0, `react-native-fs` (`@dr.pogodin/react-native-fs`) to 2.40.4 and `react-native-quick-crypto` to 1.1.9.
