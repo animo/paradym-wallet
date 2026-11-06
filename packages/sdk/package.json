@@ -57,6 +57,7 @@
 		"@openwallet-foundation/askar-react-native": "catalog:",
 		"@owf/eudi-access-certificate": "catalog:",
 		"@owf/eudi-lote": "catalog:",
+		"@owf/eudi-registration-certificate": "catalog:",
 		"@owf/eudi-sca": "catalog:",
 		"@owf/x509": "catalog:",
 		"@shopify/react-native-skia": "catalog:",

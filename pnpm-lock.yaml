@@ -78,6 +78,9 @@ catalogs:
     '@owf/eudi-lote':
       specifier: ^0.6.0
       version: 0.6.0
+    '@owf/eudi-registration-certificate':
+      specifier: ^0.6.0
+      version: 0.6.0
     '@owf/eudi-sca':
       specifier: ^0.5.2
       version: 0.5.2
@@ -633,6 +636,9 @@ importers:
         specifier: 'catalog:'
         version: 0.6.0
       '@owf/eudi-lote':
+        specifier: 'catalog:'
+        version: 0.6.0
+      '@owf/eudi-registration-certificate':
         specifier: 'catalog:'
         version: 0.6.0
       '@owf/eudi-sca':
@@ -2304,8 +2310,14 @@ packages:
   '@owf/eudi-access-certificate@0.6.0':
     resolution: {integrity: sha512-/Aw4f7GXIlN9aojXBumCEUx25sXyO9G21pv1Wb0cvCvSM1STi9sVAeVGlZuREEaAGtseRsRTxrgJORi3CJ4KXg==}
 
+  '@owf/eudi-jades@0.6.0':
+    resolution: {integrity: sha512-EhB+q0YxdUDjiVXdPC+vfkmkzbeCgQO2LwULOLuaFqgM0LdLNNOtouPZxazWIspGaICpVgET2iNjqX88BxEPwQ==}
+
   '@owf/eudi-lote@0.6.0':
     resolution: {integrity: sha512-LUq/kgfPfXBT8OvBJofnxoaxBCy6s9CbmZs3XnF4UP+UqDZug5nSdKoFH8zpddThs1/CMYu3R3/nFkHHPviQSQ==}
+
+  '@owf/eudi-registration-certificate@0.6.0':
+    resolution: {integrity: sha512-MgAVl9yLRyXvKnMC7Tzv/5/lEuzixD9mZtbsigcRXlU7dgzdxg6oNlzHXXcUSyB3GE+stZojYCXO1PGJzHpTBA==}
 
   '@owf/eudi-sca@0.5.2':
     resolution: {integrity: sha512-SRacfUZKvrBfG2JiYmH3Jm8pX3pfcDw7foZ6uN8nUJAgD6oZ59eZLNaKP0lTjEgisM5SQrUEqz1zMC/FrkE5yw==}
@@ -8883,9 +8895,22 @@ snapshots:
       '@owf/identity-common': 0.7.0
       '@owf/x509': 0.7.0
 
+  '@owf/eudi-jades@0.6.0':
+    dependencies:
+      '@owf/crypto': 0.7.0
+      '@owf/identity-common': 0.7.0
+      zod: 4.6.7
+
   '@owf/eudi-lote@0.6.0':
     dependencies:
       '@owf/crypto': 0.7.0
+      '@owf/identity-common': 0.7.0
+      zod: 4.6.7
+
+  '@owf/eudi-registration-certificate@0.6.0':
+    dependencies:
+      '@owf/crypto': 0.7.0
+      '@owf/eudi-jades': 0.6.0
       '@owf/identity-common': 0.7.0
       zod: 4.6.7
 

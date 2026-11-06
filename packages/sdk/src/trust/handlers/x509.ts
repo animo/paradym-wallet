@@ -7,6 +7,7 @@ import {
   X509ModuleConfig,
 } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import { checkRequestForOverAsking } from '../registrationCertificate'
 import { findTrustedListEntities } from '../trustedLists'
 import type {
   TrustContext,
@@ -84,6 +85,7 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
   const trustedEntities: TrustedEntity[] = []
   let organizationName: string | undefined
   let logoUri: string | undefined
+  let overAsking: TrustedRelyingPartyEntity['overAsking']
   const uri =
     typeof resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
       ? new URL(resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
@@ -114,7 +116,11 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
 
       const trustedListEntities = trustedEntity
         ? undefined
-        : await findTrustedListEntities(agentContext, trustMechanismConfiguration.trustedLists ?? [], signer.x5c)
+        : await findTrustedListEntities(
+            agentContext,
+            trustMechanismConfiguration.accessCertificateTrustedLists ?? [],
+            signer.x5c
+          )
       // The access certificate provider vouches for the party, not the wallet
       if (trustedListEntities) trustedEntities.push(...trustedListEntities.trustedEntities)
 
@@ -122,6 +128,12 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
       // itself vouches for the client metadata. Its logo would sit next to a name it didn't choose.
       if (trustedListEntities) {
         organizationName = trustedListEntities.organizationName
+        // Only a party trusted through the lists has to stay within its registration certificate
+        overAsking = await checkRequestForOverAsking(
+          agentContext,
+          trustMechanismConfiguration.registrationCertificateTrustedLists ?? [],
+          resolvedAuthorizationRequest
+        )
       } else {
         organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
         logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
@@ -139,6 +151,7 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
       entityId,
     },
     trustedEntities,
+    overAsking,
   }
 }
 
@@ -184,7 +197,7 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
 
     const trustedListEntities = await findTrustedListEntities(
       options.agentContext,
-      options.trustMechanismConfiguration.trustedLists ?? [],
+      options.trustMechanismConfiguration.accessCertificateTrustedLists ?? [],
       signer.x5c
     )
     if (trustedListEntities) {

@@ -1,5 +1,6 @@
 import type { EncodedX509Certificate, X509Certificate } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import type { DisplayImage } from '../display/credential'
 import { findTrustedX509Entity } from './handlers/x509'
 import { findTrustedListEntities } from './trustedLists'
@@ -25,6 +26,12 @@ export type RequestVerifier = {
   hostName?: string
   logo?: DisplayImage
   trustedEntities: TrustedEntity[]
+  /**
+   * Whether the request stays within the registration certificate it carries. Only for a party trusted
+   * through the lists of access certificate providers, when lists of registration certificate providers
+   * are configured.
+   */
+  overAsking?: OverAskingResult
 }
 
 const toVerifier = (
@@ -52,13 +59,13 @@ export const getVerifierForOpenId4VpRequest = async ({
   trustMechanisms,
   resolvedAuthorizationRequest,
 }: GetVerifierForOpenId4VpRequestOptions): Promise<{ verifier: RequestVerifier; trustMechanism: TrustMechanism }> => {
-  const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntitiesForOpenId4Vp({
+  const { trustMechanism, trustedEntities, relyingParty, overAsking } = await getTrustedEntitiesForOpenId4Vp({
     agentContext,
     trustMechanisms,
     resolvedAuthorizationRequest,
   })
 
-  return { trustMechanism, verifier: toVerifier(relyingParty, trustedEntities) }
+  return { trustMechanism, verifier: { ...toVerifier(relyingParty, trustedEntities), overAsking } }
 }
 
 export type GetVerifierForMdocReaderAuthenticationOptions = TrustContext & {
@@ -113,7 +120,7 @@ export const getVerifierForMdocReaderAuthentication = async ({
   if (!trustedEntity) {
     const trustedListEntities = await findTrustedListEntities(
       agentContext,
-      x509Configuration.trustedLists ?? [],
+      x509Configuration.accessCertificateTrustedLists ?? [],
       readerCertificateChain
     ).catch(() => undefined)
     if (!trustedListEntities) return untrusted

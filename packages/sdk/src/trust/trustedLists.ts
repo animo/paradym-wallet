@@ -16,7 +16,8 @@ import type { TrustedEntity, TrustMechanismConfiguration } from './trustMechanis
 /**
  *
  * A list of trusted entities (ETSI TS 119 602) of providers of wallet-relying party access
- * certificates (ETSI TS 119 411-8), published by a member state.
+ * certificates (ETSI TS 119 411-8) or registration certificates (ETSI TS 119 475), published by a
+ * member state.
  *
  */
 export type TrustedListConfiguration = {
@@ -42,7 +43,19 @@ type TrustedList = {
   nextUpdate?: number
 }
 
-const WRPAC_ISSUANCE_SERVICE_TYPE = 'http://uri.etsi.org/19602/SvcType/WRPAC/Issuance'
+// The lists of providers of access certificates and of registration certificates (ETSI TS 119 475)
+const trustedListTypes = {
+  accessCertificate: {
+    profile: LoTEProfile.EUWRPACProvidersList,
+    serviceType: 'http://uri.etsi.org/19602/SvcType/WRPAC/Issuance',
+  },
+  registrationCertificate: {
+    profile: LoTEProfile.EUWRPRCProvidersList,
+    serviceType: 'http://uri.etsi.org/19602/SvcType/WRPRC/Issuance',
+  },
+}
+
+type TrustedListType = keyof typeof trustedListTypes
 
 // A list is fetched again once a day, or earlier when its next update is due
 const MAX_TRUSTED_LIST_AGE_MS = 24 * 60 * 60 * 1000
@@ -76,7 +89,12 @@ const storeTrustedList = async (agentContext: AgentContext, url: string, trusted
 const getLocalizedValue = <T extends { lang: string }>(values: T[] | undefined) =>
   values?.find((value) => value.lang.startsWith('en')) ?? values?.[0]
 
-const fetchTrustedList = async (agentContext: AgentContext, config: TrustedListConfiguration): Promise<TrustedList> => {
+const fetchTrustedList = async (
+  agentContext: AgentContext,
+  config: TrustedListConfiguration,
+  type: TrustedListType
+): Promise<TrustedList> => {
+  const { profile, serviceType } = trustedListTypes[type]
   const response = await agentContext.config.agentDependencies.fetch(config.url)
   if (!response.ok) throw new Error(`Fetching the trusted list failed with status ${response.status}`)
   const jws = (await response.text()).trim()
@@ -88,13 +106,13 @@ const fetchTrustedList = async (agentContext: AgentContext, config: TrustedListC
   })
   if (!isValid) throw new Error('The signature of the trusted list is invalid')
 
-  const result = validateLoTEProfile(JsonEncoder.fromBase64Url(jws.split('.')[1]), LoTEProfile.EUWRPACProvidersList, {
+  const result = validateLoTEProfile(JsonEncoder.fromBase64Url(jws.split('.')[1]), profile, {
     mode: 'compat',
     allowedTerritories: [config.territory, 'EU'],
   })
   if (!result.valid) {
     throw new Error(
-      `The trusted list is not a valid WRPAC providers list: ${result.issues.map((issue) => issue.message).join(', ')}`
+      `The trusted list is not a valid ${profile}: ${result.issues.map((issue) => issue.message).join(', ')}`
     )
   }
 
@@ -104,7 +122,7 @@ const fetchTrustedList = async (agentContext: AgentContext, config: TrustedListC
   return {
     providers: getNotifiedTrustedEntities(result.lote).flatMap((entity) => {
       const certificates = entity.TrustedEntityServices.filter(
-        (service) => service.ServiceInformation.ServiceTypeIdentifier === WRPAC_ISSUANCE_SERVICE_TYPE
+        (service) => service.ServiceInformation.ServiceTypeIdentifier === serviceType
       ).flatMap(
         (service) => service.ServiceInformation.ServiceDigitalIdentity.X509Certificates?.map(({ val }) => val) ?? []
       )
@@ -131,7 +149,11 @@ const fetchTrustedList = async (agentContext: AgentContext, config: TrustedListC
  * doesn't make everyone untrusted.
  *
  */
-const getTrustedList = async (agentContext: AgentContext, config: TrustedListConfiguration) => {
+export const getTrustedList = async (
+  agentContext: AgentContext,
+  config: TrustedListConfiguration,
+  type: TrustedListType
+) => {
   const loaded = trustedLists.get(config.url) ?? (await readStoredTrustedList(agentContext, config.url))
   const now = Date.now()
   const isDue =
@@ -142,7 +164,7 @@ const getTrustedList = async (agentContext: AgentContext, config: TrustedListCon
   if (isDue && !pendingTrustedLists.has(config.url)) {
     pendingTrustedLists.set(
       config.url,
-      fetchTrustedList(agentContext, config)
+      fetchTrustedList(agentContext, config, type)
         .then(async (trustedList) => {
           trustedLists.set(config.url, trustedList)
           await storeTrustedList(agentContext, config.url, trustedList).catch((error) =>
@@ -170,7 +192,12 @@ const getTrustedList = async (agentContext: AgentContext, config: TrustedListCon
 export const loadTrustedLists = (agentContext: AgentContext, trustMechanisms: TrustMechanismConfiguration[]) => {
   for (const trustMechanism of trustMechanisms) {
     if (!('trustMechanism' in trustMechanism) || trustMechanism.trustMechanism !== 'x509') continue
-    for (const config of trustMechanism.trustedLists ?? []) void getTrustedList(agentContext, config)
+    for (const config of trustMechanism.accessCertificateTrustedLists ?? []) {
+      void getTrustedList(agentContext, config, 'accessCertificate')
+    }
+    for (const config of trustMechanism.registrationCertificateTrustedLists ?? []) {
+      void getTrustedList(agentContext, config, 'registrationCertificate')
+    }
   }
 }
 
@@ -195,7 +222,9 @@ export const findTrustedListEntities = async (
   const encodedChain = certificateChain.map((certificate) =>
     typeof certificate === 'string' ? certificate : certificate.toString('base64')
   )
-  const loadedLists = await Promise.all(trustedListConfigurations.map((config) => getTrustedList(agentContext, config)))
+  const loadedLists = await Promise.all(
+    trustedListConfigurations.map((config) => getTrustedList(agentContext, config, 'accessCertificate'))
+  )
 
   for (const [index, trustedList] of loadedLists.entries()) {
     if (!trustedList || trustedList.providers.length === 0) continue

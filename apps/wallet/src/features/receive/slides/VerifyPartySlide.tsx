@@ -1,19 +1,7 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { DualResponseButtons, useHaptics, useWizard } from '@package/app'
+import { ConfirmationSheet, DualResponseButtons, useHaptics, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
-import {
-  Circle,
-  Heading,
-  HeroIcons,
-  Image,
-  InfoButton,
-  Paragraph,
-  ScrollView,
-  Stack,
-  useMedia,
-  XStack,
-  YStack,
-} from '@package/ui'
+import { Circle, Heading, Image, InfoButton, Paragraph, ScrollView, Stack, useMedia, XStack, YStack } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
 import type { DisplayImage, TrustedEntity } from '@paradym/wallet-sdk'
 import { useActivities } from '@paradym/wallet-sdk'
@@ -32,6 +20,8 @@ interface VerifyPartySlideProps {
   onContinue?: () => Promise<void>
   onDecline?: () => void
   trustedEntities?: Array<TrustedEntity>
+  /** Whether the request asks for more than the organization registered to ask for */
+  isOverAsking?: boolean
 }
 
 export const VerifyPartySlide = ({
@@ -43,6 +33,7 @@ export const VerifyPartySlide = ({
   onContinue,
   onDecline,
   trustedEntities,
+  isOverAsking,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
@@ -53,6 +44,7 @@ export const VerifyPartySlide = ({
   const lastInteractionDate = activities[0]?.date
   const { t } = useLingui()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isOverAskingConfirmationOpen, setIsOverAskingConfirmationOpen] = useState(false)
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
@@ -92,10 +84,10 @@ export const VerifyPartySlide = ({
   return (
     <YStack grow={1} justify="space-between">
       <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8' }}>
-        <YStack gap="5">
-          <XStack items="center" pt="5" justify="center">
-            <Circle size={64} borderWidth="1" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
-              {logo?.url ? (
+        <YStack gap="5" pt="5">
+          {logo?.url && (
+            <XStack items="center" justify="center">
+              <Circle size={64} borderWidth="1" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
                 <Image
                   circle
                   src={logo.url}
@@ -106,11 +98,9 @@ export const VerifyPartySlide = ({
                   height="100%"
                   contentFit="contain"
                 />
-              ) : (
-                <HeroIcons.BuildingOffice color="grey-800" size={28} />
-              )}
-            </Circle>
-          </XStack>
+              </Circle>
+            </XStack>
+          )}
           <Stack gap="2">
             <Heading heading="h2" numberOfLines={2} fontSize={24} lineHeight="5" center>
               {name ? t(commonMessages.doYouTrust(name)) : t(commonMessages.organizationNotVerifiedHeading)}
@@ -162,7 +152,18 @@ export const VerifyPartySlide = ({
         </YStack>
 
         <YStack gap="5">
-          {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
+          {/* Only a recognized organization is checked for over-asking, so the warning takes its place */}
+          {isOverAsking ? (
+            <InfoButton
+              variant="danger"
+              title={t(commonMessages.overAsking)}
+              description={
+                name
+                  ? t(commonMessages.overAskingWarning(name))
+                  : t(commonMessages.overAskingWarningUnknownOrganization)
+              }
+            />
+          ) : trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
             <InfoButton
               variant="positive"
               title={t(commonMessages.recognizedOrganization)}
@@ -220,13 +221,48 @@ export const VerifyPartySlide = ({
         <Stack borderTopWidth={1} borderColor="grey-100" px="5" py="3" mx="-5">
           <DualResponseButtons
             align="horizontal"
-            onAccept={handleContinue}
+            // Over-asking is confirmed a second time before continuing
+            onAccept={isOverAsking ? () => setIsOverAskingConfirmationOpen(true) : handleContinue}
             onDecline={handleDecline}
             acceptText={t(commonMessages.confirmContinue)}
             declineText={t(commonMessages.stop)}
             isLoading={isLoading}
+            variant={isOverAsking ? 'confirmation' : 'regular'}
           />
         </Stack>
+      )}
+      {isOverAsking && (
+        <ConfirmationSheet
+          isOpen={isOverAskingConfirmationOpen}
+          setIsOpen={setIsOverAskingConfirmationOpen}
+          title={t({
+            id: 'verifyPartySlide.overAskingConfirmationTitle',
+            message: 'Continue anyway?',
+            comment:
+              'Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered',
+          })}
+          description={
+            name
+              ? t({
+                  id: 'verifyPartySlide.overAskingConfirmationDescription',
+                  message: `${name} asks for more than it registered. You can review the request before anything is shared.`,
+                  comment:
+                    'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization',
+                })
+              : t({
+                  id: 'verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization',
+                  message:
+                    'This organization asks for more than it registered. You can review the request before anything is shared.',
+                  comment:
+                    'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown',
+                })
+          }
+          confirmText={t(commonMessages.confirmContinue)}
+          onConfirm={() => {
+            setIsOverAskingConfirmationOpen(false)
+            void handleContinue()
+          }}
+        />
       )}
     </YStack>
   )

@@ -88,13 +88,35 @@
 		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 44]],
 		"translation": "{issuerName} vill utfärda följande kort till dig:"
 	},
+	"verifyPartySlide.overAskingConfirmationDescription": {
+		"message": "{name} asks for more than it registered. You can review the request before anything is shared.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization"
+		],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 246]],
+		"translation": "{name} begär mer än den har registrerat. Du kan granska begäran innan något delas."
+	},
+	"common.overAskingWarning": {
+		"message": "{name} is not authorized to ask for the information in the request. Only continue if you trust it",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"Warning shown when a request asks for more data than the organization registered to ask for, with the name of the organization"
+		],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 580]],
+		"translation": "{name} får inte begära informationen i den här begäran. Fortsätt bara om du litar på organisationen"
+	},
 	"verifyPartySlide.connectSubtitle": {
 		"message": "{name} wants to connect with you.",
 		"placeholders": {
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
 		"translation": "{name} vill ansluta med dig."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -103,7 +125,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
 		"translation": "{name} vill interagera för att skapa en digital signatur för ett dokument."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -112,7 +134,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 111]],
 		"translation": "{name} vill erbjuda dig ett kort."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -121,7 +143,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
 		"translation": "{name} vill begära information från dig."
 	},
 	"credentials.totalLabel": {
@@ -202,7 +224,7 @@
 		"comments": [
 			"Name of the activity screen, listing shared and received cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 603]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 622]],
 		"translation": "Aktivitet"
 	},
 	"activity.emptyDescription": {
@@ -241,14 +263,14 @@
 		"message": "Address",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 654]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 673]],
 		"translation": "Adress"
 	},
 	"common.fields.age": {
 		"message": "Age",
 		"placeholders": {},
 		"comments": ["The age of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 686]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 705]],
 		"translation": "Ålder"
 	},
 	"common.fields.ageOver": {
@@ -257,7 +279,7 @@
 		"comments": [
 			"Used as prefix to indicate the age of a person is over a certain age."
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 696]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 715]],
 		"translation": "Över"
 	},
 	"credentials.allCardsTitle": {
@@ -332,28 +354,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
 		"translation": "En okänd organisation vill ansluta med dig."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
 		"translation": "En okänd organisation vill interagera för att skapa en digital signatur för ett dokument."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
 		"translation": "En okänd organisation vill erbjuda dig ett kort."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
 		"translation": "En okänd organisation vill begära information från dig."
 	},
 	"menu.section.app": {
@@ -569,14 +591,14 @@
 		"message": "Birth year",
 		"placeholders": {},
 		"comments": ["The birth year of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 691]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 710]],
 		"translation": "Födelseår"
 	},
 	"common.fields.born": {
 		"message": "Born",
 		"placeholders": {},
 		"comments": ["Used a prefix for when a person is born"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 766]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 785]],
 		"translation": "Född"
 	},
 	"common.deleteDeferredCredentialDescription": {
@@ -753,7 +775,7 @@
 		"comments": [
 			"Name of the screen listing the cards in the wallet, and heading above a list of cards"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 608]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 627]],
 		"translation": "Kort"
 	},
 	"onboarding.pin.title": {
@@ -785,7 +807,7 @@
 		"message": "City",
 		"placeholders": {},
 		"comments": ["The city where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 671]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 690]],
 		"translation": "Stad"
 	},
 	"common.close": {
@@ -799,14 +821,14 @@
 		"message": "Code",
 		"placeholders": {},
 		"comments": ["The code of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 789]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 808]],
 		"translation": "Kod"
 	},
 	"common.credentials.mdl.codes": {
 		"message": "Codes",
 		"placeholders": {},
 		"comments": ["The codes of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 804]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 823]],
 		"translation": "Koder"
 	},
 	"pidSetup.idCardVerify.title": {
@@ -841,6 +863,15 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 29]],
 		"translation": "Fortsätt"
 	},
+	"verifyPartySlide.overAskingConfirmationTitle": {
+		"message": "Continue anyway?",
+		"placeholders": {},
+		"comments": [
+			"Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered"
+		],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 238]],
+		"translation": "Fortsätta ändå?"
+	},
 	"mdoc.error.sharing": {
 		"message": "Could not share device response",
 		"placeholders": {},
@@ -852,7 +883,7 @@
 		"message": "Country",
 		"placeholders": {},
 		"comments": ["The country where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 676]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 695]],
 		"translation": "Land"
 	},
 	"common.credential": {
@@ -882,14 +913,14 @@
 		"message": "Credential not found",
 		"placeholders": {},
 		"comments": ["Shown if a credential is missing or cannot be loaded"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 576]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 595]],
 		"translation": "Kort inte hittat"
 	},
 	"common.fields.credentialType": {
 		"message": "Credential type",
 		"placeholders": {},
 		"comments": ["The type of credential, usually a complex url structure"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 741]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 760]],
 		"translation": "Korttyp"
 	},
 	"credentials.emptyDescription": {
@@ -926,7 +957,7 @@
 		"message": "Date of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 650]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 669]],
 		"translation": "Födelsedatum"
 	},
 	"common.declineButton": {
@@ -1011,7 +1042,7 @@
 		"message": "Document number",
 		"placeholders": {},
 		"comments": ["The document number of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 784]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 803]],
 		"translation": "Dokumentnummer"
 	},
 	"common.documentSigned": {
@@ -1025,14 +1056,14 @@
 		"message": "Driving License",
 		"placeholders": {},
 		"comments": ["The title of a driving license"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 774]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 793]],
 		"translation": "Körkort"
 	},
 	"common.credentials.mdl.drivingPrivileges": {
 		"message": "Driving privileges",
 		"placeholders": {},
 		"comments": ["The title of driving privileges"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 779]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 798]],
 		"translation": "Körbehörighet"
 	},
 	"eidCard.requestAttributesTitle": {
@@ -1133,7 +1164,7 @@
 		"message": "Expires at",
 		"placeholders": {},
 		"comments": ["The time at which a credential expires"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 736]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 755]],
 		"translation": "Giltig till"
 	},
 	"cardLifecycle.limitedByDate.willExpire.description": {
@@ -1190,7 +1221,7 @@
 		"message": "Family name",
 		"placeholders": {},
 		"comments": ["The family name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 701]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 720]],
 		"translation": "Efternamn"
 	},
 	"menu.item.feedback": {
@@ -1211,7 +1242,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 199]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 200]],
 		"translation": "Första interaktionen"
 	},
 	"aboutScreen.contactIntro": {
@@ -1239,7 +1270,7 @@
 		"message": "Get Started",
 		"placeholders": {},
 		"comments": ["Button label to begin or finish onboarding"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 620]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 639]],
 		"translation": "Kom igång"
 	},
 	"pidSetup.idCardRequestedAttributes.title": {
@@ -1260,7 +1291,7 @@
 		"message": "Given name",
 		"placeholders": {},
 		"comments": ["The given name of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 706]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 725]],
 		"translation": "Förnamn"
 	},
 	"noContentInbox.goBack": {
@@ -1318,7 +1349,7 @@
 		"message": "Hide metadata attributes",
 		"placeholders": {},
 		"comments": ["Option that hides the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 591]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 610]],
 		"translation": "Dölj metadata"
 	},
 	"credentials.hideShareableAttributes": {
@@ -1338,7 +1369,7 @@
 		"comments": [
 			"The holder identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 751]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 770]],
 		"translation": "Innehavare"
 	},
 	"onboardingWalletExplanation.slide3.title": {
@@ -1506,7 +1537,7 @@
 		"message": "Issued at",
 		"placeholders": {},
 		"comments": ["The time at which a credential is issued"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 726]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 745]],
 		"translation": "Utfärdat"
 	},
 	"common.issuedBy": {
@@ -1556,21 +1587,21 @@
 		"comments": [
 			"The issuer identifier of a credential, usually a complex url structure"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 746]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 765]],
 		"translation": "Utfärdare"
 	},
 	"common.fields.issuingAuthority": {
 		"message": "Issuing authority",
 		"placeholders": {},
 		"comments": ["The issuing authority of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 716]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 735]],
 		"translation": "Utfärdande myndighet"
 	},
 	"common.fields.issuingCountry": {
 		"message": "Issuing country",
 		"placeholders": {},
 		"comments": ["The issuing country of a credential"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 721]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 740]],
 		"translation": "Utfärdande land"
 	},
 	"selectLanguage.label": {
@@ -1586,7 +1617,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 206]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 207]],
 		"translation": "Senaste interaktion: {0}"
 	},
 	"predicate.lessThan": {
@@ -1623,7 +1654,7 @@
 		"message": "Locality",
 		"placeholders": {},
 		"comments": ["The locality of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 756]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 775]],
 		"translation": "Ort"
 	},
 	"inbox.menuLabel": {
@@ -1644,7 +1675,7 @@
 		"message": "Metadata",
 		"placeholders": {},
 		"comments": ["Section heading for the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 581]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 600]],
 		"translation": "Metadata"
 	},
 	"common.missingAttributesHeading": {
@@ -1660,14 +1691,14 @@
 		"message": "Nationalities",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 658]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 677]],
 		"translation": "Nationaliteter"
 	},
 	"common.fields.nationality": {
 		"message": "Nationality",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 662]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 681]],
 		"translation": "Nationalitet"
 	},
 	"activity.latest.newCardFallback": {
@@ -1774,7 +1805,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 210]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 211]],
 		"translation": "Inga tidigare interaktioner hittades"
 	},
 	"network.onlineAgain": {
@@ -1824,6 +1855,15 @@
 		],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 535]],
 		"translation": "Organisation ej verifierad"
+	},
+	"common.overAsking": {
+		"message": "Over-asking",
+		"placeholders": {},
+		"comments": [
+			"Title of the warning shown when a request asks for more data than the organization registered to ask for"
+		],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 574]],
+		"translation": "Överdriven begäran"
 	},
 	"presentationSuccess.paidTo": {
 		"message": "Paid to {0}",
@@ -2013,7 +2053,7 @@
 		"message": "Place of birth",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 646]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 665]],
 		"translation": "Födelseort"
 	},
 	"common.placeDeviceOnIdCard": {
@@ -2022,7 +2062,7 @@
 		"comments": [
 			"Instruction shown when the eID card is about to be scanned with NFC"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 596]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 615]],
 		"translation": "Placera din enhet ovanpå ditt eID-kort för att skanna det."
 	},
 	"offlineQr.allowBluetoothAccessTitle": {
@@ -2068,14 +2108,14 @@
 		"message": "Portrait",
 		"placeholders": {},
 		"comments": ["The portrait of a person."],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 711]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 730]],
 		"translation": "Porträtt"
 	},
 	"common.fields.postalCode": {
 		"message": "Postal code",
 		"placeholders": {},
 		"comments": ["The postal code where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 681]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 700]],
 		"translation": "Postnummer"
 	},
 	"home.presentInPersonButton": {
@@ -2107,7 +2147,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 195]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 196]],
 		"translation": "Tidigare interaktioner"
 	},
 	"aboutScreen.privacyPolicyTitle": {
@@ -2222,7 +2262,7 @@
 		"message": "Region",
 		"placeholders": {},
 		"comments": ["The region of a person"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 761]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 780]],
 		"translation": "Region"
 	},
 	"onboarding.pinReenter.title": {
@@ -2438,7 +2478,7 @@
 		"message": "Settings",
 		"placeholders": {},
 		"comments": ["Name of the settings screen"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 613]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 632]],
 		"translation": "Inställningar"
 	},
 	"common.share": {
@@ -2529,7 +2569,7 @@
 		"message": "Show metadata attributes",
 		"placeholders": {},
 		"comments": ["Option that shows the metadata attributes of a card"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 586]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 605]],
 		"translation": "Visa metadata"
 	},
 	"common.showMore": {
@@ -2554,7 +2594,7 @@
 		"message": "Sign",
 		"placeholders": {},
 		"comments": ["The sign of a driving privilege in an mDL (e.g. >=)"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 799]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 818]],
 		"translation": "Tecken"
 	},
 	"signShare.accept": {
@@ -2568,7 +2608,7 @@
 		"message": "Signature",
 		"placeholders": {},
 		"comments": ["Image of signature in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 819]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 838]],
 		"translation": "Signatur"
 	},
 	"activity.latest.signedDocument": {
@@ -2743,7 +2783,7 @@
 		"message": "Street",
 		"placeholders": {},
 		"comments": ["The street where someone lives"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 666]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 685]],
 		"translation": "Gata"
 	},
 	"common.success": {
@@ -3016,7 +3056,7 @@
 		"comments": [
 			"Heading shown when a list, such as the cards or the activity, is still empty"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 630]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 649]],
 		"translation": "Inget här ännu"
 	},
 	"onboardingIdCardRequestedAttributes.description": {
@@ -3134,8 +3174,26 @@
 		"comments": [
 			"Heading introducing the wallet, in onboarding and on the empty wallet screen"
 		],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 625]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 644]],
 		"translation": "Det här är din plånbok"
+	},
+	"verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization": {
+		"message": "This organization asks for more than it registered. You can review the request before anything is shared.",
+		"placeholders": {},
+		"comments": [
+			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown"
+		],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 252]],
+		"translation": "Den här organisationen begär mer än den har registrerat. Du kan granska begäran innan något delas."
+	},
+	"common.overAskingWarningUnknownOrganization": {
+		"message": "This organization is not authorized to ask for the information in the request. Only continue if you trust it",
+		"placeholders": {},
+		"comments": [
+			"Warning shown when a request asks for more data than the organization registered to ask for, when the name of the organization is unknown"
+		],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 586]],
+		"translation": "Den här organisationen får inte begära informationen i den här begäran. Fortsätt bara om du litar på den"
 	},
 	"paso.refusal.noSupportedLocale": {
 		"message": "This payment cannot be shown in a language you understand.",
@@ -3294,7 +3352,7 @@
 		"message": "UN sign",
 		"placeholders": {},
 		"comments": ["The United Nations distinguishing sign of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 814]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 833]],
 		"translation": "FN-märke"
 	},
 	"common.unableToRetrieveInvitation": {
@@ -3386,21 +3444,21 @@
 		"message": "Valid from",
 		"placeholders": {},
 		"comments": ["The time ƒrom which a credential is valid"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 731]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 750]],
 		"translation": "Giltig från"
 	},
 	"common.credentials.mdl.value": {
 		"message": "Value",
 		"placeholders": {},
 		"comments": ["The value of a driving privilege in an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 794]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 813]],
 		"translation": "Värde"
 	},
 	"common.credentials.mdl.vehicleCategoryCode": {
 		"message": "Vehicle category code",
 		"placeholders": {},
 		"comments": ["The vehicle category code of an mDL"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 809]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 828]],
 		"translation": "Fordonskategorikod"
 	},
 	"cardLifecycle.batch.description": {
@@ -3590,7 +3648,7 @@
 		"message": "You don't have any notifications at the moment.",
 		"placeholders": {},
 		"comments": ["Message shown when the user has no notifications"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 640]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 659]],
 		"translation": "Du har inga aviseringar just nu."
 	},
 	"common.noRequestedCardsDescription": {
@@ -3658,7 +3716,7 @@
 		"message": "You're all caught up",
 		"placeholders": {},
 		"comments": ["Heading shown when the user has no notifications"],
-		"origin": [["../../packages/translations/src/commonMessages.ts", 635]],
+		"origin": [["../../packages/translations/src/commonMessages.ts", 654]],
 		"translation": "Du är ikapp med allt"
 	},
 	"dcApi.shareFailed": {

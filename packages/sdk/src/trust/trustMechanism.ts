@@ -1,5 +1,6 @@
 import type { AgentContext } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import type { Optionalize } from '../types'
 import {
@@ -58,6 +59,7 @@ export type TrustedIssuerEntity = {
 export type TrustedRelyingPartyEntity = {
   relyingParty: Optionalize<TrustedEntity, 'organizationName' | 'entityId'>
   trustedEntities: TrustedEntity[]
+  overAsking?: OverAskingResult
 }
 
 export type TrustMechanism = 'x509' | 'did' | 'none'
@@ -66,7 +68,12 @@ export type X509TrustMechanismConfiguration = {
   trustMechanism: 'x509'
   trustedX509Entities: TrustedX509Entity[]
   /** Lists of access certificate providers, for parties that authenticate with an access certificate */
-  trustedLists?: TrustedListConfiguration[]
+  accessCertificateTrustedLists?: TrustedListConfiguration[]
+  /**
+   * Lists of registration certificate providers. When set, a request of a party trusted through
+   * `accessCertificateTrustedLists` has to stay within the registration certificate it carries.
+   */
+  registrationCertificateTrustedLists?: TrustedListConfiguration[]
 }
 
 export type DidTrustMechanismConfiguration = {
@@ -143,6 +150,7 @@ export const getTrustedEntitiesForOpenId4Vp = async (
   trustMechanism: TrustMechanism
   relyingParty: TrustedRelyingPartyEntity['relyingParty'] & { entityId: string }
   trustedEntities: Array<TrustedEntity>
+  overAsking?: OverAskingResult
 }> => {
   const trustMechanism = detectTrustMechanismForAuthorizationRequest(options)
   const walletTrustedEntity = options.trustMechanisms.find(

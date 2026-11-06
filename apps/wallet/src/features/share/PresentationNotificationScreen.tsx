@@ -25,6 +25,7 @@ interface PresentationNotificationScreenProps {
   verifierName?: string
   logo?: DisplayImage
   trustedEntities?: Array<TrustedEntity>
+  isOverAsking?: boolean
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
@@ -51,6 +52,7 @@ export function PresentationNotificationScreen({
   submission,
   onComplete,
   trustedEntities,
+  isOverAsking,
   transaction,
   isResolvingTransaction,
   onSelectPaymentCredential,
@@ -79,6 +81,7 @@ export function PresentationNotificationScreen({
                 name={verifierName}
                 logo={logo}
                 trustedEntities={trustedEntities}
+                isOverAsking={isOverAsking}
               />
             ),
           },

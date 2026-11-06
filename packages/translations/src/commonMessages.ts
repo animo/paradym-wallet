@@ -571,6 +571,25 @@ export const commonMessages = {
     message: 'Information may be incorrect. Do not share real data',
     comment: 'Warning shown with a demo organization',
   }),
+  overAsking: defineMessage({
+    id: 'common.overAsking',
+    message: 'Over-asking',
+    comment: 'Title of the warning shown when a request asks for more data than the organization registered to ask for',
+  }),
+  overAskingWarning: (name: string) =>
+    defineMessage({
+      id: 'common.overAskingWarning',
+      message: `${name} is not authorized to ask for the information in the request. Only continue if you trust it`,
+      comment:
+        'Warning shown when a request asks for more data than the organization registered to ask for, with the name of the organization',
+    }),
+  overAskingWarningUnknownOrganization: defineMessage({
+    id: 'common.overAskingWarningUnknownOrganization',
+    message:
+      'This organization is not authorized to ask for the information in the request. Only continue if you trust it',
+    comment:
+      'Warning shown when a request asks for more data than the organization registered to ask for, when the name of the organization is unknown',
+  }),
 
   // Cards and their attributes.
   credentialNotFound: defineMessage({
@@ -836,4 +855,5 @@ export const supportedLanguageNames: Record<SupportedLocale, string> = {
   de: 'Deutsch',
   sq: 'Shqip',
   pt: 'Português',
+  fr: 'Français',
 }

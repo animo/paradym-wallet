@@ -240,16 +240,9 @@ export const mdlSchemes = {
   mdlMdocDoctypes: ['org.iso.18013.5.1.mDL'],
 }
 
-// The sandbox lists of access certificate providers. The signer certificates are the ones the
-// scheme operators publish, next to their SHA-256 fingerprint. The German production list
-// (https://trustlists.eudihub.de/wrpac-provider.jwt) is not published yet.
-export const trustedLists = [
-  {
-    // SHA-256 56a70ff70cc47b4e91216b8da7b93ffacad34883cded5d881dea8e73d1982f56
-    url: 'https://trustlists-sandbox.eudihub.de/wrpac-provider.jwt',
-    territory: 'DE',
-    demo: true,
-    signerCertificate: `-----BEGIN CERTIFICATE-----
+// The signer certificates the scheme operators publish, next to their SHA-256 fingerprint.
+// SHA-256 56a70ff70cc47b4e91216b8da7b93ffacad34883cded5d881dea8e73d1982f56
+const germanSandboxTrustedListSigner = `-----BEGIN CERTIFICATE-----
 MIIEyjCCArSgAwIBAgIIJeTjiEtogGgwCwYJKoZIhvcNAQENMIGBMQswCQYDVQQG
 EwJERTETMBEGA1UECgwKU0lHTjggR21iSDEXMBUGA1UECwwOVHJ1c3QgU2Vydmlj
 ZXMxITAfBgNVBGEMGE5UUkRFLURFRDI2MDFWLkhSQjI3MTU3MzEhMB8GA1UEAwwY
@@ -276,15 +269,11 @@ NE+2dO6M8HJDFL/VK+azx8+YWf1SV8vP2Xi0SDoxLnNvJBX7ZQDvdavTcgIbTCBK
 R/yKhxWt6HaWpv5Rp5F4n2E45SEfXCx9DpZW7bqW5OUFKosk3OahEGuNsTy+5Zb7
 nsUmeQPHiGN/zAeqKxWAXRr0ubbuaKfmkK1bGh8fQYbzCRjurjK5PlIpp5dJMw6I
 qoI6gTbwDPRKKWpmkMxjRpvYIr5GuqgOYn3pHY96
------END CERTIFICATE-----`,
-  },
-  {
-    // SHA-256 3095f937179eb6d8675c28c201a09392f56fe662835f8e8434afe43af8dae8e1, the `signerSha256` of
-    // https://api.playground.france-identite.gouv.fr/france-titres/registry/lote
-    url: 'https://api.playground.france-identite.gouv.fr/france-titres/registry/lote/WRPACProviders.jwt',
-    territory: 'FR',
-    demo: true,
-    signerCertificate: `-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----`
+
+// SHA-256 3095f937179eb6d8675c28c201a09392f56fe662835f8e8434afe43af8dae8e1, the `signerSha256` of
+// https://api.playground.france-identite.gouv.fr/france-titres/registry/lote
+const frenchPlaygroundTrustedListSigner = `-----BEGIN CERTIFICATE-----
 MIICITCCAcegAwIBAgIUTu60fxFkc37CawnbULH5o+2iLmIwCgYIKoZIzj0EAwIw
 VjELMAkGA1UEBhMCRlIxHTAbBgNVBAoMFERlbW8gRVVESVcgUmVnaXN0cmFyMSgw
 JgYDVQQDDB9EZW1vIEVVRElXIFJlZ2lzdHJhciBUU0wgc2lnbmVyMB4XDTI2MDgx
@@ -297,7 +286,38 @@ DAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwEQYDVR0lBAowCAYGBACRNwMA
 MB0GA1UdDgQWBBSqwx5ch0aT7HWF30WLsQ88mgzLaTAKBggqhkjOPQQDAgNIADBF
 AiEAleEay77B07lrKKjSE3R3HMEy/Q7+GGAQW1/mKFoPv5cCIGXzn9wcVyQzsY14
 ngmh/MNelSyrr54Xm9QWc0NXyD1q
------END CERTIFICATE-----`,
+-----END CERTIFICATE-----`
+
+// The sandbox lists of access certificate providers. The German production list
+// (https://trustlists.eudihub.de/wrpac-provider.jwt) is not published yet.
+export const accessCertificateTrustedLists = [
+  {
+    url: 'https://trustlists-sandbox.eudihub.de/wrpac-provider.jwt',
+    territory: 'DE',
+    demo: true,
+    signerCertificate: germanSandboxTrustedListSigner,
+  },
+  {
+    url: 'https://api.playground.france-identite.gouv.fr/france-titres/registry/lote/WRPACProviders.jwt',
+    territory: 'FR',
+    demo: true,
+    signerCertificate: frenchPlaygroundTrustedListSigner,
+  },
+] satisfies Array<TrustedListConfiguration>
+
+// The sandbox lists of registration certificate providers, from the same scheme operators
+export const registrationCertificateTrustedLists = [
+  {
+    url: 'https://trustlists-sandbox.eudihub.de/wrprc-provider.jwt',
+    territory: 'DE',
+    demo: true,
+    signerCertificate: germanSandboxTrustedListSigner,
+  },
+  {
+    url: 'https://api.playground.france-identite.gouv.fr/france-titres/registry/lote/WRPRCProviders.jwt',
+    territory: 'FR',
+    demo: true,
+    signerCertificate: frenchPlaygroundTrustedListSigner,
   },
 ] satisfies Array<TrustedListConfiguration>
 
