@@ -3,7 +3,7 @@ import { BackFooter, DeleteCredentialSheet, useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { FlexPage, TwoPane, useMedia, useToastController } from '@package/ui'
 import { type CredentialId, useCredentialById } from '@paradym/wallet-sdk'
-import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { CredentialDetail } from './components/CredentialDetail'
 import { CredentialDetailAttributes } from './components/CredentialDetailAttributes'
@@ -12,6 +12,7 @@ export function CredentialDetailScreen() {
   const { id } = useLocalSearchParams<{ id: CredentialId }>()
   const toast = useToastController()
   const router = useRouter()
+  const navigation = useNavigation()
   const { t } = useLingui()
   const media = useMedia()
   const { withHaptics } = useHaptics()
@@ -20,6 +21,8 @@ export function CredentialDetailScreen() {
   const { credential } = useCredentialById(id)
 
   if (!credential) {
+    // Archiving the card closes this screen before deleting it
+    if (!navigation.isFocused()) return
     toast.show(t(commonMessages.credentialNotFound), {
       customData: {
         preset: 'danger',

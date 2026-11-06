@@ -96,7 +96,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 246]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 258]],
 		"translation": "{name} kërkon më shumë se sa ka regjistruar. Mund ta shqyrtosh kërkesën para se të ndahet ndonjë gjë."
 	},
 	"common.overAskingWarning": {
@@ -116,7 +116,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
 		"translation": "{name} dëshiron të lidhet me ty."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -125,7 +125,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
 		"translation": "{name} dëshiron të bashkëveprojë për të krijuar një nënshkrim dixhital për një dokument."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -134,7 +134,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 111]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
 		"translation": "{name} dëshiron të të ofrojë një kartë."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -143,7 +143,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
 		"translation": "{name} dëshiron të kërkojë informacion nga ti."
 	},
 	"credentials.totalLabel": {
@@ -354,28 +354,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
 		"translation": "Një organizatë e panjohur dëshiron të lidhet me ty."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
 		"translation": "Një organizatë e panjohur dëshiron të bashkëveprojë për të krijuar një nënshkrim dixhital për një dokument."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
 		"translation": "Një organizatë e panjohur dëshiron të të ofrojë një kartë."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
 		"translation": "Një organizatë e panjohur dëshiron të kërkojë informacion nga ti."
 	},
 	"menu.section.app": {
@@ -674,7 +674,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 180]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 182]
 		],
 		"translation": "Karta ende nuk është gati"
 	},
@@ -749,7 +749,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 199]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 201]
 		],
 		"translation": "Karta u shtua me sukses në portofolin tënd!"
 	},
@@ -869,7 +869,7 @@
 		"comments": [
 			"Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 238]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 250]],
 		"translation": "Të vazhdohet gjithsesi?"
 	},
 	"mdoc.error.sharing": {
@@ -1027,7 +1027,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 184]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 186]
 		],
 		"translation": "Dëshiron ta ruash këtë kartë?"
 	},
@@ -1242,7 +1242,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 200]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 210]],
 		"translation": "Bashkëveprimi i parë"
 	},
 	"aboutScreen.contactIntro": {
@@ -1410,7 +1410,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 412],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 630]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 639]
 		],
 		"translation": "Nëse ndalon, oferta e kartës do të anulohet."
 	},
@@ -1556,7 +1556,7 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 107],
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 331],
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 335],
 			["src/features/wallet/components/CredentialDetail.tsx", 77]
 		],
 		"translation": "Lëshuar nga {0}."
@@ -1617,7 +1617,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 207]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 217]],
 		"translation": "Bashkëveprimi i fundit: {0}"
 	},
 	"predicate.lessThan": {
@@ -1805,7 +1805,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 211]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 221]],
 		"translation": "Nuk u gjetën bashkëveprime të mëparshme"
 	},
 	"network.onlineAgain": {
@@ -2147,7 +2147,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 196]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 206]],
 		"translation": "Bashkëveprime të mëparshme"
 	},
 	"aboutScreen.privacyPolicyTitle": {
@@ -2759,7 +2759,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 408],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 626]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 635]
 		],
 		"translation": "Ndal ofertën e kartës?"
 	},
@@ -2818,7 +2818,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 205]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 207]
 		],
 		"translation": "Karta do të merret sapo të jetë e disponueshme."
 	},
@@ -3183,7 +3183,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 252]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 264]],
 		"translation": "Kjo organizatë kërkon më shumë se sa ka regjistruar. Mund ta shqyrtosh kërkesën para se të ndahet ndonjë gjë."
 	},
 	"common.overAskingWarningUnknownOrganization": {
@@ -3751,7 +3751,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 261]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 264]
 		],
 		"translation": "Kartat e tua ende nuk janë gati. Do të kontrollojmë herë pas here në sfond dhe do t'i marrim kartat sapo të jenë gati."
 	},

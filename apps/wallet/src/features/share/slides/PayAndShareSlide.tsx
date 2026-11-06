@@ -102,7 +102,7 @@ export const PayAndShareSlide = ({
         </YStack>
       </YStack>
 
-      <YStack borderTopWidth="1" borderColor="grey-200" py="3" mx="-5" px="5" bg="background">
+      <YStack borderTopWidth="1" borderColor="grey-200" pt="3" mx="-5" px="5" bg="background">
         {submission?.areAllSatisfied ? (
           <DualResponseButtons
             align="horizontal"

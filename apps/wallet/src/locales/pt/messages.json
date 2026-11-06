@@ -96,7 +96,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 246]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 258]],
 		"translation": "{name} pede mais do que registou. Pode analisar o pedido antes de qualquer partilha."
 	},
 	"common.overAskingWarning": {
@@ -116,7 +116,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
 		"translation": "{name} quer se conectar contigo."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -125,7 +125,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
 		"translation": "{name} quer interagir para criar uma assinatura digital para um documento."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -134,7 +134,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 111]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
 		"translation": "{name} quer-lhe oferecer um cartão."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -143,7 +143,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
 		"translation": "{name} deseja solicitar informações suas."
 	},
 	"credentials.totalLabel": {
@@ -354,28 +354,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
 		"translation": "Uma organização desconhecida quer se conectar contigo."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
 		"translation": "Uma organização desconhecida quer interagir para criar uma assinatura digital para um documento."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
 		"translation": "Uma organização desconhecida quer-lhe oferecer um cartão."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
 		"translation": "Uma organização desconhecida quer solicitar informações."
 	},
 	"menu.section.app": {
@@ -674,7 +674,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 180]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 182]
 		],
 		"translation": "O cartão ainda não está pronto"
 	},
@@ -749,7 +749,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 199]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 201]
 		],
 		"translation": "Cartão adicionado com sucesso à a sua carteira!"
 	},
@@ -869,7 +869,7 @@
 		"comments": [
 			"Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 238]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 250]],
 		"translation": "Continuar mesmo assim?"
 	},
 	"mdoc.error.sharing": {
@@ -1027,7 +1027,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 184]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 186]
 		],
 		"translation": "Deseja armazenar este cartão?"
 	},
@@ -1242,7 +1242,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 200]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 210]],
 		"translation": "Primeira interação"
 	},
 	"aboutScreen.contactIntro": {
@@ -1410,7 +1410,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 412],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 630]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 639]
 		],
 		"translation": "Se parar, a oferta do cartão será cancelada."
 	},
@@ -1556,7 +1556,7 @@
 		],
 		"origin": [
 			["src/features/receive/DeferredCredentialNotificationScreen.tsx", 107],
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 331],
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 335],
 			["src/features/wallet/components/CredentialDetail.tsx", 77]
 		],
 		"translation": "Emitido por {0}."
@@ -1617,7 +1617,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 207]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 217]],
 		"translation": "Última interação: {0}"
 	},
 	"predicate.lessThan": {
@@ -1805,7 +1805,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 211]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 221]],
 		"translation": "Nenhuma interação anterior encontrada"
 	},
 	"network.onlineAgain": {
@@ -2147,7 +2147,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 196]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 206]],
 		"translation": "Interações anteriores"
 	},
 	"aboutScreen.privacyPolicyTitle": {
@@ -2759,7 +2759,7 @@
 		"comments": [],
 		"origin": [
 			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 408],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 626]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 635]
 		],
 		"translation": "Parar oferta de cartão?"
 	},
@@ -2818,7 +2818,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 205]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 207]
 		],
 		"translation": "O cartão será buscado quando disponível."
 	},
@@ -3183,7 +3183,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 252]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 264]],
 		"translation": "Esta organização pede mais do que registou. Pode analisar o pedido antes de qualquer partilha."
 	},
 	"common.overAskingWarningUnknownOrganization": {
@@ -3751,7 +3751,7 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 261]
+			["src/features/receive/slides/CredentialRetrievalSlide.tsx", 264]
 		],
 		"translation": "Os seus cartões ainda não estão prontos. Verificaremos de vez em quando em segundo plano e obteremos os cartões quando estiverem prontos."
 	},

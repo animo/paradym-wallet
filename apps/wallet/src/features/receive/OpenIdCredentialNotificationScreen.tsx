@@ -440,7 +440,11 @@ export function CredentialNotificationScreen() {
           step: 'verify-issuer',
           progress: 33,
           backIsCancel: true,
-          combineWithNext: true,
+          // Without a card step after it, the next step is retrieving the card, which lays out its own wide window,
+          // so this step lays out its own as well
+          combineWithNext: resolvedCredentialOffer.flow !== 'pre-auth',
+          ownsWideLayout: resolvedCredentialOffer.flow === 'pre-auth',
+          scrollsOwnContent: true,
           screen: (
             <VerifyPartySlide
               key="verify-issuer"
@@ -449,9 +453,11 @@ export function CredentialNotificationScreen() {
               logo={{ url: resolvedCredentialOffer.issuer.logoUri, altText: resolvedCredentialOffer.issuer.entityId }}
               entityId={resolvedCredentialOffer.issuer.entityId}
               onContinue={
-                resolvedCredentialOffer.flow === 'pre-auth' || resolvedCredentialOffer.flow === 'pre-auth-with-tx-code'
+                // With a transaction code, the card is requested once the code is entered
+                resolvedCredentialOffer.flow === 'pre-auth'
                   ? async () => {
-                      await acquireCredentialsPreAuth()
+                      // Not awaited: the next step shows a loader until the card is there
+                      void acquireCredentialsPreAuth()
                     }
                   : undefined
               }
@@ -492,17 +498,20 @@ export function CredentialNotificationScreen() {
                   />
                 ),
               }
-            : {
-                step: 'check-card',
-                progress: 49.5,
-                screen: (
-                  <CredentialCardSlide
-                    key="credential-card"
-                    type={resolvedCredentialOffer.flow === 'pre-auth-with-tx-code' ? 'pin' : 'noAuth'}
-                    display={resolvedCredentialOffer.credentialDisplay}
-                  />
-                ),
-              },
+            : resolvedCredentialOffer.flow === 'pre-auth-with-tx-code'
+              ? {
+                  step: 'check-card',
+                  progress: 49.5,
+                  screen: (
+                    <CredentialCardSlide
+                      key="credential-card"
+                      type="pin"
+                      display={resolvedCredentialOffer.credentialDisplay}
+                    />
+                  ),
+                }
+              : // Pre-auth without a transaction code already gets the card when continuing from the issuer step
+                undefined,
         resolvedCredentialOffer.flow === 'auth' && authorizationPresentationRequest
           ? {
               step: 'authorization-presentation',

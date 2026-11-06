@@ -205,6 +205,7 @@ export function DidCommNotificationScreen() {
         {
           step: 'verify-issuer',
           progress: resolvedInvitation?.flowType === 'connect' ? 66 : 50,
+          scrollsOwnContent: true,
           screen: (
             <VerifyPartySlide
               key="verify-issuer"

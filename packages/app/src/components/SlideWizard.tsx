@@ -23,6 +23,8 @@ export type SlideStep = {
   combineWithNext?: boolean
   // Wide windows give this step the full width without padding, and it lays out its own panes with `SlidePane`
   ownsWideLayout?: boolean
+  // The step is kept to the window's height and scrolls its own content, so its buttons stay at the bottom
+  scrollsOwnContent?: boolean
 }
 
 type SlideWizardProps = {
@@ -274,6 +276,7 @@ export const SlideWizard = forwardRef(
     const NextScreen = isCombined ? steps[currentStepIndex + 1].screen : undefined
     const isOwnWideLayout =
       media.wide && !(isError && errorScreen) && !!steps[currentStepIndex].ownsWideLayout && !isCombined
+    const scrollsOwnContent = !(isError && errorScreen) && !!steps[currentStepIndex].scrollsOwnContent
     const { t } = useLingui()
     const contextValue = {
       onNext,
@@ -331,10 +334,12 @@ export const SlideWizard = forwardRef(
                   scrollEventThrottle,
                   onContentSizeChange,
                   onLayout,
-                  scrollEnabled: !isOwnWideLayout,
+                  scrollEnabled: !isOwnWideLayout && !scrollsOwnContent,
                   contentContainerStyle: isOwnWideLayout
                     ? { flex: 1 }
-                    : { flexGrow: 1, paddingBottom: Math.max(bottom, 16) },
+                    : scrollsOwnContent
+                      ? { flex: 1, paddingBottom: Math.max(bottom, 16) }
+                      : { flexGrow: 1, paddingBottom: Math.max(bottom, 16) },
                 }}
                 grow={1}
                 px={isOwnWideLayout ? '0' : '5'}
@@ -357,7 +362,8 @@ export const SlideWizard = forwardRef(
   }
 )
 
-// One pane of a step in a wide window, with the padding and scrolling a step gets in a narrow window
+// One pane of a step in a wide window, with the padding and scrolling a step gets in a narrow window. The top
+// padding sets the panes apart from the progress bar, which spans both.
 export function SlidePane({ children }: { children: React.ReactNode }) {
   const { bottom } = useSafeAreaInsets()
 
@@ -366,6 +372,7 @@ export function SlidePane({ children }: { children: React.ReactNode }) {
       scrollViewProps={{ contentContainerStyle: { flexGrow: 1, paddingBottom: Math.max(bottom, 16) } }}
       grow={1}
       px="5"
+      pt="5"
     >
       {children}
     </ScrollableStack>

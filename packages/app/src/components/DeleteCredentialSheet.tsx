@@ -13,7 +13,7 @@ interface DeleteCredentialSheetProps {
   setIsSheetOpen: (isOpen: boolean) => void
   id: CredentialId
   name: string
-  // Called once the card is deleted or deleting failed. Goes back by default.
+  // Called before the card is deleted, so the screen showing it can close first. Goes back by default.
   onDone?: () => void
 }
 
@@ -25,8 +25,11 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name, o
   const { t } = useLingui()
 
   const onDeleteCredential = async () => {
+    setIsSheetOpen(false)
+    if (onDone) onDone()
+    else navigation.goBack()
+
     try {
-      setIsSheetOpen(false)
       await paradym.deleteCredentials(dcApiRegisterOptions({ paradym, credentialIds: [id] }))
 
       toast.show(t(commonMessages.toastCardArchived), {
@@ -41,8 +44,6 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name, o
       })
       errorHaptic()
     }
-    if (onDone) onDone()
-    else navigation.goBack()
   }
 
   const onCancel = withHaptics(() => setIsSheetOpen(false))
