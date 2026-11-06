@@ -1,6 +1,6 @@
 import { i18n, type Messages } from '@lingui/core'
 
-export const supportedLocales = ['en', 'nl', 'fi', 'sv', 'de', 'sq', 'pt'] as const
+export const supportedLocales = ['en', 'nl', 'fi', 'sv', 'de', 'sq', 'pt', 'fr'] as const
 export type SupportedLocale = (typeof supportedLocales)[number]
 
 export type CatalogLoaders = Record<SupportedLocale, () => { messages: Messages }>
@@ -11,7 +11,7 @@ export type CatalogLoaders = Record<SupportedLocale, () => { messages: Messages 
  * Metro has no code splitting, so every catalog is in the bundle either way — but a compiled
  * catalog is a `JSON.parse` of a few hundred kilobytes, and only the locale that is actually
  * activated has to be parsed and kept on the heap. The credential request UI is killed at a hard
- * memory limit, so the six catalogs a request will never show are worth not parsing there, and the
+ * memory limit, so the seven catalogs a request will never show are worth not parsing there, and the
  * app pays nothing for loading its one locale on demand either.
  */
 let catalogs: CatalogLoaders | undefined

@@ -74,6 +74,7 @@ import { KeychainError } from './secure/error/KeychainError'
 import { migrateActivities } from './storage/activityStore'
 import { type CredentialRecord, deleteCredential } from './storage/credentials'
 import { getWalletStoreId, moveLegacyStore, setupAppGroupStore } from './storage/walletStore'
+import { loadTrustedLists } from './trust/trustedLists'
 import type { TrustMechanismConfiguration } from './trust/trustMechanism'
 import type { DistributedOmit } from './types'
 import { reset } from './utils/reset'
@@ -170,6 +171,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
    */
   public async initialize(): Promise<void> {
     await this.agent.initialize()
+    loadTrustedLists(this.agent.context, this.trustMechanisms)
   }
 
   /**
@@ -439,6 +441,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
           })
           if (legacyStoreId) pws.logger.info('Moved the wallet store from its legacy id', { legacyStoreId, id })
           await pws.agent.initialize()
+          loadTrustedLists(pws.agent.context, pws.trustMechanisms)
 
           // Only once the store has actually opened with this key.
           //

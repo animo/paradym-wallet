@@ -8,6 +8,7 @@ export const catalogs: CatalogLoaders = {
   de: () => require('./de/messages'),
   en: () => require('./en/messages'),
   fi: () => require('./fi/messages'),
+  fr: () => require('./fr/messages'),
   nl: () => require('./nl/messages'),
   pt: () => require('./pt/messages'),
   sq: () => require('./sq/messages'),

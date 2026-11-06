@@ -17,7 +17,7 @@ export type PaymentSlideProps = {
 }
 
 export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifier, submission }) => {
-  const { onNext, onCancel } = useWizard()
+  const { onNext, onCancel, confirmCombined } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const { t } = useLingui()
@@ -156,6 +156,7 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
           onAccept={() => onNext()}
           onDecline={() => onCancel()}
           isLoading={false}
+          variant={confirmCombined ? 'confirmation' : 'regular'}
         />
       </YStack>
     </YStack>
