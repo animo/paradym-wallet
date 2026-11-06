@@ -11,6 +11,10 @@ type WizardContextType = {
   setCombinedContinue?: (onContinue?: () => Promise<void>) => void
   // True while that registered action runs
   isContinuing?: boolean
+  // Registers a confirmation that has to pass before continuing from the next step, such as for over-asking
+  setCombinedConfirm?: (confirm?: () => Promise<boolean>) => void
+  // Set for the step next to a combined step that registered a confirmation: ask it before acting
+  confirmCombined?: () => Promise<boolean>
   // Set for the step shown next to the combined step before it
   isNextToPrevious?: boolean
   // Set when the step has the full width of a wide window and lays out its own panes

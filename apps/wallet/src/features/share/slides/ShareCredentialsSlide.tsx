@@ -26,13 +26,16 @@ export const ShareCredentialsSlide = ({
   isAccepting,
   isOffline,
 }: ShareCredentialsSlideProps) => {
-  const { onNext, onCancel } = useWizard()
+  const { onNext, onCancel, confirmCombined } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
   const { t } = useLingui()
 
   const handleAccept = async () => {
+    // Next to a step that asks for a confirmation first, sharing waits for it
+    if (confirmCombined && !(await confirmCombined())) return
+
     // Manually set to instantly show the loading state
     setIsProcessing(true)
 
@@ -101,6 +104,7 @@ export const ShareCredentialsSlide = ({
             onAccept={handleAccept}
             onDecline={onCancel}
             isLoading={isProcessing}
+            variant={confirmCombined ? 'confirmation' : 'regular'}
           />
         ) : (
           <YStack gap="3">

@@ -14,7 +14,7 @@
 			"0": ["verifier.name"]
 		},
 		"comments": ["Explanation that the user is about to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 150]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 152]],
 		"translation": "{0} souhaite que vous autorisiez un paiement."
 	},
 	"payment.description": {
@@ -88,6 +88,17 @@
 		"origin": [["src/features/receive/slides/CredentialCardSlide.tsx", 44]],
 		"translation": "{issuerName} souhaite vous délivrer la carte suivante :"
 	},
+	"verifyPartySlide.overAskingConfirmationDescriptionCombined": {
+		"message": "{name} asks for more than it registered.",
+		"placeholders": {
+			"name": ["name"]
+		},
+		"comments": [
+			"Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization"
+		],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 285]],
+		"translation": "{name} demande plus d'informations que ce qui a été déclaré lors de son enregistrement."
+	},
 	"verifyPartySlide.overAskingConfirmationDescription": {
 		"message": "{name} asks for more than it registered. You can review the request before anything is shared.",
 		"placeholders": {
@@ -96,7 +107,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 258]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 298]],
 		"translation": "{name} demande plus d'informations que ce qui a été déclaré lors de son enregistrement. Vous pourrez vérifier la demande avant tout partage."
 	},
 	"common.overAskingWarning": {
@@ -116,7 +127,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 176]],
 		"translation": "{name} souhaite entrer en contact avec vous."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -125,7 +136,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 154]],
 		"translation": "{name} souhaite vous faire signer numériquement un document."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -134,7 +145,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 121]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 144]],
 		"translation": "{name} souhaite vous délivrer une carte."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -143,7 +154,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 143]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 166]],
 		"translation": "{name} souhaite vous demander certaines informations."
 	},
 	"credentials.totalLabel": {
@@ -354,28 +365,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 178]],
 		"translation": "Une organisation inconnue souhaite entrer en contact avec vous."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 135]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 158]],
 		"translation": "Une organisation inconnue souhaite vous faire signer numériquement un document."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 123]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 146]],
 		"translation": "Une organisation inconnue souhaite vous délivrer une carte."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 145]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
 		"translation": "Une organisation inconnue souhaite vous demander certaines informations."
 	},
 	"menu.section.app": {
@@ -869,7 +880,7 @@
 		"comments": [
 			"Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 250]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 275]],
 		"translation": "Continuer quand même ?"
 	},
 	"mdoc.error.sharing": {
@@ -1242,7 +1253,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 210]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 233]],
 		"translation": "Première interaction"
 	},
 	"aboutScreen.contactIntro": {
@@ -1447,7 +1458,7 @@
 		"comments": [
 			"Message shown when the request is offline and verifier is unknown"
 		],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 78]],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 81]],
 		"translation": "Les informations sur le vérificateur n'ont pas pu être affichées. Réfléchissez bien avant d'accorder votre confiance à cette organisation."
 	},
 	"common.presentationShared": {
@@ -1617,7 +1628,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 217]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 240]],
 		"translation": "Dernière interaction : {0}"
 	},
 	"predicate.lessThan": {
@@ -1805,7 +1816,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 221]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 244]],
 		"translation": "Aucune interaction précédente"
 	},
 	"network.onlineAgain": {
@@ -1883,7 +1894,7 @@
 		],
 		"origin": [
 			["src/features/dc-api/DcApiScreen.tsx", 453],
-			["src/features/share/slides/PasoPaymentSlide.tsx", 218]
+			["src/features/share/slides/PasoPaymentSlide.tsx", 220]
 		],
 		"translation": "Payer"
 	},
@@ -1926,7 +1937,7 @@
 		"message": "Payment card",
 		"placeholders": {},
 		"comments": ["Heading above the card used to authorize a payment"],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 168]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 170]],
 		"translation": "Carte de paiement"
 	},
 	"payShare.cardHeading": {
@@ -2147,7 +2158,7 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 206]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 229]],
 		"translation": "Interactions précédentes"
 	},
 	"aboutScreen.privacyPolicyTitle": {
@@ -2415,7 +2426,7 @@
 		],
 		"origin": [
 			["src/features/dc-api/DcApiScreen.tsx", 465],
-			["src/features/share/slides/PasoPaymentSlide.tsx", 232]
+			["src/features/share/slides/PasoPaymentSlide.tsx", 235]
 		],
 		"translation": "Faites défiler vers le bas pour consulter tous les détails du paiement."
 	},
@@ -2799,7 +2810,7 @@
 		"comments": [
 			"Button that opens the other cards the user can authorize the payment with"
 		],
-		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 183]],
+		"origin": [["src/features/share/slides/PasoPaymentSlide.tsx", 185]],
 		"translation": "Changer"
 	},
 	"common.tapToView": {
@@ -3151,7 +3162,7 @@
 		"message": "This is an offline request",
 		"placeholders": {},
 		"comments": ["Title shown for offline message"],
-		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 73]],
+		"origin": [["src/features/share/slides/ShareCredentialsSlide.tsx", 76]],
 		"translation": "Demande hors ligne"
 	},
 	"pidSetup.idCardPin.subtitle": {
@@ -3177,13 +3188,22 @@
 		"origin": [["../../packages/translations/src/commonMessages.ts", 644]],
 		"translation": "Votre portefeuille"
 	},
+	"verifyPartySlide.overAskingConfirmationDescriptionCombinedUnknownOrganization": {
+		"message": "This organization asks for more than it registered.",
+		"placeholders": {},
+		"comments": [
+			"Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown"
+		],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 291]],
+		"translation": "Cette organisation demande plus d'informations que ce qu'elle a déclaré lors de son enregistrement."
+	},
 	"verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization": {
 		"message": "This organization asks for more than it registered. You can review the request before anything is shared.",
 		"placeholders": {},
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 264]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 304]],
 		"translation": "Cette organisation demande plus d'informations que ce qu'elle a déclaré lors de son enregistrement. Vous pourrez vérifier la demande avant tout partage."
 	},
 	"common.overAskingWarningUnknownOrganization": {

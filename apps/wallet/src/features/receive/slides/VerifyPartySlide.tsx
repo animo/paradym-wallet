@@ -18,7 +18,7 @@ import { formatRelativeDate } from '@package/utils'
 import type { DisplayImage, TrustedEntity } from '@paradym/wallet-sdk'
 import { useActivities } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const NO_ENTITY_ID = 'NO_ENTITY_ID'
 
@@ -49,7 +49,7 @@ export const VerifyPartySlide = ({
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
-  const { onNext, onCancel, isCombined, setCombinedContinue, ownsWideLayout } = useWizard()
+  const { onNext, onCancel, isCombined, setCombinedContinue, setCombinedConfirm, ownsWideLayout } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
   const { activities } = useActivities({ filters: { entityId }, limit: 1 })
@@ -57,6 +57,8 @@ export const VerifyPartySlide = ({
   const { t } = useLingui()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isOverAskingConfirmationOpen, setIsOverAskingConfirmationOpen] = useState(false)
+  const resolveOverAskingConfirmation = useRef<(confirmed: boolean) => void>(undefined)
+  const isOverAskingConfirmed = useRef(false)
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
@@ -74,6 +76,27 @@ export const VerifyPartySlide = ({
     setCombinedContinue?.(onContinue)
     return () => setCombinedContinue?.(undefined)
   }, [setCombinedContinue, onContinue])
+
+  // Over-asking is confirmed a second time, once, before continuing from this step or the step next to it
+  const confirmOverAsking = useCallback(() => {
+    if (isOverAskingConfirmed.current) return Promise.resolve(true)
+    return new Promise<boolean>((resolve) => {
+      resolveOverAskingConfirmation.current = resolve
+      setIsOverAskingConfirmationOpen(true)
+    })
+  }, [])
+
+  const closeOverAskingConfirmation = (confirmed: boolean) => {
+    isOverAskingConfirmed.current = confirmed
+    setIsOverAskingConfirmationOpen(false)
+    resolveOverAskingConfirmation.current?.(confirmed)
+    resolveOverAskingConfirmation.current = undefined
+  }
+
+  useEffect(() => {
+    setCombinedConfirm?.(isOverAsking ? confirmOverAsking : undefined)
+    return () => setCombinedConfirm?.(undefined)
+  }, [setCombinedConfirm, isOverAsking, confirmOverAsking])
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -232,8 +255,10 @@ export const VerifyPartySlide = ({
     <Stack borderTopWidth={1} borderColor="grey-100" px="5" pt="3" mx="-5">
       <DualResponseButtons
         align="horizontal"
-        // Over-asking is confirmed a second time before continuing
-        onAccept={isOverAsking ? () => setIsOverAskingConfirmationOpen(true) : handleContinue}
+        onAccept={async () => {
+          if (isOverAsking && !(await confirmOverAsking())) return
+          await handleContinue()
+        }}
         onDecline={handleDecline}
         acceptText={t(commonMessages.confirmContinue)}
         declineText={t(commonMessages.stop)}
@@ -246,7 +271,7 @@ export const VerifyPartySlide = ({
   const overAskingConfirmation = isOverAsking && (
     <ConfirmationSheet
       isOpen={isOverAskingConfirmationOpen}
-      setIsOpen={setIsOverAskingConfirmationOpen}
+      setIsOpen={(isOpen) => (isOpen ? setIsOverAskingConfirmationOpen(true) : closeOverAskingConfirmation(false))}
       title={t({
         id: 'verifyPartySlide.overAskingConfirmationTitle',
         message: 'Continue anyway?',
@@ -254,26 +279,38 @@ export const VerifyPartySlide = ({
           'Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered',
       })}
       description={
-        name
-          ? t({
-              id: 'verifyPartySlide.overAskingConfirmationDescription',
-              message: `${name} asks for more than it registered. You can review the request before anything is shared.`,
-              comment:
-                'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization',
-            })
-          : t({
-              id: 'verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization',
-              message:
-                'This organization asks for more than it registered. You can review the request before anything is shared.',
-              comment:
-                'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown',
-            })
+        // Next to the next step, confirming acts right away, so there is nothing left to review
+        isCombined
+          ? name
+            ? t({
+                id: 'verifyPartySlide.overAskingConfirmationDescriptionCombined',
+                message: `${name} asks for more than it registered.`,
+                comment:
+                  'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization',
+              })
+            : t({
+                id: 'verifyPartySlide.overAskingConfirmationDescriptionCombinedUnknownOrganization',
+                message: 'This organization asks for more than it registered.',
+                comment:
+                  'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown',
+              })
+          : name
+            ? t({
+                id: 'verifyPartySlide.overAskingConfirmationDescription',
+                message: `${name} asks for more than it registered. You can review the request before anything is shared.`,
+                comment:
+                  'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization',
+              })
+            : t({
+                id: 'verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization',
+                message:
+                  'This organization asks for more than it registered. You can review the request before anything is shared.',
+                comment:
+                  'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown',
+              })
       }
       confirmText={t(commonMessages.confirmContinue)}
-      onConfirm={() => {
-        setIsOverAskingConfirmationOpen(false)
-        void handleContinue()
-      }}
+      onConfirm={() => closeOverAskingConfirmation(true)}
     />
   )
 
