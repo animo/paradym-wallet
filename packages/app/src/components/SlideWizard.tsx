@@ -31,6 +31,8 @@ type SlideWizardProps = {
   steps: SlideStep[]
   errorScreen?: () => React.ReactNode
   onCancel: () => void
+  // Closes the wizard once a slide called `completeProgressBar`. The flow is done then, so closing doesn't ask to stop it
+  onComplete?: () => void
   isError?: boolean
   confirmation?: {
     title: string
@@ -68,7 +70,7 @@ export interface SlideWizardRef {
 
 export const SlideWizard = forwardRef(
   (
-    { steps, onCancel, isError, errorScreen, confirmation, willResume, resumeFrom }: SlideWizardProps,
+    { steps, onCancel, onComplete, isError, errorScreen, confirmation, willResume, resumeFrom }: SlideWizardProps,
     ref: ForwardedRef<SlideWizardRef>
   ) => {
     const { handleScroll, isScrolledByOffset, scrollEventThrottle, onContentSizeChange, onLayout } =
@@ -187,8 +189,9 @@ export const SlideWizard = forwardRef(
     const handleCancel = withHaptics(
       useCallback(() => {
         Keyboard.dismiss()
-        setIsSheetOpen(true)
-      }, [])
+        if (isCompleted && onComplete) onComplete()
+        else setIsSheetOpen(true)
+      }, [isCompleted, onComplete])
     )
 
     const onConfirmCancel = withHaptics(() => {
