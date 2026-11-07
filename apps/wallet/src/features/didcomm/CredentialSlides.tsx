@@ -74,13 +74,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
       })
     }
 
-    toast.show(
-      t({
-        id: 'credential.declined',
-        message: 'Credential has been declined.',
-        comment: 'Shown in a toast when user declines the credential',
-      })
-    )
+    toast.show(t(commonMessages.credentialDeclined))
     onCancel()
   }
 

@@ -54,6 +54,7 @@ export type TrustedEntity = {
 export type TrustedIssuerEntity = {
   issuer: TrustedEntity
   trustedEntities: TrustedEntity[]
+  issuerRegistration?: OverAskingResult
 }
 
 export type TrustedRelyingPartyEntity = {
@@ -212,6 +213,7 @@ export const getTrustedEntitiesForOpenId4Vci = async (
   trustMechanism: TrustMechanism
   issuer: TrustedIssuerEntity['issuer']
   trustedEntities: Array<TrustedEntity>
+  issuerRegistration?: OverAskingResult
 }> => {
   const trustMechanism = detectTrustMechanismForCredentialOffer({
     resolvedCredentialOffer: options.resolvedCredentialOffer,
@@ -274,6 +276,7 @@ export const getTrustedEntitiesForOpenId4Vci = async (
   return {
     trustedEntities: trustedEntity?.trustedEntities ?? [],
     trustMechanism,
+    issuerRegistration: trustedEntity?.issuerRegistration,
     issuer: trustedEntity?.issuer
       ? { ...trustedEntity.issuer, entityId }
       : {

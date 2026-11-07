@@ -57,7 +57,7 @@ export const AuthCodeFlowSlide = ({
   const toast = useToastController()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const { t } = useLingui()
-  const { onNext, onCancel: wizardOnCancel } = useWizard()
+  const { onNext, onCancel: wizardOnCancel, confirmCombined } = useWizard()
   const { credentialAuthorizationCode } = useGlobalSearchParams<{
     credentialAuthorizationCode?: string
   }>()
@@ -166,6 +166,9 @@ export const AuthCodeFlowSlide = ({
   }
 
   const onPressContinue = async () => {
+    // Next to a step that asks for a confirmation first, authorizing waits for it
+    if (confirmCombined && !(await confirmCombined())) return
+
     if (onPresentationRequest) {
       setIssuanceAuthorizationPresentationRequestHandler(onPresentationRequestReceived)
     }
@@ -225,6 +228,7 @@ export const AuthCodeFlowSlide = ({
           onAccept={onPressContinue}
           onDecline={wizardOnCancel}
           isLoading={isResolvingPresentationRequest}
+          variant={confirmCombined ? 'confirmation' : 'regular'}
         />
       </YStack>
     </YStack>
