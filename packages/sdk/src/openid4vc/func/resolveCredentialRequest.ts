@@ -9,7 +9,6 @@ export type ResolveCredentialRequestOptions = {
   paradym: ParadymWalletSdk
   requestPayload?: Record<string, unknown>
   uri?: string
-  allowUntrusted?: boolean
   origin?: string
 }
 
@@ -18,7 +17,6 @@ export const resolveCredentialRequest = async ({
   uri,
   requestPayload,
   origin,
-  allowUntrusted,
 }: ResolveCredentialRequestOptions) => {
   assertAgentType(paradym.agent, 'openid4vc')
   try {
@@ -41,7 +39,6 @@ export const resolveCredentialRequest = async ({
       agentContext: paradym.agent.context,
       trustMechanisms: paradym.trustMechanisms,
       resolvedAuthorizationRequest: resolved,
-      allowUntrusted,
     })
 
     return getCredentialsForProofRequest(resolved, { origin, trustMechanism, verifier })

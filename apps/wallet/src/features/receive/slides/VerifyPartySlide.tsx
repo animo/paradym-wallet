@@ -1,10 +1,9 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { DualResponseButtons, SlidePane, useHaptics, useWizard } from '@package/app'
+import { ConfirmationSheet, DualResponseButtons, SlidePane, useHaptics, useWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   Circle,
   Heading,
-  HeroIcons,
   Image,
   InfoButton,
   Paragraph,
@@ -16,10 +15,10 @@ import {
   YStack,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { DisplayImage, TrustedEntity, TrustMechanism } from '@paradym/wallet-sdk'
+import type { DisplayImage, TrustedEntity } from '@paradym/wallet-sdk'
 import { useActivities } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 const NO_ENTITY_ID = 'NO_ENTITY_ID'
 
@@ -33,7 +32,8 @@ interface VerifyPartySlideProps {
   onContinue?: () => Promise<void>
   onDecline?: () => void
   trustedEntities?: Array<TrustedEntity>
-  trustMechanism?: TrustMechanism
+  /** Whether the request asks for more than the organization registered to ask for */
+  isOverAsking?: boolean
 }
 
 export const VerifyPartySlide = ({
@@ -45,33 +45,58 @@ export const VerifyPartySlide = ({
   onContinue,
   onDecline,
   trustedEntities,
-  trustMechanism = 'none',
+  isOverAsking,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
-  const { onNext, onCancel, isCombined, setCombinedContinue, ownsWideLayout } = useWizard()
+  const { onNext, onCancel, isCombined, setCombinedContinue, setCombinedConfirm, ownsWideLayout } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
   const { activities } = useActivities({ filters: { entityId }, limit: 1 })
   const lastInteractionDate = activities[0]?.date
   const { t } = useLingui()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isOverAskingConfirmationOpen, setIsOverAskingConfirmationOpen] = useState(false)
+  const resolveOverAskingConfirmation = useRef<(confirmed: boolean) => void>(undefined)
+  const isOverAskingConfirmed = useRef(false)
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
+  const trustedEntitiesWithoutSelf = trustedEntities?.filter((entity) => entity.entityId !== entityId)
 
-  const trustedEntitiesWithoutSelf = trustedEntities
-    ?.filter((entity) => entity.entityId !== entityId)
-    .map((entity) => ({
-      ...entity,
-      demo: isDemoTrustedEntity ? true : entity.demo,
-    }))
+  // With the country of its trusted list, as several countries can list the same kind of organization
+  const approvedBy = trustedEntitiesWithoutSelf?.[0]
+  const territoryMessage = approvedBy?.territory
+    ? commonMessages.trustedListTerritories[approvedBy.territory]
+    : undefined
+  const approvedByTerritory = territoryMessage ? t(territoryMessage) : approvedBy?.territory
 
   // Next to the next step in a wide window, that step's buttons continue this one
   useEffect(() => {
     setCombinedContinue?.(onContinue)
     return () => setCombinedContinue?.(undefined)
   }, [setCombinedContinue, onContinue])
+
+  // Over-asking is confirmed a second time, once, before continuing from this step or the step next to it
+  const confirmOverAsking = useCallback(() => {
+    if (isOverAskingConfirmed.current) return Promise.resolve(true)
+    return new Promise<boolean>((resolve) => {
+      resolveOverAskingConfirmation.current = resolve
+      setIsOverAskingConfirmationOpen(true)
+    })
+  }, [])
+
+  const closeOverAskingConfirmation = (confirmed: boolean) => {
+    isOverAskingConfirmed.current = confirmed
+    setIsOverAskingConfirmationOpen(false)
+    resolveOverAskingConfirmation.current?.(confirmed)
+    resolveOverAskingConfirmation.current = undefined
+  }
+
+  useEffect(() => {
+    setCombinedConfirm?.(isOverAsking ? confirmOverAsking : undefined)
+    return () => setCombinedConfirm?.(undefined)
+  }, [setCombinedConfirm, isOverAsking, confirmOverAsking])
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -87,28 +112,15 @@ export const VerifyPartySlide = ({
     onCancel()
   }
 
-  const onPressVerifiedIssuer = withHaptics(() => {
-    const searchParams = new URLSearchParams({
-      trustedEntities: JSON.stringify(trustedEntitiesWithoutSelf ?? []),
-      trustMechanism,
-      isDemoTrustedEntity: `${isDemoTrustedEntity}`,
-    })
-
-    if (logo?.url) searchParams.set('logo', logo.url)
-    if (name) searchParams.set('name', name)
-
-    router.push(`trust?${searchParams}`)
-  })
-
   const onPressInteraction = withHaptics(() => {
     router.push(`/activity?entityId=${entityId}`)
   })
 
   const header = (
-    <YStack gap="5">
-      <XStack items="center" pt="5" justify="center">
-        <Circle size={88} borderWidth="1" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
-          {logo?.url ? (
+    <YStack gap="5" pt="5">
+      {logo?.url && (
+        <XStack items="center" justify="center">
+          <Circle size={88} borderWidth="1" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
             <Image
               circle
               src={logo.url}
@@ -119,11 +131,9 @@ export const VerifyPartySlide = ({
               height="100%"
               contentFit="contain"
             />
-          ) : (
-            <HeroIcons.BuildingOffice color="grey-800" size={36} />
-          )}
-        </Circle>
-      </XStack>
+          </Circle>
+        </XStack>
+      )}
       <Stack gap="2">
         <Heading heading="h2" numberOfLines={2} fontSize={24} lineHeight="5" center>
           {name ? t(commonMessages.doYouTrust(name)) : t(commonMessages.organizationNotVerifiedHeading)}
@@ -177,25 +187,32 @@ export const VerifyPartySlide = ({
 
   const trustDetails = (
     <YStack gap="5">
-      {trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
+      {/* Only a recognized organization is checked for over-asking, so the warning takes its place */}
+      {isOverAsking ? (
         <InfoButton
-          variant={entityIsTrustAnchor ? 'positive' : 'info'}
+          variant="danger"
+          title={t(commonMessages.overAsking)}
+          description={
+            name ? t(commonMessages.overAskingWarning(name)) : t(commonMessages.overAskingWarningUnknownOrganization)
+          }
+        />
+      ) : trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
+        <InfoButton
+          variant="positive"
           title={t(commonMessages.recognizedOrganization)}
           description={
-            trustedEntitiesWithoutSelf.length > 1
-              ? t(commonMessages.approvedByOrganizations(trustedEntitiesWithoutSelf.length))
-              : trustedEntitiesWithoutSelf.length === 1
-                ? t(commonMessages.approvedByOneOrganization)
-                : undefined
+            approvedBy
+              ? approvedByTerritory
+                ? t(commonMessages.approvedByInTerritory(approvedBy.organizationName, approvedByTerritory))
+                : t(commonMessages.approvedBy(approvedBy.organizationName))
+              : undefined
           }
-          onPress={onPressVerifiedIssuer}
         />
       ) : (
         <InfoButton
           variant="warning"
           title={t(commonMessages.unknownOrganization)}
           description={t(commonMessages.organizationNotVerifiedDescription)}
-          onPress={onPressVerifiedIssuer}
         />
       )}
       {isDemoTrustedEntity && (
@@ -238,29 +255,82 @@ export const VerifyPartySlide = ({
     <Stack borderTopWidth={1} borderColor="grey-100" px="5" pt="3" mx="-5">
       <DualResponseButtons
         align="horizontal"
-        onAccept={handleContinue}
+        onAccept={async () => {
+          if (isOverAsking && !(await confirmOverAsking())) return
+          await handleContinue()
+        }}
         onDecline={handleDecline}
         acceptText={t(commonMessages.confirmContinue)}
         declineText={t(commonMessages.stop)}
         isLoading={isLoading}
+        variant={isOverAsking ? 'confirmation' : 'regular'}
       />
     </Stack>
+  )
+
+  const overAskingConfirmation = isOverAsking && (
+    <ConfirmationSheet
+      isOpen={isOverAskingConfirmationOpen}
+      setIsOpen={(isOpen) => (isOpen ? setIsOverAskingConfirmationOpen(true) : closeOverAskingConfirmation(false))}
+      title={t({
+        id: 'verifyPartySlide.overAskingConfirmationTitle',
+        message: 'Continue anyway?',
+        comment:
+          'Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered',
+      })}
+      description={
+        // Next to the next step, confirming acts right away, so there is nothing left to review
+        isCombined
+          ? name
+            ? t({
+                id: 'verifyPartySlide.overAskingConfirmationDescriptionCombined',
+                message: `${name} asks for more than it registered.`,
+                comment:
+                  'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization',
+              })
+            : t({
+                id: 'verifyPartySlide.overAskingConfirmationDescriptionCombinedUnknownOrganization',
+                message: 'This organization asks for more than it registered.',
+                comment:
+                  'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown',
+              })
+          : name
+            ? t({
+                id: 'verifyPartySlide.overAskingConfirmationDescription',
+                message: `${name} asks for more than it registered. You can review the request before anything is shared.`,
+                comment:
+                  'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization',
+              })
+            : t({
+                id: 'verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization',
+                message:
+                  'This organization asks for more than it registered. You can review the request before anything is shared.',
+                comment:
+                  'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown',
+              })
+      }
+      confirmText={t(commonMessages.confirmContinue)}
+      onConfirm={() => closeOverAskingConfirmation(true)}
+    />
   )
 
   if (ownsWideLayout) {
     // Wide windows show who it is on the left, next to whether to trust them
     return (
-      <TwoPane
-        start={<SlidePane>{header}</SlidePane>}
-        end={
-          <SlidePane>
-            <YStack grow={1} justify="space-between" gap="5">
-              {trustDetails}
-              {footer}
-            </YStack>
-          </SlidePane>
-        }
-      />
+      <>
+        <TwoPane
+          start={<SlidePane>{header}</SlidePane>}
+          end={
+            <SlidePane>
+              <YStack grow={1} justify="space-between" gap="5">
+                {trustDetails}
+                {footer}
+              </YStack>
+            </SlidePane>
+          }
+        />
+        {overAskingConfirmation}
+      </>
     )
   }
 
@@ -272,6 +342,7 @@ export const VerifyPartySlide = ({
         {trustDetails}
       </ScrollView>
       {!isCombined && footer}
+      {overAskingConfirmation}
     </YStack>
   )
 }

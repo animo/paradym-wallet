@@ -41,6 +41,7 @@ import {
   getWalletStorePath,
   walletStoreExists,
 } from '../storage/walletStore'
+import { loadTrustedLists } from '../trust/trustedLists'
 import type { TrustMechanism, TrustMechanismConfiguration } from '../trust/trustMechanism'
 import {
   getVerifierForMdocReaderAuthentication,
@@ -202,6 +203,9 @@ export class ParadymDcApiSdk {
       }
       throw error
     }
+
+    // Fetched while the request is being resolved, which needs them next
+    loadTrustedLists(agent.context, options.trustMechanisms ?? [])
 
     return new ParadymDcApiSdk(agent, {
       openId4VcConfiguration: options.openId4VcConfiguration,

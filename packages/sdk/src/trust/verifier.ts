@@ -1,8 +1,9 @@
-import { verifyOpenid4VpAuthorizationRequest } from '@animo-id/eudi-wallet-functionality'
 import type { EncodedX509Certificate, X509Certificate } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import type { DisplayImage } from '../display/credential'
 import { findTrustedX509Entity } from './handlers/x509'
+import { findTrustedListEntities } from './trustedLists'
 import {
   getTrustedEntitiesForOpenId4Vp,
   type TrustContext,
@@ -25,6 +26,12 @@ export type RequestVerifier = {
   hostName?: string
   logo?: DisplayImage
   trustedEntities: TrustedEntity[]
+  /**
+   * Whether the request stays within the registration certificate it carries. Only for a party trusted
+   * through the lists of access certificate providers, when lists of registration certificate providers
+   * are configured.
+   */
+  overAsking?: OverAskingResult
 }
 
 const toVerifier = (
@@ -40,34 +47,25 @@ const toVerifier = (
 
 export type GetVerifierForOpenId4VpRequestOptions = TrustContext & {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
-  allowUntrusted?: boolean
 }
 
 /**
  *
- * Who is asking, for an OpenID4VP request: EUDI relying party authentication when the request
- * carries a registration certificate, and the configured trust mechanisms otherwise.
+ * Who is asking, for an OpenID4VP request, established with the configured trust mechanisms.
  *
  */
 export const getVerifierForOpenId4VpRequest = async ({
   agentContext,
   trustMechanisms,
   resolvedAuthorizationRequest,
-  allowUntrusted,
 }: GetVerifierForOpenId4VpRequestOptions): Promise<{ verifier: RequestVerifier; trustMechanism: TrustMechanism }> => {
-  const authorizationRequestVerificationResult = await verifyOpenid4VpAuthorizationRequest(agentContext, {
-    resolvedAuthorizationRequest,
-    allowUntrustedSigned: allowUntrusted,
-  })
-
-  const { trustMechanism, trustedEntities, relyingParty } = await getTrustedEntitiesForOpenId4Vp({
+  const { trustMechanism, trustedEntities, relyingParty, overAsking } = await getTrustedEntitiesForOpenId4Vp({
     agentContext,
     trustMechanisms,
     resolvedAuthorizationRequest,
-    authorizationRequestVerificationResult,
   })
 
-  return { trustMechanism, verifier: toVerifier(relyingParty, trustedEntities) }
+  return { trustMechanism, verifier: { ...toVerifier(relyingParty, trustedEntities), overAsking } }
 }
 
 export type GetVerifierForMdocReaderAuthenticationOptions = TrustContext & {
@@ -83,8 +81,8 @@ export type GetVerifierForMdocReaderAuthenticationOptions = TrustContext & {
  *
  * There is no client metadata and no signed request here — reader authentication is the only trust
  * signal, so the reader's chain is validated against the wallet's `x509` trust mechanism, the same
- * certificates OpenID4VP is verified against. Without reader auth, or when the chain leads nowhere
- * the wallet trusts, the origin is all the wallet knows.
+ * certificates and trusted lists OpenID4VP is verified against. Without reader auth, or when the chain
+ * leads nowhere the wallet trusts, the origin is all the wallet knows.
  *
  */
 export const getVerifierForMdocReaderAuthentication = async ({
@@ -108,17 +106,32 @@ export const getVerifierForMdocReaderAuthentication = async ({
   )
   if (!x509Configuration) return untrusted
 
+  const walletTrustedEntity = trustMechanisms.find(
+    (trustMechanism): trustMechanism is { walletTrustedEntity?: TrustedEntity } =>
+      'walletTrustedEntity' in trustMechanism
+  )?.walletTrustedEntity
+
   const trustedEntity = await findTrustedX509Entity(
     agentContext,
     x509Configuration.trustedX509Entities,
     readerCertificateChain
   ).catch(() => undefined)
-  if (!trustedEntity) return untrusted
 
-  const walletTrustedEntity = trustMechanisms.find(
-    (trustMechanism): trustMechanism is { walletTrustedEntity?: TrustedEntity } =>
-      'walletTrustedEntity' in trustMechanism
-  )?.walletTrustedEntity
+  if (!trustedEntity) {
+    const trustedListEntities = await findTrustedListEntities(
+      agentContext,
+      x509Configuration.accessCertificateTrustedLists ?? [],
+      readerCertificateChain
+    ).catch(() => undefined)
+    if (!trustedListEntities) return untrusted
+
+    // The access certificate provider vouches for the reader, not the wallet
+    const { organizationName, trustedEntities } = trustedListEntities
+    return {
+      trustMechanism: 'x509',
+      verifier: toVerifier({ entityId: origin, organizationName, uri: origin }, trustedEntities),
+    }
+  }
 
   const trustedEntities: TrustedEntity[] = [
     {

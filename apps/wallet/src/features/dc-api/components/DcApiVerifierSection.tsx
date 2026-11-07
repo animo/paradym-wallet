@@ -33,9 +33,11 @@ export function DcApiVerifierSection({
   // The verifier itself is not one of its own approvals.
   const isApprovedByOthers = verifier.trustedEntities.some((entity) => entity.entityId !== verifier.entityId)
   const isRecognized = isApprovedByOthers || entityIsTrustAnchor
+  const isOverAsking = verifier.overAsking?.valid === false
 
   // Recognized or not fits on one line under the host. A demo organization gets its own box below: it
-  // outranks recognition, since it says not to share real data.
+  // outranks recognition, since it says not to share real data. Over-asking does too, and only a
+  // recognized organization is checked for it.
   const trust = isRecognized
     ? {
         icon: <HeroIcons.CheckCircleFilled size={16} color="positive-500" />,
@@ -77,7 +79,7 @@ export function DcApiVerifierSection({
           <Paragraph variant="annotation" numberOfLines={1}>
             {verifier.hostName ?? origin ?? verifier.entityId}
           </Paragraph>
-          {!isDemoTrustedEntity && (
+          {!isDemoTrustedEntity && !isOverAsking && (
             <XStack gap="0-5" items="center">
               {trust.icon}
               <Paragraph variant="annotation" flex={1}>
@@ -88,19 +90,48 @@ export function DcApiVerifierSection({
         </YStack>
       </XStack>
 
+      {isOverAsking && (
+        <WarningBox
+          variant="danger"
+          title={t(commonMessages.overAsking)}
+          message={
+            verifier.name
+              ? t(commonMessages.overAskingWarning(verifier.name))
+              : t(commonMessages.overAskingWarningUnknownOrganization)
+          }
+        />
+      )}
       {isDemoTrustedEntity && (
-        <XStack rounded="6" bg="warning-300" borderWidth={1} borderColor="warning-400" gap="3" p="4" items="center">
-          <HeroIcons.ExclamationTriangleFilled size={20} color="warning-600" />
-          <YStack flex={1}>
-            <Paragraph variant="sub" fontWeight="semiBold" color="grey-900">
-              {t(commonMessages.demoOrganization)}
-            </Paragraph>
-            <Paragraph variant="annotation" color="grey-800">
-              {t(commonMessages.demoOrganizationWarning)}
-            </Paragraph>
-          </YStack>
-        </XStack>
+        <WarningBox
+          variant="warning"
+          title={t(commonMessages.demoOrganization)}
+          message={t(commonMessages.demoOrganizationWarning)}
+        />
       )}
     </YStack>
+  )
+}
+
+function WarningBox({ variant, title, message }: { variant: 'warning' | 'danger'; title: string; message: string }) {
+  return (
+    <XStack
+      rounded="6"
+      bg={variant === 'danger' ? 'danger-300' : 'warning-300'}
+      borderWidth={1}
+      borderColor={variant === 'danger' ? 'danger-400' : 'warning-400'}
+      gap="3"
+      p="4"
+      items="center"
+    >
+      <HeroIcons.ExclamationTriangleFilled size={20} color={variant === 'danger' ? 'danger-600' : 'warning-600'} />
+      <YStack flex={1}>
+        <Paragraph variant="sub" fontWeight="semiBold" color="grey-900">
+          {title}
+        </Paragraph>
+        <Paragraph variant="annotation" color="grey-800">
+          {message}
+        </Paragraph>
+      </YStack>
+    </XStack>
   )
 }

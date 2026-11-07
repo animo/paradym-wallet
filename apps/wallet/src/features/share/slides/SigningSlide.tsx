@@ -11,7 +11,7 @@ interface SigningSlideProps {
 }
 
 export function SigningSlide({ documentName }: SigningSlideProps) {
-  const { onNext, onCancel } = useWizard()
+  const { onNext, onCancel, confirmCombined } = useWizard()
   const { height, onLayout } = useImageScaler({ scaleFactor: 0.65 })
   const { t } = useLingui()
 
@@ -45,6 +45,7 @@ export function SigningSlide({ documentName }: SigningSlideProps) {
           onAccept={() => onNext()}
           onDecline={() => onCancel()}
           isLoading={false}
+          variant={confirmCombined ? 'confirmation' : 'regular'}
         />
       </YStack>
     </YStack>

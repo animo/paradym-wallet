@@ -31,6 +31,8 @@ type SlideWizardProps = {
   steps: SlideStep[]
   errorScreen?: () => React.ReactNode
   onCancel: () => void
+  // Closes the wizard once a slide called `completeProgressBar`. The flow is done then, so closing doesn't ask to stop it
+  onComplete?: () => void
   isError?: boolean
   confirmation?: {
     title: string
@@ -68,7 +70,7 @@ export interface SlideWizardRef {
 
 export const SlideWizard = forwardRef(
   (
-    { steps, onCancel, isError, errorScreen, confirmation, willResume, resumeFrom }: SlideWizardProps,
+    { steps, onCancel, onComplete, isError, errorScreen, confirmation, willResume, resumeFrom }: SlideWizardProps,
     ref: ForwardedRef<SlideWizardRef>
   ) => {
     const { handleScroll, isScrolledByOffset, scrollEventThrottle, onContentSizeChange, onLayout } =
@@ -81,6 +83,8 @@ export const SlideWizard = forwardRef(
     const { withHaptics } = useHaptics()
     const media = useMedia()
     const combinedContinueRef = useRef<(() => Promise<void>) | undefined>(undefined)
+    // State rather than a ref, so the next step re-renders when a confirmation is registered and can show it
+    const [combinedConfirm, setCombinedConfirmState] = useState<() => Promise<boolean>>()
     const [isContinuing, setIsContinuing] = useState(false)
 
     const [currentStepIndex, setCurrentStepIndex] = useState(0)
@@ -187,8 +191,9 @@ export const SlideWizard = forwardRef(
     const handleCancel = withHaptics(
       useCallback(() => {
         Keyboard.dismiss()
-        setIsSheetOpen(true)
-      }, [])
+        if (isCompleted && onComplete) onComplete()
+        else setIsSheetOpen(true)
+      }, [isCompleted, onComplete])
     )
 
     const onConfirmCancel = withHaptics(() => {
@@ -252,10 +257,15 @@ export const SlideWizard = forwardRef(
       combinedContinueRef.current = onContinue
     }, [])
 
+    const setCombinedConfirm = useCallback((confirm?: () => Promise<boolean>) => {
+      setCombinedConfirmState(() => confirm)
+    }, [])
+
     // Continuing from the second half of a combined step also continues the first half, and moves past both
     const onNextCombined = useCallback(
       async (slide?: string) => {
         if (isNavigating.current) return
+        if (combinedConfirm && !(await combinedConfirm())) return
         setIsContinuing(true)
         try {
           await combinedContinueRef.current?.()
@@ -264,7 +274,7 @@ export const SlideWizard = forwardRef(
         }
         onNext(slide, 2)
       },
-      [onNext]
+      [onNext, combinedConfirm]
     )
 
     const Screen = isError && errorScreen ? errorScreen : steps[currentStepIndex].screen
@@ -311,13 +321,21 @@ export const SlideWizard = forwardRef(
             {isCombined && NextScreen ? (
               <TwoPane
                 start={
-                  <WizardProvider value={{ ...contextValue, isCombined: true, setCombinedContinue }}>
+                  <WizardProvider
+                    value={{ ...contextValue, isCombined: true, setCombinedContinue, setCombinedConfirm }}
+                  >
                     <SlidePane>{renderScreen(Screen)}</SlidePane>
                   </WizardProvider>
                 }
                 end={
                   <WizardProvider
-                    value={{ ...contextValue, onNext: onNextCombined, isContinuing, isNextToPrevious: true }}
+                    value={{
+                      ...contextValue,
+                      onNext: onNextCombined,
+                      isContinuing,
+                      isNextToPrevious: true,
+                      confirmCombined: combinedConfirm,
+                    }}
                   >
                     <SlidePane>{renderScreen(NextScreen)}</SlidePane>
                   </WizardProvider>
