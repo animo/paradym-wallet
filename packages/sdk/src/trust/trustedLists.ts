@@ -59,6 +59,10 @@ type TrustedListType = keyof typeof trustedListTypes
 
 // A list is fetched again once a day, or earlier when its next update is due
 const MAX_TRUSTED_LIST_AGE_MS = 24 * 60 * 60 * 1000
+// A list that couldn't be updated for a week isn't used anymore, so a provider removed from it doesn't stay trusted
+const MAX_STALE_TRUSTED_LIST_AGE_MS = 7 * MAX_TRUSTED_LIST_AGE_MS
+// A request may wait for a list, so a host that doesn't answer can't hold it up for long
+const FETCH_TRUSTED_LIST_TIMEOUT_MS = 10_000
 
 const trustedLists = new Map<string, TrustedList>()
 const pendingTrustedLists = new Map<string, Promise<TrustedList | undefined>>()
@@ -95,7 +99,9 @@ const fetchTrustedList = async (
   type: TrustedListType
 ): Promise<TrustedList> => {
   const { profile, serviceType } = trustedListTypes[type]
-  const response = await agentContext.config.agentDependencies.fetch(config.url)
+  const response = await agentContext.config.agentDependencies.fetch(config.url, {
+    signal: AbortSignal.timeout(FETCH_TRUSTED_LIST_TIMEOUT_MS),
+  })
   if (!response.ok) throw new Error(`Fetching the trusted list failed with status ${response.status}`)
   const jws = (await response.text()).trim()
 
@@ -145,8 +151,8 @@ const fetchTrustedList = async (
  *
  * The trusted list, from memory or the wallet store, and fetched when it is not stored yet or due for
  * an update. Only a list that was never loaded is waited for: a list loaded before is used while its
- * update is fetched, and stays in use when fetching fails, so a list that can't be reached for a while
- * doesn't make everyone untrusted.
+ * update is fetched, and stays in use for up to a week when fetching fails, so a list that can't be
+ * reached for a while doesn't make everyone untrusted.
  *
  */
 export const getTrustedList = async (
@@ -154,8 +160,9 @@ export const getTrustedList = async (
   config: TrustedListConfiguration,
   type: TrustedListType
 ) => {
-  const loaded = trustedLists.get(config.url) ?? (await readStoredTrustedList(agentContext, config.url))
+  const stored = trustedLists.get(config.url) ?? (await readStoredTrustedList(agentContext, config.url))
   const now = Date.now()
+  const loaded = stored && now - stored.fetchedAt < MAX_STALE_TRUSTED_LIST_AGE_MS ? stored : undefined
   const isDue =
     !loaded ||
     now - loaded.fetchedAt >= MAX_TRUSTED_LIST_AGE_MS ||

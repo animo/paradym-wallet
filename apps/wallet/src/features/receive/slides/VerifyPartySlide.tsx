@@ -32,8 +32,8 @@ interface VerifyPartySlideProps {
   onContinue?: () => Promise<void>
   onDecline?: () => void
   trustedEntities?: Array<TrustedEntity>
-  /** Whether the request asks for more than the organization registered to ask for */
-  isOverAsking?: boolean
+  /** Whether the offer is for a card the organization isn't registered to issue, or the request asks for more than it registered */
+  isBeyondRegistration?: boolean
 }
 
 export const VerifyPartySlide = ({
@@ -45,7 +45,7 @@ export const VerifyPartySlide = ({
   onContinue,
   onDecline,
   trustedEntities,
-  isOverAsking,
+  isBeyondRegistration,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
@@ -56,9 +56,9 @@ export const VerifyPartySlide = ({
   const lastInteractionDate = activities[0]?.date
   const { t } = useLingui()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const [isOverAskingConfirmationOpen, setIsOverAskingConfirmationOpen] = useState(false)
-  const resolveOverAskingConfirmation = useRef<(confirmed: boolean) => void>(undefined)
-  const isOverAskingConfirmed = useRef(false)
+  const [isRegistrationWarningOpen, setIsRegistrationWarningOpen] = useState(false)
+  const resolveRegistrationWarning = useRef<(confirmed: boolean) => void>(undefined)
+  const isRegistrationWarningConfirmed = useRef(false)
 
   const entityIsTrustAnchor = trustedEntities?.some((entity) => entity.entityId === entityId)
   const isDemoTrustedEntity = trustedEntities?.some((entity) => entity.demo) ?? false
@@ -77,26 +77,100 @@ export const VerifyPartySlide = ({
     return () => setCombinedContinue?.(undefined)
   }, [setCombinedContinue, onContinue])
 
-  // Over-asking is confirmed a second time, once, before continuing from this step or the step next to it
-  const confirmOverAsking = useCallback(() => {
-    if (isOverAskingConfirmed.current) return Promise.resolve(true)
+  // Going beyond the registration is confirmed a second time, once, before continuing from this step or the step next to it
+  const confirmRegistrationWarning = useCallback(() => {
+    if (isRegistrationWarningConfirmed.current) return Promise.resolve(true)
     return new Promise<boolean>((resolve) => {
-      resolveOverAskingConfirmation.current = resolve
-      setIsOverAskingConfirmationOpen(true)
+      resolveRegistrationWarning.current = resolve
+      setIsRegistrationWarningOpen(true)
     })
   }, [])
 
-  const closeOverAskingConfirmation = (confirmed: boolean) => {
-    isOverAskingConfirmed.current = confirmed
-    setIsOverAskingConfirmationOpen(false)
-    resolveOverAskingConfirmation.current?.(confirmed)
-    resolveOverAskingConfirmation.current = undefined
+  const closeRegistrationWarning = (confirmed: boolean) => {
+    isRegistrationWarningConfirmed.current = confirmed
+    setIsRegistrationWarningOpen(false)
+    resolveRegistrationWarning.current?.(confirmed)
+    resolveRegistrationWarning.current = undefined
   }
 
   useEffect(() => {
-    setCombinedConfirm?.(isOverAsking ? confirmOverAsking : undefined)
+    setCombinedConfirm?.(isBeyondRegistration ? confirmRegistrationWarning : undefined)
     return () => setCombinedConfirm?.(undefined)
-  }, [setCombinedConfirm, isOverAsking, confirmOverAsking])
+  }, [setCombinedConfirm, isBeyondRegistration, confirmRegistrationWarning])
+
+  const registrationWarning = !isBeyondRegistration
+    ? undefined
+    : type === 'offer'
+      ? {
+          title: t({
+            id: 'verifyPartySlide.notRegisteredToIssue',
+            message: 'Not registered for this card',
+            comment: 'Title of the warning shown when an organization offers a card it is not registered to issue',
+          }),
+          description: name
+            ? t({
+                id: 'verifyPartySlide.notRegisteredToIssueWarning',
+                message: `${name} is not registered to issue this card. Only continue if you trust it`,
+                comment:
+                  'Warning shown when an organization offers a card it is not registered to issue, with the name of the organization',
+              })
+            : t({
+                id: 'verifyPartySlide.notRegisteredToIssueWarningUnknownOrganization',
+                message: 'This organization is not registered to issue this card. Only continue if you trust it',
+                comment:
+                  'Warning shown when an organization offers a card it is not registered to issue, when the name of the organization is unknown',
+              }),
+          // The card is only added once it is accepted, after it is received
+          confirmation: name
+            ? t({
+                id: 'verifyPartySlide.notRegisteredToIssueConfirmationDescription',
+                message: `${name} offers a card it is not registered to issue. You can review the card before it is added.`,
+                comment:
+                  'Shown in the sheet that asks to confirm continuing with an offer of a card the organization is not registered to issue, with the name of the organization',
+              })
+            : t({
+                id: 'verifyPartySlide.notRegisteredToIssueConfirmationDescriptionUnknownOrganization',
+                message:
+                  'This organization offers a card it is not registered to issue. You can review the card before it is added.',
+                comment:
+                  'Shown in the sheet that asks to confirm continuing with an offer of a card the organization is not registered to issue, when the name of the organization is unknown',
+              }),
+        }
+      : {
+          title: t(commonMessages.overAsking),
+          description: name
+            ? t(commonMessages.overAskingWarning(name))
+            : t(commonMessages.overAskingWarningUnknownOrganization),
+          // Next to the next step, confirming acts right away, so there is nothing left to review
+          confirmation: isCombined
+            ? name
+              ? t({
+                  id: 'verifyPartySlide.overAskingConfirmationDescriptionCombined',
+                  message: `${name} asks for more than it registered.`,
+                  comment:
+                    'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization',
+                })
+              : t({
+                  id: 'verifyPartySlide.overAskingConfirmationDescriptionCombinedUnknownOrganization',
+                  message: 'This organization asks for more than it registered.',
+                  comment:
+                    'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown',
+                })
+            : name
+              ? t({
+                  id: 'verifyPartySlide.overAskingConfirmationDescription',
+                  message: `${name} asks for more than it registered. You can review the request before anything is shared.`,
+                  comment:
+                    'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization',
+                })
+              : t({
+                  id: 'verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization',
+                  message:
+                    'This organization asks for more than it registered. You can review the request before anything is shared.',
+                  comment:
+                    'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown',
+                }),
+        }
 
   const handleContinue = async () => {
     setIsLoading(true)
@@ -187,15 +261,9 @@ export const VerifyPartySlide = ({
 
   const trustDetails = (
     <YStack gap="5">
-      {/* Only a recognized organization is checked for over-asking, so the warning takes its place */}
-      {isOverAsking ? (
-        <InfoButton
-          variant="danger"
-          title={t(commonMessages.overAsking)}
-          description={
-            name ? t(commonMessages.overAskingWarning(name)) : t(commonMessages.overAskingWarningUnknownOrganization)
-          }
-        />
+      {/* Only a recognized organization is checked against its registration, so the warning takes its place */}
+      {registrationWarning ? (
+        <InfoButton variant="danger" title={registrationWarning.title} description={registrationWarning.description} />
       ) : trustedEntitiesWithoutSelf && (trustedEntitiesWithoutSelf.length > 0 || entityIsTrustAnchor) ? (
         <InfoButton
           variant="positive"
@@ -256,61 +324,31 @@ export const VerifyPartySlide = ({
       <DualResponseButtons
         align="horizontal"
         onAccept={async () => {
-          if (isOverAsking && !(await confirmOverAsking())) return
+          if (registrationWarning && !(await confirmRegistrationWarning())) return
           await handleContinue()
         }}
         onDecline={handleDecline}
         acceptText={t(commonMessages.confirmContinue)}
         declineText={t(commonMessages.stop)}
         isLoading={isLoading}
-        variant={isOverAsking ? 'confirmation' : 'regular'}
+        variant={registrationWarning ? 'confirmation' : 'regular'}
       />
     </Stack>
   )
 
-  const overAskingConfirmation = isOverAsking && (
+  const registrationWarningSheet = registrationWarning && (
     <ConfirmationSheet
-      isOpen={isOverAskingConfirmationOpen}
-      setIsOpen={(isOpen) => (isOpen ? setIsOverAskingConfirmationOpen(true) : closeOverAskingConfirmation(false))}
+      isOpen={isRegistrationWarningOpen}
+      setIsOpen={(isOpen) => (isOpen ? setIsRegistrationWarningOpen(true) : closeRegistrationWarning(false))}
       title={t({
         id: 'verifyPartySlide.overAskingConfirmationTitle',
         message: 'Continue anyway?',
         comment:
-          'Title of the sheet that asks to confirm continuing with a request that asks for more than the organization registered',
+          'Title of the sheet that asks to confirm continuing with an organization that goes beyond what it registered, such as a request that asks for more than it registered',
       })}
-      description={
-        // Next to the next step, confirming acts right away, so there is nothing left to review
-        isCombined
-          ? name
-            ? t({
-                id: 'verifyPartySlide.overAskingConfirmationDescriptionCombined',
-                message: `${name} asks for more than it registered.`,
-                comment:
-                  'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization',
-              })
-            : t({
-                id: 'verifyPartySlide.overAskingConfirmationDescriptionCombinedUnknownOrganization',
-                message: 'This organization asks for more than it registered.',
-                comment:
-                  'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown',
-              })
-          : name
-            ? t({
-                id: 'verifyPartySlide.overAskingConfirmationDescription',
-                message: `${name} asks for more than it registered. You can review the request before anything is shared.`,
-                comment:
-                  'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization',
-              })
-            : t({
-                id: 'verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization',
-                message:
-                  'This organization asks for more than it registered. You can review the request before anything is shared.',
-                comment:
-                  'Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown',
-              })
-      }
+      description={registrationWarning.confirmation}
       confirmText={t(commonMessages.confirmContinue)}
-      onConfirm={() => closeOverAskingConfirmation(true)}
+      onConfirm={() => closeRegistrationWarning(true)}
     />
   )
 
@@ -329,7 +367,7 @@ export const VerifyPartySlide = ({
             </SlidePane>
           }
         />
-        {overAskingConfirmation}
+        {registrationWarningSheet}
       </>
     )
   }
@@ -342,7 +380,7 @@ export const VerifyPartySlide = ({
         {trustDetails}
       </ScrollView>
       {!isCombined && footer}
-      {overAskingConfirmation}
+      {registrationWarningSheet}
     </YStack>
   )
 }

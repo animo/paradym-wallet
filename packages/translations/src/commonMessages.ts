@@ -178,6 +178,12 @@ export const commonMessages = {
     id: 'common.informationRequestDeclined',
     message: 'Information request has been declined.',
   }),
+  credentialDeclined: defineMessage({
+    // Keeps the id it had in the DIDComm credential slides, so the existing translations are used
+    id: 'credential.declined',
+    message: 'Credential has been declined.',
+    comment: 'Shown in a toast when user declines the credential',
+  }),
   featureNotSupported: defineMessage({
     id: 'common.featureNotSupported',
     message: 'This feature is not supported in this version of the app.',

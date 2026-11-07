@@ -52,7 +52,7 @@ const useContentType = (type: 'presentation' | 'pin' | 'noAuth', issuerName: str
 
 export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCardSlideProps) => {
   const { t } = useLingui()
-  const { onNext, onCancel, isContinuing } = useWizard()
+  const { onNext, onCancel, isContinuing, confirmCombined } = useWizard()
 
   const content = useContentType(type, display.issuer.name ?? t(commonMessages.unknown))
 
@@ -83,6 +83,7 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
           acceptText={t(commonMessages.continue)}
           declineText={t(commonMessages.stop)}
           isLoading={isContinuing}
+          variant={confirmCombined ? 'confirmation' : 'regular'}
         />
       </Stack>
     </YStack>
