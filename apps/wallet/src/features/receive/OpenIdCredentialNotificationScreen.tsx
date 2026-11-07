@@ -386,6 +386,11 @@ export function CredentialNotificationScreen() {
     pushToWallet()
   }
 
+  const onOfferDecline = () => {
+    toast.show(t(commonMessages.credentialDeclined))
+    pushToWallet()
+  }
+
   // TODO: it is not the cleanest, but the UI shows it perfectly.
   //       This is done to make sure we have a defined `resolvedOffer` in all the next steps
   //       Do we want to keep it like this? Or is there a better way where the rest of slides has it defined
@@ -462,6 +467,7 @@ export function CredentialNotificationScreen() {
                   : undefined
               }
               trustedEntities={resolvedCredentialOffer.trustedEntities}
+              isBeyondRegistration={resolvedCredentialOffer.issuerRegistration?.valid === false}
             />
           ),
         },
@@ -630,7 +636,7 @@ export function CredentialNotificationScreen() {
         )
       }
       isError={errorReason !== undefined || isInvalidTxCode}
-      onCancel={onProofDecline}
+      onCancel={onOfferDecline}
       onComplete={onGoToWallet}
       confirmation={{
         title: t({

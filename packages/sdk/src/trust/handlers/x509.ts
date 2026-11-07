@@ -7,7 +7,7 @@ import {
   X509ModuleConfig,
 } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import { checkRequestForOverAsking } from '../registrationCertificate'
+import { checkOfferForRegistration, checkRequestForOverAsking } from '../registrationCertificate'
 import { findTrustedListEntities } from '../trustedLists'
 import type {
   TrustContext,
@@ -132,7 +132,8 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
         overAsking = await checkRequestForOverAsking(
           agentContext,
           trustMechanismConfiguration.registrationCertificateTrustedLists ?? [],
-          resolvedAuthorizationRequest
+          resolvedAuthorizationRequest,
+          signer.x5c[0]
         )
       } else {
         organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
@@ -211,6 +212,13 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
         },
         // The access certificate provider vouches for the issuer, not the wallet
         trustedEntities: trustedListEntities.trustedEntities,
+        // Only an issuer trusted through the lists has to stay within its registration certificate
+        issuerRegistration: await checkOfferForRegistration(
+          options.agentContext,
+          options.trustMechanismConfiguration.registrationCertificateTrustedLists ?? [],
+          options.resolvedCredentialOffer,
+          signer.x5c[0]
+        ),
       }
     }
   } catch {

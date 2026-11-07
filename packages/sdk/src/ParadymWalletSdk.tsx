@@ -440,8 +440,7 @@ function useSecureUnlockState(configuration: SetupParadymWalletSdkOptions): Secu
             storePath,
           })
           if (legacyStoreId) pws.logger.info('Moved the wallet store from its legacy id', { legacyStoreId, id })
-          await pws.agent.initialize()
-          loadTrustedLists(pws.agent.context, pws.trustMechanisms)
+          await pws.initialize()
 
           // Only once the store has actually opened with this key.
           //

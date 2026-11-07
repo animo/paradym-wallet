@@ -25,6 +25,7 @@ import {
   type OpenId4VciResolvedAuthorizationRequest,
   type OpenId4VciResolvedCredentialOffer,
 } from '@credo-ts/openid4vc'
+import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import { filter, first, firstValueFrom, type Observable, timeout } from 'rxjs'
 import { assertAgentType, assertDidcommAgent } from '../agent'
 import type { CredentialDisplay } from '../display/credential'
@@ -153,7 +154,17 @@ export type ResolveCredentialOfferReturn = (
   | ResolveCredentialOfferPreAuthWithTxCodeReturn
   | ResolveCredentialOfferAuthReturn
   | ResolveCredentialOfferAuthPresentationDuringIssuanceReturn
-) & { trustMechanism: TrustMechanism; trustedEntities: TrustedEntity[]; issuer: TrustedEntity }
+) & {
+  trustMechanism: TrustMechanism
+  trustedEntities: TrustedEntity[]
+  issuer: TrustedEntity
+  /**
+   * Whether the offer stays within the registration certificate in the issuer's signed metadata. Only for
+   * an issuer trusted through the lists of access certificate providers that carries a registration
+   * certificate, when lists of registration certificate providers are configured.
+   */
+  issuerRegistration?: OverAskingResult
+}
 
 export async function resolveCredentialOffer({
   paradym,
@@ -174,7 +185,7 @@ export async function resolveCredentialOffer({
 
   const credentialDisplay = getCredentialDisplayForOffer(resolvedCredentialOffer)
 
-  const { trustMechanism, trustedEntities, issuer } = await getTrustedEntitiesForOpenId4Vci({
+  const { trustMechanism, trustedEntities, issuer, issuerRegistration } = await getTrustedEntitiesForOpenId4Vci({
     resolvedCredentialOffer,
     agentContext: paradym.agent.context,
     trustMechanisms: paradym.trustMechanisms,
@@ -191,6 +202,7 @@ export async function resolveCredentialOffer({
         issuer,
         trustedEntities,
         trustMechanism,
+        issuerRegistration,
       }
     }
     return {
@@ -200,6 +212,7 @@ export async function resolveCredentialOffer({
       issuer,
       trustedEntities,
       trustMechanism,
+      issuerRegistration,
     }
   }
 
@@ -237,6 +250,7 @@ export async function resolveCredentialOffer({
         issuer,
         trustedEntities,
         trustMechanism,
+        issuerRegistration,
       }
     }
 
@@ -248,6 +262,7 @@ export async function resolveCredentialOffer({
       issuer,
       trustedEntities,
       trustMechanism,
+      issuerRegistration,
     }
   }
 

@@ -82,7 +82,7 @@ export function PresentationNotificationScreen({
                 name={verifierName}
                 logo={logo}
                 trustedEntities={trustedEntities}
-                isOverAsking={isOverAsking}
+                isBeyondRegistration={isOverAsking}
               />
             ),
           },
