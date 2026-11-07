@@ -1,5 +1,6 @@
-import type { AgentContext, X509Certificate } from '@credo-ts/core'
+import type { AgentContext } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import type { Optionalize } from '../types'
 import {
@@ -8,11 +9,6 @@ import {
   getTrustedEntitiesForDidForOpenId4Vp,
   type TrustedDidEntity,
 } from './handlers/did'
-import {
-  type GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions,
-  getTrustedEntitiesForEudiRpAuthenticationForOpenId4Vp,
-  type TrustList,
-} from './handlers/eudiRpAuthentication'
 import {
   type GetTrustedEntitiesForFallbackForOpenId4VciOptions,
   type GetTrustedEntitiesForFallbackForOpenId4VpOptions,
@@ -26,6 +22,7 @@ import {
   getTrustedEntitiesForX509CertificateForOpenId4Vp,
   type TrustedX509Entity,
 } from './handlers/x509'
+import type { TrustedListConfiguration } from './trustedLists'
 
 /**
  *
@@ -47,6 +44,11 @@ export type TrustedEntity = {
   logoUri?: string
   uri?: string
   demo?: boolean
+  /**
+   * The country of an entity on a trusted list, e.g. `DE`: the country of its certificate on the
+   * list, or else the territory of the list
+   */
+  territory?: string
 }
 
 export type TrustedIssuerEntity = {
@@ -57,19 +59,21 @@ export type TrustedIssuerEntity = {
 export type TrustedRelyingPartyEntity = {
   relyingParty: Optionalize<TrustedEntity, 'organizationName' | 'entityId'>
   trustedEntities: TrustedEntity[]
+  overAsking?: OverAskingResult
 }
 
-export type TrustMechanism = 'eudi_rp_authentication' | 'x509' | 'did' | 'none'
-
-export type EudiRpAuthenticationTrustMechanismConfiguration = {
-  trustMechanism: 'eudi_rp_authentication'
-  trustList: TrustList
-  trustedX509Entities: TrustedX509Entity[]
-}
+export type TrustMechanism = 'x509' | 'did' | 'none'
 
 export type X509TrustMechanismConfiguration = {
   trustMechanism: 'x509'
   trustedX509Entities: TrustedX509Entity[]
+  /** Lists of access certificate providers, for parties that authenticate with an access certificate */
+  accessCertificateTrustedLists?: TrustedListConfiguration[]
+  /**
+   * Lists of registration certificate providers. When set, a request of a party trusted through
+   * `accessCertificateTrustedLists` has to stay within the registration certificate it carries.
+   */
+  registrationCertificateTrustedLists?: TrustedListConfiguration[]
 }
 
 export type DidTrustMechanismConfiguration = {
@@ -83,21 +87,13 @@ export type FallbackMechanismConfiguration = {
 }
 
 export type TrustMechanismConfiguration =
-  | EudiRpAuthenticationTrustMechanismConfiguration
   | X509TrustMechanismConfiguration
   | DidTrustMechanismConfiguration
   | FallbackMechanismConfiguration
   | { walletTrustedEntity?: TrustedEntity }
 
-export type AuthorizationRequestVerificationResult = {
-  isValidButUntrusted: boolean
-  isValidAndTrusted: boolean
-  x509RegistrationCertificate: X509Certificate
-}[]
-
 export type GetTrustedEntitiesForOpenId4VpOptions = Omit<
   TrustContext &
-    GetTrustedEntitiesForEudiRpAuthenticationForOpenId4VpOptions &
     GetTrustedEntitiesForDidForOpenId4VpOptions &
     GetTrustedEntitiesForX509CertificateForOpenId4VpOptions &
     GetTrustedEntitiesForFallbackForOpenId4VpOptions,
@@ -114,12 +110,7 @@ export type GetTrustedEntitiesForOpenId4VciOptions = Omit<
 
 export const detectTrustMechanismForAuthorizationRequest = (options: {
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest
-  authorizationRequestVerificationResult?: AuthorizationRequestVerificationResult
 }): TrustMechanism => {
-  if (options.authorizationRequestVerificationResult && options.authorizationRequestVerificationResult.length > 0) {
-    return 'eudi_rp_authentication'
-  }
-
   if (options.resolvedAuthorizationRequest.signedAuthorizationRequest?.signer.method === 'x5c') {
     return 'x509'
   }
@@ -159,6 +150,7 @@ export const getTrustedEntitiesForOpenId4Vp = async (
   trustMechanism: TrustMechanism
   relyingParty: TrustedRelyingPartyEntity['relyingParty'] & { entityId: string }
   trustedEntities: Array<TrustedEntity>
+  overAsking?: OverAskingResult
 }> => {
   const trustMechanism = detectTrustMechanismForAuthorizationRequest(options)
   const walletTrustedEntity = options.trustMechanisms.find(
@@ -175,13 +167,6 @@ export const getTrustedEntitiesForOpenId4Vp = async (
 
   let trustedEntity: TrustedRelyingPartyEntity
   switch (trustMechanism) {
-    case 'eudi_rp_authentication':
-      trustedEntity = await getTrustedEntitiesForEudiRpAuthenticationForOpenId4Vp({
-        ...options,
-        walletTrustedEntity,
-        trustMechanismConfiguration: trustMechanismConfiguration as EudiRpAuthenticationTrustMechanismConfiguration,
-      })
-      break
     case 'x509':
       trustedEntity = await getTrustedEntitiesForX509CertificateForOpenId4Vp({
         ...options,

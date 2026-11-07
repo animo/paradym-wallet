@@ -103,7 +103,7 @@ export function InfoButton({
       )}
       <XStack grow={1} flex={1} items="center">
         <YStack gap="0-5" flex={1} grow={1}>
-          <Heading maxFontSizeMultiplier={1.3} numberOfLines={1} heading="sub1">
+          <Heading maxFontSizeMultiplier={1.3} numberOfLines={2} heading="sub1">
             {title}
           </Heading>
           {description && <Paragraph fontSize={14}>{description}</Paragraph>}

@@ -55,7 +55,7 @@ export const PasoPaymentSlide = ({
   isResolvingTransaction = false,
   onSelectPaymentCredential,
 }: PasoPaymentSlideProps) => {
-  const { onNext, onCancel } = useWizard()
+  const { onNext, onCancel, confirmCombined } = useWizard()
   const { t } = useLingui()
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
@@ -89,6 +89,8 @@ export const PasoPaymentSlide = ({
   }
 
   const handleAccept = async () => {
+    // Next to a step that asks for a confirmation first, paying waits for it
+    if (confirmCombined && !(await confirmCombined())) return
     setIsProcessing(true)
     await onAccept?.()
     onNext()
@@ -226,6 +228,7 @@ export const PasoPaymentSlide = ({
               onDecline={handleDecline}
               isLoading={isProcessing}
               isAcceptDisabled={!hasSeenTransactionData || isResolvingTransaction}
+              variant={confirmCombined ? 'confirmation' : 'regular'}
             />
             {!hasSeenTransactionData && (
               <Paragraph variant="annotation" text="center">

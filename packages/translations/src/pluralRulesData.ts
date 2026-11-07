@@ -13,6 +13,7 @@ const localeData: Record<SupportedLocale, () => void> = {
   de: () => require('@formatjs/intl-pluralrules/locale-data/de.js'),
   en: () => require('@formatjs/intl-pluralrules/locale-data/en.js'),
   fi: () => require('@formatjs/intl-pluralrules/locale-data/fi.js'),
+  fr: () => require('@formatjs/intl-pluralrules/locale-data/fr.js'),
   nl: () => require('@formatjs/intl-pluralrules/locale-data/nl.js'),
   pt: () => require('@formatjs/intl-pluralrules/locale-data/pt.js'),
   sq: () => require('@formatjs/intl-pluralrules/locale-data/sq.js'),
