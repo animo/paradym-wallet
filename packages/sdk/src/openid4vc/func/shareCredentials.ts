@@ -9,7 +9,7 @@ import {
 } from '@credo-ts/core'
 import type { OpenId4VcHolderApi } from '@credo-ts/openid4vc'
 import { Linking } from 'react-native'
-import { assertAgentType } from '../../agent'
+import { assertAgentType } from '../../agentType'
 import type { FormattedSubmissionEntrySatisfied } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'

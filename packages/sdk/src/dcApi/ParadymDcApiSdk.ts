@@ -1,7 +1,7 @@
 import type {
-  AndroidDcApiRequest,
+  DcApiRawRequest,
   DcApiRequest,
-  IosDcApiRequest,
+  IosParsedDcApiRequest,
   IsoMdocProtocolRequest,
   Openid4vpProtocolRequest,
 } from '@animo-id/expo-digital-credentials-api/request-handler'
@@ -212,8 +212,9 @@ export class ParadymDcApiSdk {
   /**
    * Work out who is asking, what they are asking for, and how it would be answered.
    *
-   * Nothing is released to the verifier here — on iOS the raw request is not even available until
-   * `approve()`, which is why the review is built from what the OS parsed instead.
+   * Nothing is released to the verifier here — for a parsed Annex C request (iOS before 27.3) the raw
+   * request is not even available until `approve()`, which is why the review is built from what the
+   * OS parsed instead.
    */
   public async reviewRequest(request: DcApiRequest): Promise<DcApiReview> {
     try {
@@ -226,11 +227,12 @@ export class ParadymDcApiSdk {
   }
 
   private async resolveReview(request: DcApiRequest): Promise<ResolvedReview> {
-    if (request.platform === 'ios') return await this.reviewIosRequest(request)
+    if (request.kind === 'parsed') return await this.reviewIosRequest(request)
 
     // Multipaz only reports the protocol it matched, so with several requests of that protocol the
     // first one is taken: the matcher answers the first request the wallet's credentials satisfy.
-    const { selection } = request
+    // iOS has no picker, and hands over the one request the wallet was picked for.
+    const selection = request.platform === 'android' ? request.selection : undefined
     const protocolRequest = request.requests[selection?.requestIndex ?? selection?.candidateRequestIndexes[0] ?? 0]
     if (!protocolRequest) throw new Error('The request carries no protocol this wallet can answer')
 
@@ -309,12 +311,12 @@ export class ParadymDcApiSdk {
   }
 
   /**
-   * ISO 18013-7 Annex C, on Android. Credo parses the request and matches it against the wallet's
+   * ISO 18013-7 Annex C, on Android and on iOS 27.3. Credo parses the request and matches it against the wallet's
    * mdocs in one go, so both the review and the response come out of the same resolved request and
    * the same selected credentials.
    */
   private async reviewMdocRequest(
-    request: AndroidDcApiRequest,
+    request: DcApiRawRequest,
     protocolRequest: IsoMdocProtocolRequest
   ): Promise<ResolvedReview> {
     if (!request.origin) throw new Error('The request carries no origin, so the wallet cannot establish trust')
@@ -349,19 +351,18 @@ export class ParadymDcApiSdk {
   }
 
   /**
-   * OpenID4VP over the digital credentials API, on Android. Trust is established exactly the way
-   * the app establishes it for a request that arrived over a link or a QR code.
+   * OpenID4VP over the digital credentials API, on Android and on iOS 27.3. Trust is established
+   * exactly the way the app establishes it for a request that arrived over a link or a QR code.
    */
   private async reviewOpenId4VpRequest(
-    request: AndroidDcApiRequest,
+    request: DcApiRawRequest,
     protocolRequest: Openid4vpProtocolRequest
   ): Promise<ResolvedReview> {
     if (!this.isOpenId4VcEnabled) {
       throw new Error(`The wallet is not configured for OpenID4VP, so it cannot answer '${protocolRequest.protocol}'`)
     }
 
-    const authorizationRequest = JSON.parse(protocolRequest.data) as Record<string, unknown>
-    const resolved = await this.agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(authorizationRequest, {
+    const resolved = await this.agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(protocolRequest.data, {
       origin: request.origin,
     })
 
@@ -376,8 +377,12 @@ export class ParadymDcApiSdk {
     })
 
     // The cards picked in the credential picker go to the front of their entries, so what is shown,
-    // what a transaction is resolved against and what is presented are the same cards.
-    const selectedCredentials = getPickedCredentials(resolved.dcql.queryResult, request.selection?.credentialIds)
+    // what a transaction is resolved against and what is presented are the same cards. iOS has no
+    // picker, so the wallet selects them itself.
+    const selectedCredentials = getPickedCredentials(
+      resolved.dcql.queryResult,
+      request.platform === 'android' ? request.selection?.credentialIds : undefined
+    )
     const credentialsForRequest = Object.entries(selectedCredentials).reduce(
       (current, [credentialQueryId, credentialRecordId]) =>
         selectPasoPaymentCredential(current, credentialQueryId, credentialRecordId),
@@ -420,16 +425,16 @@ export class ParadymDcApiSdk {
   }
 
   /**
-   * iOS holds the raw request back until the wallet commits, so the review is built from the
-   * summary the OS parsed and the wallet's own mdocs — matching on document type and element
-   * identifiers, which is what the OS matched on too. The real request is resolved inside `share`,
-   * after `approve()`.
+   * Annex C before iOS 27.3. iOS holds the raw request back until the wallet commits, so the review
+   * is built from the summary the OS parsed and the wallet's own mdocs — matching on document type
+   * and element identifiers, which is what the OS matched on too. The real request is resolved
+   * inside `share`, after `approve()`.
    *
    * `approve()` releases the raw request only once, but iOS keeps the request open until the
    * response is sent. So a `share` retried after a cancelled biometric prompt answers the request
    * approved the first time, rather than approving again.
    */
-  private async reviewIosRequest(request: IosDcApiRequest): Promise<ResolvedReview> {
+  private async reviewIosRequest(request: IosParsedDcApiRequest): Promise<ResolvedReview> {
     const reviewedRequest = await resolveMdocDeviceRequest({
       mdocApi: this.agent.mdoc,
       deviceRequest: toDeviceRequest(request.presentmentRequests),

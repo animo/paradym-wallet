@@ -1,5 +1,5 @@
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import { assertAgentType } from '../../agent'
+import { assertAgentType } from '../../agentType'
 import { ParadymWalletNoRequestToResolveError } from '../../error'
 import { getFormattedSubmission } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'

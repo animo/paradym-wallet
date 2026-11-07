@@ -3,6 +3,9 @@
 // against the baseline the last run on main cached — when there is one.
 //
 //   node scripts/report-bundle-size.mjs bundle-size.json [bundle-size-main.json] > comment.md
+//
+// Exits with 1, after printing the comment, when a bundle's bytecode grew by more than
+// `maxGrowth` against the baseline.
 import fs from 'node:fs'
 
 const [currentFile, baselineFile] = process.argv.slice(2)
@@ -12,6 +15,7 @@ const current = JSON.parse(fs.readFileSync(currentFile, 'utf8'))
 const baseline = baselineFile && fs.existsSync(baselineFile) ? JSON.parse(fs.readFileSync(baselineFile, 'utf8')) : null
 
 const packageRows = 15
+const maxGrowth = 0.1
 
 const size = (bundle, before, name) => Math.max(bundle.packages[name] ?? 0, before?.packages[name] ?? 0)
 
@@ -30,10 +34,25 @@ function formatDelta(bytes, before) {
   return `${delta > 0 ? '+' : '-'}${formatBytes(Math.abs(delta))}${percentage}`
 }
 
+const grown = Object.entries(current.bundles).flatMap(([key, bundle]) => {
+  const before = baseline?.bundles[key]?.bytes.hermes
+  return before && bundle.bytes.hermes > before * (1 + maxGrowth)
+    ? [`${bundle.label} (${bundle.platform}): ${formatDelta(bundle.bytes.hermes, before)}`]
+    : []
+})
+
 const lines = [
   '<!-- paradym-bundle-size -->',
   '## 📦 Bundle size',
   '',
+  ...(grown.length
+    ? [
+        '> [!CAUTION]',
+        `> **Bytecode grew by more than ${maxGrowth * 100}% against main.** Check the packages below for an import that pulls in more than intended.`,
+        ...grown.map((line) => `> - ${line}`),
+        '',
+      ]
+    : []),
   'Bytecode is what the binary ships — the JS column is the Metro output it is compiled from.',
   '',
   'Packages are listed by size on whichever side is larger, so one this branch drops still shows.',
@@ -79,3 +98,8 @@ lines.push(
 )
 
 console.log(lines.join('\n'))
+
+if (grown.length) {
+  console.error(`Bundle size grew by more than ${maxGrowth * 100}% against main:\n${grown.join('\n')}`)
+  process.exitCode = 1
+}

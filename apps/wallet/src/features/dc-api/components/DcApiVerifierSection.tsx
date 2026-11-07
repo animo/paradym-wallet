@@ -89,16 +89,7 @@ export function DcApiVerifierSection({
       </XStack>
 
       {isDemoTrustedEntity && (
-        <XStack
-          rounded="6"
-          bg="warning-300"
-          borderWidth={1}
-          borderColor="warning-400"
-          gap="3"
-          px="3"
-          py="2"
-          items="center"
-        >
+        <XStack rounded="6" bg="warning-300" borderWidth={1} borderColor="warning-400" gap="3" p="4" items="center">
           <HeroIcons.ExclamationTriangleFilled size={20} color="warning-600" />
           <YStack flex={1}>
             <Paragraph variant="sub" fontWeight="semiBold" color="grey-900">
