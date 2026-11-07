@@ -107,6 +107,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
         },
       ]}
       onCancel={onCredentialDecline}
+      onComplete={onComplete}
       errorScreen={() => (
         <InteractionErrorSlide key="credential-error" flowType={'issue'} reason={errorReason} onCancel={onCancel} />
       )}

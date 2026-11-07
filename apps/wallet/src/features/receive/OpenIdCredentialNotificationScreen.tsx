@@ -631,6 +631,7 @@ export function CredentialNotificationScreen() {
       }
       isError={errorReason !== undefined || isInvalidTxCode}
       onCancel={onProofDecline}
+      onComplete={onGoToWallet}
       confirmation={{
         title: t({
           id: 'receiveCredential.stopTitle',
