@@ -1,5 +1,6 @@
 import type { DcApiRequest } from '@animo-id/expo-digital-credentials-api/request-handler'
 import { isHardwareBoundCredentialType } from '@app/config/paymentAttestation'
+import { useBiometricsType } from '@app/hooks/useBiometricsType'
 // Deep import: `@app/hooks` pulls in the payment hooks, which this bundle doesn't link. The setting
 // itself lives in the shared MMKV, so the request UI reads what the app wrote — in its own process.
 import { useDevelopmentMode } from '@app/hooks/useDevelopmentMode'
@@ -11,7 +12,7 @@ import { PinDotsInput, type PinDotsInputRef } from '@package/app/components/PinD
 import { commonMessages, i18n, TranslationProvider } from '@package/translations'
 import { Button } from '@package/ui/base/Button'
 import { Heading } from '@package/ui/base/Headings'
-import { Paragraph } from '@package/ui/base/Paragraph'
+import { Paragraph, type ParagraphProps } from '@package/ui/base/Paragraph'
 import { ScrollView } from '@package/ui/base/ScrollView'
 import { Stack, XStack, YStack } from '@package/ui/base/Stacks'
 import { HeroIcons } from '@package/ui/content/Icon'
@@ -29,7 +30,7 @@ import { ParadymWalletPasoError } from '@paradym/wallet-sdk/paso/error'
 import { pasoPaymentTransactionDataType } from '@paradym/wallet-sdk/paso/paymentRulebook'
 import { getIsBiometricsEnabled } from '@paradym/wallet-sdk/storage/sharedMmkv'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Platform, useColorScheme } from 'react-native'
+import { type NativeSyntheticEvent, Platform, type TextLayoutEventData, useColorScheme } from 'react-native'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TamaguiProvider } from 'tamagui'
 import tamaguiConfig from '../../../tamagui.config'
@@ -120,6 +121,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
   const [phase, setPhase] = useState<Phase>({ name: 'unlock' })
   const [error, setError] = useState<string>()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
+  const biometricsType = useBiometricsType()
   const pasoRefusalMessage = usePasoRefusalMessage()
   const { hasSeenTransactionData, onTransactionDataLayout, onViewportLayout, onScroll } = useTransactionDataSeen()
 
@@ -178,13 +180,16 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         isUnlockingRef.current = false
         setPhase({ name: 'unlock' })
         console.error('Error unlocking wallet', unlockError)
-        // A cancelled biometric prompt is the user choosing the pin pad, not a failure.
-        setError(
-          unlockError instanceof ParadymWalletBiometricAuthenticationCancelledError
-            ? undefined
-            : unlockMessage(unlockError, t)
-        )
         pinRef.current?.clear()
+        // A wrong pin shakes the dots, as on the app's lock screen, rather than showing a message.
+        if (unlockError instanceof ParadymWalletAuthenticationInvalidPinError) {
+          pinRef.current?.shake()
+          return
+        }
+        // A cancelled biometric prompt is the user choosing the pin pad, not a failure.
+        if (!(unlockError instanceof ParadymWalletBiometricAuthenticationCancelledError)) {
+          setError(unlockMessage(unlockError, t))
+        }
         return
       }
 
@@ -282,27 +287,24 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
       maxHeight={drawsOwnSheet ? '85%' : undefined}
     >
       {/* A full-height sheet gets the app's own unlock screen: the lock, the heading and the origin
-          centred just above the pad, rather than a left-aligned heading with the screen empty under
+          just above the middle, the dots under them, rather than a left-aligned heading with the screen empty under
           it. The Android sheet is only as tall as its content, so it keeps the compact heading. */}
       {isUnlocking(phase) && !drawsOwnSheet ? (
-        // Sits just above the pad while there is one to sit above, and takes the whole sheet once
-        // there is not: unlocking through biometrics has no pad, so the same block bottom-aligned
+        // Takes the top half while the pad is on screen, and the whole sheet once it is not: unlocking through biometrics has no pad, so the same block bottom-aligned
         // would hug the bottom of an otherwise empty screen.
-        <YStack
-          flex-1
-          alignItems="center"
-          justifyContent={showsPinPad(phase) ? 'flex-end' : 'center'}
-          gap="5"
-          pb={showsPinPad(phase) ? '8' : undefined}
-        >
+        <YStack flex-1 alignItems="center" justifyContent={showsPinPad(phase) ? 'flex-end' : 'center'} gap="5">
           <IconContainer h="11" w="11" items="center" justify="center" icon={<HeroIcons.LockClosedFilled />} />
           <YStack gap="2" alignItems="center">
             <Heading heading="h2" fontWeight="semiBold" textAlign="center">
               {t(messages.unlockTitle)}
             </Heading>
-            <Paragraph variant="annotation" textAlign="center">
+            <BalancedParagraph
+              key={t(messages.unlockSubtitle(request.origin || t(commonMessages.unknownOrganization)))}
+              variant="annotation"
+              textAlign="center"
+            >
               {t(messages.unlockSubtitle(request.origin || t(commonMessages.unknownOrganization)))}
-            </Paragraph>
+            </BalancedParagraph>
           </YStack>
           {phase.name === 'opening' && !showsPinPad(phase) ? (
             <Stack pt="2">
@@ -392,15 +394,18 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
 
       {showsPinPad(phase) ? (
         // Kept mounted across the phase change: `isLoading` fills the dots and animates them while
-        // the wallet opens, which is the app's own lock screen, and it ignores taps meanwhile.
-        <Stack pt="5" gap="5">
+        // the wallet opens, which is the app's own lock screen, and it ignores taps meanwhile. On a
+        // full-height sheet it takes half the screen, as there: the dots right under the heading,
+        // 32pt from it, and the pad at the bottom.
+        <Stack flex-1={!drawsOwnSheet} pt={drawsOwnSheet ? '5' : '3'}>
           <PinDotsInput
             ref={pinRef}
             pinLength={6}
             isLoading={phase.name === 'opening'}
             onPinComplete={unlockUsingPin}
-            onBiometricsTap={unlockUsingBiometrics}
+            onBiometricsTap={getIsBiometricsEnabled() ? unlockUsingBiometrics : undefined}
             useNativeKeyboard={false}
+            biometricsType={biometricsType}
           />
         </Stack>
       ) : phase.name === 'opening' ? (
@@ -474,6 +479,42 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
       ) : null}
     </YStack>
   )
+}
+
+/**
+ * A paragraph that, once it wraps onto two lines, narrows to make them about the same length, as CSS
+ * `text-wrap: balance` does: React Native has no such option. Keyed on its text, since it measures once.
+ */
+function BalancedParagraph({ children, ...props }: Omit<ParagraphProps, 'children'> & { children: string }) {
+  // Undefined while the natural wrap is measured, null when that wrap is kept.
+  const [maxWidth, setMaxWidth] = useState<number | null>()
+
+  const onTextLayout = ({ nativeEvent: { lines } }: NativeSyntheticEvent<TextLayoutEventData>) => {
+    if (maxWidth === undefined) {
+      setMaxWidth(lines.length === 2 ? balancedWidth(children, lines[0].width + lines[1].width) : null)
+    } else if (maxWidth !== null && lines.length > 2) {
+      // The estimate came out too narrow for the words to fit on two lines.
+      setMaxWidth(null)
+    }
+  }
+
+  return (
+    // Tamagui forwards `onTextLayout` on native but leaves it out of its types.
+    <Paragraph {...props} {...({ onTextLayout } as object)} maxWidth={maxWidth ?? undefined}>
+      {children}
+    </Paragraph>
+  )
+}
+
+/** The width of the longer line when `text`, `width` wide on one line, is split where the lines are most even. */
+function balancedWidth(text: string, width: number) {
+  const words = text.split(' ')
+  let longest = text.length
+  for (let i = 1; i < words.length; i++) {
+    longest = Math.min(longest, Math.max(words.slice(0, i).join(' ').length, words.slice(i).join(' ').length))
+  }
+  // Characters stand in for widths, so a little slack keeps the estimate from forcing a third line.
+  return Math.ceil(((longest + 2) * width) / text.length)
 }
 
 /**
@@ -566,11 +607,10 @@ function message(error: unknown) {
 }
 
 /**
- * The two ways unlocking fails that the user can do something about. Anything else is shown as it
- * came, since there is nothing better to say about it.
+ * The message for an unlock failure other than a wrong pin, which shakes the dots instead. Anything
+ * but a missing wallet is shown as it came, since there is nothing better to say about it.
  */
 function unlockMessage(error: unknown, t: ReturnType<typeof useLingui>['t']) {
-  if (error instanceof ParadymWalletAuthenticationInvalidPinError) return t(commonMessages.invalidPinEntered)
   if (error instanceof ParadymWalletNoStoreError) return t(messages.openWalletFirst)
 
   return message(error)

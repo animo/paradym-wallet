@@ -67,6 +67,21 @@ const dcApiDocumentTypes = [
   'eu.europa.ec.av.1',
 ]
 
+// SD-JWT VC types the wallet can present over OpenID4VP through the Digital Credentials API on iOS
+// 27.3 and later.
+// shortcut: opt-in with `DC_API_IOS_OPENID4VP=1 pnpm prebuild`, because Apple's provisioning profiles
+// can't carry the `…verifiable-credential-types` entitlement yet and signing fails with it. That
+// limits it to simulator builds. Enable it by default once the profiles include it.
+const dcApiVerifiableCredentialTypes =
+  process.env.DC_API_IOS_OPENID4VP === '1'
+    ? [
+        'urn:eudi:pid:1',
+        // PaSO payment attestations: the base type, and the playground card type that extends it.
+        'https://wero.epicompany.eu/payment_attestation/v1',
+        'https://playground.animo.id/api/vct/7cc028a3-8ce2-432a-bf19-5621068586df/open-horizon-debit-card-paso-sd-jwt',
+      ]
+    : []
+
 // Everything the credential request UI's own bundle links. The iOS extension is a separate binary
 // running on a much tighter memory budget than the app, so it links only these — the config plugin
 // adds the digital credentials API module, react-native, expo and expo-modules-core itself.
@@ -203,6 +218,7 @@ const createBaseConfig = (appSpecific) => {
           entry: 'src/features/dc-api/index',
           ios: {
             documentTypes: dcApiDocumentTypes,
+            verifiableCredentialTypes: dcApiVerifiableCredentialTypes,
             // One group per build variant, so dev/preview/production never share a container.
             appGroup: `group.${bundleIdentifier}`,
             // The first `keychain-access-groups` entry becomes the default group for new keychain

@@ -2,6 +2,7 @@ import {
   type DcApiCredential,
   DcApiUnsupportedError,
   getRegistrationStatus,
+  isOpenId4VpSupported,
   isSupported,
   type RegisterCredentialsOptions,
   registerCredential,
@@ -16,7 +17,7 @@ import {
   type Logger,
   type MdocNameSpaces,
   MdocRecord,
-  type SdJwtVcRecord,
+  SdJwtVcRecord,
   TypedArrayEncoder,
 } from '@credo-ts/core'
 import { ImageFormat, Skia } from '@shopify/react-native-skia'
@@ -390,8 +391,13 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
     if (!registrationStatus) return
 
     const mdocRecords = records?.mdoc ?? (await paradym.agent.mdoc.getAll())
-    // iOS only matches ISO 18013-7 mdocs, so building the sd-jwt entries would be wasted work.
-    const sdJwtVcRecords = Platform.OS === 'ios' ? [] : (records?.sdJwtVc ?? (await paradym.agent.sdJwtVc.getAll()))
+    // iOS only matches SD-JWT VCs from iOS 27.3, so before that building their entries would be
+    // wasted work. Leaving them out also leaves them out of the fingerprint, so a wallet registers
+    // them once the OS is updated.
+    const sdJwtVcRecords =
+      Platform.OS === 'ios' && !isOpenId4VpSupported()
+        ? []
+        : (records?.sdJwtVc ?? (await paradym.agent.sdJwtVc.getAll()))
 
     // Reading the records is cheap; everything after this is not. Registering an unchanged set
     // rebuilds it for no reason, and the wallet did that on every unlock.
@@ -401,29 +407,11 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
       return
     }
     const mdocCredentials = mdocRecords.map(async (record): Promise<CredentialItem> => {
-      const mdoc = record.firstCredential
-
-      // iOS registers the document identifier and type and nothing else — `registerCredentials`
-      // drops namespaces, display and claims there, because the OS does the matching itself and
-      // only knows those. Building them anyway would decode the credential, walk its whole claim
-      // tree and rasterize an icon per credential, all on the unlock path, for data thrown away.
       if (Platform.OS === 'ios') {
-        return {
-          id: record.id,
-          credential: {
-            doctype: mdoc.docType,
-            format: 'mso_mdoc',
-            namespaces: {},
-          },
-          display: {
-            title: displayTitleFallback,
-            subtitle: displaySubtitleFallback,
-          },
-          ios: {
-            supportedAuthorityKeyIdentifiers: [],
-          },
-        } as const satisfies DcApiCredential
+        return getIosCredential(record, { title: displayTitleFallback, subtitle: displaySubtitleFallback })
       }
+
+      const mdoc = record.firstCredential
 
       const { display } = getCredentialForDisplay(record)
 
@@ -450,13 +438,14 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
           claims: mapMdocAttributesToClaimDisplay(issuerSignedNamespaces, record),
           iconDataUrl,
         },
-        ios: {
-          supportedAuthorityKeyIdentifiers: [],
-        },
       } as const satisfies DcApiCredential
     })
 
     const sdJwtCredentials = sdJwtVcRecords.map(async (record): Promise<CredentialItem> => {
+      if (Platform.OS === 'ios') {
+        return getIosCredential(record, { title: displayTitleFallback, subtitle: displaySubtitleFallback })
+      }
+
       const sdJwtVc = record.firstCredential
       const { display } = getCredentialForDisplay(record)
 
@@ -518,6 +507,29 @@ export async function dcApiRegisterCredentials(options: DcApiRegisterCredentials
 }
 
 /**
+ * What iOS registers: the record's id and its document type or vct, and nothing else —
+ * `registerCredentials` drops namespaces, display and claims there, because the OS does the matching
+ * itself and only knows those. Building them anyway would decode the credential, walk its whole
+ * claim tree and rasterize an icon per credential, all on the unlock path, for data thrown away.
+ */
+function getIosCredential(record: MdocRecord | SdJwtVcRecord, display: CredentialItem['display']): CredentialItem {
+  return {
+    id: record.id,
+    credential:
+      record instanceof MdocRecord
+        ? { format: 'mso_mdoc', doctype: record.firstCredential.docType, namespaces: {} }
+        : {
+            format: 'dc+sd-jwt',
+            vct: record.getTags().vct,
+            // A request for a type this one extends matches it, as on Android.
+            extendedVcts: record.extendedVctValues,
+            claims: {},
+          },
+    display,
+  }
+}
+
+/**
  * The payment types a card authorizes, which the matcher only offers it for. A PaSO Credential may
  * only be presented to authorize a PaSO transaction (see `assertPasoCredentialsOnlyForPasoTransactions`),
  * and a TS 12 card is only registered for its payments, so the picker can show them as one.
@@ -573,26 +585,18 @@ export async function dcApiAddCredential(
   try {
     if (!(await canRegisterCredentials(paradym))) return
 
-    // iOS only matches ISO 18013-7 mdocs; nothing else was ever registered, so nothing else has to
-    // be added.
-    if (!(credentialRecord instanceof MdocRecord)) return
+    // iOS only matches mdocs, and from iOS 27.3 SD-JWT VCs; nothing else is ever registered, so
+    // nothing else has to be added.
+    const isRegistrable =
+      credentialRecord instanceof MdocRecord || (credentialRecord instanceof SdJwtVcRecord && isOpenId4VpSupported())
+    if (!isRegistrable) return
 
+    const { displayTitleFallback, displaySubtitleFallback } = withConfiguredDisplay(options)
     await registerCredential({
-      credential: {
-        id: credentialRecord.id,
-        credential: {
-          doctype: credentialRecord.firstCredential.docType,
-          format: 'mso_mdoc',
-          namespaces: {},
-        },
-        display: {
-          title: withConfiguredDisplay(options).displayTitleFallback,
-          subtitle: withConfiguredDisplay(options).displaySubtitleFallback,
-        },
-        ios: {
-          supportedAuthorityKeyIdentifiers: [],
-        },
-      },
+      credential: getIosCredential(credentialRecord, {
+        title: displayTitleFallback,
+        subtitle: displaySubtitleFallback,
+      }),
     })
 
     invalidateRegistrationFingerprint()
@@ -624,11 +628,16 @@ export async function dcApiRemoveCredential(
   try {
     if (!(await canRegisterCredentials(paradym))) return
 
-    // Only mdocs are registered on iOS, and registrations are keyed by the record id rather than
-    // the prefixed display id.
-    if (!credentialId.startsWith('mdoc-')) return
+    // Only mdocs, and from iOS 27.3 SD-JWT VCs, are registered on iOS, and registrations are keyed
+    // by the record id rather than the prefixed display id.
+    const recordId = credentialId.startsWith('mdoc-')
+      ? credentialId.replace('mdoc-', '')
+      : credentialId.startsWith('sd-jwt-vc-') && isOpenId4VpSupported()
+        ? credentialId.replace('sd-jwt-vc-', '')
+        : undefined
+    if (!recordId) return
 
-    await removeCredential(credentialId.replace('mdoc-', ''))
+    await removeCredential(recordId)
 
     invalidateRegistrationFingerprint()
   } catch (error) {

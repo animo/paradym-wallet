@@ -120,8 +120,7 @@ function WarningBox({ variant, title, message }: { variant: 'warning' | 'danger'
       borderWidth={1}
       borderColor={variant === 'danger' ? 'danger-400' : 'warning-400'}
       gap="3"
-      px="3"
-      py="2"
+      p="4"
       items="center"
     >
       <HeroIcons.ExclamationTriangleFilled size={20} color={variant === 'danger' ? 'danger-600' : 'warning-600'} />

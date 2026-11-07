@@ -90,15 +90,20 @@ jobs:
           name: bundle-size-${{ github.sha }}
           path: bundle-size.json
 
+      # Fails the job when a bundle grew by more than 10%, after writing the comment that shows why.
       - name: Render comment
+        id: render
         if: github.event_name == 'pull_request'
         run: |
-          node scripts/report-bundle-size.mjs bundle-size.json bundle-size-main.json > bundle-size-comment.md
+          status=0
+          node scripts/report-bundle-size.mjs bundle-size.json bundle-size-main.json > bundle-size-comment.md || status=$?
           cat bundle-size-comment.md >> "$GITHUB_STEP_SUMMARY"
+          exit $status
 
-      # Forks get a read-only token, so there is nothing to post the comment with.
+      # Forks get a read-only token, so there is nothing to post the comment with. Also runs when the
+      # render step failed on a size increase, so the pull request shows it.
       - name: Comment on the pull request
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: ${{ !cancelled() && steps.render.outcome != 'skipped' && github.event.pull_request.head.repo.full_name == github.repository }}
         uses: actions/github-script@v9
         with:
           script: |

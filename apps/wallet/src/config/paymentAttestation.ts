@@ -23,6 +23,9 @@ export const sdJwtVcTypeMetadataLocations = {
  * is the credential's `vct` and every type it extends.
  */
 export function isHardwareBoundCredentialType(types: Array<string | undefined>) {
+  // shortcut: off when built with EXPO_PUBLIC_SOFTWARE_PAYMENT_KEYS=1, so PaSO can be tested on the iOS simulator, which has no Secure Enclave. Remove once PaSO testing moves to devices.
+  if (process.env.EXPO_PUBLIC_SOFTWARE_PAYMENT_KEYS === '1') return false
+
   return types.includes(weroPaymentAttestationVct)
 }
 
