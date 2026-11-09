@@ -55,7 +55,7 @@ export const getTrustedEntitiesForFallbackForOpenId4Vci = async (
   options: GetTrustedEntitiesForFallbackForOpenId4VciOptions
 ): Promise<TrustedIssuerEntity | undefined> => {
   const issuer = options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
-  const trustedEntity = options.trustMechanismConfiguration.trustedEntities.find((e) => issuer.startsWith(e.issuer))
+  const trustedEntity = options.trustMechanismConfiguration.trustedEntities.find((e) => e.issuer === issuer)
   if (trustedEntity) {
     const trustedEntities: TrustedEntity[] = [
       {

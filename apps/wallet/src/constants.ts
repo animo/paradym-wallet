@@ -127,6 +127,15 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
     demo: true,
   },
   {
+    name: 'Digital Meitheal 2026',
+    url: 'https://meitheal.paradym.id',
+    certificate:
+      'MIICRjCCAeygAwIBAgIRAKNZPJBvqR5wsNL0j+76whMwCgYIKoZIzj0EAwIwNDElMCMGA1UEAxMcTWVpdGhlYWwgRGlnaXRlYWNoIDIwMjYgREVNTzELMAkGA1UEBhMCTkwwHhcNMjYxMTA5MDkwMjA5WhcNMzExMTA5MDkwMjA5WjA0MSUwIwYDVQQDExxNZWl0aGVhbCBEaWdpdGVhY2ggMjAyNiBERU1PMQswCQYDVQQGEwJOTDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABHHHJZMQfdiYImiTdJkQHrWF4k9njHGspan9iGdXr6zISGyumtjmvOEey80NpfuA5owrZI7y4hJBZvU8TLuM+sOjgd4wgdswHQYDVR0OBBYEFCmfcV3wDD2anyUNJMKlS/DBOCb3MA4GA1UdDwEB/wQEAwIBBjAmBgNVHRIEHzAdhhtodHRwczovL21laXRoZWFsLnBhcmFkeW0uaWQwEgYDVR0TAQH/BAgwBgEB/wIBADBuBgNVHR8EZzBlMGOgYaBfhl1odHRwczovL21ldGFkYXRhLnBhcmFkeW0uaWQvY2VydGlmaWNhdGUtcmV2b2NhdGlvbi1saXN0cy85YTdhOWI3Yy0zNzQ5LTQzM2YtOThhOS1lMjJhMzVhMWQzYTcwCgYIKoZIzj0EAwIDSAAwRQIhAKrT9NygB0kvLStnPhQRlJFF9tTShZvwCyc+iT0C0HDiAiA5L3zS7Ht10ntImK3vvpgv01LwNoBwwNcPJLPpKOEAMg==',
+    logoUri: 'https://meitheal.paradym.id/meitheal-icon.svg',
+    entityId: 'meitheal.paradym.id',
+    demo: true,
+  },
+  {
     entityId: 'stormcatch.com',
     name: 'Stormcatch',
     certificate: `-----BEGIN CERTIFICATE-----
@@ -175,6 +184,14 @@ export const trustedDidEntities = [
     logoUri: 'https://legoland.animo.id/images/university-logo.png',
     name: 'Legoland University',
     url: 'https://legoland.animo.id',
+    demo: true,
+  },
+  {
+    entityId: 'did:web:metadata.paradym.id:e3d45f31-3886-40e2-b8a7-982c2b110677',
+    did: 'did:web:metadata.paradym.id:e3d45f31-3886-40e2-b8a7-982c2b110677',
+    logoUri: 'https://meitheal.paradym.id/meitheal-icon.svg',
+    name: 'Digital Meitheal 2026',
+    url: 'https://meitheal.paradym.id',
     demo: true,
   },
 ] satisfies Array<TrustedDidEntity>
@@ -226,6 +243,14 @@ export const trustedOpenId4VciIssuerEntities = [
     logoUri: 'https://assets.stormcatch.dev/logo/v1/stormcatch-icon-wordmark-v1-512.png',
     name: 'Stormcatch',
     url: 'https://stormcatch.com',
+    demo: true,
+  },
+  {
+    entityId: 'https://meitheal.paradym.id',
+    issuer: 'https://agent.paradym.id/oid4vci/e3547486-3b95-4b4a-9fc8-00dfc76c245e',
+    logoUri: 'https://meitheal.paradym.id/meitheal-icon.svg',
+    name: 'Digital Meitheal 2026',
+    url: 'https://meitheal.paradym.id',
     demo: true,
   },
 ] satisfies Array<TrustedOpenId4VciEntity>
