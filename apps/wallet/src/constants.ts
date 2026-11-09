@@ -228,6 +228,14 @@ export const trustedOpenId4VciIssuerEntities = [
     url: 'https://stormcatch.com',
     demo: true,
   },
+  {
+    entityId: 'https://meitheal.paradym.id',
+    issuer: 'https://agent.paradym.id/oid4vci/e3547486-3b95-4b4a-9fc8-00dfc76c245e',
+    logoUri: 'https://meitheal.paradym.id/meitheal-icon.svg',
+    name: 'Digital Meitheal 2026',
+    url: 'https://meitheal.paradym.id',
+    demo: true,
+  },
 ] satisfies Array<TrustedOpenId4VciEntity>
 
 // https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework/blob/main/docs/annexes/annex-3/annex-3.01-pid-rulebook.md#221-eu-wide-attestation-type-and-namespace-for-pid
