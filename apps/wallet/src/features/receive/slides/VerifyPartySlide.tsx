@@ -15,7 +15,7 @@ import {
   YStack,
 } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
-import type { DisplayImage, TrustedEntity } from '@paradym/wallet-sdk'
+import type { DisplayImage, PartyRegistration, TrustedEntity } from '@paradym/wallet-sdk'
 import { useActivities } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -34,6 +34,7 @@ interface VerifyPartySlideProps {
   trustedEntities?: Array<TrustedEntity>
   /** Whether the offer is for a card the organization isn't registered to issue, or the request asks for more than it registered */
   isBeyondRegistration?: boolean
+  registration?: PartyRegistration
 }
 
 export const VerifyPartySlide = ({
@@ -46,6 +47,7 @@ export const VerifyPartySlide = ({
   onDecline,
   trustedEntities,
   isBeyondRegistration,
+  registration,
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
@@ -187,7 +189,22 @@ export const VerifyPartySlide = ({
   }
 
   const onPressInteraction = withHaptics(() => {
-    router.push(`/activity?entityId=${entityId}`)
+    router.push(`/activity?entityId=${encodeURIComponent(entityId)}`)
+  })
+
+  const onPressRecognizedOrganization = withHaptics(() => {
+    const searchParams = new URLSearchParams({
+      trustedEntities: JSON.stringify(trustedEntitiesWithoutSelf ?? []),
+      isDemoTrustedEntity: `${isDemoTrustedEntity}`,
+    })
+
+    if (logo?.url) searchParams.set('logo', logo.url)
+    if (name) searchParams.set('name', name)
+    if (registration?.infoUri) searchParams.set('infoUri', registration.infoUri)
+    if (registration?.privacyPolicyUri) searchParams.set('privacyPolicyUri', registration.privacyPolicyUri)
+    if (registration?.supportUri) searchParams.set('supportUri', registration.supportUri)
+
+    router.push(`trust?${searchParams}`)
   })
 
   const header = (
@@ -275,6 +292,7 @@ export const VerifyPartySlide = ({
                 : t(commonMessages.approvedBy(approvedBy.organizationName))
               : undefined
           }
+          onPress={onPressRecognizedOrganization}
         />
       ) : (
         <InfoButton
@@ -375,7 +393,7 @@ export const VerifyPartySlide = ({
   return (
     // Shrinks to the window's height, so the buttons stay at the bottom and the content above them scrolls
     <YStack flex={1} justify="space-between">
-      <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8' }} px="5" mx="-5">
+      <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8', paddingBottom: '5' }} px="5" mx="-5">
         {header}
         {trustDetails}
       </ScrollView>

@@ -1,4 +1,5 @@
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import { noneEntityId } from '../entityId'
 import type {
   FallbackMechanismConfiguration,
   TrustedEntity,
@@ -12,7 +13,6 @@ export type TrustedOpenId4VciEntity = {
   logoUri: string
   url: string
   demo?: boolean
-  entityId: string
 }
 
 export type GetTrustedEntitiesForFallbackForOpenId4VpOptions = {
@@ -29,11 +29,11 @@ export type GetTrustedEntitiesForFallbackForOpenId4VciOptions = {
 export const getTrustedEntitiesForFallbackForOpenId4Vp = async (
   options: GetTrustedEntitiesForFallbackForOpenId4VpOptions
 ): Promise<TrustedRelyingPartyEntity> => {
-  const { authorizationRequestPayload, origin } = options.resolvedAuthorizationRequest
+  const { authorizationRequestPayload, origin, verifier } = options.resolvedAuthorizationRequest
   const clientMetadata = authorizationRequestPayload.client_metadata
   // An unsigned request over the digital credentials API carries no client_id: the verifier is
   // identified by the origin the OS reported, which is what credo resolved the client from.
-  const entityId = authorizationRequestPayload.client_id ?? origin
+  const entityId = noneEntityId(verifier.effectiveClientId)
   const organizationName = clientMetadata?.client_name
   const logoUri = clientMetadata?.logo_uri
 
@@ -57,9 +57,10 @@ export const getTrustedEntitiesForFallbackForOpenId4Vci = async (
   const issuer = options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
   const trustedEntity = options.trustMechanismConfiguration.trustedEntities.find((e) => e.issuer === issuer)
   if (trustedEntity) {
+    const entityId = noneEntityId(issuer)
     const trustedEntities: TrustedEntity[] = [
       {
-        entityId: trustedEntity.entityId,
+        entityId,
         organizationName: trustedEntity.name,
         logoUri: trustedEntity.logoUri,
         uri: trustedEntity.url,
@@ -77,7 +78,7 @@ export const getTrustedEntitiesForFallbackForOpenId4Vci = async (
         organizationName,
         logoUri,
         uri: trustedEntity.url,
-        entityId: trustedEntity.entityId,
+        entityId,
       },
       trustedEntities,
     }

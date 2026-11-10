@@ -268,10 +268,10 @@ const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
   },
 
   // DID-signed requests and issuer metadata
-  { trustMechanism: 'did', trustedDidEntities: [{ did: 'did:web:example.com', entityId, name, logoUri, url }] },
+  { trustMechanism: 'did', trustedDidEntities: [{ did: 'did:web:example.com', name, logoUri, url }] },
 
   // Unsigned issuers, and verifiers identified only by origin or redirect_uri
-  { trustMechanism: 'none', trustedEntities: [{ issuer: 'https://issuer.example.com', entityId, name, logoUri, url }] },
+  { trustMechanism: 'none', trustedEntities: [{ issuer: 'https://issuer.example.com', name, logoUri, url }] },
 
   // The wallet itself, listed as a trusted party where relevant
   { walletTrustedEntity: { entityId: 'my-wallet', organizationName: 'My Wallet', logoUri, uri: 'https://example.com' } },
@@ -280,11 +280,24 @@ const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
 
 The certificates in the `x509` entry also become the agent's trusted roots for credential verification. You don't need to list them again in `openId4VcConfiguration`.
 
-`accessCertificateTrustedLists` are lists of wallet-relying party access certificate providers (ETSI TS 119 602), signed by the pinned `signerCertificate` and checked against the WRPAC providers list profile in compat mode. `territory` is the country that publishes the list, or `EU`; the list itself may declare that country or `EU`. A chain that leads to none of the `trustedX509Entities` is validated against the providers on these lists, revocation included. On a match, the provider is the only trusted entity, with its country as `territory`: the country of its certificate on the list, or else the list's `territory`. `walletTrustedEntity` isn't added, and the party's name comes from its access certificate. The logo from its own metadata is left out. A list is kept in the wallet store. It's fetched when the agent is initialized and the stored list is missing, and again once a day or when its next update is due. Only a request that comes in before a list was ever loaded waits for it, for up to 10 seconds: an update is fetched in the background, and if fetching fails, the list fetched before stays in use for up to a week.
+The `entityId` of the issuer or verifier links its interactions in the activity history. It's scoped by what established who the party is, so ids from different mechanisms never match:
+
+| Party | `entityId` |
+|---|---|
+| Trusted through `accessCertificateTrustedLists` | `eudi:<semantic identifier>` (ETSI TS 119 475 clause 5.1), the `sub` of its verified registration certificate or else the identifier in its access certificate |
+| Trusted through `trustedX509Entities` | `x509:<entityId of the trusted entity>:<…>`. For a request: the issuer and subject name of the certificate it is signed with, which a renewed certificate keeps (RFC 5280 clause 4.1.2.6), or nothing more when the certificate has no subject name. For mdoc reader authentication: the origin. For an offer: the `credential_issuer` |
+| Signed with a DID | the DID |
+| Anything else | `none:<client_id, origin or credential_issuer>` |
+
+The `sub` of a registration certificate is the relying party itself, also when an intermediary signs the request. Without a registration certificate, a party behind an intermediary has the intermediary's identifier.
+
+`accessCertificateTrustedLists` are lists of wallet-relying party access certificate providers (ETSI TS 119 602), signed by the pinned `signerCertificate` and checked against the WRPAC providers list profile in compat mode. `territory` is the country that publishes the list, or `EU`; the list itself may declare that country or `EU`. A chain that leads to none of the `trustedX509Entities` is validated against the providers on these lists, revocation included. On a match, the provider is the only trusted entity, with its country as `territory`: the country of its certificate on the list, or else the list's `territory`. `walletTrustedEntity` isn't added, and the party's name comes from its verified registration certificate or else its access certificate. The logo from its own metadata is left out. A list is kept in the wallet store. It's fetched when the agent is initialized and the stored list is missing, and again once a day or when its next update is due. Only a request that comes in before a list was ever loaded waits for it, for up to 10 seconds: an update is fetched in the background, and if fetching fails, the list fetched before stays in use for up to a week.
 
 `registrationCertificateTrustedLists` are lists of registration certificate providers, loaded the same way and checked against the WRPRC providers list profile. When they are set, an OpenID4VP request from a party trusted through `accessCertificateTrustedLists` has to stay within its registration certificate (ETSI TS 119 475), carried in `verifier_info` with format `registration_cert`. The certificate has to chain up to a provider on these lists, be bound to the access certificate the request is signed with, and be unexpired. The credentials and claims it registers are checked against the DCQL query, and the result is set as `overAsking` on the request's `verifier`. Without a registration certificate that passes these checks nothing is registered, so `overAsking.valid` is `false`, the same as for a request that asks for more than it registered. When one of these lists isn't loaded and the certificate doesn't pass, `overAsking` isn't set, since the provider may be on that list. A party trusted through `trustedX509Entities` isn't checked. The status list of the registration certificate isn't checked yet.
 
 An OpenID4VCI issuer trusted through `accessCertificateTrustedLists` is checked the same way when its signed metadata carries registration certificates in `issuer_info` with format `registration_cert` (ETSI TS 119 472-3). Each offered credential configuration is checked against the registration certificates relevant to it: those whose `credential_ids` include it, and those without `credential_ids`. Only these are verified. Each has to be bound to the access certificate the metadata is signed with, and be for an attestation provider. The credential configuration has to be among the credentials they register in `provides_attestations`, by format and `vct`, `doctype` or type, and the result is set as `issuerRegistration` on the resolved offer. A registration certificate is optional for an issuer, so without any `issuerRegistration` isn't set.
+
+A verified registration certificate also sets `registration` on the request's `verifier` or on the resolved offer: its `purpose` in the wallet's locale, else English, else the first, and its `infoUri`, `privacyPolicyUri` and `supportUri`. Without one, `supportUri` comes from the access certificate. Only `https` links are kept, and a support email address becomes a `mailto` link. The registered purpose replaces the purpose of the request in `formattedSubmission`.
 
 ### Verification callbacks
 
@@ -557,6 +570,8 @@ Credentials aren't stored until the user accepts them. `result` contains either 
 ```ts
 await paradym.openid4vc.completeCredentialRetrieval({
   resolvedCredentialOffer: offer.resolvedCredentialOffer,
+  // Links the activity to earlier interactions with the issuer
+  entityId: offer.issuer.entityId,
   recordToStore: result.credentials[0] && { credentialRecord: result.credentials[0].record },
   deferredCredential: result.deferredCredentials[0],
 })
@@ -573,7 +588,7 @@ This stores the credential, adds an activity entry, and registers the credential
 ```ts
 const request = await paradym.openid4vc.resolveCredentialRequest({ uri })
 
-request.verifier           // { entityId, name, logo, hostName, trustedEntities }
+request.verifier           // { entityId, name, logo, hostName, trustedEntities, overAsking, registration }
 request.trustMechanism     // how the verifier was identified
 request.formattedSubmission // what's asked for, and which credentials match
 request.transactionData    // set when the verifier asks to sign a transaction

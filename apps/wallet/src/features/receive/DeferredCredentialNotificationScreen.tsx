@@ -23,6 +23,7 @@ import {
 import {
   extractOpenId4VcCredentialMetadata,
   getCredentialDisplayWithDefaults,
+  getDeferredCredentialEntityId,
   getDeferredCredentialNextCheckAt,
   getOpenId4VcCredentialDisplay,
   useDeferredCredentials,
@@ -197,7 +198,7 @@ export function DeferredCredentialNotificationScreen() {
         name={credentialDisplay.name ?? t(commonMessages.unknown)}
         hasErrors={!!deferredCredential.lastErroredAt}
         issuerDisplay={credentialDisplay.issuer}
-        issuerId={deferredCredential.issuerMetadata?.credentialIssuer?.credential_issuer}
+        issuerId={getDeferredCredentialEntityId(deferredCredential)}
       />
     </>
   ) : (

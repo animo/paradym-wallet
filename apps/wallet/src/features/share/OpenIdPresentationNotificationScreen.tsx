@@ -290,6 +290,7 @@ export function OpenIdPresentationNotificationScreen() {
       logo={resolvedRequest?.verifier.logo}
       trustedEntities={resolvedRequest?.verifier.trustedEntities}
       isOverAsking={resolvedRequest?.verifier.overAsking?.valid === false}
+      registration={resolvedRequest?.verifier.registration}
       onComplete={replace}
       onCancel={onErrorCancel}
       transaction={formattedTransactionData}

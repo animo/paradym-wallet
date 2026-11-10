@@ -5,6 +5,7 @@ import {
   type DisplayImage,
   type FormattedSubmission,
   type FormattedTransactionData,
+  type PartyRegistration,
   pasoPaymentTransactionDataType,
   type TrustedEntity,
 } from '@paradym/wallet-sdk'
@@ -26,6 +27,7 @@ interface PresentationNotificationScreenProps {
   logo?: DisplayImage
   trustedEntities?: Array<TrustedEntity>
   isOverAsking?: boolean
+  registration?: PartyRegistration
   submission?: FormattedSubmission
   usePin: boolean
   isAccepting: boolean
@@ -53,6 +55,7 @@ export function PresentationNotificationScreen({
   onComplete,
   trustedEntities,
   isOverAsking,
+  registration,
   transaction,
   isResolvingTransaction,
   onSelectCredential,
@@ -83,6 +86,7 @@ export function PresentationNotificationScreen({
                 logo={logo}
                 trustedEntities={trustedEntities}
                 isBeyondRegistration={isOverAsking}
+                registration={registration}
               />
             ),
           },

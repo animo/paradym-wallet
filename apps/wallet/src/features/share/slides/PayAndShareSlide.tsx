@@ -41,11 +41,6 @@ export const PayAndShareSlide = ({
     onNext()
   }
 
-  const handleDecline = () => {
-    onDecline?.()
-    onCancel()
-  }
-
   const acceptLabel = t({
     id: 'payShare.accept',
     message: 'Pay & share',
@@ -113,7 +108,7 @@ export const PayAndShareSlide = ({
             acceptText={acceptLabel}
             declineText={t(commonMessages.stop)}
             onAccept={handleAccept}
-            onDecline={handleDecline}
+            onDecline={onCancel}
             isLoading={isProcessing}
           />
         ) : (

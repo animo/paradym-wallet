@@ -360,6 +360,7 @@ export function CredentialNotificationScreen() {
   const onCompleteCredentialRetrieval = async () => {
     await paradym.openid4vc.completeCredentialRetrieval({
       resolvedCredentialOffer: resolvedCredentialOffer?.resolvedCredentialOffer,
+      entityId: resolvedCredentialOffer?.issuer.entityId,
       recordToStore: receivedCredential
         ? dcApiRegisterOptions({ paradym, credentialRecord: receivedCredential.record })
         : undefined,
@@ -465,8 +466,12 @@ export function CredentialNotificationScreen() {
               key="verify-issuer"
               type="offer"
               name={resolvedCredentialOffer.issuer.organizationName}
-              logo={{ url: resolvedCredentialOffer.issuer.logoUri, altText: resolvedCredentialOffer.issuer.entityId }}
+              logo={{
+                url: resolvedCredentialOffer.issuer.logoUri,
+                altText: resolvedCredentialOffer.issuer.organizationName,
+              }}
               entityId={resolvedCredentialOffer.issuer.entityId}
+              registration={resolvedCredentialOffer.registration}
               onContinue={
                 // With a transaction code, the card is requested once the code is entered
                 resolvedCredentialOffer.flow === 'pre-auth'
