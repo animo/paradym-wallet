@@ -96,11 +96,6 @@ export const PasoPaymentSlide = ({
     onNext()
   }
 
-  const handleDecline = () => {
-    onDecline?.()
-    onCancel()
-  }
-
   return (
     <YStack grow={1} justify="space-between">
       <YStack gap="5" grow={1}>
@@ -225,7 +220,7 @@ export const PasoPaymentSlide = ({
               }
               declineText={transaction.denialActionLabel ?? t(commonMessages.stop)}
               onAccept={handleAccept}
-              onDecline={handleDecline}
+              onDecline={onCancel}
               isLoading={isProcessing}
               isAcceptDisabled={!hasSeenTransactionData || isResolvingTransaction}
               variant={confirmCombined ? 'confirmation' : 'regular'}
