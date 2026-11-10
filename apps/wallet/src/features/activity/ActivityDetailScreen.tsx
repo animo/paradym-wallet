@@ -70,7 +70,7 @@ export function ActivityDetailScreen() {
 
 export function ActivityDetail({ activity }: { activity: Activity }) {
   const { bottom } = useSafeAreaInsets()
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
 
   usePaymentTransactionStatus(activity.type === 'payment' ? activity : undefined)
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition()
@@ -95,7 +95,7 @@ export function ActivityDetail({ activity }: { activity: Activity }) {
               <Heading textAlign="center" heading="h1">
                 {Title}
               </Heading>
-              <Paragraph textAlign="center">{formatRelativeDate(new Date(activity.date), undefined, true)}</Paragraph>
+              <Paragraph textAlign="center">{formatRelativeDate(new Date(activity.date), i18n.locale, true)}</Paragraph>
             </Stack>
             <Stack h={1} my="2" bg="grey-100" />
             {activity.type === 'shared' || activity.type === 'signed' || activity.type === 'payment' ? (

@@ -144,7 +144,7 @@ interface ActivityRowItemProps {
 }
 
 export function ActivityRowItem({ activity, isSelected, onPress }: ActivityRowItemProps) {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const { id, entity } = activity
   const { logo, backgroundColor } = entity
   const date = new Date(activity.date)
@@ -211,8 +211,8 @@ export function ActivityRowItem({ activity, isSelected, onPress }: ActivityRowIt
         <YStack gap="px" justify="space-between" grow={1} w="75%">
           <XStack justify="space-between">
             <Paragraph>{Title}</Paragraph>
-            <Paragraph variant="annotation" color="grey-500" fontWeight="regular">
-              {formatRelativeDate(date)}
+            <Paragraph variant="annotation" color="grey-500" fontWeight="regular" numberOfLines={1}>
+              {formatRelativeDate(date, i18n.locale)}
             </Paragraph>
           </XStack>
           <Heading heading="h3" numberOfLines={1} fontWeight="semiBold" color="grey-900">

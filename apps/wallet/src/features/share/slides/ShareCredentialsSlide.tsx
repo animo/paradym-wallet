@@ -16,6 +16,7 @@ interface ShareCredentialsSlideProps {
   submission: FormattedSubmission
   isAccepting: boolean
   isOffline?: boolean
+  onSelectCredential?: (inputDescriptorId: string, credentialRecordId: string) => void
 }
 
 export const ShareCredentialsSlide = ({
@@ -25,6 +26,7 @@ export const ShareCredentialsSlide = ({
   onDecline,
   isAccepting,
   isOffline,
+  onSelectCredential,
 }: ShareCredentialsSlideProps) => {
   const { onNext, onCancel, confirmCombined } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -89,7 +91,7 @@ export const ShareCredentialsSlide = ({
             ) : submission.purpose ? (
               <RequestPurposeSection purpose={submission.purpose} logo={logo} />
             ) : null}
-            <RequestedAttributesSection submission={submission} />
+            <RequestedAttributesSection submission={submission} onSelectCredential={onSelectCredential} />
             <Spacer size="5" />
           </ScrollView>
         </YStack>

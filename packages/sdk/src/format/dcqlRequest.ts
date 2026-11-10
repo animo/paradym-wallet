@@ -176,6 +176,9 @@ export function formatDcqlCredentialsForRequest(dcqlQueryResult: DcqlQueryResult
       const credentials: FormattedSubmissionEntrySatisfiedCredential[] = []
 
       for (const validMatch of match.valid_credentials) {
+        // An SD-JWT VC matches once for every format and vct it can be presented as. Credo presents the first.
+        if (credentials.some(({ credential }) => credential.record.id === validMatch.record.id)) continue
+
         const credentialForDisplay = getCredentialForDisplay(validMatch.record)
         let disclosed: FormattedSubmissionEntrySatisfiedCredential['disclosed']
 

@@ -32,9 +32,9 @@ interface PresentationNotificationScreenProps {
   usePin: boolean
   isAccepting: boolean
   transaction?: FormattedTransactionData
-  /** Whether `transaction` is being resolved again, e.g. after a different payment card was picked. */
+  /** Whether `transaction` is being resolved again, e.g. after a different card was picked. */
   isResolvingTransaction?: boolean
-  onSelectPaymentCredential?: (credentialQueryId: string, credentialId: string) => void
+  onSelectCredential?: (inputDescriptorId: string, credentialRecordId: string) => void
   onAccept: () => Promise<void>
   onDecline: () => void
   onCancel: () => void
@@ -58,7 +58,7 @@ export function PresentationNotificationScreen({
   registration,
   transaction,
   isResolvingTransaction,
-  onSelectPaymentCredential,
+  onSelectCredential,
   errorReason,
 }: PresentationNotificationScreenProps) {
   const { t } = useLingui()
@@ -111,6 +111,7 @@ export function PresentationNotificationScreen({
                         documentName={transaction.documentName}
                         cardForSigningId={transaction.cardForTransactionId}
                         submission={submission}
+                        onSelectCredential={onSelectCredential}
                       />
                     ),
                   },
@@ -130,7 +131,7 @@ export function PresentationNotificationScreen({
                           onDecline={onDecline}
                           isAccepting={isAccepting}
                           isResolvingTransaction={isResolvingTransaction}
-                          onSelectPaymentCredential={onSelectPaymentCredential}
+                          onSelectCredential={onSelectCredential}
                         />
                       ),
                     },
@@ -159,6 +160,7 @@ export function PresentationNotificationScreen({
                             isAccepting={isAccepting}
                             transaction={transaction}
                             submission={submission}
+                            onSelectCredential={onSelectCredential}
                           />
                         ),
                       },
@@ -175,6 +177,7 @@ export function PresentationNotificationScreen({
                             submission={submission}
                             onDecline={onDecline}
                             isAccepting={isAccepting}
+                            onSelectCredential={onSelectCredential}
                           />
                         ),
                       },

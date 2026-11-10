@@ -17,6 +17,7 @@ import {
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletInvalidTransactionCodeError,
+  selectSubmissionCredentials,
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
@@ -77,10 +78,19 @@ export function CredentialNotificationScreen() {
   const [authorizationPresentationRequest, setAuthorizationPresentationRequest] = useState<CredentialsForProofRequest>()
   const [authorizationPresentationRedirectUri, setAuthorizationPresentationRedirectUri] = useState<string>()
 
-  const presentationRequest =
+  const requestedPresentation =
     resolvedCredentialOffer?.flow === 'auth-presentation-during-issuance'
       ? resolvedCredentialOffer.credentialsForProofRequest
       : authorizationPresentationRequest
+  // The cards the user picked, by entry, where more than one matches. The first card of every entry is
+  // the one shared.
+  const [selectedCredentials, setSelectedCredentials] = useState<Record<string, string>>({})
+  const presentationRequest = requestedPresentation && {
+    ...requestedPresentation,
+    formattedSubmission: selectSubmissionCredentials(requestedPresentation.formattedSubmission, selectedCredentials),
+  }
+  const onSelectCredential = (inputDescriptorId: string, credentialRecordId: string) =>
+    setSelectedCredentials((selected) => ({ ...selected, [inputDescriptorId]: credentialRecordId }))
   const shouldUsePinForPresentation = useShouldUsePinForSubmission(presentationRequest?.formattedSubmission)
   // The authorization server returned the presentation request from the pushed authorization request, so there's
   // no need to open the browser to start the authorization
@@ -234,7 +244,7 @@ export function CredentialNotificationScreen() {
             authorization: walletClient,
             resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
             resolvedAuthorizationRequest: resolvedCredentialOffer.resolvedAuthorizationRequest,
-            credentialsForRequest: resolvedCredentialOffer.credentialsForProofRequest,
+            credentialsForRequest: presentationRequest,
           })
 
           onPinComplete?.()
@@ -523,7 +533,7 @@ export function CredentialNotificationScreen() {
                 }
               : // Pre-auth without a transaction code already gets the card when continuing from the issuer step
                 undefined,
-        resolvedCredentialOffer.flow === 'auth' && authorizationPresentationRequest
+        resolvedCredentialOffer.flow === 'auth' && presentationRequest
           ? {
               step: 'authorization-presentation',
               progress: 58,
@@ -532,10 +542,11 @@ export function CredentialNotificationScreen() {
                 <ShareCredentialsSlide
                   key="authorization-presentation"
                   onAccept={shouldUsePinForPresentation ? undefined : onPresentationAccept}
-                  logo={authorizationPresentationRequest.verifier.logo}
-                  submission={authorizationPresentationRequest.formattedSubmission}
+                  logo={presentationRequest.verifier.logo}
+                  submission={presentationRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
                   onDecline={onProofDecline}
+                  onSelectCredential={onSelectCredential}
                 />
               ),
             }
@@ -580,7 +591,9 @@ export function CredentialNotificationScreen() {
               ),
             }
           : undefined,
-        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' && shouldUsePinForPresentation
+        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' &&
+        shouldUsePinForPresentation &&
+        presentationRequest
           ? {
               step: 'presentation-during-issuance',
               progress: 66,
@@ -589,10 +602,11 @@ export function CredentialNotificationScreen() {
                 <ShareCredentialsSlide
                   key="share-credentials"
                   onAccept={shouldUsePinForPresentation ? undefined : onPresentationAccept}
-                  logo={resolvedCredentialOffer.credentialsForProofRequest.verifier.logo}
-                  submission={resolvedCredentialOffer.credentialsForProofRequest.formattedSubmission}
+                  logo={presentationRequest.verifier.logo}
+                  submission={presentationRequest.formattedSubmission}
                   isAccepting={isSharingPresentation}
                   onDecline={onProofDecline}
+                  onSelectCredential={onSelectCredential}
                   // Not supported for this flow atm
                 />
               ),

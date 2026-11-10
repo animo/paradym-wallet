@@ -25,13 +25,15 @@ import {
   ParadymWalletNoStoreError,
 } from '../error'
 import { withBiometricAuthenticationErrors } from '../error/withBiometricAuthenticationErrors'
-import { getSubmissionForMdocRequest } from '../format/mdocDeviceRequest'
-import type { FormattedSubmission } from '../format/submission'
+import { getSubmissionForMdocRequest, preferMdocCredentials } from '../format/mdocDeviceRequest'
+import { type FormattedSubmission, getSubmissionCredentialIds, selectSubmissionCredentials } from '../format/submission'
 import { createLogger, type ParadymWalletSdkLogger } from '../logging'
-import { getCredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
+import {
+  type CredentialsForProofRequest,
+  getCredentialsForProofRequest,
+} from '../openid4vc/func/resolveCredentialRequest'
 import { getDcqlCredentialsToShare } from '../openid4vc/func/shareCredentials'
 import { type FormattedTransactionData, resolveTransactionData } from '../openid4vc/transaction'
-import { selectPasoPaymentCredential } from '../paso/transactionData'
 import type { PasoAuthenticationMethod } from '../paso/types'
 import { resolveMdocDeviceRequest } from '../proximity/resolveMdocDeviceRequest'
 import { storeSharedActivityForSubmission } from '../storage/activityStore'
@@ -109,6 +111,13 @@ export type DcApiReview = {
   share: (options?: DcApiShareOptions) => Promise<void>
 
   /**
+   * The review with another credential for an entry of the submission, one of the entry's
+   * `credentials`. It becomes the entry's first credential, the one that is shared, and the
+   * transaction is resolved again against it.
+   */
+  select: (inputDescriptorId: string, credentialRecordId: string) => Promise<DcApiReview>
+
+  /**
    * Declines the request, after recording it in the activity log the way the app records a declined
    * request: stopped when the wallet could have answered it, failed when it lacked the credentials.
    * The reason is passed on to the OS, for logs only.
@@ -129,8 +138,9 @@ export type DcApiShareOptions = {
  * A review as the platform- and protocol-specific paths build it, before it is recorded. Its `share`
  * builds the response and returns the call that sends it, so the share can be recorded in between.
  */
-type ResolvedReview = Omit<DcApiReview, 'decline' | 'share'> & {
+type ResolvedReview = Omit<DcApiReview, 'decline' | 'share' | 'select'> & {
   share: (options?: DcApiShareOptions) => Promise<() => Promise<void>>
+  select: (inputDescriptorId: string, credentialRecordId: string) => Promise<ResolvedReview>
 }
 
 /**
@@ -276,6 +286,8 @@ export class ParadymDcApiSdk {
         await this.storeSharedActivity(review, 'success')
         await respond()
       },
+      select: async (inputDescriptorId, credentialRecordId) =>
+        this.recordingSharedActivity(await review.select(inputDescriptorId, credentialRecordId), request),
       decline: (reason) => {
         declining ??= (async () => {
           // Recorded first: declining takes the request UI down with it.
@@ -333,25 +345,41 @@ export class ParadymDcApiSdk {
       treatAmbiguousMultipleDocRequestsAsAlternatives: true,
     })
 
-    // Decided here rather than in `share`, so what the user reviewed is exactly what is sent.
-    const selected = resolved.success ? this.agent.mdoc.selectCredentialsForRequest(resolved) : undefined
+    // A request without an origin came from a native app calling for itself, which the calling
+    // package is the only identity for.
+    const verifier = await this.getMdocVerifier(
+      resolved.docRequests.find((docRequest) => docRequest.readerAuth?.certificateChain.length)?.readerAuth
+        ?.certificateChain,
+      request.origin
+    )
 
-    return {
-      submission: getSubmissionForMdocRequest(resolved, selected),
-      // A request without an origin came from a native app calling for itself, which the calling
-      // package is the only identity for.
-      ...(await this.getMdocVerifier(
-        resolved.docRequests.find((docRequest) => docRequest.readerAuth?.certificateChain.length)?.readerAuth
-          ?.certificateChain,
-        request.origin
-      )),
-      share: async () => {
-        if (!selected) throw new Error('No stored card answers the request')
+    const review = (preferredRecordIds: string[]): ResolvedReview => {
+      // Decided here rather than in `share`, so what the user reviewed is exactly what is sent.
+      const selected = resolved.success
+        ? this.agent.mdoc.selectCredentialsForRequest(preferMdocCredentials(resolved, preferredRecordIds))
+        : undefined
+      const submission = getSubmissionForMdocRequest(resolved, selected)
 
-        const { response } = await this.agent.mdoc.createDcApiResponse(selected)
-        return () => request.respond({ protocol: 'org-iso-mdoc', data: { response } })
-      },
+      return {
+        submission,
+        ...verifier,
+        select: async (inputDescriptorId, credentialRecordId) =>
+          review(
+            getSubmissionCredentialIds(
+              selectSubmissionCredentials(submission, { [inputDescriptorId]: credentialRecordId })
+            )
+          ),
+        share: async () => {
+          if (!selected) throw new Error('No stored card answers the request')
+
+          const { response } = await this.agent.mdoc.createDcApiResponse(selected)
+          return () => request.respond({ protocol: 'org-iso-mdoc', data: { response } })
+        },
+      }
     }
+
+    // The cards picked in the credential picker. iOS has no picker, so the wallet selects them itself.
+    return review(request.platform === 'android' ? (request.selection?.credentialIds ?? []) : [])
   }
 
   /**
@@ -380,52 +408,61 @@ export class ParadymDcApiSdk {
       resolvedAuthorizationRequest: resolved,
     })
 
-    // The cards picked in the credential picker go to the front of their entries, so what is shown,
-    // what a transaction is resolved against and what is presented are the same cards. iOS has no
-    // picker, so the wallet selects them itself.
-    const selectedCredentials = getPickedCredentials(
+    // The first credential of every entry is what is shown, what a transaction is resolved against
+    // and what is presented, so picking a card moves it to the front of its entry.
+    const review = async (credentialsForRequest: CredentialsForProofRequest): Promise<ResolvedReview> => {
+      const transactionData = await resolveTransactionData(this, credentialsForRequest, getLocale())
+      // Payments are what the request UI shows. Anything else would be signed without being seen.
+      if (transactionData && transactionData.type === 'qes_authorization') {
+        throw new Error(
+          `Transactions of type '${transactionData.type}' are not supported over the digital credentials API`
+        )
+      }
+
+      return {
+        submission: credentialsForRequest.formattedSubmission,
+        transactionData,
+        ...verifier,
+        select: (inputDescriptorId, credentialRecordId) =>
+          review({
+            ...credentialsForRequest,
+            formattedSubmission: selectSubmissionCredentials(credentialsForRequest.formattedSubmission, {
+              [inputDescriptorId]: credentialRecordId,
+            }),
+          }),
+        share: async ({ authenticationMethods, authenticatedAt } = {}) => {
+          const { dcqlCredentials } = await getDcqlCredentialsToShare(this, {
+            resolvedRequest: credentialsForRequest,
+            transactionData,
+            authenticationMethods,
+            authenticatedAt,
+          })
+          if (!dcqlCredentials) throw new Error('The request carries no DCQL query')
+
+          const { authorizationResponse } = await this.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
+            authorizationRequestPayload: resolved.authorizationRequestPayload,
+            origin: request.origin,
+            dcql: { credentials: dcqlCredentials },
+            transactionData: transactionData?.cardForTransactionId
+              ? [{ credentialId: transactionData.cardForTransactionId }]
+              : undefined,
+          })
+
+          return () => request.respond({ protocol: protocolRequest.protocol, data: authorizationResponse })
+        },
+      }
+    }
+
+    // The cards picked in the credential picker. iOS has no picker, so the wallet selects them itself.
+    const pickedCredentials = getPickedCredentials(
       resolved.dcql.queryResult,
       request.platform === 'android' ? request.selection?.credentialIds : undefined
     )
-    const credentialsForRequest = Object.entries(selectedCredentials).reduce(
-      (current, [credentialQueryId, credentialRecordId]) =>
-        selectPasoPaymentCredential(current, credentialQueryId, credentialRecordId),
-      getCredentialsForProofRequest(resolved, { origin: request.origin, ...verifier })
-    )
-    const transactionData = await resolveTransactionData(this, credentialsForRequest, getLocale())
-    // Payments are what the request UI shows. Anything else would be signed without being seen.
-    if (transactionData && transactionData.type === 'qes_authorization') {
-      throw new Error(
-        `Transactions of type '${transactionData.type}' are not supported over the digital credentials API`
-      )
-    }
-
-    return {
-      submission: credentialsForRequest.formattedSubmission,
-      transactionData,
-      ...verifier,
-      share: async ({ authenticationMethods, authenticatedAt } = {}) => {
-        const { dcqlCredentials } = await getDcqlCredentialsToShare(this, {
-          resolvedRequest: credentialsForRequest,
-          selectedCredentials,
-          transactionData,
-          authenticationMethods,
-          authenticatedAt,
-        })
-        if (!dcqlCredentials) throw new Error('The request carries no DCQL query')
-
-        const { authorizationResponse } = await this.agent.openid4vc.holder.acceptOpenId4VpAuthorizationRequest({
-          authorizationRequestPayload: resolved.authorizationRequestPayload,
-          origin: request.origin,
-          dcql: { credentials: dcqlCredentials },
-          transactionData: transactionData?.cardForTransactionId
-            ? [{ credentialId: transactionData.cardForTransactionId }]
-            : undefined,
-        })
-
-        return () => request.respond({ protocol: protocolRequest.protocol, data: authorizationResponse })
-      },
-    }
+    const credentialsForRequest = getCredentialsForProofRequest(resolved, { origin: request.origin, ...verifier })
+    return review({
+      ...credentialsForRequest,
+      formattedSubmission: selectSubmissionCredentials(credentialsForRequest.formattedSubmission, pickedCredentials),
+    })
   }
 
   /**
@@ -435,17 +472,17 @@ export class ParadymDcApiSdk {
    * inside `share`, after `approve()`.
    *
    * `approve()` releases the raw request only once, but iOS keeps the request open until the
-   * response is sent. So a `share` retried after a cancelled biometric prompt answers the request
-   * approved the first time, rather than approving again.
+   * response is sent. So a `share` retried after a cancelled biometric prompt, from the same review
+   * or one with other cards picked, answers the request approved the first time.
    */
   private async reviewIosRequest(request: IosParsedDcApiRequest): Promise<ResolvedReview> {
     const reviewedRequest = await resolveMdocDeviceRequest({
       mdocApi: this.agent.mdoc,
       deviceRequest: toDeviceRequest(request.presentmentRequests),
     })
-    const reviewedSelection = reviewedRequest.success
-      ? this.agent.mdoc.selectCredentialsForRequest(reviewedRequest)
-      : undefined
+    // The OS parses reader authentication out for us, so the verifier is known before the raw
+    // request is released — the same trust the Android mdoc path establishes.
+    const verifier = await this.getMdocVerifier(request.readerAuthentications[0]?.certificateChain, request.origin)
 
     const approve = async () => {
       // The point of no return: iOS releases the raw request only once the wallet commits to
@@ -453,40 +490,55 @@ export class ParadymDcApiSdk {
       const [isoMdoc] = await request.approve()
       if (!isoMdoc) throw new Error('The request carries no org-iso-mdoc request')
 
-      const resolved = await this.agent.mdoc.resolveDcApiRequest({
+      return this.agent.mdoc.resolveDcApiRequest({
         request: isoMdoc.data,
         // Must come from the OS, never from the request payload (ISO 18013-7 C.5).
         origin: request.origin,
         treatAmbiguousMultipleDocRequestsAsAlternatives: true,
       })
-      if (!reviewedSelection || !resolved.success) throw new Error('No stored card answers the request')
-
-      // Only the cards the user reviewed: the raw request is selected for the same way the summary
-      // was, and answering it with any other card would disclose a card nobody approved.
-      const selected = this.agent.mdoc.selectCredentialsForRequest(resolved)
-      const reviewedRecordIds = reviewedSelection.credentials.map(({ record }) => record.id)
-      if (
-        selected.credentials.length !== reviewedRecordIds.length ||
-        selected.credentials.some(({ record }, index) => record.id !== reviewedRecordIds[index])
-      ) {
-        throw new Error('The cards that answer the request are not the ones that were reviewed')
-      }
-
-      return selected
     }
     let approved: ReturnType<typeof approve> | undefined
 
-    return {
-      submission: getSubmissionForMdocRequest(reviewedRequest, reviewedSelection),
-      // The OS parses reader authentication out for us, so the verifier is known before the raw
-      // request is released — the same trust the Android mdoc path establishes.
-      ...(await this.getMdocVerifier(request.readerAuthentications[0]?.certificateChain, request.origin)),
-      share: async () => {
-        approved ??= approve()
-        const { response } = await this.agent.mdoc.createDcApiResponse(await approved)
-        return () => request.respond({ protocol: 'org-iso-mdoc', data: { response } })
-      },
+    const review = (preferredRecordIds: string[]): ResolvedReview => {
+      const reviewedSelection = reviewedRequest.success
+        ? this.agent.mdoc.selectCredentialsForRequest(preferMdocCredentials(reviewedRequest, preferredRecordIds))
+        : undefined
+      const submission = getSubmissionForMdocRequest(reviewedRequest, reviewedSelection)
+
+      return {
+        submission,
+        ...verifier,
+        select: async (inputDescriptorId, credentialRecordId) =>
+          review(
+            getSubmissionCredentialIds(
+              selectSubmissionCredentials(submission, { [inputDescriptorId]: credentialRecordId })
+            )
+          ),
+        share: async () => {
+          approved ??= approve()
+          const resolved = await approved
+          if (!reviewedSelection || !resolved.success) throw new Error('No stored card answers the request')
+
+          // Only the cards the user reviewed: the raw request is selected for the same way the summary
+          // was, and answering it with any other card would disclose a card nobody approved.
+          const selected = this.agent.mdoc.selectCredentialsForRequest(
+            preferMdocCredentials(resolved, preferredRecordIds)
+          )
+          const reviewedRecordIds = reviewedSelection.credentials.map(({ record }) => record.id)
+          if (
+            selected.credentials.length !== reviewedRecordIds.length ||
+            selected.credentials.some(({ record }, index) => record.id !== reviewedRecordIds[index])
+          ) {
+            throw new Error('The cards that answer the request are not the ones that were reviewed')
+          }
+
+          const { response } = await this.agent.mdoc.createDcApiResponse(selected)
+          return () => request.respond({ protocol: 'org-iso-mdoc', data: { response } })
+        },
+      }
     }
+
+    return review([])
   }
 
   private getMdocVerifier(readerCertificateChain: Array<string | X509Certificate> | undefined, origin: string) {

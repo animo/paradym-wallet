@@ -11,6 +11,7 @@ import {
   ParadymWalletAuthenticationInvalidPinError,
   ParadymWalletBiometricAuthenticationCancelledError,
   ParadymWalletBiometricAuthenticationNotEnabledError,
+  selectSubmissionCredentials,
   storeSharedActivityForCredentialsForRequest,
   useParadym,
 } from '@paradym/wallet-sdk'
@@ -197,6 +198,12 @@ export function MdocOfflineSharingScreen({ sessionTranscript, deviceRequest }: M
       onDecline={onProofDecline}
       onComplete={onProofComplete}
       usePin={shouldUsePin ?? false}
+      // The device response is answered with the first card of every entry, see `createDeviceResponse`
+      onSelectCredential={(inputDescriptorId, credentialRecordId) =>
+        setSubmission(
+          (current) => current && selectSubmissionCredentials(current, { [inputDescriptorId]: credentialRecordId })
+        )
+      }
     />
   )
 }

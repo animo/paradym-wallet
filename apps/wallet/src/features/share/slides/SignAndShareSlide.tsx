@@ -21,6 +21,7 @@ interface SignAndShareSlideProps {
   documentName: string
   cardForSigningId?: string
   submission?: FormattedSubmission
+  onSelectCredential?: (inputDescriptorId: string, credentialRecordId: string) => void
 }
 
 export const SignAndShareSlide = ({
@@ -31,6 +32,7 @@ export const SignAndShareSlide = ({
   documentName,
   cardForSigningId,
   submission,
+  onSelectCredential,
 }: SignAndShareSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -152,7 +154,10 @@ export const SignAndShareSlide = ({
             )}
 
             {remainingEntries.length > 0 && submission && (
-              <RequestedAttributesSection submission={{ ...submission, entries: remainingEntries }} />
+              <RequestedAttributesSection
+                submission={{ ...submission, entries: remainingEntries }}
+                onSelectCredential={onSelectCredential}
+              />
             )}
             <Spacer size="5" />
           </ScrollView>

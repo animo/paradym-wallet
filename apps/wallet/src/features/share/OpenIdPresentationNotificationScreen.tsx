@@ -13,7 +13,7 @@ import {
   ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletPasoError,
   resolveTransactionData,
-  selectPasoPaymentCredential,
+  selectSubmissionCredentials,
   useParadym,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
@@ -46,19 +46,16 @@ export function OpenIdPresentationNotificationScreen() {
   const [isResolvingTransaction, setIsResolvingTransaction] = useState(false)
   const [isSharing, setIsSharing] = useState(false)
 
-  // The card the user picked to authorize a PaSO payment with, when more than one matches. The
-  // request with that choice applied is what gets resolved, shown and shared from here on.
-  const [paymentCredential, setPaymentCredential] = useState<{ credentialQueryId: string; credentialId: string }>()
+  // The cards the user picked, by entry, where more than one matches. The request with those choices
+  // applied is what gets resolved, shown and shared from here on.
+  const [selectedCredentials, setSelectedCredentials] = useState<Record<string, string>>({})
   const shareRequest = useMemo(
     () =>
-      resolvedRequest && paymentCredential
-        ? selectPasoPaymentCredential(
-            resolvedRequest,
-            paymentCredential.credentialQueryId,
-            paymentCredential.credentialId
-          )
-        : resolvedRequest,
-    [resolvedRequest, paymentCredential]
+      resolvedRequest && {
+        ...resolvedRequest,
+        formattedSubmission: selectSubmissionCredentials(resolvedRequest.formattedSubmission, selectedCredentials),
+      },
+    [resolvedRequest, selectedCredentials]
   )
   const shouldUsePin = useShouldUsePinForSubmission(shareRequest?.formattedSubmission)
 
@@ -274,8 +271,9 @@ export function OpenIdPresentationNotificationScreen() {
     pushToWallet()
   }, [authorizationRequestError, paradym, pushToWallet])
 
-  const onSelectPaymentCredential = useCallback(
-    (credentialQueryId: string, credentialId: string) => setPaymentCredential({ credentialQueryId, credentialId }),
+  const onSelectCredential = useCallback(
+    (inputDescriptorId: string, credentialRecordId: string) =>
+      setSelectedCredentials((selected) => ({ ...selected, [inputDescriptorId]: credentialRecordId })),
     []
   )
 
@@ -297,7 +295,7 @@ export function OpenIdPresentationNotificationScreen() {
       onCancel={onErrorCancel}
       transaction={formattedTransactionData}
       isResolvingTransaction={isResolvingTransaction}
-      onSelectPaymentCredential={onSelectPaymentCredential}
+      onSelectCredential={onSelectCredential}
       errorReason={errorReason}
     />
   )

@@ -114,3 +114,35 @@ export function getFormattedSubmission(resolvedAuthorizationRequest: OpenId4VpRe
 
   throw new Error('No presentation exchange or dcql found in authorization request.')
 }
+
+/**
+ * The submission with the user's choice of credential per entry, moved to the front of the entry's
+ * credentials. The first credential of every entry is the one shown, the one shared, and the one a PaSO
+ * transaction is resolved against.
+ */
+export function selectSubmissionCredentials(
+  submission: FormattedSubmission,
+  selectedCredentials: { [inputDescriptorId: string]: string }
+): FormattedSubmission {
+  return {
+    ...submission,
+    entries: submission.entries.map((entry) => {
+      if (!entry.isSatisfied) return entry
+
+      const selected = entry.credentials.find(
+        ({ credential }) => credential.record.id === selectedCredentials[entry.inputDescriptorId]
+      )
+      if (!selected) return entry
+
+      return { ...entry, credentials: [selected, ...entry.credentials.filter((candidate) => candidate !== selected)] }
+    }),
+  }
+}
+
+/**
+ * The ids of the credential records a submission is answered with: the first credential of every
+ * satisfied entry.
+ */
+export function getSubmissionCredentialIds(submission: FormattedSubmission) {
+  return submission.entries.flatMap((entry) => (entry.isSatisfied ? [entry.credentials[0].credential.record.id] : []))
+}

@@ -1,5 +1,4 @@
 import { t } from '@lingui/core/macro'
-import { i18n } from '@package/translations'
 
 export {
   capitalizeFirstLetter,
@@ -13,16 +12,20 @@ export {
 // than a second set built here.
 import { getDateTimeFormat, reportInvalidDate } from '@paradym/wallet-sdk/utils/format'
 
-const getLocaleForFormat = () => i18n.locale ?? 'en-US'
-
-export function formatRelativeDate(date: Date, now: Date = new Date(), includeTime = false): string {
+/**
+ * `locale` is the active one, from `useLingui`: as an argument, a memoised caller (React Compiler) formats
+ * the date again when the language changes.
+ */
+export function formatRelativeDate(date: Date, locale: string, includeTime = false): string {
   if (Number.isNaN(date.getTime())) return reportInvalidDate(date, 'formatRelativeDate')
 
-  const msPerDay = 24 * 60 * 60 * 1000
-  const days = Math.round((now.getTime() - date.getTime()) / msPerDay)
+  const now = new Date()
+  // Calendar days, so 23:00 yesterday is yesterday at 01:00 today
+  const startOfDay = (day: Date) => new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime()
+  const days = Math.round((startOfDay(now) - startOfDay(date)) / (24 * 60 * 60 * 1000))
 
   const formatTime = (d: Date) =>
-    getDateTimeFormat(getLocaleForFormat(), { hour: 'numeric', minute: '2-digit', hour12: false }).format(d)
+    getDateTimeFormat(locale, { hour: 'numeric', minute: '2-digit', hour12: false }).format(d)
 
   if (days === 0) {
     return includeTime
@@ -34,10 +37,18 @@ export function formatRelativeDate(date: Date, now: Date = new Date(), includeTi
       ? t({ id: 'dateFormatting.yesterdayAtTime', message: `Yesterday at ${formatTime(date)}` })
       : t({ id: 'dateFormatting.yesterday', message: 'Yesterday' })
   }
-  return `${getDateTimeFormat(getLocaleForFormat(), {
-    month: 'long',
-    day: 'numeric',
-  }).format(date)} ${includeTime ? `at ${formatTime(date)}` : ''}`
+
+  const year = date.getFullYear() === now.getFullYear() ? undefined : 'numeric'
+  const day = getDateTimeFormat(locale, { month: 'long', day: 'numeric', year }).format(date)
+  if (!includeTime) return day
+
+  const time = formatTime(date)
+  return t({
+    id: 'dateFormatting.dateAtTime',
+    message: `${day} at ${time}`,
+    comment:
+      'A date and a time, such as "November 10 at 14:30". The date is formatted already, with or without the year',
+  })
 }
 
 export function getDaysUntil(date?: Date): number | undefined {

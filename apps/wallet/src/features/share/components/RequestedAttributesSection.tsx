@@ -15,12 +15,17 @@ import {
   getDisclosedAttributeNamesForDisplay,
   getRequestedAttributeNamesForDisplay,
 } from '@paradym/wallet-sdk'
+import { useState } from 'react'
+import { SwitchCardRow } from './CardSelectionList'
+import { CardSelectionSheet } from './CardSelectionSheet'
 
 export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission
+  /** Lets the user pick another of the cards that answer an entry. */
+  onSelectCredential?: (inputDescriptorId: string, credentialRecordId: string) => void
 }
 
-export function RequestedAttributesSection({ submission }: RequestedAttributesSectionProps) {
+export function RequestedAttributesSection({ submission, onSelectCredential }: RequestedAttributesSectionProps) {
   const { t } = useLingui()
 
   const satisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntrySatisfied => e.isSatisfied)
@@ -63,9 +68,9 @@ export function RequestedAttributesSection({ submission }: RequestedAttributesSe
         </Paragraph>
       </YStack>
 
-      {/* We always take the first one for now (no selection) */}
-      {satisfiedEntries.map(({ credentials: [credential], ...entry }) => (
-        <SatisfiedCard key={entry.inputDescriptorId} credential={credential} />
+      {/* The first credential is the one that will be shared */}
+      {satisfiedEntries.map((entry) => (
+        <SatisfiedEntry key={entry.inputDescriptorId} entry={entry} onSelectCredential={onSelectCredential} />
       ))}
 
       {partiallySatisfiedEntries.length > 0 && (
@@ -145,6 +150,32 @@ export function SharedCardsList({ submission }: RequestedAttributesSectionProps)
       {satisfiedEntries.map(({ credentials: [credential], ...entry }) => (
         <SatisfiedCard key={entry.inputDescriptorId} credential={credential} />
       ))}
+    </YStack>
+  )
+}
+
+function SatisfiedEntry({
+  entry,
+  onSelectCredential,
+}: Pick<RequestedAttributesSectionProps, 'onSelectCredential'> & { entry: FormattedSubmissionEntrySatisfied }) {
+  const { t } = useLingui()
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [credential] = entry.credentials
+
+  if (!onSelectCredential || entry.credentials.length < 2) return <SatisfiedCard credential={credential} />
+
+  return (
+    <YStack gap="2">
+      <SwitchCardRow count={entry.credentials.length} onPress={() => setIsSheetOpen(true)} />
+      <SatisfiedCard credential={credential} />
+      <CardSelectionSheet
+        isOpen={isSheetOpen}
+        setIsOpen={setIsSheetOpen}
+        title={t(commonMessages.chooseCardTitle)}
+        cards={entry.credentials}
+        selectedCardId={credential.credential.record.id}
+        onSelect={(credentialRecordId) => onSelectCredential(entry.inputDescriptorId, credentialRecordId)}
+      />
     </YStack>
   )
 }
