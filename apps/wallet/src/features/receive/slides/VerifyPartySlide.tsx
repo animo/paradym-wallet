@@ -375,7 +375,7 @@ export const VerifyPartySlide = ({
   return (
     // Shrinks to the window's height, so the buttons stay at the bottom and the content above them scrolls
     <YStack flex={1} justify="space-between">
-      <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8' }}>
+      <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8', paddingBottom: '5' }}>
         {header}
         {trustDetails}
       </ScrollView>
