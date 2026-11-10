@@ -55,11 +55,6 @@ export const SignAndShareSlide = ({
     onNext()
   }
 
-  const handleDecline = () => {
-    onDecline?.()
-    onCancel()
-  }
-
   const signingWithLabel = t({
     id: 'signShare.signingWith',
     message: `Signing with ${qtsp.name}`,
@@ -171,7 +166,7 @@ export const SignAndShareSlide = ({
             acceptText={acceptLabel}
             declineText={t(commonMessages.stop)}
             onAccept={handleAccept}
-            onDecline={handleDecline}
+            onDecline={onCancel}
             isLoading={isProcessing}
           />
         ) : (
