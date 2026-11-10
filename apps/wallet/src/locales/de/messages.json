@@ -96,7 +96,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 147]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 149]],
 		"translation": "{name} fragt mehr an, als die Organisation registriert hat."
 	},
 	"verifyPartySlide.overAskingConfirmationDescription": {
@@ -107,7 +107,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, with the name of the organization"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 160]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 162]],
 		"translation": "{name} fragt mehr an, als die Organisation registriert hat. Du kannst die Anfrage prüfen, bevor etwas geteilt wird."
 	},
 	"common.overAskingWarning": {
@@ -129,7 +129,7 @@
 		"comments": [
 			"Warning shown when an organization offers a card it is not registered to issue, with the name of the organization"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 111]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 113]],
 		"translation": "{name} ist nicht registriert, um diese Karte auszustellen. Fahre nur fort, wenn du der Organisation vertraust"
 	},
 	"verifyPartySlide.notRegisteredToIssueConfirmationDescription": {
@@ -140,7 +140,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with an offer of a card the organization is not registered to issue, with the name of the organization"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 125]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 127]],
 		"translation": "{name} bietet eine Karte an, für deren Ausstellung die Organisation nicht registriert ist. Du kannst die Karte prüfen, bevor sie hinzugefügt wird."
 	},
 	"verifyPartySlide.connectSubtitle": {
@@ -149,7 +149,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 250]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 267]],
 		"translation": "{name} möchte sich mit dir verbinden."
 	},
 	"verifyPartySlide.signingSubtitle": {
@@ -158,7 +158,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 228]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 245]],
 		"translation": "{name} möchte mit dir eine digitale Signatur für ein Dokument erstellen."
 	},
 	"verifyPartySlide.offerCardSubtitle": {
@@ -167,7 +167,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 218]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 235]],
 		"translation": "{name} möchte dir eine Karte anbieten."
 	},
 	"verifyPartySlide.requestSubtitle": {
@@ -176,7 +176,7 @@
 			"name": ["name"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 240]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 257]],
 		"translation": "{name} möchte Informationen von dir anfordern."
 	},
 	"credentials.totalLabel": {
@@ -222,6 +222,15 @@
 		"comments": ["Screen header shown on the about page of the wallet"],
 		"origin": [["src/features/menu/AboutScreen.tsx", 23]],
 		"translation": "Über die Wallet"
+	},
+	"trust.headerTitle": {
+		"message": "About this organization",
+		"placeholders": {},
+		"comments": [
+			"Screen title that describes information about a trusted party or organization"
+		],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 79]],
+		"translation": "Über diese Partei"
 	},
 	"menu.item.about": {
 		"message": "About this wallet",
@@ -387,28 +396,28 @@
 		"message": "An unknown organization wants to connect with you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 252]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 269]],
 		"translation": "Eine unbekannte Organisation möchte sich mit dir verbinden."
 	},
 	"verifyPartySlide.signingSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to interact to create a digital signature for a document.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 232]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 249]],
 		"translation": "Eine unbekannte Organisation möchte mit dir eine digitale Signatur für ein Dokument erstellen."
 	},
 	"verifyPartySlide.offerCardSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to offer you a card.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 220]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 237]],
 		"translation": "Eine unbekannte Organisation möchte dir eine Karte anbieten."
 	},
 	"verifyPartySlide.requestSubtitleUnknownOrganization": {
 		"message": "An unknown organization wants to request information from you.",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 242]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 259]],
 		"translation": "Eine unbekannte Organisation möchte Informationen von dir anfordern."
 	},
 	"menu.section.app": {
@@ -417,6 +426,15 @@
 		"comments": ["Heading above the app section"],
 		"origin": [["src/features/menu/MenuScreen.tsx", 106]],
 		"translation": "APP"
+	},
+	"trust.approvedBy": {
+		"message": "Approved by",
+		"placeholders": {},
+		"comments": [
+			"Label above the name of the organization that approved this one"
+		],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 138]],
+		"translation": "Vertraut von"
 	},
 	"common.approvedBy": {
 		"message": "Approved by {organizationName}",
@@ -902,7 +920,7 @@
 		"comments": [
 			"Title of the sheet that asks to confirm continuing with an organization that goes beyond what it registered, such as a request that asks for more than it registered"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 343]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 361]],
 		"translation": "Trotzdem fortfahren?"
 	},
 	"mdoc.error.sharing": {
@@ -1275,7 +1293,7 @@
 		"message": "First time interaction",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 301]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 319]],
 		"translation": "Erste Interaktion"
 	},
 	"aboutScreen.contactIntro": {
@@ -1442,8 +1460,8 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 417],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 645]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 418],
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 651]
 		],
 		"translation": "Wenn du aufhörst, wird das Kartenangebot abgebrochen."
 	},
@@ -1650,7 +1668,7 @@
 			"0": ["formatRelativeDate(new Date(lastInteractionDate))"]
 		},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 308]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 326]],
 		"translation": "Letzte Interaktion: {0}"
 	},
 	"predicate.lessThan": {
@@ -1838,7 +1856,7 @@
 		"message": "No previous interactions found",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 312]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 330]],
 		"translation": "Keine vorherigen Interaktionen gefunden"
 	},
 	"verifyPartySlide.notRegisteredToIssue": {
@@ -1847,8 +1865,19 @@
 		"comments": [
 			"Title of the warning shown when an organization offers a card it is not registered to issue"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 105]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 107]],
 		"translation": "Nicht für diese Karte registriert"
+	},
+	"trust.onTrustedList": {
+		"message": "On the trusted list of {territory}",
+		"placeholders": {
+			"territory": ["territory"]
+		},
+		"comments": [
+			"Shown under the organization that approved this one, with the country of the trusted list the approving organization is on"
+		],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 150]],
+		"translation": "Auf der Vertrauensliste von {territory}"
 	},
 	"network.onlineAgain": {
 		"message": "Online again.",
@@ -1924,7 +1953,7 @@
 			"Fallback label for the button that authorizes a PaSO payment"
 		],
 		"origin": [
-			["src/features/dc-api/DcApiScreen.tsx", 453],
+			["src/features/dc-api/DcApiScreen.tsx", 458],
 			["src/features/share/slides/PasoPaymentSlide.tsx", 220]
 		],
 		"translation": "Bezahlen"
@@ -2189,8 +2218,17 @@
 		"message": "Previous interactions",
 		"placeholders": {},
 		"comments": [],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 297]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 315]],
 		"translation": "Vorherige Interaktionen"
+	},
+	"trust.privacyPolicy": {
+		"message": "Privacy policy",
+		"placeholders": {},
+		"comments": [
+			"Link to the privacy policy of the organization, as it registered it"
+		],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 59]],
+		"translation": "Datenschutzerklärung"
 	},
 	"aboutScreen.privacyPolicyTitle": {
 		"message": "Privacy Policy",
@@ -2306,6 +2344,15 @@
 		"comments": ["The region of a person"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 786]],
 		"translation": "Region"
+	},
+	"trust.registeredDetails": {
+		"message": "Registered details",
+		"placeholders": {},
+		"comments": [
+			"Subheading for the links an organization provided when it registered to use wallets"
+		],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 168]],
+		"translation": "Registrierte Angaben"
 	},
 	"onboarding.pinReenter.title": {
 		"message": "Repeat your PIN",
@@ -2456,7 +2503,7 @@
 			"Shown while the user has not yet scrolled through all payment details"
 		],
 		"origin": [
-			["src/features/dc-api/DcApiScreen.tsx", 465],
+			["src/features/dc-api/DcApiScreen.tsx", 470],
 			["src/features/share/slides/PasoPaymentSlide.tsx", 235]
 		],
 		"translation": "Scrolle nach unten, um alle Zahlungsdetails zu prüfen."
@@ -2800,8 +2847,8 @@
 		"placeholders": {},
 		"comments": [],
 		"origin": [
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 413],
-			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 641]
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 414],
+			["src/features/receive/OpenIdCredentialNotificationScreen.tsx", 647]
 		],
 		"translation": "Kartenangebot stoppen?"
 	},
@@ -2834,6 +2881,15 @@
 		"comments": ["Title shown when an action completes successfully"],
 		"origin": [["../../packages/translations/src/commonMessages.ts", 44]],
 		"translation": "Erfolgreich!"
+	},
+	"trust.support": {
+		"message": "Support",
+		"placeholders": {},
+		"comments": [
+			"Link to the support page or email address of the organization, as it registered it"
+		],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 67]],
+		"translation": "Support"
 	},
 	"paso.payment.switchCard": {
 		"message": "Switch",
@@ -3225,7 +3281,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 153]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 155]],
 		"translation": "Diese Organisation fragt mehr an, als sie registriert hat."
 	},
 	"verifyPartySlide.overAskingConfirmationDescriptionUnknownOrganization": {
@@ -3234,7 +3290,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with a request that asks for more than the organization registered, when the name of the organization is unknown"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 166]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 168]],
 		"translation": "Diese Organisation fragt mehr an, als sie registriert hat. Du kannst die Anfrage prüfen, bevor etwas geteilt wird."
 	},
 	"common.overAskingWarningUnknownOrganization": {
@@ -3252,7 +3308,7 @@
 		"comments": [
 			"Warning shown when an organization offers a card it is not registered to issue, when the name of the organization is unknown"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 117]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 119]],
 		"translation": "Diese Organisation ist nicht registriert, um diese Karte auszustellen. Fahre nur fort, wenn du ihr vertraust"
 	},
 	"verifyPartySlide.notRegisteredToIssueConfirmationDescriptionUnknownOrganization": {
@@ -3261,7 +3317,7 @@
 		"comments": [
 			"Shown in the sheet that asks to confirm continuing with an offer of a card the organization is not registered to issue, when the name of the organization is unknown"
 		],
-		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 131]],
+		"origin": [["src/features/receive/slides/VerifyPartySlide.tsx", 133]],
 		"translation": "Diese Organisation bietet eine Karte an, für deren Ausstellung sie nicht registriert ist. Du kannst die Karte prüfen, bevor sie hinzugefügt wird."
 	},
 	"paso.refusal.noSupportedLocale": {
@@ -3564,6 +3620,15 @@
 		"comments": [],
 		"origin": [["src/utils/sharedPidSetup.ts", 58]],
 		"translation": "Wir benötigen deine biometrischen Daten, um deine Identität zu bestätigen."
+	},
+	"trust.website": {
+		"message": "Website",
+		"placeholders": {},
+		"comments": [
+			"Link to the website of the organization, as it registered it"
+		],
+		"origin": [["src/features/wallet/TrustDetailScreen.tsx", 51]],
+		"translation": "Website"
 	},
 	"KvjX7N": {
 		"message": "Website <0/>",

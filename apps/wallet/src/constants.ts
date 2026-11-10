@@ -163,7 +163,6 @@ IXEEiTahju1+SB5KLhzx9IZruyJpCw==
 
 export const trustedDidEntities = [
   {
-    entityId: 'did:web:metadata.dev.paradym.id:41708c95-743b-48d1-b4d5-23547f67e192',
     did: 'did:web:metadata.dev.paradym.id:41708c95-743b-48d1-b4d5-23547f67e192',
     logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
     name: 'Hogeschool van Amsterdam',
@@ -171,7 +170,6 @@ export const trustedDidEntities = [
     demo: true,
   },
   {
-    entityId: 'did:web:metadata.paradym.id:f976c06e-da46-4b79-bc6e-bfda07c97f91',
     did: 'did:web:metadata.paradym.id:f976c06e-da46-4b79-bc6e-bfda07c97f91',
     logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
     name: 'Hogeschool van Amsterdam',
@@ -179,7 +177,6 @@ export const trustedDidEntities = [
     demo: false,
   },
   {
-    entityId: 'did:web:metadata.paradym.id:2ea1c471-af99-4d3a-b07c-57e29abf8cea',
     did: 'did:web:metadata.paradym.id:2ea1c471-af99-4d3a-b07c-57e29abf8cea',
     logoUri: 'https://legoland.animo.id/images/university-logo.png',
     name: 'Legoland University',
@@ -187,7 +184,6 @@ export const trustedDidEntities = [
     demo: true,
   },
   {
-    entityId: 'did:web:metadata.paradym.id:e3d45f31-3886-40e2-b8a7-982c2b110677',
     did: 'did:web:metadata.paradym.id:e3d45f31-3886-40e2-b8a7-982c2b110677',
     logoUri: 'https://meitheal.paradym.id/meitheal-icon.svg',
     name: 'Digital Meitheal 2026',
@@ -198,7 +194,6 @@ export const trustedDidEntities = [
 
 export const trustedOpenId4VciIssuerEntities = [
   {
-    entityId: 'https://agent.dev.paradym.id/oid4vci/43700792-bc9f-4b8c-be2f-59a227d7a6cb',
     issuer: 'https://agent.dev.paradym.id/oid4vci/43700792-bc9f-4b8c-be2f-59a227d7a6cb',
     logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
     name: 'Hogeschool van Amsterdam',
@@ -206,7 +201,6 @@ export const trustedOpenId4VciIssuerEntities = [
     demo: true,
   },
   {
-    entityId: 'https://agent.paradym.id/oid4vci/655913d0-e655-4b3f-9335-a8af00922270',
     issuer: 'https://agent.paradym.id/oid4vci/655913d0-e655-4b3f-9335-a8af00922270',
     logoUri: 'https://hva.animo.id/images/logo-hva-klein.png',
     name: 'Hogeschool van Amsterdam',
@@ -214,7 +208,6 @@ export const trustedOpenId4VciIssuerEntities = [
     demo: false,
   },
   {
-    entityId: 'https://issuer.dev.eduid.nl/eduid',
     issuer: 'https://issuer.dev.eduid.nl/eduid',
     logoUri: 'https://static.dev.eduid.nl/images/eduid_credential_logo.png',
     name: 'eduID',
@@ -222,7 +215,6 @@ export const trustedOpenId4VciIssuerEntities = [
     demo: true,
   },
   {
-    entityId: 'https://issuer.eduid.nl/eduid',
     issuer: 'https://issuer.eduid.nl/eduid',
     logoUri: 'https://static.eduid.nl/images/eduid_credential_logo.png',
     name: 'eduID',
@@ -230,7 +222,6 @@ export const trustedOpenId4VciIssuerEntities = [
     demo: false,
   },
   {
-    entityId: 'https://playground.paradym.id',
     issuer: 'https://agent.paradym.id/oid4vci/63010627-501b-43ec-a250-9a968ecf48fe',
     logoUri: 'https://playground.paradym.id/logo.png',
     name: 'Paradym Playground',
@@ -238,7 +229,6 @@ export const trustedOpenId4VciIssuerEntities = [
     demo: true,
   },
   {
-    entityId: 'https://stormcatch.com',
     issuer: 'https://agent.paradym.id/oid4vci/d57f3334-51aa-4b8d-abad-46174e544824',
     logoUri: 'https://assets.stormcatch.dev/logo/v1/stormcatch-icon-wordmark-v1-512.png',
     name: 'Stormcatch',
@@ -246,7 +236,6 @@ export const trustedOpenId4VciIssuerEntities = [
     demo: true,
   },
   {
-    entityId: 'https://meitheal.paradym.id',
     issuer: 'https://agent.paradym.id/oid4vci/e3547486-3b95-4b4a-9fc8-00dfc76c245e',
     logoUri: 'https://meitheal.paradym.id/meitheal-icon.svg',
     name: 'Digital Meitheal 2026',

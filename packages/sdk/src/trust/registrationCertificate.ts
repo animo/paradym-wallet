@@ -4,7 +4,11 @@ import type {
   OpenId4VciResolvedCredentialOffer,
   OpenId4VpResolvedAuthorizationRequest,
 } from '@credo-ts/openid4vc'
-import { getAccessCertificateSubjectIdentifier, parseAccessCertificate } from '@owf/eudi-access-certificate'
+import {
+  type AccessCertificateContact,
+  getAccessCertificateSubjectIdentifier,
+  parseAccessCertificate,
+} from '@owf/eudi-access-certificate'
 import {
   checkOverAsking,
   decodeWRPRC,
@@ -12,15 +16,57 @@ import {
   type OverAskingResult,
   type WRPRCPayload,
 } from '@owf/eudi-registration-certificate'
+import { getLocale } from '../config/locale'
+import { findDisplayByLocale } from '../format/attributes'
 import { getTrustedList, type TrustedListConfiguration } from './trustedLists'
 
 /**
  *
+ * What a party registered (ETSI TS 119 475 clause 5.2.4), to show to the user.
+ *
+ */
+export type PartyRegistration = {
+  /** The intended use of a relying party, in the wallet's language, else English, else the first */
+  purpose?: string
+  /** An `https` URL */
+  infoUri?: string
+  /** An `https` URL */
+  privacyPolicyUri?: string
+  /** An `https` or `mailto` URL */
+  supportUri?: string
+}
+
+// Only web pages, so a link can't open another app
+const getHttpsUrl = (url: string | undefined) => (url?.startsWith('https://') ? url : undefined)
+
+export const getPartyRegistration = (
+  registrationCertificate: WRPRCPayload | undefined,
+  accessCertificateContact: AccessCertificateContact
+): PartyRegistration => {
+  // ETSI TS 119 411-8 GEN-6.6.1-07: the access certificate has a support contact too
+  const support =
+    registrationCertificate?.support_uri ?? accessCertificateContact.uris[0] ?? accessCertificateContact.emails[0]
+
+  return {
+    purpose: findDisplayByLocale(
+      registrationCertificate?.purpose?.map(({ lang, value }) => ({ locale: lang, value })),
+      getLocale()
+    )?.value,
+    infoUri: getHttpsUrl(registrationCertificate?.info_uri),
+    privacyPolicyUri: getHttpsUrl(registrationCertificate?.privacy_policy),
+    supportUri:
+      getHttpsUrl(support) ?? (support?.includes('@') && !support.includes(':') ? `mailto:${support}` : undefined),
+  }
+}
+
+/**
+ *
  * Check whether a request asks for credentials or claims beyond the registration certificate
- * (ETSI TS 119 475) it carries. Without a registration certificate that is signed by a provider on
- * the lists of registration certificate providers, unexpired and bound to the access certificate the
- * request is signed with, nothing is registered. `undefined` when no such lists are configured, or
- * when one isn't loaded and the registration certificate can't be verified.
+ * (ETSI TS 119 475) it carries, and return that registration certificate once verified. Without a
+ * registration certificate that is signed by a provider on the lists of registration certificate
+ * providers, unexpired and bound to the access certificate the request is signed with, nothing is
+ * registered. `overAsking` is `undefined` when no such lists are configured, or when one isn't loaded
+ * and the registration certificate can't be verified.
  *
  */
 export const checkRequestForOverAsking = async (
@@ -28,37 +74,43 @@ export const checkRequestForOverAsking = async (
   trustedLists: TrustedListConfiguration[],
   resolvedAuthorizationRequest: OpenId4VpResolvedAuthorizationRequest,
   accessCertificate: string
-): Promise<OverAskingResult | undefined> => {
-  if (trustedLists.length === 0) return undefined
+): Promise<{ overAsking?: OverAskingResult; registrationCertificate?: WRPRCPayload }> => {
+  if (trustedLists.length === 0) return {}
 
   const { verifier_info, dcql_query } = resolvedAuthorizationRequest.authorizationRequestPayload
   // ETSI TS 119 472-2 OIDFVP-HAIP-COMMON-REQ-RO-15
   const data = verifier_info?.find(({ format }) => format === 'registration_cert')?.data
-  if (typeof data !== 'string') return checkOverAsking(dcql_query, [])
+  if (typeof data !== 'string') return { overAsking: checkOverAsking(dcql_query, []) }
 
   const providers = await loadRegistrationCertificateProviders(agentContext, trustedLists)
-  const payload = await verifyRegistrationCertificate(
+  const registrationCertificate = await verifyRegistrationCertificate(
     agentContext,
     providers.trustedCertificates,
     accessCertificate,
     data
   )
-  if (payload) return checkOverAsking(dcql_query, payload.credentials ?? [])
+  if (registrationCertificate) {
+    return {
+      overAsking: checkOverAsking(dcql_query, registrationCertificate.credentials ?? []),
+      registrationCertificate,
+    }
+  }
 
   // The provider may be on a list the wallet couldn't load, so whether the party over-asks is unknown
-  return providers.isEveryListLoaded ? checkOverAsking(dcql_query, []) : undefined
+  return { overAsking: providers.isEveryListLoaded ? checkOverAsking(dcql_query, []) : undefined }
 }
 
 /**
  *
  * Check whether an issuer offers credentials beyond the registration certificates (ETSI TS 119 475)
- * in the `issuer_info` of its signed metadata (ETSI TS 119 472-3). Each offered credential is checked
- * against the registration certificates relevant to it by `credential_ids`. A registration certificate
- * that isn't signed by a provider on the lists of registration certificate providers, is expired, isn't
- * bound to the access certificate the metadata is signed with, or isn't for an attestation provider,
- * registers nothing. `undefined` when no such lists are configured, when the metadata carries no registration
- * certificate, which is optional for an issuer, or when a list isn't loaded and a relevant
- * registration certificate can't be verified.
+ * in the `issuer_info` of its signed metadata (ETSI TS 119 472-3), and return the first of them that is
+ * verified. Each offered credential is checked against the registration certificates relevant to it by
+ * `credential_ids`. A registration certificate that isn't signed by a provider on the lists of
+ * registration certificate providers, is expired, isn't bound to the access certificate the metadata is
+ * signed with, or isn't for an attestation provider, registers nothing. `issuerRegistration` is
+ * `undefined` when no such lists are configured, when the metadata carries no registration certificate,
+ * which is optional for an issuer, or when a list isn't loaded and a relevant registration certificate
+ * can't be verified.
  *
  */
 export const checkOfferForRegistration = async (
@@ -66,15 +118,15 @@ export const checkOfferForRegistration = async (
   trustedLists: TrustedListConfiguration[],
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer,
   accessCertificate: string
-): Promise<OverAskingResult | undefined> => {
-  if (trustedLists.length === 0) return undefined
+): Promise<{ issuerRegistration?: OverAskingResult; registrationCertificate?: WRPRCPayload }> => {
+  if (trustedLists.length === 0) return {}
 
   // ETSI TS 119 472-3 ISS-MDATA-REG_CERT-4.2.3-02 and 4.2.3-05, from the signed metadata only
   const registrationCertificates =
     resolvedCredentialOffer.metadata.signedCredentialIssuer?.jwt.payload.issuer_info?.filter(
       ({ format }) => format === 'registration_cert'
     ) ?? []
-  if (registrationCertificates.length === 0) return undefined
+  if (registrationCertificates.length === 0) return {}
 
   const offeredCredentials = Object.entries(resolvedCredentialOffer.offeredCredentialConfigurations)
   // As in `verifier_info` of OpenID4VP, an entry without `credential_ids` is relevant to every credential
@@ -118,10 +170,17 @@ export const checkOfferForRegistration = async (
     }
   })
 
-  if (results.includes(undefined) && results.every((result) => result?.valid !== false)) return undefined
+  // Each registration certificate is of the same issuer, as it is bound to the same access certificate
+  const registrationCertificate = payloads.find((payload) => payload !== undefined)
+  if (results.includes(undefined) && results.every((result) => result?.valid !== false)) {
+    return { registrationCertificate }
+  }
   return {
-    valid: results.every((result) => result?.valid),
-    issues: results.flatMap((result) => result?.issues ?? []),
+    issuerRegistration: {
+      valid: results.every((result) => result?.valid),
+      issues: results.flatMap((result) => result?.issues ?? []),
+    },
+    registrationCertificate,
   }
 }
 

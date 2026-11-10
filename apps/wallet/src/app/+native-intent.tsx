@@ -24,10 +24,9 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
 
   const isRecognizedDeeplink = deeplinkSchemes.some((scheme) => path.startsWith(scheme))
   if (!isRecognizedDeeplink) {
-    logger.debug(
-      'Deeplink is not a recognized deeplink scheme, routing to deeplink directly instead of parsing as invitation.'
-    )
-    return path
+    // A link from outside never opens a screen directly, as screens take their data from the URL
+    logger.debug('Deeplink is not a recognized deeplink scheme, routing to home screen.')
+    return '/'
   }
 
   try {

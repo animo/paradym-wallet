@@ -8,12 +8,15 @@ import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { storeReceivedActivity } from '../../storage/activityStore'
 import { type CredentialRecord, storeCredential } from '../../storage/credentials'
 import { type DeferredCredentialBefore, storeDeferredCredential } from '../../storage/deferredCredentialStore'
+import { noneEntityId } from '../../trust/entityId'
 
 export type CompleteCredentialRetrievalOptions = {
   paradym: ParadymWalletSdk
   recordToStore?: DcApiRegisterCredentialsOptions & { credentialRecord: CredentialRecord }
   deferredCredential?: DeferredCredentialBefore
   resolvedCredentialOffer?: OpenId4VciResolvedCredentialOffer
+  /** The `entityId` of the issuer from resolving the offer, which links the activity to earlier ones */
+  entityId?: string
 }
 
 export const completeCredentialRetrieval = async (options: CompleteCredentialRetrievalOptions) => {
@@ -43,8 +46,11 @@ export const completeCredentialRetrieval = async (options: CompleteCredentialRet
       : {}
   )
 
+  const entityId =
+    options.entityId ?? (issuerMetadata?.credential_issuer ? noneEntityId(issuerMetadata.credential_issuer) : undefined)
+
   if (options.deferredCredential) {
-    await storeDeferredCredential(options.paradym, options.deferredCredential)
+    await storeDeferredCredential(options.paradym, { ...options.deferredCredential, entityId })
   }
 
   const recordToStore = options.recordToStore
@@ -53,9 +59,7 @@ export const completeCredentialRetrieval = async (options: CompleteCredentialRet
   }
 
   await storeReceivedActivity(options.paradym, {
-    // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
-    // the credential. Signed issuer metadata is the solution.
-    entityId: issuerMetadata?.credential_issuer,
+    entityId,
     host: credentialDisplay.issuer.domain,
     name: credentialDisplay.issuer.name,
     logo: credentialDisplay.issuer.logo,

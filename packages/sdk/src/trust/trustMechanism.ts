@@ -3,6 +3,7 @@ import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationR
 import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import { getCredentialDisplayForOffer } from '../openid4vc/func/getCredentialDisplayForOffer'
 import type { Optionalize } from '../types'
+import { noneEntityId } from './entityId'
 import {
   type GetTrustedEntitiesForDidForOpenId4VpOptions,
   getTrustedEntitiesForDidForOpenId4Vci,
@@ -22,6 +23,7 @@ import {
   getTrustedEntitiesForX509CertificateForOpenId4Vp,
   type TrustedX509Entity,
 } from './handlers/x509'
+import type { PartyRegistration } from './registrationCertificate'
 import type { TrustedListConfiguration } from './trustedLists'
 
 /**
@@ -39,6 +41,12 @@ export type TrustContext = {
 }
 
 export type TrustedEntity = {
+  /**
+   * Links the interactions with a party, scoped by what established who it is so scopes never clash:
+   * `eudi:<semantic identifier>` (ETSI TS 119 475 clause 5.1), `x509:<trusted entity>:<issuer and subject name
+   * of the certificate, origin or credential_issuer>`, the DID, or `none:<client_id, origin or credential_issuer>`.
+   * A trusted entity that is the party itself has the same id.
+   */
   entityId: string
   organizationName: string
   logoUri?: string
@@ -55,12 +63,14 @@ export type TrustedIssuerEntity = {
   issuer: TrustedEntity
   trustedEntities: TrustedEntity[]
   issuerRegistration?: OverAskingResult
+  registration?: PartyRegistration
 }
 
 export type TrustedRelyingPartyEntity = {
-  relyingParty: Optionalize<TrustedEntity, 'organizationName' | 'entityId'>
+  relyingParty: Optionalize<TrustedEntity, 'organizationName'>
   trustedEntities: TrustedEntity[]
   overAsking?: OverAskingResult
+  registration?: PartyRegistration
 }
 
 export type TrustMechanism = 'x509' | 'did' | 'none'
@@ -147,12 +157,7 @@ export const detectTrustMechanismForCredentialOffer = (options: {
 
 export const getTrustedEntitiesForOpenId4Vp = async (
   options: GetTrustedEntitiesForOpenId4VpOptions
-): Promise<{
-  trustMechanism: TrustMechanism
-  relyingParty: TrustedRelyingPartyEntity['relyingParty'] & { entityId: string }
-  trustedEntities: Array<TrustedEntity>
-  overAsking?: OverAskingResult
-}> => {
+): Promise<TrustedRelyingPartyEntity & { trustMechanism: TrustMechanism }> => {
   const trustMechanism = detectTrustMechanismForAuthorizationRequest(options)
   const walletTrustedEntity = options.trustMechanisms.find(
     (tm): tm is { walletTrustedEntity?: TrustedEntity } => 'walletTrustedEntity' in tm
@@ -189,19 +194,7 @@ export const getTrustedEntitiesForOpenId4Vp = async (
       throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
   }
 
-  const entityId = trustedEntity.relyingParty.entityId
-  if (!entityId) {
-    throw new Error('Missing required client_id in authorization request')
-  }
-
-  return {
-    ...trustedEntity,
-    trustMechanism,
-    relyingParty: {
-      ...trustedEntity.relyingParty,
-      entityId,
-    },
-  }
+  return { ...trustedEntity, trustMechanism }
 }
 
 export const getTrustedEntitiesForOpenId4Vci = async (
@@ -209,12 +202,7 @@ export const getTrustedEntitiesForOpenId4Vci = async (
     resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
     walletTrustedEntity?: TrustedEntity
   }
-): Promise<{
-  trustMechanism: TrustMechanism
-  issuer: TrustedIssuerEntity['issuer']
-  trustedEntities: Array<TrustedEntity>
-  issuerRegistration?: OverAskingResult
-}> => {
+): Promise<TrustedIssuerEntity & { trustMechanism: TrustMechanism }> => {
   const trustMechanism = detectTrustMechanismForCredentialOffer({
     resolvedCredentialOffer: options.resolvedCredentialOffer,
   })
@@ -268,22 +256,19 @@ export const getTrustedEntitiesForOpenId4Vci = async (
       throw new Error(`Could not handle trust mechanism: '${trustMechanism}'`)
   }
 
-  const entityId =
-    trustedEntity?.issuer.entityId ?? options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
+  if (trustedEntity) return { ...trustedEntity, trustMechanism }
 
+  const credentialIssuer = options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
   const display = getCredentialDisplayForOffer(options.resolvedCredentialOffer)
 
   return {
-    trustedEntities: trustedEntity?.trustedEntities ?? [],
+    trustedEntities: [],
     trustMechanism,
-    issuerRegistration: trustedEntity?.issuerRegistration,
-    issuer: trustedEntity?.issuer
-      ? { ...trustedEntity.issuer, entityId }
-      : {
-          // The issuer's name, not the credential's: its display name, or else the host of its URL.
-          organizationName: display.issuer.name ?? entityId,
-          logoUri: display.issuer.logo?.url,
-          entityId,
-        },
+    issuer: {
+      // The issuer's name, not the credential's: its display name, or else the host of its URL.
+      organizationName: display.issuer.name ?? credentialIssuer,
+      logoUri: display.issuer.logo?.url,
+      entityId: noneEntityId(credentialIssuer),
+    },
   }
 }

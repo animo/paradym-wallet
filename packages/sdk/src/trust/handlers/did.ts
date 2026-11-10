@@ -13,7 +13,6 @@ export type TrustedDidEntity = {
   logoUri: string
   url: string
   demo?: boolean
-  entityId: string
 }
 
 export type GetTrustedEntitiesForDidForOpenId4VpOptions = {
@@ -33,6 +32,7 @@ export const getTrustedEntitiesForDidForOpenId4Vp = async (
 ): Promise<TrustedRelyingPartyEntity> => {
   const clientMetadata = options.resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata
   const effectiveClientId = options.resolvedAuthorizationRequest.verifier.effectiveClientId
+  const entityId = effectiveClientId.replace('decentralized_identifier:', '')
   const trustedEntities: TrustedEntity[] = []
 
   // Check if the DID matches a hardcoded trusted entity
@@ -48,7 +48,7 @@ export const getTrustedEntitiesForDidForOpenId4Vp = async (
 
   if (matchedDid) {
     trustedEntities.push({
-      entityId: matchedDid.entityId,
+      entityId,
       organizationName: matchedDid.name,
       logoUri: matchedDid.logoUri,
       uri: matchedDid.url,
@@ -62,7 +62,7 @@ export const getTrustedEntitiesForDidForOpenId4Vp = async (
     relyingParty: {
       organizationName,
       logoUri,
-      entityId: effectiveClientId.replace('decentralized_identifier:', ''),
+      entityId,
     },
     trustedEntities,
   }
@@ -84,7 +84,7 @@ export const getTrustedEntitiesForDidForOpenId4Vci = (
 
     const trustedEntities: TrustedEntity[] = [
       {
-        entityId: trustedEntity.entityId,
+        entityId: baseDid,
         organizationName,
         logoUri,
         uri: trustedEntity.url,
@@ -98,7 +98,7 @@ export const getTrustedEntitiesForDidForOpenId4Vci = (
         organizationName,
         logoUri,
         uri: trustedEntity.url,
-        entityId: trustedEntity.entityId,
+        entityId: baseDid,
       },
       trustedEntities,
     }
