@@ -12,7 +12,8 @@ import {
 } from '@paradym/wallet-sdk'
 import { useState } from 'react'
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
-import { PaymentCardRow, PaymentCardSheet } from '../components/PaymentCardSheet'
+import { CardRow } from '../components/CardRow'
+import { CardSelectionSheet } from '../components/CardSelectionSheet'
 import { PaymentTransactionDetails } from '../components/PaymentTransactionDetails'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 import { useTransactionDataSeen } from '../useTransactionDataSeen'
@@ -26,7 +27,7 @@ interface PasoPaymentSlideProps {
   isAccepting: boolean
   /** Whether `transaction` is being resolved again for a newly picked card. */
   isResolvingTransaction?: boolean
-  onSelectPaymentCredential?: (credentialQueryId: string, credentialId: string) => void
+  onSelectCredential?: (inputDescriptorId: string, credentialRecordId: string) => void
 }
 
 /**
@@ -53,7 +54,7 @@ export const PasoPaymentSlide = ({
   onDecline,
   isAccepting,
   isResolvingTransaction = false,
-  onSelectPaymentCredential,
+  onSelectCredential,
 }: PasoPaymentSlideProps) => {
   const { onNext, onCancel, confirmCombined } = useWizard()
   const { t } = useLingui()
@@ -62,7 +63,7 @@ export const PasoPaymentSlide = ({
   const [isCardSheetOpen, setIsCardSheetOpen] = useState(false)
 
   // Every card that can authorize the payment. The first is the one the transaction was resolved
-  // against and will be presented; picking another moves it to the front (`selectPasoPaymentCredential`).
+  // against and will be presented; picking another moves it to the front (`selectSubmissionCredentials`).
   const paymentCards =
     submission?.entries.find(
       (entry): entry is typeof entry & { isSatisfied: true } =>
@@ -191,7 +192,7 @@ export const PasoPaymentSlide = ({
                   )}
                 </XStack>
                 <XStack p="3" rounded="6" borderWidth={1} borderColor="grey-200">
-                  <PaymentCardRow
+                  <CardRow
                     card={cardForPayment}
                     artwork={credentialSvgArtwork(cardForPayment.credential.display.svg)}
                   />
@@ -200,7 +201,10 @@ export const PasoPaymentSlide = ({
             )}
 
             {submission && otherEntries.length > 0 && (
-              <RequestedAttributesSection submission={{ ...submission, entries: otherEntries }} />
+              <RequestedAttributesSection
+                submission={{ ...submission, entries: otherEntries }}
+                onSelectCredential={onSelectCredential}
+              />
             )}
             <Spacer size="5" />
           </ScrollView>
@@ -256,14 +260,17 @@ export const PasoPaymentSlide = ({
       </YStack>
 
       {cardForPayment && (
-        <PaymentCardSheet
+        <CardSelectionSheet
           isOpen={isCardSheetOpen}
           setIsOpen={setIsCardSheetOpen}
+          title={t({
+            id: 'paso.payment.chooseCardTitle',
+            message: 'Choose a payment card',
+            comment: 'Title of the sheet where the user picks the card to authorize a payment with',
+          })}
           cards={paymentCards}
           selectedCardId={cardForPayment.credential.record.id}
-          onSelect={(credentialRecordId) =>
-            onSelectPaymentCredential?.(transaction.cardForTransactionId, credentialRecordId)
-          }
+          onSelect={(credentialRecordId) => onSelectCredential?.(transaction.cardForTransactionId, credentialRecordId)}
         />
       )}
     </YStack>

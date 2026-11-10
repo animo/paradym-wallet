@@ -147,36 +147,6 @@ export function hasPasoTransactionData(resolvedRequest: CredentialsForProofReque
 }
 
 /**
- * The request with the user's choice of card for the PaSO transaction.
- *
- * WPA Rulebook Section 4.2 lets a payer hold several payment cards that match the same request — one
- * per account — so the user has to be able to pick. The choice is expressed by moving the card to the
- * front of its submission entry: {@link resolvePasoTransactionData} resolves against the first
- * candidate, `shareCredentials` presents the first candidate, and the share screen shows it, so one
- * ordering keeps what is displayed, what the metadata was verified for, and what gets signed the same.
- */
-export function selectPasoPaymentCredential(
-  resolvedRequest: CredentialsForProofRequest,
-  credentialQueryId: string,
-  credentialRecordId: string
-): CredentialsForProofRequest {
-  return {
-    ...resolvedRequest,
-    formattedSubmission: {
-      ...resolvedRequest.formattedSubmission,
-      entries: resolvedRequest.formattedSubmission.entries.map((entry) => {
-        if (entry.inputDescriptorId !== credentialQueryId || !entry.isSatisfied) return entry
-
-        const selected = entry.credentials.find(({ credential }) => credential.record.id === credentialRecordId)
-        if (!selected) return entry
-
-        return { ...entry, credentials: [selected, ...entry.credentials.filter((candidate) => candidate !== selected)] }
-      }),
-    },
-  }
-}
-
-/**
  * Refuses a request that would present a PaSO Credential without a PaSO transaction to authorize.
  *
  * A PaSO Credential — one holding signed PaSO credential metadata — exists to authorize payments,

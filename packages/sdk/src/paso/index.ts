@@ -87,7 +87,6 @@ export {
   hasPasoTransactionData,
   type PasoDisplayedClaim,
   resolvePasoTransactionData,
-  selectPasoPaymentCredential,
 } from './transactionData'
 export {
   isPasoTransactionDataType,

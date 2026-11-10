@@ -232,7 +232,7 @@ export function CredentialRowCard({
     >
       {icon}
       <YStack gap="0-5" justify="center" grow={1} flex={1}>
-        <Paragraph mt="-1" fontSize={14} fontWeight="bold" color={textColor} numberOfLines={1}>
+        <Paragraph mt="-1" fontSize={14} fontWeight="bold" color={textColor} numberOfLines={2}>
           {name.toLocaleUpperCase()}
         </Paragraph>
         {issuedAt && (

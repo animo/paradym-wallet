@@ -438,7 +438,7 @@ const MultiValueRow = ({
       <Paragraph pl="2" color="grey-900" numberOfLines={truncate && !isExpanded ? 2 : undefined}>
         {values.map((value, index) => {
           return (
-            <Paragraph color="grey-900">
+            <Paragraph key={index} color="grey-900">
               - {value}
               {index === values.length - 1 ? '' : '\n'}
             </Paragraph>

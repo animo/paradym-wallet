@@ -1,6 +1,6 @@
 // src/i18n/messages.ts
 import type { MessageDescriptor } from '@lingui/core'
-import { defineMessage } from '@lingui/core/macro'
+import { defineMessage, plural } from '@lingui/core/macro'
 import type { SupportedLocale } from './i18n'
 
 export const commonMessages = {
@@ -489,6 +489,22 @@ export const commonMessages = {
     id: 'common.allRequestedCardsDescription',
     message: 'The following cards will be shared.',
     comment: 'Description when the user has all requested cards',
+  }),
+  matchingCards: (count: number) =>
+    defineMessage({
+      id: 'common.matchingCards',
+      message: plural(count, { one: '# matching card', other: '# matching cards' }),
+      comment: 'Shown next to a requested card when more of the user cards can answer the request',
+    }),
+  switchCard: defineMessage({
+    id: 'common.switchCard',
+    message: 'Switch',
+    comment: 'Button that opens the other cards the user can share instead of the one shown',
+  }),
+  chooseCardTitle: defineMessage({
+    id: 'common.chooseCardTitle',
+    message: 'Choose a card',
+    comment: 'Title of the sheet where the user picks which of their matching cards to share',
   }),
   noRequestedCardsDescription: defineMessage({
     id: 'common.noRequestedCardsDescription',

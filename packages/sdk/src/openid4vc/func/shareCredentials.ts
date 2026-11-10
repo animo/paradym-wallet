@@ -1,23 +1,14 @@
-import {
-  ClaimFormat,
-  CredentialMultiInstanceUseMode,
-  type DcqlCredentialsForRequest,
-  type DcqlQueryResult,
-  type DcqlValidCredential,
-  type JsonObject,
-  type MdocNameSpaces,
-} from '@credo-ts/core'
+import { ClaimFormat, CredentialMultiInstanceUseMode, type DcqlQueryResult } from '@credo-ts/core'
 import type { OpenId4VcHolderApi } from '@credo-ts/openid4vc'
 import { Linking } from 'react-native'
 import { assertAgentType } from '../../agentType'
-import type { FormattedSubmissionEntrySatisfied } from '../../format/submission'
+import { type FormattedSubmission, selectSubmissionCredentials } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'
 import { createPasoScaResponseClaims } from '../../paso/responseClaims'
 import { assertPasoCredentialsOnlyForPasoTransactions } from '../../paso/transactionData'
 import type { PasoAuthenticationMethod, PasoWallet } from '../../paso/types'
 import { activityStorage, storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
-import type { CredentialRecord } from '../../storage/credentials'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
 import { fetchPaymentTransactionStatus } from '../paymentTransactionStatus'
 import { type FormattedTransactionData, resolveTransactionData } from '../transaction'
@@ -75,15 +66,26 @@ export const shareCredentials = async ({
     throw new Error('Requirements from proof request are not satisfied')
   }
 
-  // Map all requirements and entries to a credential record. If a credential record for an
-  // input descriptor has been provided in `selectedCredentials` we will use that. Otherwise
-  // it will pick the first available credential.
-  const presentationExchangeCredentials = resolvedRequest.credentialsForRequest
+  // The credentials in `selectedCredentials` go first in their entries: the first credential of every
+  // entry is the one presented.
+  const request = {
+    ...resolvedRequest,
+    formattedSubmission: selectSubmissionCredentials(resolvedRequest.formattedSubmission, selectedCredentials),
+  }
+
+  // Map all requirements and entries to a credential record: the first credential of the entry, or
+  // the first available credential.
+  const presentationExchangeCredentials = request.credentialsForRequest
     ? Object.fromEntries(
         await Promise.all(
-          resolvedRequest.credentialsForRequest.requirements.flatMap((requirement) =>
+          request.credentialsForRequest.requirements.flatMap((requirement) =>
             requirement.submissionEntry.slice(0, requirement.needsCount).map(async (entry) => {
-              const credentialId = selectedCredentials[entry.inputDescriptorId]
+              const submissionEntry = request.formattedSubmission.entries.find(
+                ({ inputDescriptorId }) => inputDescriptorId === entry.inputDescriptorId
+              )
+              const credentialId = submissionEntry?.isSatisfied
+                ? submissionEntry.credentials[0].credential.record.id
+                : undefined
               const credential =
                 entry.verifiableCredentials.find((vc) => vc.credentialRecord.id === credentialId) ??
                 entry.verifiableCredentials[0]
@@ -99,8 +101,7 @@ export const shareCredentials = async ({
   const { dcqlCredentials, transactionData } = await getDcqlCredentialsToShare(
     { agent: paradym.agent, logger: paradym.logger },
     {
-      resolvedRequest,
-      selectedCredentials,
+      resolvedRequest: request,
       transactionData: consentedTransactionData,
       authenticationMethods,
       authenticatedAt,
@@ -143,12 +144,7 @@ export const shareCredentials = async ({
     )
   }
 
-  const storedActivity = await storeSharedActivityForCredentialsForRequest(
-    paradym,
-    resolvedRequest,
-    'success',
-    transactionData
-  )
+  const storedActivity = await storeSharedActivityForCredentialsForRequest(paradym, request, 'success', transactionData)
 
   if (
     storedActivity.type === 'payment' &&
@@ -156,7 +152,7 @@ export const shareCredentials = async ({
       transactionData?.type === pasoPaymentTransactionDataType) &&
     transactionData.cardForTransactionId
   ) {
-    const credentialEntry = resolvedRequest.formattedSubmission.entries.find(
+    const credentialEntry = request.formattedSubmission.entries.find(
       (entry) => entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
     )
     const credentialRecord = credentialEntry?.isSatisfied
@@ -184,34 +180,27 @@ export type OpenId4VpSharingWallet = PasoWallet & {
 /**
  * The DCQL credentials to present and the transaction they authorize, with the PaSO SCA response
  * claims added. Shared by the app's share flow and the credential request UI.
+ *
+ * Presents the first credential of every entry of the submission: the one the share screen shows, the
+ * user may have picked (see `selectSubmissionCredentials`), and a PaSO transaction was resolved against.
  */
 export async function getDcqlCredentialsToShare(
   paradym: OpenId4VpSharingWallet,
   {
     resolvedRequest,
-    selectedCredentials,
     transactionData: consentedTransactionData,
     authenticationMethods = ['swk'],
     authenticatedAt = new Date(),
-  }: Pick<
-    ShareCredentialsOptions,
-    'resolvedRequest' | 'selectedCredentials' | 'transactionData' | 'authenticationMethods' | 'authenticatedAt'
-  >
+  }: Pick<ShareCredentialsOptions, 'resolvedRequest' | 'transactionData' | 'authenticationMethods' | 'authenticatedAt'>
 ) {
   const dcqlCredentials = resolvedRequest.queryResult
-    ? Object.fromEntries(
-        await Promise.all(
-          Object.entries(
-            Object.keys(selectedCredentials).length > 0
-              ? // FIXME: this method should take into account w3c credentials
-                getSelectedCredentialsForRequest(resolvedRequest.queryResult, selectedCredentials)
-              : paradym.agent.openid4vc.holder.selectCredentialsForDcqlRequest(resolvedRequest.queryResult, {
-                  // FIXME: we currently allow re-sharing if we don't have new instances anymore
-                  // we should make this configurable maybe? Or dependant on credential type?
-                  useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-                })
-          )
-        )
+    ? paradym.agent.openid4vc.holder.selectCredentialsForDcqlRequest(
+        preferSubmissionCredentials(resolvedRequest.queryResult, resolvedRequest.formattedSubmission),
+        {
+          // FIXME: we currently allow re-sharing if we don't have new instances anymore
+          // we should make this configurable maybe? Or dependant on credential type?
+          useMode: CredentialMultiInstanceUseMode.NewOrFirst,
+        }
       )
     : undefined
 
@@ -229,21 +218,6 @@ export async function getDcqlCredentialsToShare(
     // would mean signing a transaction against metadata that was never verified.
     if (!transactionData.proof) {
       throw new Error('The PaSO transaction was resolved without a credential that can authorize it')
-    }
-
-    // Present the card the transaction was resolved against: the first candidate of its entry, which
-    // the user may have picked (see `selectPasoPaymentCredential`). Credo's own selection above is not
-    // guaranteed to land on the same one, and its metadata is what `metadata_integrity` refers to.
-    const paymentCredentialEntry = resolvedRequest.formattedSubmission.entries.find(
-      (entry): entry is FormattedSubmissionEntrySatisfied =>
-        entry.inputDescriptorId === transactionData.cardForTransactionId && entry.isSatisfied
-    )
-    const paymentCredentialRecordId = paymentCredentialEntry?.credentials[0]?.credential.record.id
-    if (paymentCredentialRecordId && resolvedRequest.queryResult) {
-      dcqlCredentials[transactionData.cardForTransactionId] = getSelectedCredentialsForRequest(
-        resolvedRequest.queryResult,
-        { [transactionData.cardForTransactionId]: paymentCredentialRecordId }
-      )[transactionData.cardForTransactionId]
     }
 
     const presentations = dcqlCredentials[transactionData.cardForTransactionId]
@@ -277,70 +251,26 @@ export async function getDcqlCredentialsToShare(
 }
 
 /**
- * Selects the credentials to use based on the output from `getCredentialsForRequest`
- * Use this method if you don't want to manually select the credentials yourself.
+ * The query result with the first credential of every submission entry first among the valid
+ * credentials of its query. Credo selects the first valid credential it can use, so it selects those.
  */
-function getSelectedCredentialsForRequest(
-  dcqlQueryResult: DcqlQueryResult,
-  selectedCredentials: { [credentialQueryId: string]: string }
-): DcqlCredentialsForRequest {
-  if (!dcqlQueryResult.can_be_satisfied) {
-    throw new Error('Cannot select the credentials for the dcql query presentation if the request cannot be satisfied')
-  }
+function preferSubmissionCredentials(queryResult: DcqlQueryResult, submission: FormattedSubmission): DcqlQueryResult {
+  const credentialMatches = { ...queryResult.credential_matches }
 
-  const credentials: DcqlCredentialsForRequest = {}
+  for (const entry of submission.entries) {
+    const match = credentialMatches[entry.inputDescriptorId]
+    if (!entry.isSatisfied || !match?.success) continue
 
-  type WithRecord<T> = T & {
-    record: CredentialRecord
-  }
-
-  for (const [credentialQueryId, credentialRecordId] of Object.entries(selectedCredentials)) {
-    const matchesForCredentialQuery = dcqlQueryResult.credential_matches[credentialQueryId]
-    if (matchesForCredentialQuery.success) {
-      const validCredentialMatch = matchesForCredentialQuery.valid_credentials.find(
-        (credential) => (credential as WithRecord<typeof credential>).record.id === credentialRecordId
-      )
-
-      if (!validCredentialMatch) {
-        throw new Error(
-          `Could not find credential record ${credentialRecordId} in valid credential matches for credentialQueryId ${credentialQueryId}`
-        )
-      }
-
-      // TODO: make selection in Credo easier. `find` loses the Credo type of the match, which
-      // has the record and the disclosed paths.
-      const matchWithRecord = validCredentialMatch as DcqlValidCredential
-
-      if (matchWithRecord.record.type === 'MdocRecord') {
-        credentials[credentialQueryId] = [
-          {
-            claimFormat: ClaimFormat.MsoMdoc,
-            credentialRecord: matchWithRecord.record,
-            disclosedPayload: matchWithRecord.claims.valid_claim_sets[0].output as MdocNameSpaces,
-            // FIXME: we currently allow re-sharing if we don't have new instances anymore
-            // we should make this configurable maybe? Or dependant on credential type?
-            useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-          },
-        ]
-      } else if (matchWithRecord.record.type === 'SdJwtVcRecord') {
-        const [{ output, disclosed_paths }] = matchWithRecord.claims.valid_claim_sets
-
-        credentials[credentialQueryId] = [
-          {
-            claimFormat: ClaimFormat.SdJwtDc,
-            credentialRecord: matchWithRecord.record,
-            // The paths the share screen shows and the activity stores, when Credo gives them
-            ...(disclosed_paths
-              ? { disclosedPaths: disclosed_paths, disclosedPayload: output as JsonObject }
-              : { disclosedPayload: output as JsonObject }),
-            // FIXME: we currently allow re-sharing if we don't have new instances anymore
-            // we should make this configurable maybe? Or dependant on credential type?
-            useMode: CredentialMultiInstanceUseMode.NewOrFirst,
-          },
-        ]
-      }
+    const recordId = entry.credentials[0].credential.record.id
+    const isSelected = (credential: unknown) => (credential as { record?: { id: string } }).record?.id === recordId
+    credentialMatches[entry.inputDescriptorId] = {
+      ...match,
+      valid_credentials: [
+        ...match.valid_credentials.filter(isSelected),
+        ...match.valid_credentials.filter((credential) => !isSelected(credential)),
+      ] as typeof match.valid_credentials,
     }
   }
 
-  return credentials
+  return { ...queryResult, credential_matches: credentialMatches }
 }

@@ -54,7 +54,7 @@ export const VerifyPartySlide = ({
   const [isLoading, setIsLoading] = useState(false)
   const { activities } = useActivities({ filters: { entityId }, limit: 1 })
   const lastInteractionDate = activities[0]?.date
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isRegistrationWarningOpen, setIsRegistrationWarningOpen] = useState(false)
   const resolveRegistrationWarning = useRef<(confirmed: boolean) => void>(undefined)
@@ -307,7 +307,7 @@ export const VerifyPartySlide = ({
           lastInteractionDate
             ? t({
                 id: 'verifyPartySlide.hasPreviousInteractionsDescription',
-                message: `Last interaction: ${formatRelativeDate(new Date(lastInteractionDate))}`,
+                message: `Last interaction: ${formatRelativeDate(new Date(lastInteractionDate), i18n.locale)}`,
               })
             : t({
                 id: 'verifyPartySlide.hasNoPreviousInteractionsDescription',
@@ -375,7 +375,7 @@ export const VerifyPartySlide = ({
   return (
     // Shrinks to the window's height, so the buttons stay at the bottom and the content above them scrolls
     <YStack flex={1} justify="space-between">
-      <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8' }}>
+      <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8' }} px="5" mx="-5">
         {header}
         {trustDetails}
       </ScrollView>

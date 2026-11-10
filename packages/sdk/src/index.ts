@@ -22,6 +22,7 @@ export type {
   FormattedSubmissionEntrySatisfied,
   FormattedSubmissionEntrySatisfiedCredential
 } from './format/submission'
+export { selectSubmissionCredentials } from './format/submission'
 export { useMdocRecords } from './providers/MdocProvider'
 export { useSdJwtVcRecords } from './providers/SdJwtVcProvider'
 export { useCredentialByCategory, useDidCommCredentialActions, useParadym,type CredentialId, useCredentialById,useDidCommPresentationActions,useDidCommConnectionActions,useActivities, useActivityById, useInboxNotifications,useHasInboxNotifications, useCredentials, useRefreshedDeferredCredentials } from './hooks'
@@ -49,7 +50,6 @@ export {
   type PasoRefusalCode,
   pasoPaymentTransactionDataType,
   renewPasoCredentialMetadata,
-  selectPasoPaymentCredential,
 } from './paso'
 export { ParadymWalletSdk, type SetupParadymWalletSdkOptions } from './ParadymWalletSdk'
 export {

@@ -17,6 +17,7 @@ interface PayAndShareSlideProps {
   isAccepting: boolean
   transaction: FormattedTransactionDataPaymentSingle
   submission?: FormattedSubmission
+  onSelectCredential?: (inputDescriptorId: string, credentialRecordId: string) => void
 }
 
 export const PayAndShareSlide = ({
@@ -25,6 +26,7 @@ export const PayAndShareSlide = ({
   isAccepting,
   transaction,
   submission,
+  onSelectCredential,
 }: PayAndShareSlideProps) => {
   const { onNext, onCancel } = useWizard()
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
@@ -96,7 +98,9 @@ export const PayAndShareSlide = ({
                 </YStack>
               </XStack>
             </YStack>
-            {submission && <RequestedAttributesSection submission={submission} />}
+            {submission && (
+              <RequestedAttributesSection submission={submission} onSelectCredential={onSelectCredential} />
+            )}
             <Spacer size="5" />
           </ScrollView>
         </YStack>

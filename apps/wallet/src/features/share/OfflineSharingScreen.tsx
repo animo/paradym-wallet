@@ -12,6 +12,7 @@ interface OfflineSharingScreenProps {
   onAccept: () => Promise<void>
   onDecline: () => void
   onComplete: () => void
+  onSelectCredential: (inputDescriptorId: string, credentialRecordId: string) => void
 }
 
 export function OfflineSharingScreen({
@@ -21,6 +22,7 @@ export function OfflineSharingScreen({
   onAccept,
   onDecline,
   onComplete,
+  onSelectCredential,
 }: OfflineSharingScreenProps) {
   return (
     <SlideWizard
@@ -43,6 +45,7 @@ export function OfflineSharingScreen({
                 onDecline={onDecline}
                 isAccepting={isAccepting}
                 isOffline
+                onSelectCredential={onSelectCredential}
               />
             ),
           },

@@ -72,7 +72,7 @@ export function LatestActivityCard() {
   const { push } = useRouter()
   const { withHaptics } = useHaptics()
   const { activities } = useActivities({ limit: 1 })
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const latestActivity = activities[0]
   const { credentials } = useCredentials()
 
@@ -86,7 +86,7 @@ export function LatestActivityCard() {
       }
     }
 
-    const date = formatRelativeDate(new Date(latestActivity.date))
+    const date = formatRelativeDate(new Date(latestActivity.date), i18n.locale)
 
     if (latestActivity.type === 'shared') {
       const isPlural = latestActivity.request.credentials.length > 1
@@ -168,7 +168,7 @@ export function LatestActivityCard() {
     }
 
     return null
-  }, [latestActivity, credentials, t])
+  }, [latestActivity, credentials, t, i18n.locale])
 
   if (!content) return null
 

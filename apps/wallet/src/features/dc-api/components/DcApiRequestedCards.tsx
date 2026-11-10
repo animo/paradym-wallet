@@ -26,6 +26,7 @@ import {
   getRequestedAttributeNamesForDisplay,
 } from '@paradym/wallet-sdk/display/common'
 import { useState } from 'react'
+import { SwitchCardRow } from '../../share/components/CardSelectionList'
 import { dcApiMessages as messages } from '../messages'
 import { dcApiCardArtwork } from './dcApiCardArtwork'
 
@@ -35,7 +36,16 @@ import { dcApiCardArtwork } from './dcApiCardArtwork'
  * The app's `RequestedAttributesSection` navigates to the values behind each card. The request UI is
  * a single sheet with no navigation, so a card expands in place instead.
  */
-export function DcApiRequestedCards({ submission }: { submission: FormattedSubmission }) {
+export function DcApiRequestedCards({
+  submission,
+  onSwitch,
+  isSwitchDisabled,
+}: {
+  submission: FormattedSubmission
+  /** Lists the other cards that answer an entry, to pick one of them instead. */
+  onSwitch?: (entry: FormattedSubmissionEntrySatisfied) => void
+  isSwitchDisabled?: boolean
+}) {
   const { t } = useLingui()
 
   const satisfied = submission.entries.filter((entry): entry is FormattedSubmissionEntrySatisfied => entry.isSatisfied)
@@ -64,9 +74,18 @@ export function DcApiRequestedCards({ submission }: { submission: FormattedSubmi
         <Paragraph>{t(subtitle)}</Paragraph>
       </YStack>
 
-      {/* The first credential is the one that will be shared — there is no selection here. */}
+      {/* The first credential is the one that will be shared. */}
       {satisfied.map((entry) => (
-        <RequestedCard key={entry.inputDescriptorId} credential={entry.credentials[0]} />
+        <YStack key={entry.inputDescriptorId} gap="2">
+          {onSwitch && entry.credentials.length > 1 && (
+            <SwitchCardRow
+              count={entry.credentials.length}
+              onPress={() => onSwitch(entry)}
+              disabled={isSwitchDisabled}
+            />
+          )}
+          <RequestedCard credential={entry.credentials[0]} />
+        </YStack>
       ))}
 
       {partiallySatisfied.length > 0 && (

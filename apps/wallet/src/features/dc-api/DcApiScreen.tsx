@@ -26,6 +26,7 @@ import {
   ParadymWalletBiometricAuthenticationNotEnabledError,
   ParadymWalletNoStoreError,
 } from '@paradym/wallet-sdk/error'
+import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/format/submission'
 import { ParadymWalletPasoError } from '@paradym/wallet-sdk/paso/error'
 import { pasoPaymentTransactionDataType } from '@paradym/wallet-sdk/paso/paymentRulebook'
 import { getIsBiometricsEnabled } from '@paradym/wallet-sdk/storage/sharedMmkv'
@@ -35,7 +36,8 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { TamaguiProvider } from 'tamagui'
 import tamaguiConfig from '../../../tamagui.config'
 import { useStoredLocale } from '../../hooks/useStoredLocale'
-import { PaymentCardRow } from '../share/components/PaymentCardRow'
+import { CardRow } from '../share/components/CardRow'
+import { CardSelectionList, SwitchCardRow } from '../share/components/CardSelectionList'
 import { PaymentTransactionDetails } from '../share/components/PaymentTransactionDetails'
 import { resolvePasoAuthenticationMethods } from '../share/pasoAuthenticationMethods'
 import { usePasoRefusalMessage } from '../share/pasoRefusalMessage'
@@ -120,6 +122,10 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
   const pinRef = useRef<PinDotsInputRef>(null)
   const [phase, setPhase] = useState<Phase>({ name: 'unlock' })
   const [error, setError] = useState<string>()
+  // The requested card whose matching cards are listed in place of the review, to pick another one.
+  const [switchingEntry, setSwitchingEntry] = useState<FormattedSubmissionEntrySatisfied>()
+  // Picking a card resolves the review again, a payment included, so sharing waits for it.
+  const [isSelecting, setIsSelecting] = useState(false)
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const biometricsType = useBiometricsType()
   const pasoRefusalMessage = usePasoRefusalMessage()
@@ -236,6 +242,32 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
     if (getIsBiometricsEnabled()) void unlockUsingBiometrics()
   }, [unlockUsingBiometrics])
 
+  const select = useCallback(
+    async (review: DcApiReview, inputDescriptorId: string, credentialRecordId: string) => {
+      setError(undefined)
+      setIsSelecting(true)
+
+      try {
+        setPhase({ name: 'review', review: await review.select(inputDescriptorId, credentialRecordId) })
+      } catch (selectError) {
+        console.error('Error selecting card', selectError)
+        // The card's payment could not be resolved: a PaSO refusal the user is told about, as when
+        // reviewing the request.
+        setPhase({
+          name: 'failed',
+          description:
+            selectError instanceof ParadymWalletPasoError
+              ? pasoRefusalMessage(selectError.code)
+              : t(messages.requestFailed),
+          reason: message(selectError),
+        })
+      } finally {
+        setIsSelecting(false)
+      }
+    },
+    [t, pasoRefusalMessage]
+  )
+
   const share = useCallback(
     async (review: DcApiReview) => {
       setError(undefined)
@@ -323,7 +355,35 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
         </YStack>
       ) : null}
 
-      {phase.name === 'review' || phase.name === 'sharing' ? (
+      {(phase.name === 'review' || phase.name === 'sharing') && switchingEntry ? (
+        // A sheet has no room for a second one, so the cards to pick from take the review's place.
+        <ScrollView
+          flexShrink={1}
+          flexGrow={drawsOwnSheet ? 0 : 1}
+          contentContainerStyle={{ paddingBottom: '2' }}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+          <CardSelectionList
+            title={
+              switchingEntry.inputDescriptorId === getPayment(phase.review)?.cardForTransactionId
+                ? t({
+                    id: 'paso.payment.chooseCardTitle',
+                    message: 'Choose a payment card',
+                    comment: 'Title of the sheet where the user picks the card to authorize a payment with',
+                  })
+                : t(commonMessages.chooseCardTitle)
+            }
+            cards={switchingEntry.credentials}
+            selectedCardId={switchingEntry.credentials[0].credential.record.id}
+            onSelect={(credentialRecordId) =>
+              select(phase.review, switchingEntry.inputDescriptorId, credentialRecordId)
+            }
+            onClose={() => setSwitchingEntry(undefined)}
+            artwork={dcApiCardArtwork}
+          />
+        </ScrollView>
+      ) : phase.name === 'review' || phase.name === 'sharing' ? (
         <ScrollView
           // Shrinks into whatever the sheet's max height leaves it, which is what makes it scroll
           // rather than push the buttons off the screen. On a full-height sheet it grows into the
@@ -349,16 +409,29 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
               compact
             >
               {/* The card that pays, in the payment's own box rather than among the requested cards. */}
-              {getPaymentCard(phase.review) ? (
-                <PaymentCardRow
-                  card={getPaymentCard(phase.review) as NonNullable<ReturnType<typeof getPaymentCard>>}
-                  artwork={dcApiCardArtwork(getPaymentCard(phase.review)?.credential.display.svg)}
-                />
+              {getPaymentEntry(phase.review) ? (
+                <YStack gap="3">
+                  {(getPaymentEntry(phase.review)?.credentials.length ?? 0) > 1 ? (
+                    <SwitchCardRow
+                      count={getPaymentEntry(phase.review)?.credentials.length ?? 0}
+                      onPress={() => setSwitchingEntry(getPaymentEntry(phase.review))}
+                      disabled={phase.name === 'sharing' || isSelecting}
+                    />
+                  ) : null}
+                  <CardRow
+                    card={getPaymentCard(phase.review) as NonNullable<ReturnType<typeof getPaymentCard>>}
+                    artwork={dcApiCardArtwork(getPaymentCard(phase.review)?.credential.display.svg)}
+                  />
+                </YStack>
               ) : null}
             </PaymentTransactionDetails>
           ) : null}
           {getOtherEntries(phase.review).length > 0 ? (
-            <DcApiRequestedCards submission={{ ...phase.review.submission, entries: getOtherEntries(phase.review) }} />
+            <DcApiRequestedCards
+              submission={{ ...phase.review.submission, entries: getOtherEntries(phase.review) }}
+              onSwitch={setSwitchingEntry}
+              isSwitchDisabled={phase.name === 'sharing' || isSelecting}
+            />
           ) : null}
         </ScrollView>
       ) : null}
@@ -392,7 +465,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
 
       {error ? <Paragraph color="danger-500">{error}</Paragraph> : null}
 
-      {showsPinPad(phase) ? (
+      {switchingEntry && (phase.name === 'review' || phase.name === 'sharing') ? null : showsPinPad(phase) ? (
         // Kept mounted across the phase change: `isLoading` fills the dots and animates them while
         // the wallet opens, which is the app's own lock screen, and it ignores taps meanwhile. On a
         // full-height sheet it takes half the screen, as there: the dots right under the heading,
@@ -448,7 +521,11 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
             <Button.Solid
               grow={1}
               // A payment has to have been on screen before it can be authorized, as in the app.
-              disabled={phase.name === 'sharing' || (getPayment(phase.review) !== undefined && !hasSeenTransactionData)}
+              disabled={
+                phase.name === 'sharing' ||
+                isSelecting ||
+                (getPayment(phase.review) !== undefined && !hasSeenTransactionData)
+              }
               onPress={() => share(phase.review)}
             >
               {phase.name === 'sharing' ? (
@@ -542,13 +619,18 @@ function getPayment(review: DcApiReview) {
     : undefined
 }
 
-/** The card the payment is authorized with, when the wallet holds one. */
-function getPaymentCard(review: DcApiReview) {
+/** The requested card the payment is authorized with, when the wallet holds one. */
+function getPaymentEntry(review: DcApiReview) {
   const payment = getPayment(review)
   return review.submission.entries.find(
-    (entry): entry is typeof entry & { isSatisfied: true } =>
+    (entry): entry is FormattedSubmissionEntrySatisfied =>
       entry.inputDescriptorId === payment?.cardForTransactionId && entry.isSatisfied
-  )?.credentials[0]
+  )
+}
+
+/** The card the payment is authorized with, when the wallet holds one. */
+function getPaymentCard(review: DcApiReview) {
+  return getPaymentEntry(review)?.credentials[0]
 }
 
 /**

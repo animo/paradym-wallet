@@ -1,7 +1,7 @@
-import { type Mdoc, type MdocRecord, MdocService, useInstanceFromCredentialRecord } from '@credo-ts/core'
+import { type Mdoc, MdocService, useInstanceFromCredentialRecord } from '@credo-ts/core'
 import { DeviceRequest, DeviceResponse, type Document } from '@owf/mdoc'
-import { getDisclosedNameSpacesForSelectedCredential } from '../format/mdocDeviceRequest'
-import type { FormattedSubmission } from '../format/submission'
+import { getDisclosedNameSpacesForSelectedCredential, preferMdocCredentials } from '../format/mdocDeviceRequest'
+import { type FormattedSubmission, getSubmissionCredentialIds } from '../format/submission'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { resolveMdocDeviceRequest } from './resolveMdocDeviceRequest'
 
@@ -28,14 +28,16 @@ export async function createDeviceResponse(options: CreateDeviceResponseOptions)
   })
   if (!resolvedRequest.success) throw new Error('The stored cards do not answer the request')
 
+  // The cards the user reviewed, which may be other cards than the ones selected by default.
+  const reviewedRecordIds = getSubmissionCredentialIds(options.submission)
+
   // FIXME: this selects with `NewOrFirst`, so a credential is re-shared when it has no new instances
   // anymore. We should make this configurable maybe? Or dependant on credential type?
-  const { credentials } = agent.mdoc.selectCredentialsForRequest(resolvedRequest)
+  const { credentials } = agent.mdoc.selectCredentialsForRequest(
+    preferMdocCredentials(resolvedRequest, reviewedRecordIds)
+  )
 
   // Only the cards the user reviewed: the stored cards may have changed since.
-  const reviewedRecordIds = options.submission.entries.flatMap((entry) =>
-    entry.isSatisfied ? [(entry.credentials[0].credential.record as MdocRecord).id] : []
-  )
   if (
     credentials.length !== reviewedRecordIds.length ||
     credentials.some(({ record }, index) => record.id !== reviewedRecordIds[index])

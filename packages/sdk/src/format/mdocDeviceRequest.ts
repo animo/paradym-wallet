@@ -174,9 +174,10 @@ const getClosestDocRequests = (resolvedRequest: MdocResolvedRequest): MdocResolv
  *
  * When the wallet can answer the request, the submission holds one entry per document it answers
  * with: the credentials `selectCredentialsForRequest` selected, with the elements they disclose, so
- * what the user reviews is what is sent. A request can have use cases (18013-5 second edition 10.2.5)
- * that need several documents, and doc requests without use cases are alternatives, of which the
- * first the wallet can answer is.
+ * what the user reviews is what is sent. The other credentials that answer the same doc requests
+ * follow the selected one, for the user to pick instead, see {@link preferMdocCredentials}. A request
+ * can have use cases (18013-5 second edition 10.2.5) that need several documents, and doc requests
+ * without use cases are alternatives, of which the first the wallet can answer is.
  *
  * When it cannot, the submission holds the doc requests that come closest, see
  * {@link getClosestDocRequests}.
@@ -197,12 +198,60 @@ export function getSubmissionForMdocRequest(
     entries: selectedCredentials.credentials.map((credential) => ({
       inputDescriptorId: credential.record.firstCredential.docType,
       isSatisfied: true,
-      credentials: [
+      // The selected credential, then the others the user can pick instead. Those disclose what
+      // `selectCredentialsForRequest` would select them with: the first option of every claim.
+      credentials: [credential.record, ...getOtherValidRecords(resolvedRequest, credential)].map((record) =>
         toSatisfiedCredential(
-          credential.record,
-          getDisclosedNameSpacesForSelectedCredential(resolvedRequest, credential)
-        ),
-      ],
+          record,
+          getDisclosedNameSpacesForSelectedCredential(
+            resolvedRequest,
+            record === credential.record ? credential : { ...credential, record, alternatives: undefined }
+          )
+        )
+      ),
     })),
   }
+}
+
+/**
+ * The other credentials that answer every doc request a selected credential answers.
+ */
+const getOtherValidRecords = (
+  resolvedRequest: MdocResolvedRequest,
+  credential: MdocSelectedCredentials['credentials'][number]
+): MdocRecord[] => {
+  const docRequestIndexes =
+    typeof credential.docRequestIndex === 'number' ? [credential.docRequestIndex] : credential.docRequestIndex
+  const docRequests = resolvedRequest.docRequests.filter(({ docRequestIndex }) =>
+    docRequestIndexes.includes(docRequestIndex)
+  )
+
+  return (docRequests[0]?.validCredentials ?? [])
+    .map(({ record }) => record)
+    .filter(
+      (record) =>
+        record.id !== credential.record.id &&
+        docRequests.every(({ validCredentials }) => validCredentials.some((valid) => valid.record.id === record.id))
+    )
+}
+
+/**
+ * The request with the credentials in `recordIds` first among the valid credentials of every doc
+ * request. `selectCredentialsForRequest` selects the first valid credential it can use, so it selects
+ * those: the credentials the user picked.
+ */
+export function preferMdocCredentials<ResolvedRequest extends MdocResolvedRequest>(
+  resolvedRequest: ResolvedRequest,
+  recordIds: string[]
+): ResolvedRequest {
+  return {
+    ...resolvedRequest,
+    docRequests: resolvedRequest.docRequests.map((docRequest) => ({
+      ...docRequest,
+      validCredentials: [
+        ...docRequest.validCredentials.filter(({ record }) => recordIds.includes(record.id)),
+        ...docRequest.validCredentials.filter(({ record }) => !recordIds.includes(record.id)),
+      ],
+    })),
+  } as ResolvedRequest
 }
