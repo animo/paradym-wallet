@@ -2,7 +2,9 @@ import type { EncodedX509Certificate, X509Certificate } from '@credo-ts/core'
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import type { DisplayImage } from '../display/credential'
+import { eudiEntityId, noneEntityId, x509EntityId } from './entityId'
 import { findTrustedX509Entity } from './handlers/x509'
+import type { PartyRegistration } from './registrationCertificate'
 import { findTrustedListEntities } from './trustedLists'
 import {
   getTrustedEntitiesForOpenId4Vp,
@@ -32,17 +34,21 @@ export type RequestVerifier = {
    * are configured.
    */
   overAsking?: OverAskingResult
+  /** What the party registered, for a party trusted through the lists of access certificate providers */
+  registration?: PartyRegistration
 }
 
 const toVerifier = (
   relyingParty: { entityId: string; organizationName?: string; uri?: string; logoUri?: string },
-  trustedEntities: TrustedEntity[]
+  trustedEntities: TrustedEntity[],
+  registration?: PartyRegistration
 ): RequestVerifier => ({
   entityId: relyingParty.entityId,
   name: relyingParty.organizationName,
   hostName: relyingParty.uri,
   logo: relyingParty.logoUri ? { url: relyingParty.logoUri } : undefined,
   trustedEntities,
+  registration,
 })
 
 export type GetVerifierForOpenId4VpRequestOptions = TrustContext & {
@@ -59,13 +65,14 @@ export const getVerifierForOpenId4VpRequest = async ({
   trustMechanisms,
   resolvedAuthorizationRequest,
 }: GetVerifierForOpenId4VpRequestOptions): Promise<{ verifier: RequestVerifier; trustMechanism: TrustMechanism }> => {
-  const { trustMechanism, trustedEntities, relyingParty, overAsking } = await getTrustedEntitiesForOpenId4Vp({
-    agentContext,
-    trustMechanisms,
-    resolvedAuthorizationRequest,
-  })
+  const { trustMechanism, trustedEntities, relyingParty, overAsking, registration } =
+    await getTrustedEntitiesForOpenId4Vp({
+      agentContext,
+      trustMechanisms,
+      resolvedAuthorizationRequest,
+    })
 
-  return { trustMechanism, verifier: { ...toVerifier(relyingParty, trustedEntities), overAsking } }
+  return { trustMechanism, verifier: { ...toVerifier(relyingParty, trustedEntities, registration), overAsking } }
 }
 
 export type GetVerifierForMdocReaderAuthenticationOptions = TrustContext & {
@@ -96,7 +103,7 @@ export const getVerifierForMdocReaderAuthentication = async ({
 }> => {
   const untrusted = {
     trustMechanism: 'none' as const,
-    verifier: { entityId: origin, hostName: origin, trustedEntities: [] },
+    verifier: { entityId: noneEntityId(`origin:${origin}`), hostName: origin, trustedEntities: [] },
   }
   if (!readerCertificateChain?.length) return untrusted
 
@@ -126,16 +133,24 @@ export const getVerifierForMdocReaderAuthentication = async ({
     if (!trustedListEntities) return untrusted
 
     // The access certificate provider vouches for the reader, not the wallet
-    const { organizationName, trustedEntities } = trustedListEntities
+    const { organizationName, subjectIdentifier, trustedEntities } = trustedListEntities
     return {
       trustMechanism: 'x509',
-      verifier: toVerifier({ entityId: origin, organizationName, uri: origin }, trustedEntities),
+      verifier: toVerifier(
+        {
+          entityId: subjectIdentifier ? eudiEntityId(subjectIdentifier) : untrusted.verifier.entityId,
+          organizationName,
+          uri: origin,
+        },
+        trustedEntities
+      ),
     }
   }
 
+  const entityId = x509EntityId(trustedEntity.entityId, `origin:${origin}`)
   const trustedEntities: TrustedEntity[] = [
     {
-      entityId: trustedEntity.entityId,
+      entityId,
       organizationName: trustedEntity.name,
       logoUri: trustedEntity.logoUri,
       uri: trustedEntity.url,
@@ -148,7 +163,7 @@ export const getVerifierForMdocReaderAuthentication = async ({
     trustMechanism: 'x509',
     verifier: toVerifier(
       {
-        entityId: trustedEntity.entityId,
+        entityId,
         organizationName: trustedEntity.name,
         uri: origin,
         logoUri: trustedEntity.logoUri,

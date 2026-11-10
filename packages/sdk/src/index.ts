@@ -84,6 +84,7 @@ export { type ClaimPath, type FormattedAttribute, type FormattedAttributeArray, 
 export type { TrustedDidEntity } from './trust/handlers/did'
 export type { TrustedOpenId4VciEntity } from './trust/handlers/fallback'
 export type { TrustedX509Entity } from './trust/handlers/x509'
+export type { PartyRegistration } from './trust/registrationCertificate'
 export type { TrustedListConfiguration } from './trust/trustedLists'
 export type { TrustContext, TrustedEntity, TrustMechanism } from './trust/trustMechanism'
 export {
@@ -152,7 +153,7 @@ export { fetchPaymentTransactionStatus } from './openid4vc/paymentTransactionSta
 export { storeCredential, updateCredential } from './storage/credentials'
 export { resolveSdJwtVcTypes, type SdJwtVcTypeMetadataLocations } from './config/typeMetadata'
 export { updateSdJwtVcSvgTemplates } from './openid4vc/svgTemplates'
-export { type DeferredCredentialBefore } from './storage/deferredCredentialStore'
+export { type DeferredCredentialBefore, getDeferredCredentialEntityId } from './storage/deferredCredentialStore'
 export { getHostNameFromUrl} from './utils/url'
 export { reset } from './utils/reset'
 export { getFormattedTransactionData, resolveTransactionData } from './openid4vc/transaction'

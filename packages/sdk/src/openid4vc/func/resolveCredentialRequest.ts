@@ -1,7 +1,7 @@
 import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../../agentType'
 import { ParadymWalletNoRequestToResolveError } from '../../error'
-import { getFormattedSubmission } from '../../format/submission'
+import { type FormattedSubmission, getFormattedSubmission } from '../../format/submission'
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { getVerifierForOpenId4VpRequest } from '../../trust/verifier'
 
@@ -59,6 +59,13 @@ export function getCredentialsForProofRequest(
   resolved: OpenId4VpResolvedAuthorizationRequest,
   { origin, trustMechanism, verifier }: { origin?: string } & Awaited<ReturnType<typeof getVerifierForOpenId4VpRequest>>
 ) {
+  const submission = getFormattedSubmission(resolved)
+  // The purpose the verifier registered, over the one it states in the request
+  const formattedSubmission: FormattedSubmission = {
+    ...submission,
+    purpose: verifier.registration?.purpose ?? submission.purpose,
+  }
+
   return {
     ...resolved.presentationExchange,
     ...resolved.dcql,
@@ -66,7 +73,7 @@ export function getCredentialsForProofRequest(
     authorizationRequest: resolved.authorizationRequestPayload,
     // Carries the compact JAR JWT, which PaSO hashes into the `request_integrity` proof claim.
     signedAuthorizationRequest: resolved.signedAuthorizationRequest,
-    formattedSubmission: getFormattedSubmission(resolved),
+    formattedSubmission,
     transactionData: resolved.transactionData,
     trustMechanism,
     verifier,

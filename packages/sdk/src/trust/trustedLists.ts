@@ -8,7 +8,12 @@ import {
   X509Api,
   X509Certificate,
 } from '@credo-ts/core'
-import { parseAccessCertificate, validateAccessCertificate } from '@owf/eudi-access-certificate'
+import {
+  type AccessCertificateContact,
+  getAccessCertificateSubjectIdentifier,
+  parseAccessCertificate,
+  validateAccessCertificate,
+} from '@owf/eudi-access-certificate'
 import { getNotifiedTrustedEntities, LoTEProfile, validateLoTEProfile } from '@owf/eudi-lote'
 import { parseCertificate } from '@owf/x509'
 import type { TrustedEntity, TrustMechanismConfiguration } from './trustMechanism'
@@ -211,9 +216,9 @@ export const loadTrustedLists = (agentContext: AgentContext, trustMechanisms: Tr
 /**
  *
  * Validate an access certificate chain against the providers on the trusted lists. Returns who
- * vouches for it — the provider that issued the access certificate — and the name of the
- * wallet-relying party from its access certificate, or `undefined` when the chain leads to no listed
- * provider.
+ * vouches for it — the provider that issued the access certificate — and the name, semantic identifier
+ * and contact details of the wallet-relying party from its access certificate, or `undefined` when the
+ * chain leads to no listed provider.
  *
  * The chain is validated by the agent, revocation included, so a revoked access certificate never
  * resolves to a trusted party.
@@ -223,7 +228,15 @@ export const findTrustedListEntities = async (
   agentContext: AgentContext,
   trustedListConfigurations: TrustedListConfiguration[],
   certificateChain: Array<EncodedX509Certificate | X509Certificate>
-): Promise<{ organizationName?: string; trustedEntities: TrustedEntity[] } | undefined> => {
+): Promise<
+  | {
+      organizationName?: string
+      subjectIdentifier?: string
+      contact: AccessCertificateContact
+      trustedEntities: TrustedEntity[]
+    }
+  | undefined
+> => {
   if (trustedListConfigurations.length === 0 || certificateChain.length === 0) return undefined
 
   const encodedChain = certificateChain.map((certificate) =>
@@ -267,6 +280,8 @@ export const findTrustedListEntities = async (
 
     return {
       organizationName: commonName ?? organizationName,
+      subjectIdentifier: getAccessCertificateSubjectIdentifier(accessCertificate),
+      contact: accessCertificate.contact,
       // From the configuration rather than the stored list, so a stored list follows a changed configuration
       trustedEntities: [
         {

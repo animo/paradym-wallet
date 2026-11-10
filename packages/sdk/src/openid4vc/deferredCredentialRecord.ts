@@ -11,6 +11,7 @@ import { storeCredential } from '../storage/credentials'
 import {
   type DeferredCredential,
   deleteDeferredCredential,
+  getDeferredCredentialEntityId,
   updateDeferredCredential,
 } from '../storage/deferredCredentialStore'
 
@@ -86,9 +87,7 @@ export async function fetchAndProcessDeferredCredential(
       )
 
       await storeReceivedActivity(paradym, {
-        // FIXME: Should probably be the `iss`, but then we can't show it before we retrieved
-        // the credential. Signed issuer metadata is the solution.
-        entityId: issuerMetadata?.credentialIssuer.credential_issuer,
+        entityId: getDeferredCredentialEntityId(deferredCredential),
         host: issuerDisplay.domain,
         name: issuerDisplay.name,
         logo: issuerDisplay.logo,

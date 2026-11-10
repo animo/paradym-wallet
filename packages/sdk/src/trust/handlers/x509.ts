@@ -7,7 +7,13 @@ import {
   X509ModuleConfig,
 } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
-import { checkOfferForRegistration, checkRequestForOverAsking } from '../registrationCertificate'
+import { eudiEntityId, noneEntityId, x509CertificateEntityId, x509EntityId } from '../entityId'
+import {
+  checkOfferForRegistration,
+  checkRequestForOverAsking,
+  getPartyRegistration,
+  type PartyRegistration,
+} from '../registrationCertificate'
 import { findTrustedListEntities } from '../trustedLists'
 import type {
   TrustContext,
@@ -86,11 +92,13 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
   let organizationName: string | undefined
   let logoUri: string | undefined
   let overAsking: TrustedRelyingPartyEntity['overAsking']
+  let registration: PartyRegistration | undefined
   const uri =
     typeof resolvedAuthorizationRequest.authorizationRequestPayload.response_uri === 'string'
       ? new URL(resolvedAuthorizationRequest.authorizationRequestPayload.response_uri).origin
       : undefined
-  let entityId = resolvedAuthorizationRequest.authorizationRequestPayload.client_id
+  const { effectiveClientId } = resolvedAuthorizationRequest.verifier
+  let entityId = noneEntityId(effectiveClientId)
 
   const signer = resolvedAuthorizationRequest.signedAuthorizationRequest?.signer
 
@@ -102,14 +110,14 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
         signer.x5c
       )
       if (trustedEntity) {
+        entityId = x509CertificateEntityId(trustedEntity.entityId, signer.x5c[0])
         trustedEntities.push({
-          entityId: trustedEntity.entityId,
+          entityId,
           organizationName: trustedEntity.name,
           logoUri: trustedEntity.logoUri,
           uri: trustedEntity.url,
           demo: trustedEntity.demo,
         })
-        entityId = trustedEntity.entityId
 
         if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
       }
@@ -127,14 +135,20 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
       // The access certificate provider vouches for the name in the certificate, while only the verifier
       // itself vouches for the client metadata. Its logo would sit next to a name it didn't choose.
       if (trustedListEntities) {
-        organizationName = trustedListEntities.organizationName
         // Only a party trusted through the lists has to stay within its registration certificate
-        overAsking = await checkRequestForOverAsking(
+        const registrationCheck = await checkRequestForOverAsking(
           agentContext,
           trustMechanismConfiguration.registrationCertificateTrustedLists ?? [],
           resolvedAuthorizationRequest,
           signer.x5c[0]
         )
+        overAsking = registrationCheck.overAsking
+        // Behind an intermediary, only the registration certificate names the relying party itself
+        const { registrationCertificate } = registrationCheck
+        organizationName = registrationCertificate?.name ?? trustedListEntities.organizationName
+        const identifier = registrationCertificate?.sub ?? trustedListEntities.subjectIdentifier
+        if (identifier) entityId = eudiEntityId(identifier)
+        registration = getPartyRegistration(registrationCertificate, trustedListEntities.contact)
       } else {
         organizationName = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.client_name
         logoUri = resolvedAuthorizationRequest.authorizationRequestPayload.client_metadata?.logo_uri
@@ -153,6 +167,7 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vp = async ({
     },
     trustedEntities,
     overAsking,
+    registration,
   }
 }
 
@@ -162,6 +177,7 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
   // Checked in the caller
   const signer = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.signer as JwsSignerX5c
   const metadataDisplay = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.jwt.payload.display?.[0]
+  const credentialIssuer = options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
   try {
     const trustedEntity = await findTrustedX509Entity(
       options.agentContext,
@@ -173,10 +189,11 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
       // Prefer display data from the signed metadata over the hardcoded entity
       const organizationName = metadataDisplay?.name ?? trustedEntity.name
       const logoUri = metadataDisplay?.logo?.uri ?? trustedEntity.logoUri
+      const entityId = x509EntityId(trustedEntity.entityId, credentialIssuer)
 
       const trustedEntities: TrustedEntity[] = [
         {
-          entityId: trustedEntity.entityId,
+          entityId,
           organizationName,
           logoUri,
           uri: trustedEntity.url,
@@ -190,7 +207,7 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
           organizationName,
           logoUri,
           uri: trustedEntity.url,
-          entityId: trustedEntity.entityId,
+          entityId,
         },
         trustedEntities,
       }
@@ -202,23 +219,30 @@ export const getTrustedEntitiesForX509CertificateForOpenId4Vci = async (
       signer.x5c
     )
     if (trustedListEntities) {
-      const entityId = options.resolvedCredentialOffer.metadata.credentialIssuer.credential_issuer
+      // Only an issuer trusted through the lists has to stay within its registration certificate
+      const { issuerRegistration, registrationCertificate } = await checkOfferForRegistration(
+        options.agentContext,
+        options.trustMechanismConfiguration.registrationCertificateTrustedLists ?? [],
+        options.resolvedCredentialOffer,
+        signer.x5c[0]
+      )
+      // Behind an intermediary, only the registration certificate names the issuer itself
+      const identifier = registrationCertificate?.sub ?? trustedListEntities.subjectIdentifier
       return {
         issuer: {
           // The access certificate provider vouches for the name in the certificate, so the logo from the
           // issuer's own metadata is left out
-          organizationName: trustedListEntities.organizationName ?? metadataDisplay?.name ?? entityId,
-          entityId,
+          organizationName:
+            registrationCertificate?.name ??
+            trustedListEntities.organizationName ??
+            metadataDisplay?.name ??
+            credentialIssuer,
+          entityId: identifier ? eudiEntityId(identifier) : noneEntityId(credentialIssuer),
         },
         // The access certificate provider vouches for the issuer, not the wallet
         trustedEntities: trustedListEntities.trustedEntities,
-        // Only an issuer trusted through the lists has to stay within its registration certificate
-        issuerRegistration: await checkOfferForRegistration(
-          options.agentContext,
-          options.trustMechanismConfiguration.registrationCertificateTrustedLists ?? [],
-          options.resolvedCredentialOffer,
-          signer.x5c[0]
-        ),
+        issuerRegistration,
+        registration: getPartyRegistration(registrationCertificate, trustedListEntities.contact),
       }
     }
   } catch {

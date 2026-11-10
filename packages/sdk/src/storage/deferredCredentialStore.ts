@@ -7,6 +7,7 @@ import type {
 import { useMemo } from 'react'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { useWalletJsonRecord } from '../providers/WalletJsonStoreProvider'
+import { noneEntityId } from '../trust/entityId'
 import { getWalletJsonStore } from './walletJsonStore'
 
 export type DeferredCredential = {
@@ -15,6 +16,8 @@ export type DeferredCredential = {
   lastCheckedAt: string
   lastErroredAt?: string
   clientId?: string
+  /** The `entityId` of the issuer, for the activity once the credential is received */
+  entityId?: string
   response: OpenId4VciDeferredCredentialResponse
   issuerMetadata: OpenId4VciMetadata
   accessToken: Omit<OpenId4VciRequestTokenResponse, 'dpop'> & {
@@ -25,6 +28,11 @@ export type DeferredCredential = {
 }
 
 export type DeferredCredentialBefore = Omit<DeferredCredential, 'id' | 'createdAt' | 'lastCheckedAt'>
+
+/** The `entityId` of the issuer of a deferred credential, also for one stored before it was kept */
+export const getDeferredCredentialEntityId = (
+  deferredCredential: Pick<DeferredCredential, 'entityId' | 'issuerMetadata'>
+) => deferredCredential.entityId ?? noneEntityId(deferredCredential.issuerMetadata.credentialIssuer.credential_issuer)
 
 type DeferredCredentialRecord = {
   deferredCredentials: DeferredCredential[]
@@ -106,6 +114,7 @@ export const storeDeferredCredential = async (paradym: ParadymWalletSdk, input: 
     issuerMetadata: input.issuerMetadata,
     accessToken: input.accessToken,
     clientId: input.clientId,
+    entityId: input.entityId,
   })
 }
 
