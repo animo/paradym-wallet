@@ -10,32 +10,21 @@ import { APP_THEME } from './src/config/themes'
 
 const themeColors = APP_THEME
 
-const tokens = createTokens({
-  ...v6Tokens,
-  radius: {
-    ...v6Tokens.radius,
-    button: 16,
-  },
-  size: {
-    ...v6Tokens.size,
-    buttonHeight: 52,
-  },
-  color: {
-    ...hexColors, // Re-use existing colors for positive/warnings etc.
-    background: hexColors.white,
-    'grey-50': '#F5F7F8',
-    'grey-100': '#EBF1F3',
-    'grey-200': '#E5E9EC',
-    'grey-300': '#D7DCE0',
-    'grey-400': '#BFC5CB',
-    'grey-500': '#839196',
-    'grey-600': '#6D7581',
-    'grey-700': '#656974',
-    'grey-800': '#464B56',
-    'grey-900': '#222222',
-    ...themeColors,
-  },
-})
+const colors = {
+  ...hexColors, // Re-use existing colors for positive/warnings etc.
+  background: hexColors.white,
+  'grey-50': '#F5F7F8',
+  'grey-100': '#EBF1F3',
+  'grey-200': '#E5E9EC',
+  'grey-300': '#D7DCE0',
+  'grey-400': '#BFC5CB',
+  'grey-500': '#839196',
+  'grey-600': '#6D7581',
+  'grey-700': '#656974',
+  'grey-800': '#464B56',
+  'grey-900': '#222222',
+  ...themeColors,
+}
 
 /**
  * The dark theme, as the same token names the light one uses.
@@ -114,6 +103,24 @@ const darkColors = {
   'feature-700': '#E0B8FF',
 }
 
+const tokens = createTokens({
+  ...v6Tokens,
+  radius: {
+    ...v6Tokens.radius,
+    button: 16,
+  },
+  size: {
+    ...v6Tokens.size,
+    buttonHeight: 52,
+  },
+  // Tamagui 3 resolves a colour against the tokens before the theme, so a colour the dark theme
+  // overrides must not be a token as well, or the light value always wins.
+  color: Object.fromEntries(Object.entries(colors).filter(([name]) => !(name in darkColors))) as Omit<
+    typeof colors,
+    keyof typeof darkColors
+  >,
+})
+
 const config = createTamagui({
   ...configInput,
   tokens,
@@ -124,13 +131,13 @@ const config = createTamagui({
   },
   themes: {
     light: {
-      ...tokens.color,
-      tableBackgroundColor: tokens.color['grey-50'],
+      ...colors,
+      tableBackgroundColor: colors['grey-50'],
       tableBorderColor: '#ffffff',
       idCardBackground: '#F1F2F0',
     },
     dark: {
-      ...tokens.color,
+      ...colors,
       ...darkColors,
       tableBackgroundColor: darkColors['grey-50'],
       tableBorderColor: darkColors.background,
