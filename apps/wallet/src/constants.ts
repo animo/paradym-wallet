@@ -37,9 +37,11 @@ AgEAMDAGA1UdHwQpMCcwJaAjoCGGH2h0dHBzOi8vcGxheWdyb3VuZC5hbmltby5p
 ZC9jcmwwCgYIKoZIzj0EAwIDSAAwRQIhANtSsiC903N5GgDhnI11xvk72oWIL2kT
 f2OFbcw+pN6yAiAXswddnRXwjJYrRHaM9Cq1MStIotWFhMw6V3DvQAAexA==
 -----END CERTIFICATE-----`,
-    logoUri: 'https://playground.animo.id/logo.svg',
+    logoUri:
+      'https://raw.githubusercontent.com/animo/openid4vc-playground/refs/heads/main/app/public/assets/verifiers/animo/verifier.jpg',
     url: 'https://playground.animo.id',
     demo: true,
+    display: 'external',
   },
   {
     entityId: 'verifier.eudiw.dev',
@@ -49,6 +51,7 @@ f2OFbcw+pN6yAiAXswddnRXwjJYrRHaM9Cq1MStIotWFhMw6V3DvQAAexA==
     logoUri: 'https://issuer.eudiw.dev/ic-logo.png',
     url: 'https://verifier.eudiw.dev',
     demo: true,
+    display: 'entity',
   },
   {
     entityId: 'docusign.com',
@@ -58,6 +61,7 @@ f2OFbcw+pN6yAiAXswddnRXwjJYrRHaM9Cq1MStIotWFhMw6V3DvQAAexA==
     url: 'https://docusign.com',
     logoUri: 'https://www.docusign.com/assets/images/android-chrome-192x192.png',
     demo: true,
+    display: 'entity',
   },
   {
     entityId: 'vodafone.com',
@@ -67,6 +71,7 @@ f2OFbcw+pN6yAiAXswddnRXwjJYrRHaM9Cq1MStIotWFhMw6V3DvQAAexA==
     url: 'https://vodafone.de',
     logoUri: 'https://www.vodafone.de/media/img/icons/mid-render/New_VF_Icon_RGB_RED.svg',
     demo: true,
+    display: 'entity',
   },
   {
     entityId: 'lapid.de',
@@ -95,6 +100,7 @@ zl7B9gcCICAougCYFMfxe4kSjIOcMfV/u+cG3wrF5HzHSQx2qK15
     url: 'https://lapid.de',
     logoUri: 'https://www.lapid.de/wp-content/uploads/2022/03/LapID-Logo_RBG_400px.png',
     demo: true,
+    display: 'entity',
   },
   {
     entityId: 'netlight.com',
@@ -116,6 +122,7 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
     logoUri:
       'https://media.licdn.com/dms/image/v2/D4D0BAQHZ2gM5cWHJxQ/company-logo_200_200/company-logo_200_200/0/1708350843808/netlight_consulting_logo?e=1762992000&v=beta&t=2Qpgj26VRA_7AOWGvzQL7_xvyQ2c1Ic8auzAce6lVS8',
     demo: true,
+    display: 'entity',
   },
   {
     name: 'Paradym Playground',
@@ -125,6 +132,7 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
     logoUri: 'https://playground.paradym.id/logo.png',
     entityId: 'playground.paradym.id',
     demo: true,
+    display: 'external',
   },
   {
     name: 'Digital Meitheal 2026',
@@ -134,6 +142,7 @@ SSEvZdjQ1YFEB9fdwof5kkokEEz2qw==
     logoUri: 'https://meitheal.paradym.id/meitheal-icon.svg',
     entityId: 'meitheal.paradym.id',
     demo: true,
+    display: 'entity',
   },
   {
     entityId: 'stormcatch.com',
@@ -158,6 +167,7 @@ IXEEiTahju1+SB5KLhzx9IZruyJpCw==
     url: 'https://stormcatch.com',
     logoUri: 'https://assets.stormcatch.dev/logo/v1/stormcatch-icon-wordmark-v1-512.png',
     demo: true,
+    display: 'entity',
   },
 ] satisfies Array<TrustedX509Entity>
 
@@ -168,6 +178,7 @@ export const trustedDidEntities = [
     name: 'Hogeschool van Amsterdam',
     url: 'https://hva.nl',
     demo: true,
+    display: 'entity',
   },
   {
     did: 'did:web:metadata.paradym.id:f976c06e-da46-4b79-bc6e-bfda07c97f91',
@@ -175,6 +186,7 @@ export const trustedDidEntities = [
     name: 'Hogeschool van Amsterdam',
     url: 'https://hva.nl',
     demo: false,
+    display: 'entity',
   },
   {
     did: 'did:web:metadata.paradym.id:2ea1c471-af99-4d3a-b07c-57e29abf8cea',
@@ -182,6 +194,7 @@ export const trustedDidEntities = [
     name: 'Legoland University',
     url: 'https://legoland.animo.id',
     demo: true,
+    display: 'entity',
   },
   {
     did: 'did:web:metadata.paradym.id:e3d45f31-3886-40e2-b8a7-982c2b110677',
@@ -189,6 +202,7 @@ export const trustedDidEntities = [
     name: 'Digital Meitheal 2026',
     url: 'https://meitheal.paradym.id',
     demo: true,
+    display: 'entity',
   },
 ] satisfies Array<TrustedDidEntity>
 
@@ -334,13 +348,3 @@ export const registrationCertificateTrustedLists = [
     signerCertificate: frenchPlaygroundTrustedListSigner,
   },
 ] satisfies Array<TrustedListConfiguration>
-
-const BASE_URL = 'https://funke.animo.id/oid4vp'
-
-export const trustedEntityIds = [
-  `${BASE_URL}/0193687b-0c27-7b82-a686-ff857dc6bbb3`,
-  `${BASE_URL}/0193687f-20d8-720a-9139-ed939ba510fa`,
-  `${BASE_URL}/019368ed-3787-7669-b7f4-8c012238e90d`,
-  `${BASE_URL}/01936907-56a3-7007-a61f-44bff8b5d175`,
-  `${BASE_URL}/01936903-8879-733f-8eaf-6f2fa862099c`,
-] satisfies [string, ...string[]]

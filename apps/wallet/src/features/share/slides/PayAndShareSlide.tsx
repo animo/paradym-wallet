@@ -106,7 +106,6 @@ export const PayAndShareSlide = ({
           <DualResponseButtons
             align="horizontal"
             acceptText={acceptLabel}
-            declineText={t(commonMessages.stop)}
             onAccept={handleAccept}
             onDecline={onCancel}
             isLoading={isProcessing}

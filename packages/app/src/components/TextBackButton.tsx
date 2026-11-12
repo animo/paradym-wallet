@@ -18,7 +18,7 @@ export function TextBackButton() {
   }
 
   return (
-    <Button.Text color="primary-500" fontWeight="semiBold" onPress={withHaptics(handleBack)} scaleOnPress>
+    <Button.Text h="11" color="primary-500" fontWeight="semiBold" onPress={withHaptics(handleBack)} scaleOnPress>
       <HeroIcons.ArrowLeft mr={-4} color="primary-500" strokeWidth={2} size={20} /> {t(commonMessages.backButton)}
     </Button.Text>
   )
@@ -33,7 +33,7 @@ export function BackFooter() {
   if (media.wide) return null
 
   return (
-    <YStack borderTopWidth="1" borderColor="grey-200" pt="3" mx="-5" px="5" bg="background">
+    <YStack borderTopWidth="1" borderColor="grey-200" pt="1" mx="-5" px="5" bg="background">
       <TextBackButton />
     </YStack>
   )

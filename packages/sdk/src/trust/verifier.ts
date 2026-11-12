@@ -3,7 +3,8 @@ import type { OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
 import type { OverAskingResult } from '@owf/eudi-registration-certificate'
 import type { DisplayImage } from '../display/credential'
 import { eudiEntityId, noneEntityId, x509EntityId } from './entityId'
-import { findTrustedX509Entity } from './handlers/x509'
+import { findTrustedX509Entity, x509MatchTrustedEntity } from './handlers/x509'
+import { getPartyDisplay } from './partyDisplay'
 import type { PartyRegistration } from './registrationCertificate'
 import { findTrustedListEntities } from './trustedLists'
 import {
@@ -118,13 +119,13 @@ export const getVerifierForMdocReaderAuthentication = async ({
       'walletTrustedEntity' in trustMechanism
   )?.walletTrustedEntity
 
-  const trustedEntity = await findTrustedX509Entity(
+  const match = await findTrustedX509Entity(
     agentContext,
     x509Configuration.trustedX509Entities,
     readerCertificateChain
   ).catch(() => undefined)
 
-  if (!trustedEntity) {
+  if (!match) {
     const trustedListEntities = await findTrustedListEntities(
       agentContext,
       x509Configuration.accessCertificateTrustedLists ?? [],
@@ -147,16 +148,16 @@ export const getVerifierForMdocReaderAuthentication = async ({
     }
   }
 
-  const entityId = x509EntityId(trustedEntity.entityId, `origin:${origin}`)
-  const trustedEntities: TrustedEntity[] = [
-    {
-      entityId,
-      organizationName: trustedEntity.name,
-      logoUri: trustedEntity.logoUri,
-      uri: trustedEntity.url,
-      demo: trustedEntity.demo,
-    },
-  ]
+  // Reader authentication carries no metadata, so all the reader provides itself is the name in its certificate
+  const leafCertificate = readerCertificateChain[0]
+  const party =
+    match.child ??
+    getPartyDisplay(match.entity.display, match.entity, {
+      certificate: typeof leafCertificate === 'string' ? leafCertificate : leafCertificate.toString('base64'),
+    })
+  // A matched child is the same party in every request and offer
+  const entityId = x509EntityId(match.entity.entityId, match.child?.entityId ?? `origin:${origin}`)
+  const trustedEntities = [x509MatchTrustedEntity(match, entityId)]
   if (walletTrustedEntity) trustedEntities.push(walletTrustedEntity)
 
   return {
@@ -164,9 +165,9 @@ export const getVerifierForMdocReaderAuthentication = async ({
     verifier: toVerifier(
       {
         entityId,
-        organizationName: trustedEntity.name,
+        organizationName: party.name,
         uri: origin,
-        logoUri: trustedEntity.logoUri,
+        logoUri: party.logoUri,
       },
       trustedEntities
     ),

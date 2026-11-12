@@ -1,5 +1,6 @@
 import type { JwsSignerDid } from '@credo-ts/core'
 import type { OpenId4VciResolvedCredentialOffer, OpenId4VpResolvedAuthorizationRequest } from '@credo-ts/openid4vc'
+import { getPartyDisplay, type TrustedEntityDisplay } from '../partyDisplay'
 import type {
   DidTrustMechanismConfiguration,
   TrustedEntity,
@@ -13,6 +14,8 @@ export type TrustedDidEntity = {
   logoUri: string
   url: string
   demo?: boolean
+  /** Whose name and logo a party with this DID is shown with. */
+  display: TrustedEntityDisplay
 }
 
 export type GetTrustedEntitiesForDidForOpenId4VpOptions = {
@@ -42,9 +45,10 @@ export const getTrustedEntitiesForDidForOpenId4Vp = async (
       )
     : undefined
 
-  // Prefer metadata from the request over the hardcoded entity data
-  const organizationName = clientMetadata?.client_name ?? matchedDid?.name
-  const logoUri = clientMetadata?.logo_uri ?? matchedDid?.logoUri
+  const metadata = { name: clientMetadata?.client_name, logoUri: clientMetadata?.logo_uri }
+  const { name: organizationName, logoUri } = matchedDid
+    ? getPartyDisplay(matchedDid.display, matchedDid, metadata)
+    : metadata
 
   if (matchedDid) {
     trustedEntities.push({
@@ -77,10 +81,11 @@ export const getTrustedEntitiesForDidForOpenId4Vci = (
   const baseDid = signer.didUrl.split('#')[0]
   const trustedEntity = options.trustMechanismConfiguration.trustedDidEntities.find((e) => baseDid.startsWith(e.did))
   if (trustedEntity) {
-    // Prefer display data from the signed metadata over the hardcoded entity
     const metadataDisplay = options.resolvedCredentialOffer.metadata.signedCredentialIssuer?.jwt.payload.display?.[0]
-    const organizationName = metadataDisplay?.name ?? trustedEntity.name
-    const logoUri = metadataDisplay?.logo?.uri ?? trustedEntity.logoUri
+    const { name: organizationName, logoUri } = getPartyDisplay(trustedEntity.display, trustedEntity, {
+      name: metadataDisplay?.name,
+      logoUri: metadataDisplay?.logo?.uri,
+    })
 
     const trustedEntities: TrustedEntity[] = [
       {

@@ -13,6 +13,8 @@ const themeColors = APP_THEME
 const colors = {
   ...hexColors, // Re-use existing colors for positive/warnings etc.
   background: hexColors.white,
+  // A card lifted off the background, which a shadow sets apart in this theme
+  surface: hexColors.white,
   'grey-50': '#F5F7F8',
   'grey-100': '#EBF1F3',
   'grey-200': '#E5E9EC',
@@ -48,6 +50,8 @@ const darkColors = {
   // Mirrored in the DC API plugin's `backgroundColor` in `base.app.config.js`, which paints the strip
   // around the sheet's title: change one, change the other.
   background: '#1C1F23',
+  // A shadow hardly shows on a dark background, so a lifted card is a step lighter instead, as `grey-50`
+  surface: '#22262B',
 
   // Hairlines and scrims, which are the light theme's own colours at low alpha and so do not come
   // along with the ramp: a light hairline over a dark surface reads as a halo rather than an edge.

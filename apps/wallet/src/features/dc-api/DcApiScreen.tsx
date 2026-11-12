@@ -8,6 +8,7 @@ import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { Trans, useLingui } from '@lingui/react/macro'
 // Deep imports throughout: the `@package/ui` and `@package/app` barrels pull in the whole kit —
 // the icon sets alone are thousands of modules — and this bundle is separate from the app's.
+import { DualResponseButtons } from '@package/app/components/DualResponseButtons'
 import { PinDotsInput, type PinDotsInputRef } from '@package/app/components/PinDotsInput'
 import { commonMessages, i18n, TranslationProvider } from '@package/translations'
 import { Button } from '@package/ui/base/Button'
@@ -31,7 +32,7 @@ import { ParadymWalletPasoError } from '@paradym/wallet-sdk/paso/error'
 import { pasoPaymentTransactionDataType } from '@paradym/wallet-sdk/paso/paymentRulebook'
 import { getIsBiometricsEnabled } from '@paradym/wallet-sdk/storage/sharedMmkv'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { type NativeSyntheticEvent, Platform, type TextLayoutEventData, useColorScheme } from 'react-native'
+import { Linking, type NativeSyntheticEvent, Platform, type TextLayoutEventData, useColorScheme } from 'react-native'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TamaguiProvider } from 'tamagui'
 import tamaguiConfig from '../../../tamagui.config'
@@ -39,9 +40,12 @@ import { useStoredLocale } from '../../hooks/useStoredLocale'
 import { CardRow } from '../share/components/CardRow'
 import { CardSelectionList, SwitchCardRow } from '../share/components/CardSelectionList'
 import { PaymentTransactionDetails } from '../share/components/PaymentTransactionDetails'
+import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { resolvePasoAuthenticationMethods } from '../share/pasoAuthenticationMethods'
 import { usePasoRefusalMessage } from '../share/pasoRefusalMessage'
 import { useTransactionDataSeen } from '../share/useTransactionDataSeen'
+import { TrustDetails, trustDetailsTitle } from '../wallet/components/TrustDetails'
+import { DcApiConfirmationOverlay } from './components/DcApiConfirmationOverlay'
 import { DcApiRequestedCards } from './components/DcApiRequestedCards'
 import { DcApiVerifierSection } from './components/DcApiVerifierSection'
 import { dcApiCardArtwork } from './components/dcApiCardArtwork'
@@ -126,6 +130,10 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
   const [switchingEntry, setSwitchingEntry] = useState<FormattedSubmissionEntrySatisfied>()
   // Picking a card resolves the review again, a payment included, so sharing waits for it.
   const [isSelecting, setIsSelecting] = useState(false)
+  // A request beyond the registration is confirmed once before sharing, in place of the review as the card list is.
+  const [overAskingStep, setOverAskingStep] = useState<'confirming' | 'confirmed'>()
+  // Who approved the verifier, in place of the review as the card list is
+  const [isShowingTrustDetails, setIsShowingTrustDetails] = useState(false)
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const biometricsType = useBiometricsType()
   const pasoRefusalMessage = usePasoRefusalMessage()
@@ -383,6 +391,43 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
             artwork={dcApiCardArtwork}
           />
         </ScrollView>
+      ) : (phase.name === 'review' || phase.name === 'sharing') && isShowingTrustDetails ? (
+        <ScrollView
+          flexShrink={1}
+          flexGrow={drawsOwnSheet ? 0 : 1}
+          contentContainerStyle={{ gap: '5', paddingBottom: '2' }}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+          {/* Back rather than close: the system sheet has a close button of its own right above */}
+          <XStack gap="3" items="center">
+            <Stack
+              rounded="12"
+              p="2"
+              bg="grey-50"
+              onPress={() => setIsShowingTrustDetails(false)}
+              role="button"
+              aria-label={t(commonMessages.backButton)}
+            >
+              <HeroIcons.ArrowLeft size={16} strokeWidth={2.5} color="grey-500" />
+            </Stack>
+            <Heading color="grey-900" heading="h2" flex={1}>
+              {t(trustDetailsTitle)}
+            </Heading>
+          </XStack>
+          <TrustDetails
+            name={phase.review.verifier.name}
+            logo={phase.review.verifier.logo?.url}
+            // The verifier itself is not one of its own approvals
+            trustedEntities={phase.review.verifier.trustedEntities.filter(
+              (entity) => entity.entityId !== phase.review.verifier.entityId
+            )}
+            isDemoTrustedEntity={phase.review.verifier.trustedEntities.some((entity) => entity.demo)}
+            registration={phase.review.verifier.registration}
+            // An iOS app extension can't open links, the activity on Android can
+            onOpenLink={Platform.OS === 'android' ? (url) => Linking.openURL(url) : undefined}
+          />
+        </ScrollView>
       ) : phase.name === 'review' || phase.name === 'sharing' ? (
         <ScrollView
           // Shrinks into whatever the sheet's max height leaves it, which is what makes it scroll
@@ -401,7 +446,12 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
             verifier={phase.review.verifier}
             origin={request.origin}
             isPayment={getPayment(phase.review) !== undefined}
+            onShowDetails={() => setIsShowingTrustDetails(true)}
           />
+          {/* Set only when a registration certificate vouches for it, or the wallet trusts the verifier */}
+          {phase.review.submission.purpose ? (
+            <RequestPurposeSection purpose={phase.review.submission.purpose} logo={phase.review.verifier.logo} />
+          ) : null}
           {getPayment(phase.review) ? (
             <PaymentTransactionDetails
               transaction={getPayment(phase.review) as NonNullable<ReturnType<typeof getPayment>>}
@@ -465,7 +515,8 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
 
       {error ? <Paragraph color="danger-500">{error}</Paragraph> : null}
 
-      {switchingEntry && (phase.name === 'review' || phase.name === 'sharing') ? null : showsPinPad(phase) ? (
+      {(switchingEntry || isShowingTrustDetails) &&
+      (phase.name === 'review' || phase.name === 'sharing') ? null : showsPinPad(phase) ? (
         // Kept mounted across the phase change: `isLoading` fills the dots and animates them while
         // the wallet opens, which is the app's own lock screen, and it ignores taps meanwhile. On a
         // full-height sheet it takes half the screen, as there: the dots right under the heading,
@@ -492,13 +543,13 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
       ) : phase.name === 'failed' ? (
         // Closing is what declines: the request is still open until then, and the verifier is told
         // why rather than being left to time out.
-        <Stack borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="5">
+        <Stack borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="3">
           <Button.Solid onPress={() => request.decline(phase.reason)}>{t(commonMessages.close)}</Button.Solid>
         </Stack>
       ) : phase.name === 'review' && !canShare(phase.review) ? (
         // Nothing the wallet holds answers the request, so declining is all there is to do — the
         // same as the app's own share screen, rather than a share button that can never be pressed.
-        <YStack gap="3" borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="5">
+        <YStack gap="3" borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="3">
           <Paragraph variant="sub" fontWeight="medium" text="center" color="danger-500">
             {t(
               phase.review.submission.entries.length === 0 || hasMissingCards(phase.review.submission)
@@ -511,37 +562,35 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
           </Button.Solid>
         </YStack>
       ) : phase.name === 'review' || phase.name === 'sharing' ? (
-        <YStack gap="2" borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="5">
-          <XStack gap="2">
-            {/* Both are disabled while the response is being built: it cannot be taken back once
-                `approve()` has released the request, so there is nothing a second press could do. */}
-            <Button.Outline grow={1} disabled={phase.name === 'sharing'} onPress={() => decline(phase.review)}>
-              {pasoLabels(phase.review)?.denialActionLabel ?? t(commonMessages.declineButton)}
-            </Button.Outline>
-            <Button.Solid
-              grow={1}
-              // A payment has to have been on screen before it can be authorized, as in the app.
-              disabled={
-                phase.name === 'sharing' ||
-                isSelecting ||
-                (getPayment(phase.review) !== undefined && !hasSeenTransactionData)
-              }
-              onPress={() => share(phase.review)}
-            >
-              {phase.name === 'sharing' ? (
-                <Spinner variant="dark" />
-              ) : getPayment(phase.review) ? (
-                (pasoLabels(phase.review)?.affirmativeActionLabel ??
-                t({
-                  id: 'paso.payment.accept',
-                  message: 'Pay',
-                  comment: 'Fallback label for the button that authorizes a PaSO payment',
-                }))
-              ) : (
-                t(messages.share)
-              )}
-            </Button.Solid>
-          </XStack>
+        <YStack gap="2" borderTopWidth="1" borderColor="grey-200" mx="-5" px="5" pt="3">
+          <DualResponseButtons
+            align="horizontal"
+            // [PaSO View] Section 2: the issuer's labels may not be truncated, as in the app.
+            wrapLabels={pasoLabels(phase.review) !== undefined}
+            acceptText={
+              getPayment(phase.review)
+                ? (pasoLabels(phase.review)?.affirmativeActionLabel ??
+                  t({
+                    id: 'paso.payment.accept',
+                    message: 'Pay',
+                    comment: 'Fallback label for the button that authorizes a PaSO payment',
+                  }))
+                : t(messages.share)
+            }
+            declineText={pasoLabels(phase.review)?.denialActionLabel}
+            onAccept={() =>
+              isOverAsking(phase.review) && overAskingStep !== 'confirmed'
+                ? setOverAskingStep('confirming')
+                : share(phase.review)
+            }
+            onDecline={() => decline(phase.review)}
+            variant={isOverAsking(phase.review) ? 'confirmation' : 'regular'}
+            // Both are disabled while the response is being built: it cannot be taken back once
+            // `approve()` has released the request, so there is nothing a second press could do.
+            isLoading={phase.name === 'sharing'}
+            // A payment has to have been on screen before it can be authorized, as in the app.
+            isAcceptDisabled={isSelecting || (getPayment(phase.review) !== undefined && !hasSeenTransactionData)}
+          />
           {getPayment(phase.review) && !hasSeenTransactionData ? (
             <Paragraph variant="annotation" text="center">
               <Trans
@@ -553,6 +602,26 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
             </Paragraph>
           ) : null}
         </YStack>
+      ) : null}
+
+      {(phase.name === 'review' || phase.name === 'sharing') && overAskingStep === 'confirming' ? (
+        <DcApiConfirmationOverlay
+          title={t(commonMessages.overAskingConfirmationTitle)}
+          description={
+            phase.review.verifier.name
+              ? t(commonMessages.overAskingConfirmationDescriptionCombined(phase.review.verifier.name))
+              : t(commonMessages.overAskingConfirmationDescriptionCombinedUnknownOrganization)
+          }
+          confirmText={t(commonMessages.confirmContinue)}
+          cancelText={t(commonMessages.no)}
+          onConfirm={() => {
+            setOverAskingStep('confirmed')
+            share(phase.review)
+          }}
+          onCancel={() => setOverAskingStep(undefined)}
+          bottomInset={insets.bottom || 32}
+          roundsTop={drawsOwnSheet}
+        />
       ) : null}
     </YStack>
   )
@@ -611,6 +680,9 @@ function isUnlocking(phase: Phase) {
 }
 
 /** The payment the request asks the user to authorize, if it is one. */
+/** Whether the request asks for more than the verifier registered, which is confirmed before sharing, as in the app. */
+const isOverAsking = (review: DcApiReview) => review.verifier.overAsking?.valid === false
+
 function getPayment(review: DcApiReview) {
   const transaction = review.transactionData
   return transaction?.type === pasoPaymentTransactionDataType ||

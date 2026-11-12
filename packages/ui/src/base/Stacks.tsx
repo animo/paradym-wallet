@@ -21,6 +21,11 @@ export const Stack = styled(TStack, {
         shadowOpacity: 0.15,
         shadowRadius: 12,
       },
+      // A card on a `surface` background: a soft drop, for layers rather than a floating card. A box shadow
+      // rather than elevation, which Android draws far darker, so both platforms get the same drop.
+      card: {
+        boxShadow: '0px 1px 6px rgba(0, 0, 0, 0.06)',
+      },
     },
     bordered: {
       true: {
@@ -90,7 +95,9 @@ export const Stack = styled(TStack, {
     },
   } as const,
   // v3 drops `elevation` from variants. It's Android-only and not in v3's style types, but a resolver can still set it.
-}).resolve((props) => (props.shadow ? ({ elevation: props.shadow === 'sm' ? 3 : 4 } as object) : undefined))
+}).resolve((props) =>
+  props.shadow && props.shadow !== 'card' ? ({ elevation: props.shadow === 'sm' ? 3 : 4 } as object) : undefined
+)
 
 export const XStack = styled(Stack, {
   flexDirection: 'row',

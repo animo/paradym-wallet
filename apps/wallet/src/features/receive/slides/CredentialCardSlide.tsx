@@ -81,7 +81,6 @@ export const CredentialCardSlide = ({ type = 'noAuth', display }: CredentialCard
           onAccept={goToNextSlide}
           onDecline={onCancel}
           acceptText={t(commonMessages.continue)}
-          declineText={t(commonMessages.stop)}
           isLoading={isContinuing}
           variant={confirmCombined ? 'confirmation' : 'regular'}
         />

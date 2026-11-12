@@ -30,9 +30,6 @@ export const resolveCredentialRequest = async ({
 
     const resolved = await paradym.agent.openid4vc.holder.resolveOpenId4VpAuthorizationRequest(requestToResolve, {
       origin,
-      // NOTE: add back when enabling federation support
-      // trustedFederationEntityIds: paradym.trustMechanisms.find((tm) => tm.trustMechanism === 'openid_federation')
-      // ?.trustedEntityIds,
     })
 
     const { trustMechanism, verifier } = await getVerifierForOpenId4VpRequest({
@@ -60,10 +57,11 @@ export function getCredentialsForProofRequest(
   { origin, trustMechanism, verifier }: { origin?: string } & Awaited<ReturnType<typeof getVerifierForOpenId4VpRequest>>
 ) {
   const submission = getFormattedSubmission(resolved)
-  // The purpose the verifier registered, over the one it states in the request
+  // The purpose the verifier registered, or else the one it states in the request, but only when the wallet trusts
+  // it: an untrusted verifier could state any purpose to make its request look reasonable
   const formattedSubmission: FormattedSubmission = {
     ...submission,
-    purpose: verifier.registration?.purpose ?? submission.purpose,
+    purpose: verifier.registration?.purpose ?? (verifier.trustedEntities.length > 0 ? submission.purpose : undefined),
   }
 
   return {

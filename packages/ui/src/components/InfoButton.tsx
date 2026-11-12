@@ -85,7 +85,8 @@ export function InfoButton({
       scale={isPressable ? '1 press:0.98' : undefined}
       flexDirection="row"
       gap="3"
-      bg={isPressable ? 'grey-50' : 'background'}
+      bg={isPressable ? 'grey-50' : 'surface'}
+      shadow="card"
       px="4"
       py="3"
       borderColor="grey-100"
@@ -93,7 +94,7 @@ export function InfoButton({
       borderWidth="1"
       accessible={true}
       accessibilityRole={onPress ? 'button' : undefined}
-      aria-label={ariaLabel ?? `${title}. ${description}`}
+      aria-label={ariaLabel ?? (description ? `${title}. ${description}` : title)}
       onPress={onPress}
     >
       {!noIcon && (

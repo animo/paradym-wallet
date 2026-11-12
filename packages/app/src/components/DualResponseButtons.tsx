@@ -1,6 +1,8 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
-import { Button, Spinner, YStack } from '@package/ui'
+import { Button } from '@package/ui/base/Button'
+import { YStack } from '@package/ui/base/Stacks'
+import { Spinner } from '@package/ui/content/Spinner'
 import { useEffect, useState } from 'react'
 import { type NativeSyntheticEvent, PixelRatio, type TextLayoutEventData } from 'react-native'
 

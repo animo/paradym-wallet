@@ -5,6 +5,7 @@ import { commonMessages } from '@package/translations'
 import { Heading } from '@package/ui/base/Headings'
 import { Paragraph } from '@package/ui/base/Paragraph'
 import { XStack, YStack } from '@package/ui/base/Stacks'
+import { InfoButton } from '@package/ui/components/InfoButton'
 import { HeroIcons } from '@package/ui/content/Icon'
 import { Image } from '@package/ui/content/Image'
 import type { RequestVerifier } from '@paradym/wallet-sdk/trust/verifier'
@@ -12,18 +13,22 @@ import { Circle } from 'tamagui'
 import { dcApiMessages as messages } from '../messages'
 
 /**
- * Who is asking, and whether the wallet recognizes them. One row, without the list of approving
- * organizations the app shows: the request UI is a small sheet over the verifier's app.
+ * Who is asking, and whether the wallet recognizes them, in one card. Without the list of approving
+ * organizations the app shows, which the card opens for a recognized organization: the request UI is a
+ * small sheet over the verifier's app.
  */
 export function DcApiVerifierSection({
   verifier,
   origin,
   isPayment,
+  onShowDetails,
 }: {
   verifier: RequestVerifier
   origin?: string
   /** Whether the request asks to authorize a payment, which the heading says instead of asking for data. */
   isPayment: boolean
+  /** Shows who approved a recognized organization, as the app's trust screen does. */
+  onShowDetails: () => void
 }) {
   const { t } = useLingui()
 
@@ -35,103 +40,77 @@ export function DcApiVerifierSection({
   const isRecognized = isApprovedByOthers || entityIsTrustAnchor
   const isOverAsking = verifier.overAsking?.valid === false
 
-  // Recognized or not fits on one line under the host. A demo organization gets its own box below: it
-  // outranks recognition, since it says not to share real data. Over-asking does too, and only a
-  // recognized organization is checked for it.
-  const trust = isRecognized
-    ? {
-        icon: <HeroIcons.CheckCircleFilled size={16} color="positive-500" />,
-        label: t(commonMessages.recognizedOrganization),
-      }
-    : {
-        icon: <HeroIcons.ExclamationTriangleFilled size={16} color="warning-500" />,
-        label: t(commonMessages.unknownOrganization),
-      }
-
   return (
-    <YStack gap="3">
-      <XStack gap="3" items="center">
-        {/* `white`, not `background`: the logo is the verifier's artwork, commonly dark on
-            transparent, so this is a plate under it rather than a surface of ours to darken. */}
-        <Circle size={48} borderWidth="1" borderColor="grey-100" bg="white" overflow="hidden">
+    // Extra room below: who is asking is what the rest of the sheet is read against
+    <YStack gap="3" mb="3">
+      <YStack
+        bg="surface"
+        rounded="8"
+        borderWidth="1"
+        borderColor="grey-100"
+        shadow="card"
+        px="4"
+        py="3"
+        onPress={isRecognized ? onShowDetails : undefined}
+        role={isRecognized ? 'button' : undefined}
+        opacity={isRecognized ? '1 press:0.7' : undefined}
+      >
+        <XStack gap="3" items="center">
+          {/* `white`, not `background`: the logo is the verifier's artwork, commonly dark on
+              transparent, so this is a plate under it rather than a surface of ours to darken. Without
+              a logo there's nothing to show, so the name takes the room. */}
           {verifier.logo?.url ? (
-            <Image
-              src={verifier.logo.url}
-              alt={verifier.logo.altText}
-              width="100%"
-              height="100%"
-              contentFit="contain"
-            />
+            <Circle size={44} borderWidth="1" borderColor="grey-100" bg="white" overflow="hidden">
+              <Image
+                src={verifier.logo.url}
+                alt={verifier.logo.altText}
+                width="100%"
+                height="100%"
+                contentFit="contain"
+              />
+            </Circle>
+          ) : null}
+          <YStack flex={1} gap="0-5">
+            {/* The action, short enough for one line. A payment leaves the name out: the payee is right
+                below, and may be someone other than the organization that asks. */}
+            <Heading heading="h3" numberOfLines={2}>
+              {isPayment
+                ? t(messages.confirmPayment)
+                : verifier.name
+                  ? t(messages.shareWith(verifier.name))
+                  : t(messages.dataRequest)}
+            </Heading>
+            {/* Without the scheme, which leaves the host itself more room */}
+            <Paragraph variant="annotation" numberOfLines={1}>
+              {(verifier.hostName ?? origin ?? verifier.entityId).replace(/^https:\/\//, '')}
+            </Paragraph>
+            {isDemoTrustedEntity ? (
+              <Paragraph variant="annotation">{t(commonMessages.demoOrganization)}</Paragraph>
+            ) : !isRecognized ? (
+              <Paragraph variant="annotation">{t(commonMessages.unknownOrganization)}</Paragraph>
+            ) : null}
+          </YStack>
+          {/* As on the trust screen: a check for a recognized organization, else a warning */}
+          {isRecognized && !isDemoTrustedEntity ? (
+            <HeroIcons.CheckCircleFilled size={24} color="positive-500" />
           ) : (
-            <HeroIcons.BuildingOffice color="grey-800" size={24} />
+            <HeroIcons.ExclamationTriangleFilled size={24} color="warning-500" />
           )}
-        </Circle>
-        <YStack flex={1} gap="0-5">
-          {/* The action, short enough for one line. A payment leaves the name out: the payee is right
-              below, and may be someone other than the organization that asks. */}
-          <Heading heading="h3" numberOfLines={2}>
-            {isPayment
-              ? t(messages.confirmPayment)
-              : verifier.name
-                ? t(messages.shareWith(verifier.name))
-                : t(messages.dataRequest)}
-          </Heading>
-          <Paragraph variant="annotation" numberOfLines={1}>
-            {verifier.hostName ?? origin ?? verifier.entityId}
-          </Paragraph>
-          {!isDemoTrustedEntity && !isOverAsking && (
-            <XStack gap="0-5" items="center">
-              {trust.icon}
-              <Paragraph variant="annotation" flex={1}>
-                {trust.label}
-              </Paragraph>
-            </XStack>
-          )}
-        </YStack>
-      </XStack>
+          {isRecognized && <HeroIcons.ChevronRight size={16} color="grey-500" />}
+        </XStack>
+      </YStack>
 
       {isOverAsking && (
-        <WarningBox
+        <InfoButton
           variant="danger"
           title={t(commonMessages.overAsking)}
-          message={
+          description={
             verifier.name
               ? t(commonMessages.overAskingWarning(verifier.name))
               : t(commonMessages.overAskingWarningUnknownOrganization)
           }
         />
       )}
-      {isDemoTrustedEntity && (
-        <WarningBox
-          variant="warning"
-          title={t(commonMessages.demoOrganization)}
-          message={t(commonMessages.demoOrganizationWarning)}
-        />
-      )}
     </YStack>
-  )
-}
-
-function WarningBox({ variant, title, message }: { variant: 'warning' | 'danger'; title: string; message: string }) {
-  return (
-    <XStack
-      rounded="6"
-      bg={variant === 'danger' ? 'danger-300' : 'warning-300'}
-      borderWidth={1}
-      borderColor={variant === 'danger' ? 'danger-400' : 'warning-400'}
-      gap="3"
-      p="4"
-      items="center"
-    >
-      <HeroIcons.ExclamationTriangleFilled size={20} color={variant === 'danger' ? 'danger-600' : 'warning-600'} />
-      <YStack flex={1}>
-        <Paragraph variant="sub" fontWeight="semiBold" color="grey-900">
-          {title}
-        </Paragraph>
-        <Paragraph variant="annotation" color="grey-800">
-          {message}
-        </Paragraph>
-      </YStack>
-    </XStack>
   )
 }

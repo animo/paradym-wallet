@@ -203,7 +203,7 @@ export function CredentialRowCard({
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation({ scaleInValue: 0.99 })
 
   const icon = logo?.url ? (
-    <Image src={logo.url} width={36} height={36} />
+    <Image circle src={logo.url} alt={logo.altText} width={36} height={36} />
   ) : (
     <XStack width={36} height={36} bg="lightTranslucent" items="center" justify="center" rounded="12">
       <LucideIcons.FileBadge size={20} strokeWidth={2.5} color="grey-100" />
