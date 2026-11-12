@@ -169,76 +169,70 @@ export function SettingsScreen() {
   return (
     <FlexPage gap="0" paddingHorizontal="0">
       <HeaderContainer title={t(commonMessages.settings)} isScrolledByOffset={isScrolledByOffset} />
-      <ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={scrollEventThrottle}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <YStack grow={1} px="5" justify="space-between">
-          <YStack gap="5" py="2">
-            <Switch
-              id="biometrics-enabled"
-              label={t({
-                id: 'settings.biometricsToggle',
-                message: 'Biometric unlock',
-                comment: 'Label for the toggle to enable biometric unlock',
-              })}
-              icon={biometricsType === 'face' ? <CustomIcons.FaceId /> : <HeroIcons.FingerPrint />}
-              disabled={canUseBiometryBackedWalletKey === false}
-              description={
-                canUseBiometryBackedWalletKey === false
-                  ? t({
-                      id: 'settings.biometricsNotSupportedDescription',
-                      message: 'Biometric authentication is disabled or not supported on this device.',
-                      comment: 'Description that the biometric unlock feature is not supported on this device',
-                    })
-                  : undefined
-              }
-              value={isBiometricsEnabled}
-              onChange={isBiometricsEnabled ? disableBiometrics : enableBiometrics}
-            />
-            <Switch
-              id="development-mode"
-              label={t({
-                id: 'settings.developmentMode',
-                message: 'Development Mode',
-                comment: 'Label for the toggle to enable developer mode',
-              })}
-              icon={<HeroIcons.CommandLineFilled />}
-              value={isDevelopmentModeEnabled ?? false}
-              onChange={setDevelopmentMode}
-            />
-            <LocaleSelect />
-            {isDevelopmentModeEnabled && paradym.logger instanceof ParadymWalletSdkConsoleLogger && (
-              <SettingsButton
-                label={t({
-                  id: 'settings.exportDebugLogs',
-                  message: 'Export debug logs',
-                  comment: 'Label for the button to export debug logs',
-                })}
-                beta
-                onPress={() =>
-                  Share.share({
-                    // The app's own buffer holds its earlier runs too; the request UI's comes from storage.
-                    message: mergeLogEntries(
-                      (paradym.logger as ParadymWalletSdkConsoleLogger).loggedMessageEntries,
-                      readProcessLogs('dcApi')
-                    ),
+      <ScrollView onScroll={handleScroll} scrollEventThrottle={scrollEventThrottle}>
+        <YStack px="5" gap="5" py="2">
+          <Switch
+            id="biometrics-enabled"
+            label={t({
+              id: 'settings.biometricsToggle',
+              message: 'Biometric unlock',
+              comment: 'Label for the toggle to enable biometric unlock',
+            })}
+            icon={biometricsType === 'face' ? <CustomIcons.FaceId /> : <HeroIcons.FingerPrint />}
+            disabled={canUseBiometryBackedWalletKey === false}
+            description={
+              canUseBiometryBackedWalletKey === false
+                ? t({
+                    id: 'settings.biometricsNotSupportedDescription',
+                    message: 'Biometric authentication is disabled or not supported on this device.',
+                    comment: 'Description that the biometric unlock feature is not supported on this device',
                   })
-                }
-                description={t({
-                  id: 'settings.exportDebugLogsDescription',
-                  message:
-                    'Export the last 1000 debug logs from the wallet. Note that this can contain sensitive information.',
-                  comment: 'Description for the feature to export debug logs',
-                })}
-                icon={<HeroIcons.QueueListFilled />}
-              />
-            )}
-          </YStack>
-          <BackFooter />
+                : undefined
+            }
+            value={isBiometricsEnabled}
+            onChange={isBiometricsEnabled ? disableBiometrics : enableBiometrics}
+          />
+          <Switch
+            id="development-mode"
+            label={t({
+              id: 'settings.developmentMode',
+              message: 'Development Mode',
+              comment: 'Label for the toggle to enable developer mode',
+            })}
+            icon={<HeroIcons.CommandLineFilled />}
+            value={isDevelopmentModeEnabled ?? false}
+            onChange={setDevelopmentMode}
+          />
+          <LocaleSelect />
+          {isDevelopmentModeEnabled && paradym.logger instanceof ParadymWalletSdkConsoleLogger && (
+            <SettingsButton
+              label={t({
+                id: 'settings.exportDebugLogs',
+                message: 'Export debug logs',
+                comment: 'Label for the button to export debug logs',
+              })}
+              beta
+              onPress={() =>
+                Share.share({
+                  // The app's own buffer holds its earlier runs too; the request UI's comes from storage.
+                  message: mergeLogEntries(
+                    (paradym.logger as ParadymWalletSdkConsoleLogger).loggedMessageEntries,
+                    readProcessLogs('dcApi')
+                  ),
+                })
+              }
+              description={t({
+                id: 'settings.exportDebugLogsDescription',
+                message:
+                  'Export the last 1000 debug logs from the wallet. Note that this can contain sensitive information.',
+                comment: 'Description for the feature to export debug logs',
+              })}
+              icon={<HeroIcons.QueueListFilled />}
+            />
+          )}
         </YStack>
       </ScrollView>
+      <BackFooter />
     </FlexPage>
   )
 }

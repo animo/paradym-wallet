@@ -32,7 +32,7 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name, o
     try {
       await paradym.deleteCredentials(dcApiRegisterOptions({ paradym, credentialIds: [id] }))
 
-      toast.show(t(commonMessages.toastCardArchived), {
+      toast.show(t(commonMessages.toastCardDeleted), {
         customData: { preset: 'success' },
       })
 
@@ -52,9 +52,9 @@ export function DeleteCredentialSheet({ isSheetOpen, setIsSheetOpen, id, name, o
     <ConfirmationSheet
       isOpen={isSheetOpen}
       setIsOpen={setIsSheetOpen}
-      title={t(commonMessages.archiveCardTitle)}
-      description={t(commonMessages.archiveCardDescription(name))}
-      confirmText={t(commonMessages.archiveCardConfirm)}
+      title={t(commonMessages.deleteCardTitle)}
+      description={t(commonMessages.deleteCardDescription(name))}
+      confirmText={t(commonMessages.deleteCardConfirm)}
       onConfirm={onDeleteCredential}
       onCancel={onCancel}
     />

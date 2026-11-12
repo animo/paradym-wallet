@@ -56,7 +56,7 @@ export function MiniCardRowItem({
                 <Image src={backgroundImageUri} alt="Card" contentFit="cover" height="100%" width="100%" />
               </Stack>
             )}
-            {issuerImageUri && <Image src={issuerImageUri} alt="Issuer" width={16} height={16} />}
+            {issuerImageUri && <Image circle src={issuerImageUri} alt="Issuer" width={16} height={16} />}
           </>
         )}
       </Stack>

@@ -146,18 +146,8 @@ export const VerifyPartySlide = ({
           // Next to the next step, confirming acts right away, so there is nothing left to review
           confirmation: isCombined
             ? name
-              ? t({
-                  id: 'verifyPartySlide.overAskingConfirmationDescriptionCombined',
-                  message: `${name} asks for more than it registered.`,
-                  comment:
-                    'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization',
-                })
-              : t({
-                  id: 'verifyPartySlide.overAskingConfirmationDescriptionCombinedUnknownOrganization',
-                  message: 'This organization asks for more than it registered.',
-                  comment:
-                    'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown',
-                })
+              ? t(commonMessages.overAskingConfirmationDescriptionCombined(name))
+              : t(commonMessages.overAskingConfirmationDescriptionCombinedUnknownOrganization)
             : name
               ? t({
                   id: 'verifyPartySlide.overAskingConfirmationDescription',
@@ -301,13 +291,7 @@ export const VerifyPartySlide = ({
           description={t(commonMessages.organizationNotVerifiedDescription)}
         />
       )}
-      {isDemoTrustedEntity && (
-        <InfoButton
-          variant="warning"
-          title={t(commonMessages.demoOrganization)}
-          description={t(commonMessages.demoOrganizationWarning)}
-        />
-      )}
+      {isDemoTrustedEntity && <InfoButton variant="warning" title={t(commonMessages.demoOrganization)} />}
       <InfoButton
         variant={lastInteractionDate ? 'interaction-success' : 'interaction-new'}
         title={
@@ -347,7 +331,6 @@ export const VerifyPartySlide = ({
         }}
         onDecline={handleDecline}
         acceptText={t(commonMessages.confirmContinue)}
-        declineText={t(commonMessages.stop)}
         isLoading={isLoading}
         variant={registrationWarning ? 'confirmation' : 'regular'}
       />
@@ -358,12 +341,7 @@ export const VerifyPartySlide = ({
     <ConfirmationSheet
       isOpen={isRegistrationWarningOpen}
       setIsOpen={(isOpen) => (isOpen ? setIsRegistrationWarningOpen(true) : closeRegistrationWarning(false))}
-      title={t({
-        id: 'verifyPartySlide.overAskingConfirmationTitle',
-        message: 'Continue anyway?',
-        comment:
-          'Title of the sheet that asks to confirm continuing with an organization that goes beyond what it registered, such as a request that asks for more than it registered',
-      })}
+      title={t(commonMessages.overAskingConfirmationTitle)}
       description={registrationWarning.confirmation}
       confirmText={t(commonMessages.confirmContinue)}
       onConfirm={() => closeRegistrationWarning(true)}

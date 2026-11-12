@@ -58,7 +58,7 @@ export function RequestedAttributesSection({ submission, onSelectCredential }: R
         <Paragraph>
           {t(
             unsatisfiedEntries.length === 0
-              ? commonMessages.allRequestedCardsDescription
+              ? commonMessages.allRequestedCardsDescription(satisfiedEntries.length)
               : unavailableEntries.length === 0
                 ? unmetAttributeMessages.description
                 : satisfiedEntries.length === 0 && partiallySatisfiedEntries.length === 0

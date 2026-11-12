@@ -102,7 +102,6 @@ export const ShareCredentialsSlide = ({
           <DualResponseButtons
             align="horizontal"
             acceptText={shareLabel}
-            declineText={t(commonMessages.stop)}
             onAccept={handleAccept}
             onDecline={onCancel}
             isLoading={isProcessing}

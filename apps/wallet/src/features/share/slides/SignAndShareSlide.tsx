@@ -169,7 +169,6 @@ export const SignAndShareSlide = ({
           <DualResponseButtons
             align="horizontal"
             acceptText={acceptLabel}
-            declineText={t(commonMessages.stop)}
             onAccept={handleAccept}
             onDecline={onCancel}
             isLoading={isProcessing}

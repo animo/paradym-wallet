@@ -28,7 +28,6 @@ import {
 import { useState } from 'react'
 import { SwitchCardRow } from '../../share/components/CardSelectionList'
 import { dcApiMessages as messages } from '../messages'
-import { dcApiCardArtwork } from './dcApiCardArtwork'
 
 /**
  * The cards a request would be answered with, and the attributes they would disclose.
@@ -143,7 +142,7 @@ function getRequestedCardsMessages({
   else if (partiallySatisfied > 0) title = unmet.heading
 
   let subtitle = commonMessages.someRequestedCardsMissingDescription
-  if (partiallySatisfied === 0 && unavailable === 0) subtitle = commonMessages.allRequestedCardsDescription
+  if (partiallySatisfied === 0 && unavailable === 0) subtitle = commonMessages.allRequestedCardsDescription(satisfied)
   else if (unavailable === 0) subtitle = unmet.description
   else if (satisfied === 0 && partiallySatisfied === 0) subtitle = commonMessages.noRequestedCardsDescription
 
@@ -176,7 +175,6 @@ function PartiallyMatchingCard({ entry }: { entry: FormattedSubmissionEntryNotSa
     <Card
       name={display.name ?? entry.name ?? t(commonMessages.unknown)}
       backgroundColor={display.backgroundColor}
-      backgroundImage={display.backgroundImage?.url}
       issuerImage={display.issuer.logo?.url}
       textColor={display.textColor}
       attributeNames={Array.from(
@@ -196,8 +194,6 @@ function RequestedCard({ credential }: { credential: FormattedSubmissionEntrySat
     <Card
       name={display.name ?? t(commonMessages.unknown)}
       backgroundColor={display.backgroundColor}
-      backgroundImage={display.backgroundImage?.url}
-      artwork={dcApiCardArtwork(display.svg)}
       issuerImage={display.issuer.logo?.url}
       textColor={display.textColor}
       attributeNames={getDisclosedAttributeNamesForDisplay(credential).map((name) =>
@@ -218,9 +214,6 @@ function RequestedCard({ credential }: { credential: FormattedSubmissionEntrySat
 type CardProps = {
   name: string
   backgroundColor?: string
-  backgroundImage?: string
-  /** The card's rendered SVG template, in place of the background image. */
-  artwork?: React.ReactNode
   issuerImage?: string
   textColor?: string
   attributeNames: string[]
@@ -234,8 +227,6 @@ type CardProps = {
 function Card({
   name,
   backgroundColor,
-  backgroundImage,
-  artwork,
   issuerImage,
   textColor,
   attributeNames,
@@ -244,76 +235,68 @@ function Card({
   onToggle,
   children,
 }: CardProps) {
-  // The same two columns of attribute names the app shows on the card.
-  const columns = toAttributeRows(attributeNames, missingAttributeNames)
+  // The same columns of attribute names the app shows on the card.
+  const rows = toAttributeRows(attributeNames, missingAttributeNames)
 
   return (
     <Stack
       rounded="6"
       borderWidth="1"
       borderColor="borderTranslucent"
-      overflow="hidden"
+      bg="surface"
+      shadow="card"
       transition={onToggle ? 'quick' : undefined}
       scale={onToggle ? '1 press:0.98' : undefined}
       onPress={onToggle}
       role={onToggle ? 'button' : undefined}
       aria-label={`Shared attributes from ${name.toLocaleUpperCase()}`}
     >
-      <Stack px="5" py="3" position="relative" bg={backgroundColor ?? 'grey-900'}>
-        {artwork ? (
-          <Stack position="absolute" top={0} left={0} right={0} bottom={0}>
-            {artwork}
-          </Stack>
-        ) : (
-          backgroundImage && (
-            <Stack position="absolute" top={0} left={0} right={0} bottom={0}>
-              <Image src={backgroundImage} contentFit="cover" height="100%" width="100%" />
-            </Stack>
-          )
-        )}
-        <XStack items="center" justify="space-between" gap="2">
-          <Heading
-            heading="sub2"
-            fontSize={14}
-            fontWeight="bold"
-            numberOfLines={1}
-            color={textColor ?? 'grey-200'}
-            flex={1}
-          >
-            {name.toLocaleUpperCase()}
-          </Heading>
-          {issuerImage && <Image circle src={issuerImage} width={36} height={36} />}
-        </XStack>
-      </Stack>
-
-      <YStack px="5" pt="3" pb="5" gap="3" bg="background">
-        {isExpanded ? (
-          children
-        ) : (
-          <YStack gap="2" pr="5">
-            {columns.map(([first, second]) => (
-              <XStack key={`${first.name}-${second?.name}`} gap="3">
-                <Stack flexGrow={1} flexBasis={0}>
-                  <AttributeListItem name={first.name} isMissing={first.isMissing} />
-                </Stack>
-                <Stack flexGrow={1} flexBasis={0}>
-                  {second && <AttributeListItem name={second.name} isMissing={second.isMissing} />}
-                </Stack>
-              </XStack>
-            ))}
-          </YStack>
-        )}
-
-        {onToggle && (
-          <XStack justify="flex-end">
-            {isExpanded ? (
-              <HeroIcons.ChevronUp size={20} color="grey-500" />
-            ) : (
-              <HeroIcons.ChevronDown size={20} color="grey-500" />
-            )}
+      {/* Clipped inside rather than on the card, where it would clip the card's shadow; inside its border */}
+      <Stack rounded={15} overflow="hidden">
+        <Stack px="5" py="3" bg={backgroundColor ?? 'grey-900'}>
+          <XStack items="center" justify="space-between" gap="2">
+            <Heading
+              heading="sub2"
+              fontSize={14}
+              fontWeight="bold"
+              numberOfLines={1}
+              color={textColor ?? 'grey-200'}
+              flex={1}
+            >
+              {name.toLocaleUpperCase()}
+            </Heading>
+            {issuerImage && <Image circle src={issuerImage} width={36} height={36} />}
           </XStack>
-        )}
-      </YStack>
+        </Stack>
+
+        <YStack px="5" pt="3" pb="5" gap="3">
+          {isExpanded ? (
+            children
+          ) : (
+            <YStack gap="2" pr="5">
+              {rows.map((row) => (
+                <XStack key={row.map((cell) => cell?.name).join('-')} gap="3">
+                  {row.map((cell, column) => (
+                    <Stack key={column} flexGrow={1} flexBasis={0}>
+                      {cell && <AttributeListItem name={cell.name} isMissing={cell.isMissing} />}
+                    </Stack>
+                  ))}
+                </XStack>
+              ))}
+            </YStack>
+          )}
+
+          {onToggle && (
+            <XStack justify="flex-end">
+              {isExpanded ? (
+                <HeroIcons.ChevronUp size={20} color="grey-500" />
+              ) : (
+                <HeroIcons.ChevronDown size={20} color="grey-500" />
+              )}
+            </XStack>
+          )}
+        </YStack>
+      </Stack>
     </Stack>
   )
 }

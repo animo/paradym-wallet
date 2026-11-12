@@ -224,7 +224,6 @@ export const AuthCodeFlowSlide = ({
             message: 'Authenticate',
             comment: 'Button label to start authentication process',
           })}
-          declineText={t(commonMessages.stop)}
           onAccept={onPressContinue}
           onDecline={wizardOnCancel}
           isLoading={isResolvingPresentationRequest}

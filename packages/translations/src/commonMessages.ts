@@ -388,26 +388,26 @@ export const commonMessages = {
     message: 'Sharing failed',
     comment: 'Shown when data sharing failed',
   }),
-  archiveCardTitle: defineMessage({
-    id: 'common.archiveCardTitle',
-    message: 'Archive card?',
-    comment: 'Title for confirmation dialog to archive a card',
+  deleteCardTitle: defineMessage({
+    id: 'common.deleteCardTitle',
+    message: 'Delete card?',
+    comment: 'Title for confirmation dialog to delete a card',
   }),
-  archiveCardDescription: (name: string) =>
+  deleteCardDescription: (name: string) =>
     defineMessage({
-      id: 'common.archiveCardDescription',
+      id: 'common.deleteCardDescription',
       message: `This will make ${name} unusable and delete it from your wallet.`,
-      comment: 'Description in confirmation dialog explaining card archiving',
+      comment: 'Description in confirmation dialog explaining what deleting a card does',
     }),
-  archiveCardConfirm: defineMessage({
-    id: 'common.archiveCardConfirm',
-    message: 'Yes, archive',
-    comment: 'Confirm button text for archiving a card',
+  deleteCardConfirm: defineMessage({
+    id: 'common.deleteCardConfirm',
+    message: 'Yes, delete',
+    comment: 'Confirm button text for deleting a card',
   }),
-  toastCardArchived: defineMessage({
-    id: 'common.toastCardArchived',
-    message: 'Card successfully archived',
-    comment: 'Toast message shown after successfully archiving a card',
+  toastCardDeleted: defineMessage({
+    id: 'common.toastCardDeleted',
+    message: 'Card successfully deleted',
+    comment: 'Toast message shown after successfully deleting a card',
   }),
   toastCardDeleteError: defineMessage({
     id: 'common.toastCardDeleteError',
@@ -485,11 +485,15 @@ export const commonMessages = {
     message: 'UNAVAILABLE CARDS',
     comment: 'Heading shown above a list of requested cards the user does not have',
   }),
-  allRequestedCardsDescription: defineMessage({
-    id: 'common.allRequestedCardsDescription',
-    message: 'The following cards will be shared.',
-    comment: 'Description when the user has all requested cards',
-  }),
+  allRequestedCardsDescription: (count: number) =>
+    defineMessage({
+      id: 'common.allRequestedCardsDescription',
+      message: plural(count, {
+        one: 'The following card will be shared.',
+        other: 'The following cards will be shared.',
+      }),
+      comment: 'Description when the user has all requested cards, with the number of cards that will be shared',
+    }),
   matchingCards: (count: number) =>
     defineMessage({
       id: 'common.matchingCards',
@@ -588,11 +592,6 @@ export const commonMessages = {
     message: 'Demo organization',
     comment: 'Shown to indicate that an organization is a demo',
   }),
-  demoOrganizationWarning: defineMessage({
-    id: 'common.demoOrganizationWarning',
-    message: 'Information may be incorrect. Do not share real data',
-    comment: 'Warning shown with a demo organization',
-  }),
   overAsking: defineMessage({
     id: 'common.overAsking',
     message: 'Over-asking',
@@ -605,6 +604,26 @@ export const commonMessages = {
       comment:
         'Warning shown when a request asks for more data than the organization registered to ask for, with the name of the organization',
     }),
+  // The ids are the ones these had on the trust screen, so their translations carry over
+  overAskingConfirmationTitle: defineMessage({
+    id: 'verifyPartySlide.overAskingConfirmationTitle',
+    message: 'Continue anyway?',
+    comment:
+      'Title of the sheet that asks to confirm continuing with an organization that goes beyond what it registered, such as a request that asks for more than it registered',
+  }),
+  overAskingConfirmationDescriptionCombined: (name: string) =>
+    defineMessage({
+      id: 'verifyPartySlide.overAskingConfirmationDescriptionCombined',
+      message: `${name} asks for more than it registered.`,
+      comment:
+        'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, with the name of the organization',
+    }),
+  overAskingConfirmationDescriptionCombinedUnknownOrganization: defineMessage({
+    id: 'verifyPartySlide.overAskingConfirmationDescriptionCombinedUnknownOrganization',
+    message: 'This organization asks for more than it registered.',
+    comment:
+      'Shown in the sheet that asks to confirm a request that asks for more than the organization registered, next to the request itself, when the name of the organization is unknown',
+  }),
   overAskingWarningUnknownOrganization: defineMessage({
     id: 'common.overAskingWarningUnknownOrganization',
     message:

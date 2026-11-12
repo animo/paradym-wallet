@@ -152,7 +152,6 @@ export const PaymentSlide: React.FC<PaymentSlideProps> = ({ transaction, verifie
         <DualResponseButtons
           align="horizontal"
           acceptText={t(commonMessages.continue)}
-          declineText={t(commonMessages.stop)}
           onAccept={() => onNext()}
           onDecline={() => onCancel()}
           isLoading={false}

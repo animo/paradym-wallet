@@ -222,7 +222,7 @@ export const PasoPaymentSlide = ({
                   comment: 'Fallback label for the button that authorizes a PaSO payment',
                 })
               }
-              declineText={transaction.denialActionLabel ?? t(commonMessages.stop)}
+              declineText={transaction.denialActionLabel}
               onAccept={handleAccept}
               onDecline={onCancel}
               isLoading={isProcessing}

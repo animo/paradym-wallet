@@ -41,7 +41,6 @@ export function SigningSlide({ documentName }: SigningSlideProps) {
         <DualResponseButtons
           align="horizontal"
           acceptText={t(commonMessages.continue)}
-          declineText={t(commonMessages.stop)}
           onAccept={() => onNext()}
           onDecline={() => onCancel()}
           isLoading={false}

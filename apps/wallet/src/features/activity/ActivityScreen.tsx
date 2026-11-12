@@ -104,7 +104,11 @@ export function ActivityScreen({ entityId, initialSelectedId }: { entityId?: str
           <Spacer size={88} />
         </YStack>
       ) : (
-        <ScrollView onScroll={onScroll} scrollEventThrottle={scrollEventThrottle}>
+        <ScrollView
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
+          contentContainerStyle={{ paddingBottom: '5' }}
+        >
           <YStack grow={1} px="5" gap="5">
             {Object.entries(groupedActivities).map(([key, groupActivities]) => {
               const [year, month] = key.split('-')

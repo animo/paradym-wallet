@@ -247,6 +247,17 @@ const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
         logoUri: 'https://issuer.example.com/logo.png',
         url: 'https://issuer.example.com',
         certificate: 'MIIBzzCC...', // base64 DER
+        display: 'entity', // or 'external', see below
+        // Parties under this certificate, recognized by their own certificate in the chain
+        children: [
+          {
+            entityId: 'shop.example.com',
+            name: 'Example Shop',
+            logoUri: 'https://shop.example.com/logo.png',
+            url: 'https://shop.example.com',
+            certificate: 'MIIBrDCC...',
+          },
+        ],
       },
     ],
     // EUDI access certificates, checked against the lists of access certificate providers
@@ -268,7 +279,7 @@ const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
   },
 
   // DID-signed requests and issuer metadata
-  { trustMechanism: 'did', trustedDidEntities: [{ did: 'did:web:example.com', name, logoUri, url }] },
+  { trustMechanism: 'did', trustedDidEntities: [{ did: 'did:web:example.com', name, logoUri, url, display: 'entity' }] },
 
   // Unsigned issuers, and verifiers identified only by origin or redirect_uri
   { trustMechanism: 'none', trustedEntities: [{ issuer: 'https://issuer.example.com', name, logoUri, url }] },
@@ -280,12 +291,14 @@ const trustMechanisms: SetupParadymWalletSdkOptions['trustMechanisms'] = [
 
 The certificates in the `x509` entry also become the agent's trusted roots for credential verification. You don't need to list them again in `openId4VcConfiguration`.
 
+A chain is always validated up to the `certificate` of a trusted x509 entity. The `children` are no trust anchors. When an intermediate or the leaf of the validated chain is the `certificate` of one of its children, the party is that child: it's shown with the child's `name` and `logoUri`, and the entity is its trusted entity. The child closest to the leaf wins. Without a matching child, `display` decides what the party is shown with. With `'entity'`, it's the entity's own `name` and `logoUri`, defined in advance. With `'external'`, it's what the party provides itself: the `client_name` and `logo_uri` of the request's client metadata, or the `display` of the offer's signed issuer metadata. Without a name there, it's the common name, or else the organization name, of the certificate the party presents, without a logo. For mdoc reader authentication that certificate is all the party provides. Without any of those, it's the entity's. As for a child, the entity is then the party's trusted entity, rather than the party itself. A trusted DID entity takes `display` the same way, without the certificate. `display` is required, since it decides whose word the name is.
+
 The `entityId` of the issuer or verifier links its interactions in the activity history. It's scoped by what established who the party is, so ids from different mechanisms never match:
 
 | Party | `entityId` |
 |---|---|
 | Trusted through `accessCertificateTrustedLists` | `eudi:<semantic identifier>` (ETSI TS 119 475 clause 5.1), the `sub` of its verified registration certificate or else the identifier in its access certificate |
-| Trusted through `trustedX509Entities` | `x509:<entityId of the trusted entity>:<…>`. For a request: the issuer and subject name of the certificate it is signed with, which a renewed certificate keeps (RFC 5280 clause 4.1.2.6), or nothing more when the certificate has no subject name. For mdoc reader authentication: the origin. For an offer: the `credential_issuer` |
+| Trusted through `trustedX509Entities` | `x509:<entityId of the trusted entity>:<…>`. For a matched child: its `entityId`, in every request and offer. Otherwise, for a request: the issuer and subject name of the certificate it is signed with, which a renewed certificate keeps (RFC 5280 clause 4.1.2.6), or nothing more when the certificate has no subject name. For mdoc reader authentication: the origin. For an offer: the `credential_issuer` |
 | Signed with a DID | the DID |
 | Anything else | `none:<client_id, origin or credential_issuer>` |
 
