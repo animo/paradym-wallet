@@ -10,6 +10,7 @@ import {
   ParadymWalletInvitationReceiveError,
   useDidCommConnectionActions,
   useParadym,
+  useRevalidateImages,
 } from '@paradym/wallet-sdk'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
@@ -56,6 +57,7 @@ export function DidCommNotificationScreen() {
     id: string
   }>()
   const { acceptConnection, declineConnection, display } = useDidCommConnectionActions(resolvedInvitation)
+  useRevalidateImages([display.connection.logo.url])
   const { t } = useLingui()
 
   const setErrorReasonWithError = useCallback(

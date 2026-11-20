@@ -6,6 +6,7 @@
 	"main": "src/index.ts",
 	"module:jsx": "src",
 	"dependencies": {
+		"@paradym/wallet-sdk": "workspace:*",
 		"@tamagui/animations-react-native": "catalog:",
 		"@tamagui/button": "catalog:",
 		"@tamagui/config": "catalog:",

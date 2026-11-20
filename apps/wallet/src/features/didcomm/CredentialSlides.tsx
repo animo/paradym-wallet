@@ -2,7 +2,13 @@ import { useLingui } from '@lingui/react/macro'
 import { SlideWizard } from '@package/app/components/SlideWizard'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
-import { assertAgentType, storeReceivedActivity, useDidCommCredentialActions, useParadym } from '@paradym/wallet-sdk'
+import {
+  assertAgentType,
+  storeReceivedActivity,
+  useDidCommCredentialActions,
+  useParadym,
+  useRevalidateImages,
+} from '@paradym/wallet-sdk'
 import { useCallback, useState } from 'react'
 import { useDevelopmentMode } from '../../hooks'
 import { CredentialRetrievalSlide } from '../receive/slides/CredentialRetrievalSlide'
@@ -22,6 +28,7 @@ export function CredentialSlides({ isExisting, credentialExchangeId, onCancel, o
   const [errorReason, setErrorReason] = useState<string>()
   const { acceptCredential, acceptStatus, declineCredential, credentialExchange, attributes, display } =
     useDidCommCredentialActions(credentialExchangeId)
+  useRevalidateImages([display.issuer.logo.url])
 
   const { t } = useLingui()
 
