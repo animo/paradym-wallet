@@ -1,3 +1,5 @@
+// Deep import: the SDK's root entry pulls in modules the credential request UI's bundle doesn't link.
+import { useImageCacheKey } from '@paradym/wallet-sdk/utils/imageCacheKey'
 import { Image as ExpoImage, type ImageProps as ExpoImageProps, type ImageStyle } from 'expo-image'
 
 export interface ImageProps extends ExpoImageProps {
@@ -19,9 +21,11 @@ export const Image = ({
   backgroundColor,
   ...props
 }: ImageProps) => {
+  const cacheKey = useImageCacheKey(src)
+
   return (
     <ExpoImage
-      source={src}
+      source={cacheKey ? { uri: src as string, cacheKey } : src}
       alt={alt}
       contentFit={contentFit}
       transition={150}

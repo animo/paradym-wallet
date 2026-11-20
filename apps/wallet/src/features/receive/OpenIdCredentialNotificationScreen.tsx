@@ -19,6 +19,7 @@ import {
   ParadymWalletInvalidTransactionCodeError,
   selectSubmissionCredentials,
   useParadym,
+  useRevalidateImages,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -92,6 +93,15 @@ export function CredentialNotificationScreen() {
   const onSelectCredential = (inputDescriptorId: string, credentialRecordId: string) =>
     setSelectedCredentials((selected) => ({ ...selected, [inputDescriptorId]: credentialRecordId }))
   const shouldUsePinForPresentation = useShouldUsePinForSubmission(presentationRequest?.formattedSubmission)
+  useRevalidateImages([
+    resolvedCredentialOffer?.issuer.logoUri,
+    resolvedCredentialOffer?.credentialDisplay.issuer.logo?.url,
+    resolvedCredentialOffer?.credentialDisplay.backgroundImage?.url,
+    // The received card can have another display than the offer, e.g. from its SD-JWT VC type metadata
+    receivedCredential?.display.issuer.logo?.url,
+    receivedCredential?.display.backgroundImage?.url,
+    presentationRequest?.verifier.logo?.url,
+  ])
   // The authorization server returned the presentation request from the pushed authorization request, so there's
   // no need to open the browser to start the authorization
   const hasPushedPresentationRequest =

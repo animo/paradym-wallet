@@ -3,7 +3,12 @@ import { SlideWizard } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { useToastController } from '@package/ui'
 import type { FormattedSubmission } from '@paradym/wallet-sdk'
-import { storeSharedActivityForSubmission, useDidCommPresentationActions, useParadym } from '@paradym/wallet-sdk'
+import {
+  storeSharedActivityForSubmission,
+  useDidCommPresentationActions,
+  useParadym,
+  useRevalidateImages,
+} from '@paradym/wallet-sdk'
 import { useCallback, useState } from 'react'
 import { useDevelopmentMode } from '../../hooks'
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
@@ -27,6 +32,7 @@ export function PresentationSlides({ isExisting, proofExchangeId, onCancel, onCo
   const { t } = useLingui()
   const { acceptPresentation, declinePresentation, proofExchange, acceptStatus, submission, verifierName, logo } =
     useDidCommPresentationActions(proofExchangeId)
+  useRevalidateImages([logo.url])
 
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const setErrorReasonWithError = useCallback(

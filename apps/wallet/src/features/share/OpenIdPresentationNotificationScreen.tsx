@@ -15,6 +15,7 @@ import {
   resolveTransactionData,
   selectSubmissionCredentials,
   useParadym,
+  useRevalidateImages,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -67,6 +68,12 @@ export function OpenIdPresentationNotificationScreen() {
     [resolvedRequest, selectedCredentials]
   )
   const shouldUsePin = useShouldUsePinForSubmission(shareRequest?.formattedSubmission)
+  useRevalidateImages([
+    resolvedRequest?.verifier.logo?.url,
+    formattedTransactionData?.type === 'urn:eudi:sca:eu.europa.ec:payment:single:1'
+      ? formattedTransactionData.payee.logo
+      : undefined,
+  ])
 
   const handleError = useCallback(({ reason, description }: { reason: string; description?: string }) => {
     setIsSharing(false)
