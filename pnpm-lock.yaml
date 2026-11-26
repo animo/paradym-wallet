@@ -293,6 +293,7 @@ overrides:
   react-native: 0.88.1
   '@openwallet-foundation/askar-shared': 0.7.0-alpha-20261023221824
   '@hyperledger/anoncreds-shared': 0.5.0-alpha-20261027094647
+  dcql@1.0.1>valibot: ^1.4.2
 
 patchedDependencies:
   '@openid4vc/oauth2@0.8.2': 8b7742360249eabf4513cdfbb4eaa2cc03a2c34d15934178eef01379d8f2cda7
@@ -6666,14 +6667,6 @@ packages:
     resolution: {integrity: sha512-Sc5u1VVln93y1Xnz4R+CunOZc7R9LUcTmhj7Rc7Eg3HVcf7rVn2FOoa812fe0W8p3jD7xeoGSYbfqCGGH2B6xw==}
     hasBin: true
 
-  valibot@1.0.0-beta.8:
-    resolution: {integrity: sha512-OPAwJZtowb0j91b+bd77+ny7D1VVzsCzD7Jl9waLUlMprTsfI9Y3HHbW3hAQD7wKDKHsmGEesuiYWaYvcZL2wg==}
-    peerDependencies:
-      typescript: '>=5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   valibot@1.5.0:
     resolution: {integrity: sha512-nil6AkP2TChWL43Z5uJ6GTxX01CUA+g8LWUM+N/rB9NBbkUMaUsi9PUNzlUPgoKASgmx9f7eGOYpJ04/fSa6FQ==}
     peerDependencies:
@@ -12100,7 +12093,7 @@ snapshots:
 
   dcql@1.0.1(typescript@6.0.3):
     dependencies:
-      valibot: 1.0.0-beta.8(typescript@6.0.3)
+      valibot: 1.5.0(typescript@6.0.3)
     transitivePeerDependencies:
       - typescript
 
@@ -14931,10 +14924,6 @@ snapshots:
   uuid@13.0.2: {}
 
   uuid@14.0.3: {}
-
-  valibot@1.0.0-beta.8(typescript@6.0.3):
-    optionalDependencies:
-      typescript: 6.0.3
 
   valibot@1.5.0(typescript@6.0.3):
     optionalDependencies:
