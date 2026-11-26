@@ -12,5 +12,5 @@ PaSO transactions of every type can be shown and authorized, and the Wero Paymen
 - `ParadymWalletPasoError` carries a `detail` saying why a transaction can't be shown, and `noMatchingCard` when no card can authorize it.
 - `getAttributesWithDisplay` returns the attributes the claim metadata labels.
 - `acquireCredentials` with a transaction code takes `onAccessToken`, called once the code is accepted.
-- `fetchAndProcessDeferredCredentials` returns the names of the cards that were issued, and `useRefreshedDeferredCredentials` takes an `onIssued` callback. `useHasInboxNotifications` counts deferred cards.
+- `fetchAndProcessDeferredCredentials` returns the number of cards that were issued, and `useRefreshedDeferredCredentials` takes an `onIssued` callback. `useHasInboxNotifications` counts deferred cards.
 - `secureWalletKey.getWalletKeyUsingBiometrics` takes an optional prompt, for when the biometric confirms a request rather than unlocks the wallet.
