@@ -211,7 +211,7 @@ export const trustedDidEntities = [
   {
     did: 'did:web:metadata.paradym.id:b102153b-9c5a-4b10-9aed-2eca6cce261a',
     logoUri: bydoLogoUri,
-    name: 'bydo',
+    name: 'bydo.swiss',
     url: 'https://bydo.swiss',
     demo: false,
     display: 'entity',
@@ -271,7 +271,7 @@ export const trustedOpenId4VciIssuerEntities = [
   {
     issuer: 'https://agent.paradym.id/oid4vci/f913c0fd-6cb7-4271-ab62-d0e2f6afe5b5',
     logoUri: bydoLogoUri,
-    name: 'bydo',
+    name: 'bydo.swiss',
     url: 'https://bydo.swiss',
     demo: false,
   },

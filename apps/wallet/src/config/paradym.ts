@@ -101,7 +101,7 @@ export const paradymWalletSdkOptions: SetupParadymWalletSdkOptions = {
     { trustMechanism: 'none', trustedEntities: trustedOpenId4VciIssuerEntities },
     {
       walletTrustedEntity: {
-        organizationName: 'Paradym Wallet',
+        organizationName: 'Paradym',
         entityId: '__',
         logoUri: require('../../assets/paradym/icon.png'),
         uri: 'https://paradym.id',
