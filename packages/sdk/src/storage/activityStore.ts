@@ -10,9 +10,9 @@ import type {
   FormattedTransactionDataPaymentSingle,
   FormattedTransactionDataQesAuthorization,
 } from '../openid4vc/transaction'
-import { pasoPaymentTransactionDataType } from '../paso/paymentRulebook'
-import type { FormattedTransactionDataPasoPayment } from '../paso/transactionData'
+import { type FormattedTransactionDataPaso, isPasoTransaction } from '../paso/transactionData'
 import {
+  backfillActivityIndexCredentialIds,
   deleteActivityRecord,
   getActivityRecordById,
   saveActivityRecord,
@@ -78,6 +78,12 @@ export type PresentationActivityCredential = {
    * the log expensive to keep.
    */
   attributeNames: string[]
+
+  /**
+   * The card the transaction data was bound to, such as the card a payment is paid with. Not on
+   * activities stored before it was recorded.
+   */
+  authorizesTransaction?: true
 }
 
 export interface PresentationActivity extends BaseActivity {
@@ -107,8 +113,8 @@ export interface SignedActivity extends Omit<PresentationActivity, 'type'> {
 export interface PaymentActivity extends Omit<PresentationActivity, 'type'> {
   type: 'payment'
   status: Exclude<ActivityStatus, 'pending'>
-  /** A TS 12 `payment:single:1` or a PaSO `global:payment:1` transaction. */
-  transaction: FormattedTransactionDataPaymentSingle | FormattedTransactionDataPasoPayment
+  /** A TS 12 `payment:single:1` or a PaSO transaction. */
+  transaction: FormattedTransactionDataPaymentSingle | FormattedTransactionDataPaso
   transactionStatus?: PaymentTransactionStatusCode
 }
 
@@ -137,7 +143,7 @@ export function getPaymentTransactionStatus(activity: Activity): PaymentTransact
   // with, which would otherwise show a payment the user refused as pending forever.
   if (activity.status !== 'success') return undefined
 
-  if (activity.transaction.type === pasoPaymentTransactionDataType) return undefined
+  if (isPasoTransaction(activity.transaction)) return undefined
 
   return activity.transactionStatus
 }
@@ -189,7 +195,7 @@ export function migrateActivities(agent: Agent): Promise<void> {
     // Last, and only once every activity has a record of its own: until this happens the old record
     // is still the source of truth, and the migration can simply run again.
     await agent.genericRecords.deleteById(legacyActivityStorage.recordId)
-  })()
+  })().then(() => backfillActivityIndexCredentialIds(agent))
 
   return migration
 }
@@ -303,7 +309,7 @@ export function storeSharedActivityForCredentialsForRequest(
     request: {
       name: credentialsForRequest.formattedSubmission.name,
       purpose: credentialsForRequest.formattedSubmission.purpose,
-      credentials: getDisclosedCredentialForSubmission(credentialsForRequest.formattedSubmission),
+      credentials: getDisclosedCredentialForSubmission(credentialsForRequest.formattedSubmission, transaction),
       failureReason:
         status === 'failed'
           ? !credentialsForRequest.formattedSubmission.areAllSatisfied
@@ -337,7 +343,7 @@ export function storeSharedActivityForSubmission(
     request: {
       name: submission.name,
       purpose: submission.purpose,
-      credentials: getDisclosedCredentialForSubmission(submission),
+      credentials: getDisclosedCredentialForSubmission(submission, transaction),
       failureReason:
         status === 'failed' ? (!submission.areAllSatisfied ? 'missing_credentials' : 'unknown') : undefined,
     },
@@ -345,7 +351,8 @@ export function storeSharedActivityForSubmission(
 }
 
 export function getDisclosedCredentialForSubmission(
-  formattedSubmission: FormattedSubmission
+  formattedSubmission: FormattedSubmission,
+  transaction?: FormattedTransactionData
 ): Array<PresentationActivityCredentialNotFound | PresentationActivityCredential> {
   return formattedSubmission.entries.map((entry) => {
     if (!entry.isSatisfied) {
@@ -367,6 +374,7 @@ export function getDisclosedCredentialForSubmission(
       paths,
       // The names on the card that was shared, for once the credential is gone
       attributeNames: getDisclosedAttributeNamesForDisplay(credential).filter((name) => typeof name === 'string'),
+      ...(transaction?.cardForTransactionId === entry.inputDescriptorId && { authorizesTransaction: true }),
     } satisfies PresentationActivityCredential
   })
 }

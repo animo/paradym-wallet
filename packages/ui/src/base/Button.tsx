@@ -5,8 +5,20 @@
 
 import { ButtonFrame, useButton } from '@tamagui/button'
 import { Children, Fragment, type ReactNode } from 'react'
-import { View } from 'react-native'
-import { createStyledHOC, type GetProps, SizableText, styled, stylePropsTextOnly, withStaticProperties } from 'tamagui'
+import { PixelRatio, type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native'
+import {
+  createStyledHOC,
+  type GetProps,
+  getTokenValue,
+  SizableText,
+  styled,
+  stylePropsTextOnly,
+  type Token,
+  withStaticProperties,
+} from 'tamagui'
+
+/** From this text size on, buttons get vertical padding instead of a fixed height. */
+export const largeTextFontScale = 1.3
 
 // v3's `tamagui` Button sizes itself from Config v6's sizing ladder, which our tokens don't have. This rebuilds
 // what the v2 Button rendered at its default size from v3's unstyled parts.
@@ -37,8 +49,20 @@ const TButton = createStyledHOC(
     const children = Children.toArray(props.children).flatMap((child, index): ReactNode[] =>
       typeof child === 'string' || typeof child === 'number' ? [child, <Fragment key={`text-${index}`} />] : [child]
     )
+    // At larger text sizes the fixed height leaves the label touching the edges, so a button at the default height
+    // grows with its label instead. The height arrives resolved in `style`, where a height of its own would be too.
+    const defaultHeight = getTokenValue('buttonHeight' as Token, 'size')
+    const style = StyleSheet.flatten(props.style as StyleProp<ViewStyle>)
+    const growsWithLabel = PixelRatio.getFontScale() >= largeTextFontScale && style?.height === defaultHeight
     const { props: buttonProps } = useButton(
-      { ...props, children, textProps },
+      {
+        ...props,
+        style: growsWithLabel
+          ? [props.style, { height: 'auto', minHeight: defaultHeight, paddingVertical: 12 }]
+          : props.style,
+        children,
+        textProps,
+      },
       {
         Text: TButtonText,
         iconSize: 16,

@@ -28,11 +28,21 @@ export interface PasoRulebookClaim {
   valueType?: string
   /** Whether the rulebook designates the claim for display. */
   display: boolean
+  /** Checks the value in place of `valueType`, for a value that is not text but declares no value type. */
+  validateValue?: (value: unknown) => string | undefined
 }
 
 export interface PasoRulebook {
   type: string
   claims: PasoRulebookClaim[]
+  /** The key of an embedded Payment payload, checked against the Payment rulebook on its own. */
+  embeddedPaymentKey?: string
+  /** [Generic] Section 3.1 — claims of the Relying Party's own, each declared with a display array. */
+  maxCustomClaims?: number
+  /** [Generic] Section 3 — the cap on the number of payload properties. */
+  maxProperties?: number
+  /** [Generic] Section 4 — rendered in payload order rather than claims order. */
+  renderInPayloadOrder?: boolean
 }
 
 /** Section 1 of the rulebook. The order of this array is the normative claim order. */
@@ -48,8 +58,45 @@ export const pasoPaymentRulebook: PasoRulebook = {
   ],
 }
 
-export function getPasoRulebook(type: string): PasoRulebook | undefined {
-  return type === pasoPaymentTransactionDataType ? pasoPaymentRulebook : undefined
+/**
+ * The Wero Payment Attestation profile of the same type, WPA Rulebook v1.1 Table 4.6-A: `amount` is a
+ * JSON number in major units and the currency moved to its own `currency` claim.
+ *
+ * The rulebook itself flags this as not PaSO-conformant, so it is accepted next to the PaSO form rather
+ * than instead of it. Which one applies follows from the payload, and the conformance check still
+ * requires the issuer's metadata to describe that same form, so only an issuer that publishes the Wero
+ * claims gets payloads read this way.
+ */
+export const weroPaymentRulebook: PasoRulebook = {
+  type: pasoPaymentTransactionDataType,
+  claims: [
+    { path: ['transaction_id'], mandatory: true, display: false },
+    { path: ['amount'], mandatory: true, display: true, validateValue: findMajorUnitAmountIssue },
+    { path: ['currency'], mandatory: true, valueType: 'iso_currency', display: true },
+    { path: ['payee', 'name'], mandatory: true, display: true },
+    { path: ['payee', 'id'], mandatory: true, display: false },
+    { path: ['payee', 'logo'], mandatory: false, valueType: 'image', display: true },
+    { path: ['payee', `logo${integritySuffix}`], mandatory: false, display: false },
+  ],
+}
+
+/** WPA Rulebook v1.1 Table 4.6-A: "a JSON number with two decimal places". */
+function findMajorUnitAmountIssue(value: unknown): string | undefined {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return 'value must be a non-negative number'
+  return Math.round(value * 100) / 100 === value ? undefined : `${value} has more than two decimal places`
+}
+
+/** The Payment rulebook in the form `payload` uses. */
+export function getPasoPaymentRulebook(payload: Record<string, unknown>): PasoRulebook {
+  return typeof payload.amount === 'number' ? weroPaymentRulebook : pasoPaymentRulebook
+}
+
+/**
+ * The amount as an [PaSO View] `iso_currency_amount` string, `"49.00 EUR"`, whichever form the payload
+ * used. The Wero form always has two decimals, so writing them out adds nothing and rounds nothing.
+ */
+export function getPasoPaymentAmount(payload: PasoPaymentPayload): string {
+  return typeof payload.amount === 'number' ? `${payload.amount.toFixed(2)} ${payload.currency}` : payload.amount
 }
 
 function readPath(payload: Record<string, unknown>, path: string[]): { present: boolean; value: unknown } {
@@ -136,6 +183,7 @@ export function validatePasoPayloadConformance(options: {
   claimsMetadata?: PasoClaimMetadata[]
 }): PasoPayloadConformance {
   const { payload, rulebook, claimsMetadata } = options
+  const embeddedKey = rulebook.embeddedPaymentKey
 
   // Array wildcards need the recursive renderer of [PaSO View] Section 2, which this wallet does not
   // have. Refusing is the correct outcome: the alternative is showing an incomplete consent screen.
@@ -143,11 +191,35 @@ export function validatePasoPayloadConformance(options: {
     return { conforms: false, reason: 'claims metadata uses an array wildcard path, which this wallet cannot render' }
   }
 
+  if (rulebook.maxProperties !== undefined && Object.keys(payload).length > rulebook.maxProperties) {
+    return { conforms: false, reason: `payload has more than ${rulebook.maxProperties} properties` }
+  }
+
+  // An embedded Payment payload is checked against the Payment rulebook, with the metadata claims below
+  // its key ([Mandate] Section 2.2, [Generic] Section 3.2).
+  if (embeddedKey && payload[embeddedKey] !== undefined) {
+    const embedded = payload[embeddedKey]
+    if (typeof embedded !== 'object' || embedded === null || Array.isArray(embedded)) {
+      return { conforms: false, reason: `payload field '${embeddedKey}' is not an object` }
+    }
+    const conformance = validatePasoPayloadConformance({
+      payload: embedded as Record<string, unknown>,
+      rulebook: getPasoPaymentRulebook(embedded as Record<string, unknown>),
+      claimsMetadata: claimsMetadata
+        ?.filter((claim) => claim.path[0] === embeddedKey)
+        .map((claim) => ({ ...claim, path: claim.path.slice(1) })),
+    })
+    if (!conformance.conforms) return { conforms: false, reason: `${embeddedKey}: ${conformance.reason}` }
+  }
+
   const rulebookByPath = new Map(rulebook.claims.map((claim) => [pathKey(claim.path), claim]))
   const metadataByPath = new Map((claimsMetadata ?? []).map((claim) => [pathKey(claim.path), claim]))
   const metadataPaths = new Set(metadataByPath.keys())
+  let customClaims = 0
 
   for (const leafPath of collectLeafPaths(payload)) {
+    if (embeddedKey && leafPath[0] === embeddedKey) continue
+
     const readable = leafPath.join('.')
     const key = pathKey(leafPath)
 
@@ -161,8 +233,35 @@ export function validatePasoPayloadConformance(options: {
 
     const extension = metadataByPath.get(key)
     if (!extension) {
-      return { conforms: false, reason: `payload contains undeclared field '${readable}'` }
+      if (!claimsMetadata && rulebook.maxCustomClaims !== undefined) continue
+      if (!isCoveredByDeclaredPaths(metadataPaths, leafPath)) {
+        return { conforms: false, reason: `payload contains undeclared field '${readable}'` }
+      }
+      continue
     }
+
+    // [Generic] Section 3.1: a custom claim has a display array and a string or null value.
+    if (rulebook.maxCustomClaims !== undefined) {
+      if (leafPath.length !== 1) return { conforms: false, reason: `custom claim '${readable}' is nested` }
+      if (!extension.display) {
+        return { conforms: false, reason: `custom claim '${readable}' is not declared with a display array` }
+      }
+      const value = payload[leafPath[0]]
+      if (value !== null && typeof value !== 'string') {
+        return { conforms: false, reason: `custom claim '${readable}' is neither a string nor null` }
+      }
+      if (++customClaims > rulebook.maxCustomClaims) {
+        return { conforms: false, reason: `payload has more than ${rulebook.maxCustomClaims} custom claims` }
+      }
+      if (value !== null && !extension.value_type?.startsWith('template:')) {
+        const issue = validatePasoValue(value, extension.value_type, {
+          hasIntegritySibling: readPath(payload, [`${leafPath[0]}${integritySuffix}`]).present,
+        })
+        if (issue) return { conforms: false, reason: `payload field '${readable}': ${issue.reason}` }
+      }
+      continue
+    }
+
     if (extension.display) {
       return {
         conforms: false,
@@ -181,11 +280,19 @@ export function validatePasoPayloadConformance(options: {
       continue
     }
 
-    const issue = validatePasoValue(value, claim.valueType, {
-      hasIntegritySibling: readPath(payload, [...claim.path.slice(0, -1), `${claim.path.at(-1)}${integritySuffix}`])
-        .present,
-    })
-    if (issue) return { conforms: false, reason: `payload field '${readable}': ${issue.reason}` }
+    const issue = claim.validateValue
+      ? claim.validateValue(value)
+      : claim.valueType?.startsWith('template:')
+        ? typeof value === 'string'
+          ? undefined
+          : 'template value must be a string'
+        : validatePasoValue(value, claim.valueType, {
+            hasIntegritySibling: readPath(payload, [
+              ...claim.path.slice(0, -1),
+              `${claim.path.at(-1)}${integritySuffix}`,
+            ]).present,
+          })?.reason
+    if (issue) return { conforms: false, reason: `payload field '${readable}': ${issue}` }
   }
 
   // [PaSO Proof Metadata] Section 3.3 applies its directional-character prohibition to "`payload`
@@ -228,7 +335,9 @@ export function validatePasoPayloadConformance(options: {
 /** The payload shape of `urn:paso:sca:global:payment:1`, once it has been found to conform. */
 export interface PasoPaymentPayload {
   transaction_id?: string
-  amount: string
+  /** `"49.00 EUR"`, or in the Wero form a number with the currency in {@link currency}. */
+  amount: string | number
+  currency?: string
   payee: {
     name: string
     id: string

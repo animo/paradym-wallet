@@ -413,7 +413,7 @@ export class ParadymDcApiSdk {
     const review = async (credentialsForRequest: CredentialsForProofRequest): Promise<ResolvedReview> => {
       const transactionData = await resolveTransactionData(this, credentialsForRequest, getLocale())
       // Payments are what the request UI shows. Anything else would be signed without being seen.
-      if (transactionData && transactionData.type === 'qes_authorization') {
+      if (transactionData && (transactionData.type === 'qes_authorization' || transactionData.type === 'paso_claims')) {
         throw new Error(
           `Transactions of type '${transactionData.type}' are not supported over the digital credentials API`
         )

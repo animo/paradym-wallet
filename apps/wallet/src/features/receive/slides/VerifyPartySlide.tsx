@@ -10,6 +10,7 @@ import {
   ScrollView,
   Stack,
   TwoPane,
+  useIsAccessibilityTextSize,
   useMedia,
   XStack,
   YStack,
@@ -23,7 +24,10 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 const NO_ENTITY_ID = 'NO_ENTITY_ID'
 
 interface VerifyPartySlideProps {
-  type: 'offer' | 'request' | 'signing' | 'connect'
+  /** `mandate` and `transaction` are PaSO transactions that are not a payment, such as a transfer or standing order. */
+  type: 'offer' | 'request' | 'signing' | 'connect' | 'payment' | 'mandate' | 'transaction'
+  /** For a payment: who is paid, when that is not the party asking for the payment. */
+  payee?: string
   host?: string
   name?: string
   entityId?: string
@@ -39,6 +43,7 @@ interface VerifyPartySlideProps {
 
 export const VerifyPartySlide = ({
   type,
+  payee,
   entityId = NO_ENTITY_ID,
   name,
   logo,
@@ -51,6 +56,7 @@ export const VerifyPartySlide = ({
 }: VerifyPartySlideProps) => {
   const router = useRouter()
   const media = useMedia()
+  const isAccessibilityTextSize = useIsAccessibilityTextSize()
   const { onNext, onCancel, isCombined, setCombinedContinue, setCombinedConfirm, ownsWideLayout } = useWizard()
   const { withHaptics } = useHaptics()
   const [isLoading, setIsLoading] = useState(false)
@@ -201,7 +207,12 @@ export const VerifyPartySlide = ({
     <YStack gap="5" pt="5">
       {logo?.url && (
         <XStack items="center" justify="center">
-          <Circle size={88} borderWidth="1" borderColor="grey-100" bg={backgroundColor ?? 'white'}>
+          <Circle
+            size={isAccessibilityTextSize ? 64 : 88}
+            borderWidth="1"
+            borderColor="grey-100"
+            bg={backgroundColor ?? 'white'}
+          >
             <Image
               circle
               src={logo.url}
@@ -251,6 +262,36 @@ export const VerifyPartySlide = ({
               </Trans>
             )}
           </Paragraph>
+        ) : type === 'payment' ? (
+          <Paragraph center px="5">
+            {name ? (
+              <Trans id="verifyPartySlide.paymentSubtitle">{name} wants to request a payment from you.</Trans>
+            ) : (
+              <Trans id="verifyPartySlide.paymentSubtitleUnknownOrganization">
+                An unknown organization wants to request a payment from you.
+              </Trans>
+            )}
+          </Paragraph>
+        ) : type === 'mandate' ? (
+          <Paragraph center px="5">
+            {name ? (
+              <Trans id="verifyPartySlide.mandateSubtitle">{name} wants you to set up a mandate.</Trans>
+            ) : (
+              <Trans id="verifyPartySlide.mandateSubtitleUnknownOrganization">
+                An unknown organization wants you to set up a mandate.
+              </Trans>
+            )}
+          </Paragraph>
+        ) : type === 'transaction' ? (
+          <Paragraph center px="5">
+            {name ? (
+              <Trans id="verifyPartySlide.transactionSubtitle">{name} wants you to confirm a transaction.</Trans>
+            ) : (
+              <Trans id="verifyPartySlide.transactionSubtitleUnknownOrganization">
+                An unknown organization wants you to confirm a transaction.
+              </Trans>
+            )}
+          </Paragraph>
         ) : type === 'connect' ? (
           <Paragraph center px="5">
             {name ? (
@@ -266,8 +307,28 @@ export const VerifyPartySlide = ({
     </YStack>
   )
 
+  // An acceptor PSP asks for a payment on behalf of a payee, so the user learns here who is paid,
+  // before the consent screen names the payee as the only party
+  const isPaymentForOtherParty =
+    type === 'payment' && payee && name && payee.trim().toLowerCase() !== name.trim().toLowerCase()
+
   const trustDetails = (
     <YStack gap="5">
+      {isPaymentForOtherParty && (
+        <InfoButton
+          variant="info"
+          title={t({
+            id: 'verifyPartySlide.paymentForPayee',
+            message: `Payment for ${payee}`,
+            comment: 'Shown on the trust screen when an organization requests a payment that goes to someone else',
+          })}
+          description={t({
+            id: 'verifyPartySlide.paymentForPayeeDescription',
+            message: `${name} requests this payment on behalf of ${payee}.`,
+            comment: 'Explains that the requesting organization asks for a payment that is paid to the payee',
+          })}
+        />
+      )}
       {/* Only a recognized organization is checked against its registration, so the warning takes its place */}
       {registrationWarning ? (
         <InfoButton variant="danger" title={registrationWarning.title} description={registrationWarning.description} />
@@ -321,19 +382,24 @@ export const VerifyPartySlide = ({
     </YStack>
   )
 
+  const buttons = (
+    <DualResponseButtons
+      align={isAccessibilityTextSize ? 'vertical' : 'horizontal'}
+      onAccept={async () => {
+        if (registrationWarning && !(await confirmRegistrationWarning())) return
+        await handleContinue()
+      }}
+      onDecline={handleDecline}
+      acceptText={t(commonMessages.confirmContinue)}
+      isLoading={isLoading}
+      variant={registrationWarning ? 'confirmation' : 'regular'}
+      wrapLabels
+    />
+  )
+
   const footer = (
     <Stack borderTopWidth={1} borderColor="grey-100" px="5" pt="3" mx="-5">
-      <DualResponseButtons
-        align="horizontal"
-        onAccept={async () => {
-          if (registrationWarning && !(await confirmRegistrationWarning())) return
-          await handleContinue()
-        }}
-        onDecline={handleDecline}
-        acceptText={t(commonMessages.confirmContinue)}
-        isLoading={isLoading}
-        variant={registrationWarning ? 'confirmation' : 'regular'}
-      />
+      {buttons}
     </Stack>
   )
 
@@ -369,13 +435,16 @@ export const VerifyPartySlide = ({
   }
 
   return (
-    // Shrinks to the window's height, so the buttons stay at the bottom and the content above them scrolls
+    // Shrinks to the window's height, so the buttons stay at the bottom and the content above them scrolls.
+    // At accessibility text sizes a sticky footer would hide whether the organization is recognized, so
+    // the buttons follow the content instead.
     <YStack flex={1} justify="space-between">
       <ScrollView contentContainerStyle={{ gap: media.short ? '5' : '8', paddingBottom: '5' }} px="5" mx="-5">
         {header}
         {trustDetails}
+        {!isCombined && isAccessibilityTextSize && buttons}
       </ScrollView>
-      {!isCombined && footer}
+      {!isCombined && !isAccessibilityTextSize && footer}
       {registrationWarningSheet}
     </YStack>
   )

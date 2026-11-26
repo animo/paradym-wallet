@@ -74,6 +74,12 @@ export function usePasoRefusalMessage() {
             message: 'The payee logo of this payment could not be verified.',
             comment: 'Shown when a PaSO external resource fails its integrity check',
           })
+        case 'noMatchingCard':
+          return t({
+            id: 'paso.refusal.noMatchingCard',
+            message: 'There is no card in your wallet that can authorize this payment.',
+            comment: 'Shown when no card in the wallet matches a PaSO payment request',
+          })
         case 'credentialOnlyForPayments':
           return t({
             id: 'paso.refusal.credentialOnlyForPayments',

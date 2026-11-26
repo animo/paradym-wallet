@@ -43,11 +43,21 @@ export type PasoRefusalCode =
   | 'externalResourceVerificationFailed'
   /** A PaSO Credential is requested without a PaSO transaction for it to authorize. */
   | 'credentialOnlyForPayments'
+  /** No card in the wallet matches the credential query the transaction targets. */
+  | 'noMatchingCard'
+
+/**
+ * Why a transaction can't be shown faithfully, for the refusals where the user is told so
+ * ([PaSO View] Section 2): a label too long to show in full, a direction override, an image that
+ * did not verify, or a value the wallet cannot display.
+ */
+export type PasoRefusalDetail = 'labelTooLong' | 'directionalCharacters' | 'imageNotVerified' | 'unsupportedValueType'
 
 export class ParadymWalletPasoError extends ParadymWalletSdkError {
   public constructor(
     public readonly code: PasoRefusalCode,
-    message: string
+    message: string,
+    public readonly detail?: PasoRefusalDetail
   ) {
     super(message)
   }

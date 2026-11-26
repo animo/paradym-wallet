@@ -99,9 +99,16 @@ async function storeWalletKey(walletKey: string, version: number): Promise<void>
  * @returns {string | null} the wallet key or null if it doesn't exist
  * @throws {KeychainError} if an unexpected error occurs
  */
-async function getWalletKeyUsingBiometrics(version: number): Promise<string | null> {
+async function getWalletKeyUsingBiometrics(
+  version: number,
+  /** Replaces the unlock prompt, e.g. when the biometric confirms a request rather than unlocks. */
+  authenticationPrompt?: { title: string; description?: string }
+): Promise<string | null> {
   const walletKeyId = WALLET_KEY_ID(version)
-  return await getKeychainItemById(walletKeyId, walletKeyStoreBaseOptions)
+  return await getKeychainItemById(walletKeyId, {
+    ...walletKeyStoreBaseOptions,
+    ...(authenticationPrompt ? { authenticationPrompt } : {}),
+  })
 }
 
 /**

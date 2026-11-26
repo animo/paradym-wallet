@@ -1,6 +1,7 @@
 import { getUnmetAttributeMessages } from '@app/utils/unmetAttributeMessages'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { DualResponseButtons, useScrollViewPosition, useWizard } from '@package/app'
+import { credentialSvgArtwork } from '@package/app/components/CredentialSvg'
 import { commonMessages } from '@package/translations'
 import { Button, Heading, Paragraph, ScrollView, Spacer, XStack, YStack } from '@package/ui'
 import {
@@ -9,6 +10,10 @@ import {
   hasMissingCards,
 } from '@paradym/wallet-sdk'
 import { useState } from 'react'
+import { CardRow } from '../components/CardRow'
+import { CardSelectionSheet } from '../components/CardSelectionSheet'
+import { SwitchAccountButton } from '../components/PasoTransactionFrame'
+import { PayingAccount } from '../components/PayingAccount'
 import { RequestedAttributesSection } from '../components/RequestedAttributesSection'
 
 interface PayAndShareSlideProps {
@@ -32,7 +37,15 @@ export const PayAndShareSlide = ({
   const [scrollViewHeight, setScrollViewHeight] = useState(0)
   const { isScrolledByOffset, handleScroll, scrollEventThrottle } = useScrollViewPosition()
   const [isProcessing, setIsProcessing] = useState(isAccepting)
+  const [isCardSheetOpen, setIsCardSheetOpen] = useState(false)
   const { t } = useLingui()
+
+  // The card that pays is shown with the payment, the other requested cards with their attributes
+  const paymentEntry = submission?.entries.find(
+    (entry) => entry.inputDescriptorId === transaction.cardForTransactionId && entry.isSatisfied
+  )
+  const paymentCard = paymentEntry?.isSatisfied ? paymentEntry.credentials[0] : undefined
+  const otherEntries = submission?.entries.filter((entry) => entry !== paymentEntry) ?? []
 
   const handleAccept = async () => {
     // Manually set to instantly show the loading state
@@ -92,9 +105,24 @@ export const PayAndShareSlide = ({
                   </Paragraph>
                 </YStack>
               </XStack>
+              {paymentCard && (
+                <PayingAccount
+                  action={
+                    paymentEntry?.isSatisfied &&
+                    paymentEntry.credentials.length > 1 && (
+                      <SwitchAccountButton disabled={isProcessing} onPress={() => setIsCardSheetOpen(true)} />
+                    )
+                  }
+                >
+                  <CardRow card={paymentCard} artwork={credentialSvgArtwork(paymentCard.credential.display.svg)} wrap />
+                </PayingAccount>
+              )}
             </YStack>
-            {submission && (
-              <RequestedAttributesSection submission={submission} onSelectCredential={onSelectCredential} />
+            {submission && otherEntries.length > 0 && (
+              <RequestedAttributesSection
+                submission={{ ...submission, entries: otherEntries }}
+                onSelectCredential={onSelectCredential}
+              />
             )}
             <Spacer size="5" />
           </ScrollView>
@@ -123,6 +151,21 @@ export const PayAndShareSlide = ({
           </YStack>
         )}
       </YStack>
+
+      {paymentEntry?.isSatisfied && paymentCard && (
+        <CardSelectionSheet
+          isOpen={isCardSheetOpen}
+          setIsOpen={setIsCardSheetOpen}
+          title={t({
+            id: 'paso.consent.chooseAccountTitle',
+            message: 'Choose a paying account',
+            comment: 'Title of the sheet where the user picks the account to authorize a payment with',
+          })}
+          cards={paymentEntry.credentials}
+          selectedCardId={paymentCard.credential.record.id}
+          onSelect={(credentialRecordId) => onSelectCredential?.(paymentEntry.inputDescriptorId, credentialRecordId)}
+        />
+      )}
     </YStack>
   )
 }

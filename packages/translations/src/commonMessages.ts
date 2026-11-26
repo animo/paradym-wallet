@@ -363,6 +363,38 @@ export const commonMessages = {
     message: 'Payment failed',
     comment: 'Shown when a payment is failed',
   }),
+  mandateAuthorised: defineMessage({
+    id: 'common.mandateAuthorised',
+    message: 'Mandate authorised',
+    comment: 'Shown in the activity list when the user authorised a mandate',
+  }),
+  mandateStopped: defineMessage({
+    id: 'common.mandateStopped',
+    message: 'Mandate stopped',
+    comment: 'Shown in the activity list when the user stopped authorising a mandate',
+  }),
+  mandateFailed: defineMessage({
+    id: 'common.mandateFailed',
+    message: 'Mandate failed',
+    comment: 'Shown in the activity list when authorising a mandate failed',
+  }),
+  transactionAuthorised: defineMessage({
+    id: 'common.transactionAuthorised',
+    message: 'Transaction authorised',
+    comment:
+      'Shown in the activity list when the user authorised a bank transaction that is not a plain payment, such as a transfer or standing order',
+  }),
+  transactionStopped: defineMessage({
+    id: 'common.transactionStopped',
+    message: 'Transaction stopped',
+    comment:
+      'Shown in the activity list when the user stopped authorising a bank transaction that is not a plain payment',
+  }),
+  transactionFailed: defineMessage({
+    id: 'common.transactionFailed',
+    message: 'Transaction failed',
+    comment: 'Shown in the activity list when authorising a bank transaction that is not a plain payment failed',
+  }),
   paymentPending: defineMessage({
     id: 'common.paymentPending',
     message: 'Payment is pending',
@@ -494,6 +526,15 @@ export const commonMessages = {
       }),
       comment: 'Description when the user has all requested cards, with the number of cards that will be shared',
     }),
+  deferredCardsIssued: (count: number) =>
+    defineMessage({
+      id: 'common.deferredCardsIssued',
+      message: plural(count, {
+        one: 'A card you were waiting for was added to your wallet',
+        other: '# cards you were waiting for were added to your wallet',
+      }),
+      comment: 'Toast shown when cards that were not ready at issuance have now been issued and added to the wallet',
+    }),
   matchingCards: (count: number) =>
     defineMessage({
       id: 'common.matchingCards',
@@ -524,6 +565,12 @@ export const commonMessages = {
     id: 'common.documentHeading',
     message: 'Document',
     comment: 'Section heading above a document that is, or was, signed',
+  }),
+  payingAccount: defineMessage({
+    // Keeps the id it had in the PaSO consent screen, so the existing translations are used
+    id: 'paso.payment.accountHeading',
+    message: 'Paying account',
+    comment: 'Heading above the card that pays, when the card supplies no heading of its own',
   }),
   paymentHeading: defineMessage({
     id: 'common.paymentHeading',

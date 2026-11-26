@@ -2,7 +2,7 @@ import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../agent'
 import { getCredentialDisplayWithDefaults } from '../display/common'
-import { getCredentialForDisplayId } from '../display/credential'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '../display/credential'
 import { getOpenId4VcCredentialDisplay } from '../display/openid4vc'
 import { extractOpenId4VcCredentialMetadata } from '../metadata/credentials'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
@@ -15,19 +15,22 @@ import {
   updateDeferredCredential,
 } from '../storage/deferredCredentialStore'
 
+/** Returns the names of the cards that were issued, so the app can tell the user they arrived. */
 export async function fetchAndProcessDeferredCredentials(
   paradym: ParadymWalletSdk,
   deferredCredentials: DeferredCredential[]
-) {
-  await Promise.allSettled(
+): Promise<string[]> {
+  const results = await Promise.allSettled(
     deferredCredentials.map((deferredCredential) => fetchAndProcessDeferredCredential(paradym, deferredCredential))
   )
+
+  return results.flatMap((result) => (result.status === 'fulfilled' ? result.value : []))
 }
 
 export async function fetchAndProcessDeferredCredential(
   paradym: ParadymWalletSdk,
   deferredCredential: DeferredCredential
-) {
+): Promise<string[]> {
   assertAgentType(paradym.agent, 'openid4vc')
   const { issuerMetadata, clientId, response: deferredCredentialResponse } = deferredCredential
 
@@ -97,6 +100,7 @@ export async function fetchAndProcessDeferredCredential(
       })
 
       await deleteDeferredCredential(paradym, deferredCredential.id)
+      return credentials.map(({ credential }) => getCredentialForDisplay(credential).display.name)
     } else {
       await updateDeferredCredential(paradym, {
         id: deferredCredential.id,
@@ -129,4 +133,6 @@ export async function fetchAndProcessDeferredCredential(
       paradym.logger.error('Failed to update deferred credential', { error })
     }
   }
+
+  return []
 }

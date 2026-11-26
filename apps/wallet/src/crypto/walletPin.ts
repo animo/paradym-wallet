@@ -43,7 +43,24 @@ export const resetWalletPinValidation = async () => {
  */
 export const validateWalletPin = async (pinString: string) => {
   const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
-  const walletKey = await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion)
+  await validateWalletKey(await secureWalletKey.getWalletKeyUsingPin(pinString, walletKeyVersion), walletKeyVersion)
+}
+
+/**
+ * Confirms a share with a biometric instead of the PIN: the wallet key kept behind the biometric is
+ * read, which asks for it, and checked against the same store a PIN is.
+ *
+ * @throws {ParadymWalletAuthenticationInvalidPinError} the stored key doesn't open the store
+ * @throws {ParadymWalletBiometricAuthenticationCancelledError} the user cancelled the prompt
+ */
+export const validateWalletBiometrics = async (prompt: { title: string; description?: string }) => {
+  const walletKeyVersion = secureWalletKey.getWalletKeyVersion()
+  const walletKey = await secureWalletKey.getWalletKeyUsingBiometrics(walletKeyVersion, prompt)
+  if (!walletKey) throw new ParadymWalletAuthenticationInvalidPinError()
+  await validateWalletKey(walletKey, walletKeyVersion)
+}
+
+const validateWalletKey = async (walletKey: string, walletKeyVersion: number) => {
   const validationStoreId = getValidationStoreId(walletKeyVersion)
 
   // Moved along with the wallet's own store when its id changed: a missing one would be

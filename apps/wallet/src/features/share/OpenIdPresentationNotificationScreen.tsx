@@ -1,7 +1,7 @@
 import { isHardwareBoundCredentialType } from '@app/config/paymentAttestation'
 import { useDevelopmentMode } from '@app/hooks'
 import { useLingui } from '@lingui/react/macro'
-import { usePushToWallet } from '@package/app'
+import { getPaymentKind, isPaymentTransaction, usePushToWallet } from '@package/app'
 import { commonMessages, useLocale } from '@package/translations'
 import { useToastController } from '@package/ui'
 import type { CredentialsForProofRequest, FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk'
@@ -23,9 +23,17 @@ import { useShouldUsePinForSubmission } from '../../hooks/useShouldUsePinForPres
 import { PresentationNotificationScreen } from './PresentationNotificationScreen'
 import { resolvePasoAuthenticationMethods } from './pasoAuthenticationMethods'
 import { usePasoRefusalMessage } from './pasoRefusalMessage'
+import type { PasoRefusal } from './slides/PasoRefusalSlide'
 import type { OnPinSubmitProps } from './slides/PinSlide'
 
 type Query = { uri: string }
+
+// A declined payment, mandate or other transaction is named as such, like in the activity list
+const paymentStoppedMessages = {
+  payment: commonMessages.paymentStopped,
+  mandate: commonMessages.mandateStopped,
+  transaction: commonMessages.transactionStopped,
+}
 
 export function OpenIdPresentationNotificationScreen() {
   const { t } = useLingui()
@@ -38,6 +46,7 @@ export function OpenIdPresentationNotificationScreen() {
   const pushToWallet = usePushToWallet()
   const [isDevelopmentModeEnabled] = useDevelopmentMode()
   const [errorReason, setErrorReason] = useState<string>()
+  const [pasoRefusal, setPasoRefusal] = useState<PasoRefusal>()
   // An invalid request the verifier is told about when the user leaves the error screen
   const [authorizationRequestError, setAuthorizationRequestError] = useState<Openid4vpAuthorizationRequestError>()
 
@@ -126,6 +135,7 @@ export function OpenIdPresentationNotificationScreen() {
         // A PaSO refusal is a decision, not a failure: the spec asks the wallet to say which rule it
         // could not satisfy, so the user knows whether to retry or give up.
         if (error instanceof ParadymWalletPasoError) {
+          setPasoRefusal({ code: error.code, detail: error.detail })
           return handleError({ reason: pasoRefusalMessage(error.code) })
         }
 
@@ -143,12 +153,12 @@ export function OpenIdPresentationNotificationScreen() {
   }, [shareRequest, paradym, locale, handleError, isDevelopmentModeEnabled, pasoRefusalMessage, t])
 
   const onProofAccept = useCallback(
-    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+    async ({ pin, confirmedWithBiometrics, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
       if (!shareRequest) return handleError({ reason: reasonNoCredentials })
 
       setIsSharing(true)
 
-      if (shouldUsePin) {
+      if (shouldUsePin && !confirmedWithBiometrics) {
         if (!pin) {
           setIsSharing(false)
           return handleError({ reason: reasonPinAuthFailed })
@@ -188,7 +198,8 @@ export function OpenIdPresentationNotificationScreen() {
         ...(cardMetadata?.additionalTypes ?? []),
       ])
       const authenticationMethods = resolvePasoAuthenticationMethods({
-        usedTransactionPin: shouldUsePin === true,
+        usedTransactionPin: shouldUsePin === true && !confirmedWithBiometrics,
+        usedTransactionBiometrics: shouldUsePin === true && confirmedWithBiometrics === true,
         usedHardwareBoundKey,
       })
 
@@ -255,7 +266,10 @@ export function OpenIdPresentationNotificationScreen() {
 
     pushToWallet()
     // Without a redirect, the user has to go back to the app that started the request themselves
-    toast.show(t(commonMessages.informationRequestDeclined), {
+    const declinedMessage = isPaymentTransaction(formattedTransactionData)
+      ? paymentStoppedMessages[getPaymentKind(formattedTransactionData)]
+      : commonMessages.informationRequestDeclined
+    toast.show(t(declinedMessage), {
       message: redirectUri ? undefined : t(commonMessages.returnToPreviousApp),
       customData: { preset: 'danger' },
     })
@@ -297,6 +311,7 @@ export function OpenIdPresentationNotificationScreen() {
       isResolvingTransaction={isResolvingTransaction}
       onSelectCredential={onSelectCredential}
       errorReason={errorReason}
+      pasoRefusal={pasoRefusal}
     />
   )
 }

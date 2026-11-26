@@ -21,23 +21,22 @@
  *   (Section 7) at the `ECDH-ES` / `A256GCM` baseline of Section 7.6.
  * - **Basic Payments rulebook** — `urn:paso:sca:global:payment:1`, with payload conformance, SRI
  *   resolution of `payee.logo` under the [PaSO View] Section 3 resource limits, and a dedicated
- *   consent UI.
+ *   consent UI. The Wero Payment Attestation form of WPA Rulebook v1.1 Table 4.6-A (`amount` as a
+ *   number with a separate `currency`) is accepted next to the PaSO form.
+ * - **Basic Mandates and Generic rulebooks**, and every other type through its metadata alone — the
+ *   generic rendering of [PaSO View] Sections 2 and 3, including `template:` labels and values.
+ * - **Ad-hoc metadata** ([PaSO Proof Metadata] Section 5) from Relying Parties listed in the
+ *   credential's `adhoc_metadata_clients`.
  *
  * ## What it deliberately does not, and why
  *
- * - **[PaSO View]** — the metadata-driven generic renderer. View Section 1.1 allows a wallet that
- *   implements a rulebook to use a dedicated UI instead, and *not* implementing View is what leaves
- *   the advanced profile optional for us: "A Wallet implementing PaSO View SHALL support the
- *   advanced profile defined in [PaSO Core] Section 7.4."
  * - **The advanced profile** ([PaSO Core] Section 7.4) — multiple PaSO entries, credential
  *   alternatives, transposable credential sets. Requests needing it are rejected with a reason
- *   rather than partially honoured, which is what Section 7.4 requires.
+ *   rather than partially honoured, which is what Section 7.4 requires. [PaSO View] Section 1.1 asks a
+ *   Wallet implementing View to support it, which is still open.
+ * - **Array wildcard claim paths** ([PaSO View] Section 2) — refused rather than rendered.
  * - **The mdoc profile** ([PaSO Core] Section 6.3) — Credo signs transaction data for `dc+sd-jwt`
  *   only, so there is no path on which a `urn:paso:sca:1` DeviceSigned namespace could be produced.
- * - **`template:mini_markdown` labels** ([PaSO View] Section 3) — placeholder interpolation needs the
- *   generic renderer. Section 3 says such a `display` entry is excluded from locale matching, so a
- *   provider that also serves a plain label for some locale still resolves; one that serves nothing
- *   else does not, and the transaction is refused for want of a locale.
  * - **Measured and device-fact risk signals** — geolocation, call activity, device motion, screen
  *   capture, device basics, app vendor id. Reported `unavailable` when a profile requires them, per
  *   [PaSO Risk Signals] Section 4.2, which also forbids treating that as an incompatibility.
@@ -51,8 +50,8 @@
  * - **The `kid` variant of the signed metadata JWT**, and with it PaSO Credentials whose issuer keys
  *   are published in a key set rather than as an `x5c` chain: the credential binding of
  *   [PaSO Proof Metadata] Section 7 step 6 has no other anchor for those.
- * - **The Generic and Mandate rulebooks**, and PaSO over the Digital Credentials API, which does not
- *   carry transaction data in this wallet yet.
+ * - **Mandates, Generic and other non-payment types over the Digital Credentials API**, whose request
+ *   UI only renders payments.
  */
 
 export {
@@ -61,10 +60,10 @@ export {
   storePasoCredentialMetadata,
   type VerifiedPasoCredentialMetadata,
 } from './credentialMetadata'
-export { ParadymWalletPasoError, type PasoRefusalCode } from './error'
+export { ParadymWalletPasoError, type PasoRefusalCode, type PasoRefusalDetail } from './error'
 export { pasoLocalePriorityList } from './locale'
 export {
-  getPasoRulebook,
+  getPasoPaymentAmount,
   type PasoPaymentPayload,
   type PasoRulebook,
   type PasoRulebookClaim,
@@ -72,6 +71,15 @@ export {
   pasoPaymentTransactionDataType,
   validatePasoPayloadConformance,
 } from './paymentRulebook'
+export type {
+  PasoDetailClaim,
+  PasoDisplayedClaim,
+  PasoDisplayItem,
+  PasoDisplayLabel,
+  PasoDisplayPart,
+  PasoDisplayValue,
+  PasoPaymentDisplay,
+} from './render'
 export { createPasoScaResponseClaims } from './responseClaims'
 export { encryptPasoRiskSignals, selectPasoRiskSignalsEncryptionKey } from './riskSignalEncryption'
 export {
@@ -80,12 +88,15 @@ export {
   pasoResponseModeSignalType,
   resolveEffectiveRiskSignalSet,
 } from './riskSignals'
+export { getPasoRulebook, isPasoMandateType } from './rulebooks'
 export { computeSriIntegrity } from './sri'
 export {
   assertPasoCredentialsOnlyForPasoTransactions,
+  type FormattedTransactionDataPaso,
+  type FormattedTransactionDataPasoClaims,
   type FormattedTransactionDataPasoPayment,
   hasPasoTransactionData,
-  type PasoDisplayedClaim,
+  isPasoTransaction,
   resolvePasoTransactionData,
 } from './transactionData'
 export {

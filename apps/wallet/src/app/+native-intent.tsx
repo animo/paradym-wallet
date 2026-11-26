@@ -1,7 +1,7 @@
 import { allowedRedirectBaseUrls, appScheme } from '@app/constants'
 import { handleIssuanceAuthorizationPresentationRequest } from '@app/features/receive/issuanceAuthorizationPresentationRequest'
 import { TypedArrayEncoder } from '@credo-ts/core'
-import { deeplinkSchemes } from '@package/app'
+import { deeplinkSchemes, mayBackgroundLockTrigger } from '@package/app'
 import { LogLevel, ParadymWalletSdkConsoleLogger, parseInvitationUrlSync } from '@paradym/wallet-sdk'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
@@ -96,9 +96,10 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
       }
 
       if (redirectPath) {
-        // Always make the user authenticate first when opening with a deeplink
-        // On initial load this is already the case so we skip it
-        if (!initial) {
+        // Make the user authenticate first when opening with a deeplink, unless the app was only
+        // briefly in the background: the wallet is still unlocked then, and the background lock is
+        // too far off to race this redirect. On initial load the user authenticates anyway.
+        if (!initial && mayBackgroundLockTrigger()) {
           const encodedRedirect = TypedArrayEncoder.toBase64Url(TypedArrayEncoder.fromUtf8String(redirectPath))
           redirectPath = `/authenticate?redirectAfterUnlock=${encodedRedirect}`
         }

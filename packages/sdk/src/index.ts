@@ -43,11 +43,22 @@ export { Openid4vpAuthorizationRequestError } from '@credo-ts/openid4vc'
 export type { FormattedTransactionData, FormattedTransactionDataPaymentSingle, QtspInfo } from './openid4vc/transaction'
 export { setWalletInstanceVersion } from './config/walletInstanceVersion'
 export {
+  type FormattedTransactionDataPaso,
+  type FormattedTransactionDataPasoClaims,
   type FormattedTransactionDataPasoPayment,
+  isPasoMandateType,
+  isPasoTransaction,
   ParadymWalletPasoError,
   type PasoAuthenticationMethod,
+  type PasoDetailClaim,
   type PasoDisplayedClaim,
+  type PasoDisplayItem,
+  type PasoDisplayLabel,
+  type PasoDisplayPart,
+  type PasoDisplayValue,
+  type PasoPaymentDisplay,
   type PasoRefusalCode,
+  type PasoRefusalDetail,
   pasoPaymentTransactionDataType,
   renewPasoCredentialMetadata,
 } from './paso'
@@ -80,7 +91,7 @@ export type {
   SharingFailureReason,
   PaymentActivity,
 } from './storage/activityStore'
-export { type ClaimPath, type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesAtPaths, formatAttributesWithRecordMetadata, pickAttributesAtPaths  } from './format/attributes'
+export { type ClaimPath, type FormattedAttribute, type FormattedAttributeArray, type FormattedAttributeObject, type FormattedAttributeDate, type FormattedAttributeNumber, type FormattedAttributePrimitive, type FormattedAttributeString, formatAllAttributes, formatAttributesAtPaths, formatAttributesWithRecordMetadata, getAttributesWithDisplay, pickAttributesAtPaths  } from './format/attributes'
 export type { TrustedDidEntity } from './trust/handlers/did'
 export type { TrustedOpenId4VciEntity } from './trust/handlers/fallback'
 export type { TrustedX509ChildEntity, TrustedX509Entity } from './trust/handlers/x509'

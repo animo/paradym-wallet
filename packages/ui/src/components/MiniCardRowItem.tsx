@@ -1,8 +1,11 @@
+import { useLingui } from '@lingui/react/macro'
+import { commonMessages } from '@package/translations'
 import type { ReactNode } from 'react'
 import { Heading } from '../base/Headings'
 import { Paragraph } from '../base/Paragraph'
 import { Stack, XStack, YStack } from '../base/Stacks'
 import { Image } from '../content/Image'
+import { useIsAccessibilityTextSize } from '../hooks/useIsAccessibilityTextSize'
 
 interface MiniCardRowItemProps {
   name: string
@@ -17,6 +20,8 @@ interface MiniCardRowItemProps {
   artwork?: ReactNode
   /** A smaller name and card, for rows that leave the name little width. */
   compact?: boolean
+  /** Lets the name and subtitle wrap in full, for screens that may not shorten what they show. */
+  wrap?: boolean
 }
 
 export function MiniCardRowItem({
@@ -27,14 +32,22 @@ export function MiniCardRowItem({
   backgroundColor,
   artwork,
   compact = false,
+  wrap = false,
 }: MiniCardRowItemProps) {
+  const { t } = useLingui()
+  // Beside the card a name that may not be shortened has too little width at accessibility text sizes and
+  // breaks inside words, so it goes below the card instead
+  const isAccessibilityTextSize = useIsAccessibilityTextSize()
+  const isStacked = wrap && isAccessibilityTextSize
+
   return (
     <XStack
-      gap="5"
-      items="center"
+      flexDirection={isStacked ? 'column' : 'row'}
+      gap={isStacked ? '3' : '5'}
+      items={isStacked ? 'flex-start' : 'center'}
       accessible={true}
       accessibilityRole="text"
-      aria-label={`${name}. Issued by ${subtitle}.`}
+      aria-label={`${name}. ${t(commonMessages.issuedByWithName(subtitle))}.`}
     >
       <Stack
         p="2"
@@ -60,11 +73,11 @@ export function MiniCardRowItem({
           </>
         )}
       </Stack>
-      <YStack gap="0-5" flex={1} grow={1}>
-        <Heading numberOfLines={2} heading={compact ? 'h4' : 'h3'}>
+      <YStack gap="0-5" flex={isStacked ? undefined : 1} grow={1} alignSelf={isStacked ? 'stretch' : undefined}>
+        <Heading numberOfLines={wrap ? undefined : 2} heading={compact ? 'h4' : 'h3'}>
           {name}
         </Heading>
-        <Paragraph numberOfLines={1}>{subtitle}</Paragraph>
+        <Paragraph numberOfLines={wrap ? undefined : 1}>{subtitle}</Paragraph>
       </YStack>
     </XStack>
   )

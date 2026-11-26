@@ -605,3 +605,18 @@ export function getClaimPathsForDisclosedAttributes(attributes: Record<string, u
 
   return Object.entries(attributes).flatMap(([key, claim]) => getPaths(claim, [key]))
 }
+
+/**
+ * The attributes the claim metadata gives a label, for a card's main view. Claims without a `display`
+ * entry aren't meant to be shown to the holder (WPA Rulebook v1.1 Section 2.8), so they're left to the
+ * full list of shareable attributes. A card without any labelled claim keeps all of its attributes.
+ */
+export function getAttributesWithDisplay(attributes: FormattedAttribute[], record: CredentialRecord) {
+  const claims = resolveClaimsWithRecordMetadata(record)
+  const hasDisplay = (attribute: FormattedAttribute): boolean =>
+    !!resolveClaimFromClaimsPath(attribute.path, claims)?.claim.display?.length ||
+    ((attribute.type === 'array' || attribute.type === 'object') && attribute.value.some(hasDisplay))
+
+  const displayed = attributes.filter(hasDisplay)
+  return displayed.length > 0 ? displayed : attributes
+}

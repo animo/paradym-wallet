@@ -20,13 +20,15 @@ import type { PasoAuthenticationMethod } from '@paradym/wallet-sdk'
  *   value for exactly that.
  * - **`pin`** when the user entered their PIN to release this transaction. That is a knowledge factor
  *   tied to this authorization, which is what SCA asks for.
+ * - **`bio_strong`** too when the user confirmed with the biometric instead of the PIN: that prompt
+ *   releases the wallet key from the keychain (`biometryCurrentSet`) for this transaction, and the key
+ *   is checked like a PIN.
  *
  * What is deliberately absent:
  *
- * - **A biometric value for software keys.** The biometric unlock this wallet has protects the
- *   *wallet key* that opens the store at app launch — it does not release a software key for this
- *   transaction. Reporting a session unlock as though it authorized the payment is precisely the
- *   over-claim that makes an `amr` array worthless as evidence.
+ * - **A biometric value for a session unlock.** The biometric that opens the wallet at app launch
+ *   does not release anything for this transaction. Reporting it as though it authorized the payment
+ *   is precisely the over-claim that makes an `amr` array worthless as evidence.
  * - **The modality** (`fpt`, `face`). The platform does not say which biometric the user used.
  *
  * The consequence is worth being explicit about: where the user released a software-key transaction
@@ -36,12 +38,14 @@ import type { PasoAuthenticationMethod } from '@paradym/wallet-sdk'
 export function resolvePasoAuthenticationMethods(options: {
   /** Whether the user entered their PIN for this transaction specifically. */
   usedTransactionPin: boolean
+  /** Whether the user confirmed this transaction with the biometric instead of the PIN. */
+  usedTransactionBiometrics?: boolean
   /** Whether the credential that authorizes the transaction is bound to a hardware key. */
   usedHardwareBoundKey: boolean
 }): PasoAuthenticationMethod[] {
   const methods: PasoAuthenticationMethod[] = [options.usedHardwareBoundKey ? 'hwk' : 'swk']
 
-  if (options.usedHardwareBoundKey) methods.push('bio_strong')
+  if (options.usedHardwareBoundKey || options.usedTransactionBiometrics) methods.push('bio_strong')
   if (options.usedTransactionPin) methods.push('pin')
 
   return methods

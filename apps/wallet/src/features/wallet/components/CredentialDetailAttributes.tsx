@@ -35,7 +35,7 @@ export function CredentialDetailAttributes({ credential, onDelete }: CredentialD
   const { t } = useLingui()
 
   // Check if custom display is available: either has custom rendering or has different displayed vs all attributes
-  const isCustomDisplayAvailable = hasCustomCredentialDisplay(credential.metadata.type)
+  const isCustomDisplayAvailable = hasCustomCredentialDisplay(credential)
 
   const {
     isVisible: isMetadataVisible,

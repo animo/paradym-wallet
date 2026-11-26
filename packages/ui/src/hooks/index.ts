@@ -1,5 +1,6 @@
 export { useDeviceMedia } from './useDeviceMedia'
 export { useInitialRender } from './useInitialRender'
+export { useIsAccessibilityTextSize } from './useIsAccessibilityTextSize'
 export { useMinimumLoadingTime } from './useMinimumLoadingTime'
 export { useScaleAnimation } from './useScaleAnimation'
 export { useScrollToggle } from './useScrollToggle'

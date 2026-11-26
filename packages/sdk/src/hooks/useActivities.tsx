@@ -22,7 +22,7 @@ export const useActivities = ({
   filters,
   limit = defaultActivityLimit,
 }: {
-  filters?: { entityId?: string; type?: ActivityType }
+  filters?: { entityId?: string; credentialId?: string; type?: ActivityType }
   limit?: number
 } = {}) => {
   // Deliberately not asserting an unlocked wallet: this is rendered by screens a deeplink opens,
@@ -38,13 +38,14 @@ export const useActivities = ({
   const { activityIds, total } = useMemo(() => {
     const matching = (record?.entries ?? [])
       .filter((entry) => !filters?.entityId || entry.entityId === filters.entityId)
+      .filter((entry) => !filters?.credentialId || entry.credentialIds?.includes(filters.credentialId))
       .filter((entry) => !filters?.type || entry.type === filters.type)
 
     return {
       activityIds: matching.slice(0, limit).map((entry) => entry.id),
       total: matching.length,
     }
-  }, [record?.entries, filters?.entityId, filters?.type, limit])
+  }, [record?.entries, filters?.entityId, filters?.credentialId, filters?.type, limit])
 
   // One query per activity rather than one per list, so the home screen's single activity, a page
   // of the list, the payment refresh and the detail screen all read the same cache entry instead of

@@ -3,18 +3,29 @@ import type { FormattedSubmissionEntrySatisfied } from '../format/submission'
 import { getPasoCredentialMetadata } from '../metadata/credentials'
 import type { CredentialsForProofRequest } from '../openid4vc/func/resolveCredentialRequest'
 import { loadVerifiedPasoCredentialMetadata } from './credentialMetadata'
-import { ParadymWalletPasoError } from './error'
-import { resolvePasoImageUrl, validatePasoDataUrlImage } from './image'
+import { ParadymWalletPasoError, type PasoRefusalDetail } from './error'
 import { findPasoMetadataConstraintIssue } from './labelConstraints'
 import { resolveLocalisedEntry, selectPasoLocale } from './locale'
 import {
-  getPasoRulebook,
+  getPasoPaymentAmount,
   type PasoPaymentPayload,
   pasoPaymentTransactionDataType,
   validatePasoPayloadConformance,
 } from './paymentRulebook'
+import {
+  getPasoPaymentDetails,
+  interpolatePasoTemplate,
+  type PasoDetailClaim,
+  type PasoDisplayItem,
+  type PasoPaymentDisplay,
+  PasoRenderError,
+  resolvePasoDisplayItems,
+  resolvePasoPaymentDisplay,
+  withoutDiscardedTemplateEntries,
+} from './render'
 import { selectPasoRiskSignalsEncryptionKey } from './riskSignalEncryption'
 import { resolveEffectiveRiskSignalSet } from './riskSignals'
+import { getPasoRulebook } from './rulebooks'
 import type { PasoWallet } from './types'
 import {
   isPasoTransactionDataType,
@@ -27,17 +38,11 @@ import {
 /**
  * Transaction data processing for the **simple profile**, per [PaSO Core] Section 7.3.
  *
- * Section 7.3 makes the simple profile mandatory for every PaSO Wallet and the advanced profile
- * (7.4) optional. This wallet implements only the simple profile and renders the Payment rulebook
- * with a dedicated UI, which [PaSO View] Section 1.1 permits — and which is precisely what keeps the
- * advanced profile optional for us, since it is *implementing PaSO View* that would oblige us to
- * support it.
- *
- * The other side of that choice is Section 7.4's obligation: a Wallet that does not support the
- * advanced profile **SHALL reject** a request with more than one PaSO-targeted entry, or with
- * non-trivial PaSO credential sets, and inform the user. Failing softly there — picking the first
- * entry and carrying on — would show the user a consent screen for a transaction the Relying Party
- * did not ask them to authorize. So every such case throws.
+ * Section 7.4's obligation for a Wallet without the advanced profile: it **SHALL reject** a request
+ * with more than one PaSO-targeted entry, or with non-trivial PaSO credential sets, and inform the
+ * user. Failing softly there — picking the first entry and carrying on — would show the user a
+ * consent screen for a transaction the Relying Party did not ask them to authorize. So every such
+ * case throws.
  */
 
 const supportedTransactionDataHashAlgorithm = 'sha-256'
@@ -54,34 +59,22 @@ const supportedTransactionDataHashAlgorithm = 'sha-256'
 const credoTransactionDataHashAlgorithms = ['sha-1', 'sha-256']
 
 /**
- * [PaSO Proof Metadata] Section 3.2 — the UI element identifiers this specification defines.
+ * [PaSO Proof Metadata] Section 3.2 — the UI element identifiers this specification defines, plus
+ * `payment_account_label`, which WPA Rulebook v1.1 Section 4.7.3 adds for the heading above the card.
  *
  * "The Wallet SHALL ignore any unrecognised UI element identifiers", which is why the list is used
  * for locale selection too: requiring a locale to cover a label we ignore would fail locales that
  * cover everything the user actually sees.
  */
-const pasoUiLabelKeys = ['transaction_title', 'affirmative_action_label', 'denial_action_label', 'security_hint']
+const pasoUiLabelKeys = [
+  'transaction_title',
+  'affirmative_action_label',
+  'denial_action_label',
+  'security_hint',
+  'payment_account_label',
+]
 
-export interface PasoDisplayedClaim {
-  /**
-   * The issuer's label for the claim, where there is one.
-   *
-   * Absent only when no card can authorize the transaction, which is the one case where there is no
-   * signed metadata to take a label from. The wallet supplies its own translated label then.
-   */
-  label?: string
-  value: string
-}
-
-/**
- * A `urn:paso:sca:global:payment:1` entry, resolved and ready to show.
- *
- * Everything the consent screen needs, plus what {@link ./responseClaims.ts} needs afterwards to
- * build the holder binding proof — resolved once, because both the metadata verification and the
- * logo retrieval have side effects we do not want to repeat between consent and signing.
- */
-export interface FormattedTransactionDataPasoPayment {
-  type: typeof pasoPaymentTransactionDataType
+interface FormattedTransactionDataPasoBase {
   /** The credential query id whose credential authorizes the transaction. */
   cardForTransactionId: string
 
@@ -90,19 +83,19 @@ export interface FormattedTransactionDataPasoPayment {
   denialActionLabel?: string
   /** [PaSO Proof Metadata] Section 3.2 — shown exactly as provided, never replaced. */
   securityHint?: string
+  /** WPA Rulebook v1.1 Section 4.7.2 level 5 — the heading above the card that pays. */
+  paymentAccountLabel?: string
 
-  amount: PasoDisplayedClaim
-  payee: PasoDisplayedClaim
-  /** A `data:` URL of the SRI-verified logo bytes, never the original URL. */
-  payeeLogo?: { label?: string; dataUrl: string }
+  /**
+   * The claims without a display array, for a separate details view ([PaSO View] Section 2). Absent
+   * on activities stored before it existed.
+   */
+  details?: PasoDetailClaim[]
 
   /**
    * Everything the proof needs, kept out of the way of the UI.
    *
-   * Absent when no credential in the wallet can authorize the transaction. The user is still shown
-   * what they were asked to pay — the amount and payee come from the request, not from the card —
-   * but there is no signed metadata behind it and nothing can be signed, so every value that only
-   * exists to go into the holder binding proof is missing rather than invented.
+   * Optional only because activities stored by earlier versions may not carry it.
    */
   proof?: {
     encodedEntry: string
@@ -126,6 +119,37 @@ export interface FormattedTransactionDataPasoPayment {
 
   /** base64url SHA-256 over the *decoded* entry — see {@link hashDecodedEntry}. */
   hash: string
+}
+
+/**
+ * A `urn:paso:sca:global:payment:1` entry, resolved and ready to show with the dedicated payment
+ * hierarchy that [PaSO View] Section 1.1 allows and WPA Rulebook v1.1 Section 4.7.2 requires.
+ *
+ * Everything the consent screen needs, plus what {@link ./responseClaims.ts} needs afterwards to
+ * build the holder binding proof — resolved once, because both the metadata verification and the
+ * logo retrieval have side effects we do not want to repeat between consent and signing.
+ */
+export interface FormattedTransactionDataPasoPayment extends FormattedTransactionDataPasoBase, PasoPaymentDisplay {
+  type: typeof pasoPaymentTransactionDataType
+}
+
+/**
+ * Any other PaSO entry — a Mandate, a Generic one, or a type only its metadata describes — as the
+ * rows of a generic consent screen.
+ *
+ * `type` is the wallet's own discriminant, like `qes_authorization`, so code that narrows on the
+ * Payment type keeps doing so. The PaSO type is in {@link pasoType}.
+ */
+export interface FormattedTransactionDataPasoClaims extends FormattedTransactionDataPasoBase {
+  type: 'paso_claims'
+  pasoType: string
+  items: PasoDisplayItem[]
+}
+
+export type FormattedTransactionDataPaso = FormattedTransactionDataPasoPayment | FormattedTransactionDataPasoClaims
+
+export function isPasoTransaction(transaction?: { type: string }): transaction is FormattedTransactionDataPaso {
+  return transaction?.type === pasoPaymentTransactionDataType || transaction?.type === 'paso_claims'
 }
 
 type DcqlQuery = {
@@ -175,6 +199,42 @@ export function assertPasoCredentialsOnlyForPasoTransactions(resolvedRequest: Cr
   }
 }
 
+/** Which of the {@link PasoRefusalDetail} cases a Section 3.3 violation is. */
+function classifyConstraintIssue(issue: string): PasoRefusalDetail {
+  if (issue.includes('direction')) return 'directionalCharacters'
+  if (issue.includes('value_type') || issue.includes('display_type')) return 'unsupportedValueType'
+  return 'labelTooLong'
+}
+
+/**
+ * [PaSO Proof Metadata] Section 5.3 — the ad-hoc metadata of an entry, once the Relying Party is
+ * shown to be allowed to supply it. Any failure makes the entry incompatible, and "the Wallet SHALL
+ * NOT fall back to the stored credential metadata entry".
+ */
+function verifyAdhocMetadata(
+  metadata: unknown,
+  clientId: string | undefined,
+  verifiedMetadata: { credentialMetadata: Record<string, unknown> }
+): PasoTransactionDataTypeMetadata {
+  const allowedClients = verifiedMetadata.credentialMetadata.adhoc_metadata_clients
+  if (!clientId || !Array.isArray(allowedClients) || !allowedClients.includes(clientId)) {
+    throw new ParadymWalletPasoError(
+      'invalidCredentialMetadata',
+      'This payment request carries its own payment metadata, which its sender is not allowed to supply.'
+    )
+  }
+
+  const candidate = metadata as Partial<PasoTransactionDataTypeMetadata> | null
+  if (typeof candidate !== 'object' || candidate === null || !Array.isArray(candidate.claims)) {
+    throw new ParadymWalletPasoError(
+      'invalidCredentialMetadata',
+      'This payment request carries payment metadata that is not well-formed.'
+    )
+  }
+
+  return candidate as PasoTransactionDataTypeMetadata
+}
+
 /**
  * Resolves the single PaSO-targeted entry of a simple-profile request.
  *
@@ -185,7 +245,7 @@ export async function resolvePasoTransactionData(
   paradym: PasoWallet,
   resolvedRequest: CredentialsForProofRequest,
   localePriorityList: string[]
-): Promise<FormattedTransactionDataPasoPayment> {
+): Promise<FormattedTransactionDataPaso> {
   const requestProcessedAt = new Date()
 
   // [PaSO Core] Section 3: "The Wallet SHALL reject unsigned PaSO presentation requests." TS 12 only
@@ -241,25 +301,6 @@ export async function resolvePasoTransactionData(
 
   assertTrivialCredentialSets(resolvedRequest, credentialQueryId)
 
-  // [PaSO Proof Metadata] Section 5.3: an entry carrying ad-hoc `metadata` has to be displayed with
-  // that metadata once verified, and "SHALL NOT fall back to the stored credential metadata" when it
-  // does not verify. This wallet does not implement ad-hoc metadata, so using the stored metadata
-  // would be exactly that fallback — refused instead.
-  if ((pasoEntry.entry.transactionData as { metadata?: unknown }).metadata !== undefined) {
-    throw new ParadymWalletPasoError(
-      'invalidCredentialMetadata',
-      'This payment request carries its own payment metadata, which this wallet cannot verify.'
-    )
-  }
-
-  const rulebook = getPasoRulebook(transactionDataType)
-  if (!rulebook) {
-    throw new ParadymWalletPasoError(
-      'unsupportedTransactionType',
-      `This wallet does not support transactions of type '${transactionDataType}'.`
-    )
-  }
-
   const allowedHashAlgorithms = pasoEntry.entry.transactionData.transaction_data_hashes_alg ?? [
     supportedTransactionDataHashAlgorithm,
   ]
@@ -274,13 +315,12 @@ export async function resolvePasoTransactionData(
   }
 
   const payload = pasoEntry.entry.transactionData.payload as Record<string, unknown> | undefined
-  if (!payload || typeof payload !== 'object') {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     throw new ParadymWalletPasoError(
       'payloadDoesNotConform',
       'This payment request does not contain any payment details.'
     )
   }
-  const paymentPayload = payload as unknown as PasoPaymentPayload
   const encodedEntry = pasoEntry.entry.encoded
 
   // 1. The credential matching the single credential query identifier.
@@ -288,31 +328,8 @@ export async function resolvePasoTransactionData(
     (entry): entry is FormattedSubmissionEntrySatisfied =>
       entry.inputDescriptorId === credentialQueryId && entry.isSatisfied
   )
-
-  // Nothing in the wallet can authorize this. The user still sees what they were asked to pay,
-  // because the amount and the payee are in the request and the consent screen can say why it
-  // cannot go ahead — which is more use than an error screen that hides the transaction. Without a
-  // card there is no signed metadata, so the rulebook validates the payload on its own and the
-  // labels come from the wallet.
   if (!submissionEntry) {
-    const conformance = validatePasoPayloadConformance({ payload, rulebook })
-    if (!conformance.conforms) {
-      paradym.logger.error('PaSO transaction data payload does not conform to its rulebook', {
-        reason: conformance.reason,
-      })
-      throw new ParadymWalletPasoError(
-        'payloadDoesNotConform',
-        'The payment details do not match what this type of payment allows.'
-      )
-    }
-
-    return {
-      type: pasoPaymentTransactionDataType,
-      cardForTransactionId: credentialQueryId,
-      amount: { value: paymentPayload.amount },
-      payee: { value: paymentPayload.payee.name },
-      hash: hashDecodedEntry(encodedEntry),
-    }
+    throw new ParadymWalletPasoError('noMatchingCard', 'No card in this wallet can authorize this payment.')
   }
 
   const credentialRecord = submissionEntry.credentials[0].credential.record
@@ -328,9 +345,13 @@ export async function resolvePasoTransactionData(
     )
   }
 
+  // [PaSO Proof Metadata] Section 5.4: valid ad-hoc metadata makes a type supported even when the
+  // signed metadata does not publish it, so the signed metadata is only required to cover the type
+  // when there is no ad-hoc metadata.
+  const adhocMetadata = (pasoEntry.entry.transactionData as { metadata?: unknown }).metadata
   const verifiedMetadata = await loadVerifiedPasoCredentialMetadata(paradym, {
     credentialRecord,
-    requiredType: transactionDataType,
+    requiredType: adhocMetadata === undefined ? transactionDataType : undefined,
   })
   if (!verifiedMetadata) {
     throw new ParadymWalletPasoError(
@@ -340,7 +361,13 @@ export async function resolvePasoTransactionData(
   }
 
   const typeMetadata: PasoTransactionDataTypeMetadata =
-    verifiedMetadata.credentialMetadata.transaction_data_types[transactionDataType]
+    adhocMetadata === undefined
+      ? verifiedMetadata.credentialMetadata.transaction_data_types[transactionDataType]
+      : verifyAdhocMetadata(
+          adhocMetadata,
+          (resolvedRequest.authorizationRequest as { client_id?: string }).client_id,
+          verifiedMetadata
+        )
 
   // [PaSO Proof Metadata] Section 3.3: "Independent of rendering, the Wallet SHALL treat a
   // transaction data type whose metadata violates these constraints as not supported by the
@@ -352,7 +379,8 @@ export async function resolvePasoTransactionData(
     })
     throw new ParadymWalletPasoError(
       'metadataViolatesConstraints',
-      'The payment metadata of this card cannot be displayed safely, so this payment cannot be authorized.'
+      'The payment metadata of this card cannot be displayed safely, so this payment cannot be authorized.',
+      classifyConstraintIssue(constraintIssue)
     )
   }
 
@@ -386,6 +414,14 @@ export async function resolvePasoTransactionData(
     )
   }
 
+  const rulebook = getPasoRulebook(transactionDataType, payload, typeMetadata.claims)
+  if (!rulebook) {
+    throw new ParadymWalletPasoError(
+      'unsupportedTransactionType',
+      `This wallet does not support transactions of type '${transactionDataType}'.`
+    )
+  }
+
   // 2b. Payload conformance against the rulebook and the card's claims metadata.
   const conformance = validatePasoPayloadConformance({ payload, rulebook, claimsMetadata: typeMetadata.claims })
   if (!conformance.conforms) {
@@ -394,13 +430,21 @@ export async function resolvePasoTransactionData(
     })
     throw new ParadymWalletPasoError(
       'payloadDoesNotConform',
-      'The payment details do not match what this type of payment allows.'
+      'The payment details do not match what this type of payment allows.',
+      conformance.reason.includes('direction') ? 'directionalCharacters' : undefined
     )
   }
 
-  // 3. Locale selection across every display array of the type, all or nothing.
+  // 3. Locale selection across every display array of the type, all or nothing. A template label
+  // that references a claim the payload leaves out is discarded before selection runs.
+  let claims: PasoClaimMetadata[]
+  try {
+    claims = withoutDiscardedTemplateEntries(typeMetadata.claims, payload)
+  } catch (error) {
+    throw toRenderRefusal(paradym, error)
+  }
   const displayArrays = [
-    ...typeMetadata.claims.filter((claim) => claim.display).map((claim) => claim.display ?? []),
+    ...claims.filter((claim) => claim.display).map((claim) => claim.display ?? []),
     ...pasoUiLabelKeys.map((key) => typeMetadata.ui_labels?.[key]).filter((entries) => entries !== undefined),
   ]
   const displayLocale = selectPasoLocale(localePriorityList, displayArrays)
@@ -408,25 +452,27 @@ export async function resolvePasoTransactionData(
     throw new ParadymWalletPasoError('noSupportedLocale', 'This payment cannot be shown in a language you understand.')
   }
 
-  const uiLabel = (key: string) => resolveLocalisedEntry(typeMetadata.ui_labels?.[key], displayLocale)?.value
-  const claimLabel = (path: string[]) =>
-    resolveLocalisedEntry(findClaim(typeMetadata.claims, path)?.display, displayLocale)?.name
+  const uiLabel = (key: string) => {
+    const entry = resolveLocalisedEntry(typeMetadata.ui_labels?.[key], displayLocale)
+    if (!entry?.value_type?.startsWith('template:')) return entry?.value
 
-  // 4. External resources with integrity verification, resolved before consent is asked for.
-  const payeeLogo = await resolveVerifiedLogo(paradym, paymentPayload)
+    // shortcut: a templated UI label is interpolated with the raw claim values, not the formatted
+    // ones, and is left out rather than discarded before locale selection when a claim is missing.
+    // Upgrade when an issuer templates its UI labels.
+    const parts = interpolatePasoTemplate(entry.value, claims, payload)
+    return parts === 'absent'
+      ? undefined
+      : parts.map((part) => (typeof part === 'string' ? part : String(part.value))).join('')
+  }
 
-  return {
-    type: pasoPaymentTransactionDataType,
+  const base: FormattedTransactionDataPasoBase = {
     cardForTransactionId: credentialQueryId,
 
     transactionTitle: uiLabel('transaction_title'),
     affirmativeActionLabel: uiLabel('affirmative_action_label'),
     denialActionLabel: uiLabel('denial_action_label'),
     securityHint: uiLabel('security_hint'),
-
-    amount: { label: claimLabel(['amount']), value: paymentPayload.amount },
-    payee: { label: claimLabel(['payee', 'name']), value: paymentPayload.payee.name },
-    payeeLogo: payeeLogo ? { label: claimLabel(['payee', 'logo']), dataUrl: payeeLogo } : undefined,
+    paymentAccountLabel: uiLabel('payment_account_label'),
 
     proof: {
       encodedEntry,
@@ -445,6 +491,63 @@ export async function resolvePasoTransactionData(
 
     hash: hashDecodedEntry(encodedEntry),
   }
+
+  // 4. Values, with external resources resolved and verified before consent is asked for.
+  try {
+    if (transactionDataType === pasoPaymentTransactionDataType) {
+      const paymentPayload = payload as unknown as PasoPaymentPayload
+      return {
+        ...base,
+        type: pasoPaymentTransactionDataType,
+        details: getPasoPaymentDetails(payload, claims),
+        ...(await resolvePasoPaymentDisplay({
+          payload,
+          amount: getPasoPaymentAmount(paymentPayload),
+          claims,
+          locale: displayLocale,
+        })),
+      }
+    }
+
+    const { items, details } = await resolvePasoDisplayItems({
+      payload,
+      claims,
+      rulebook,
+      locale: displayLocale,
+      resolveEmbeddedPayment: (embeddedPayload, embeddedClaims) =>
+        resolvePasoPaymentDisplay({
+          payload: embeddedPayload,
+          amount: getPasoPaymentAmount(embeddedPayload as unknown as PasoPaymentPayload),
+          claims: embeddedClaims,
+          locale: displayLocale,
+        }),
+    })
+    return { ...base, type: 'paso_claims', pasoType: transactionDataType, items, details }
+  } catch (error) {
+    throw toRenderRefusal(paradym, error)
+  }
+}
+
+/**
+ * [PaSO Core] Section 7.4.2 step 3 makes a resource that fails to resolve or verify an
+ * incompatibility, and [PaSO View] Sections 2 and 3 do the same for labels and values that can't be
+ * shown in full — so every render failure refuses the transaction.
+ */
+function toRenderRefusal(paradym: PasoWallet, error: unknown) {
+  if (!(error instanceof PasoRenderError)) return error
+
+  paradym.logger.error('PaSO transaction data cannot be displayed', { reason: error.message })
+  return error.detail === 'imageNotVerified'
+    ? new ParadymWalletPasoError(
+        'externalResourceVerificationFailed',
+        'An image in this payment could not be verified.',
+        error.detail
+      )
+    : new ParadymWalletPasoError(
+        'payloadDoesNotConform',
+        'The payment details cannot be displayed safely, so this payment cannot be authorized.',
+        error.detail
+      )
 }
 
 /**
@@ -458,10 +561,6 @@ function hashDecodedEntry(encodedEntry: string): string {
   return TypedArrayEncoder.toBase64Url(
     Hasher.hash(TypedArrayEncoder.fromBase64Url(encodedEntry), supportedTransactionDataHashAlgorithm)
   )
-}
-
-function findClaim(claims: PasoClaimMetadata[], path: string[]): PasoClaimMetadata | undefined {
-  return claims.find((claim) => claim.path.length === path.length && claim.path.every((s, i) => s === path[i]))
 }
 
 /**
@@ -492,35 +591,4 @@ function assertTrivialCredentialSets(resolvedRequest: CredentialsForProofRequest
       )
     }
   }
-}
-
-/**
- * Resolves `payee.logo` into a `data:` URL, verifying it along the way.
- *
- * [PaSO Core] Section 7.4.2 step 3 makes failed resolution or verification an incompatibility, not a
- * warning — which is why an unusable logo throws rather than being dropped from the screen.
- *
- * The Payment rulebook makes the logo optional and lets a dedicated UI skip displaying it, so its
- * absence from the payload is not an error. A logo that is present and does not check out is.
- */
-async function resolveVerifiedLogo(paradym: PasoWallet, payload: PasoPaymentPayload): Promise<string | undefined> {
-  const logo = payload.payee.logo
-  if (!logo) return undefined
-
-  const integrity = payload.payee['logo#integrity']
-  const result = logo.startsWith('data:')
-    ? validatePasoDataUrlImage(logo)
-    : integrity
-      ? await resolvePasoImageUrl(logo, integrity)
-      : { error: 'the payee logo is missing its integrity value' }
-
-  if ('error' in result) {
-    paradym.logger.error('Could not resolve the PaSO payee logo', { reason: result.error })
-    throw new ParadymWalletPasoError(
-      'externalResourceVerificationFailed',
-      'The payee logo of this payment could not be verified.'
-    )
-  }
-
-  return result.dataUrl
 }

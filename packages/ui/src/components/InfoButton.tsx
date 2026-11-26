@@ -39,6 +39,10 @@ const infoButtonVariants = {
     icon: <HeroIcons.Eye color="background" />,
     accent: 'primary-500',
   },
+  activity: {
+    icon: <HeroIcons.QueueListFilled color="background" />,
+    accent: 'primary-500',
+  },
   'interaction-success': {
     icon: <HeroIcons.Interaction color="background" />,
     accent: 'positive-500',

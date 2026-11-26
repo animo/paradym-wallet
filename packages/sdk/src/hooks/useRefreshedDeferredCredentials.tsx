@@ -1,31 +1,63 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fetchAndProcessDeferredCredentials } from '../openid4vc/deferredCredentialRecord'
-import { getDeferredCredentialNextCheckAt, useDeferredCredentials } from '../storage/deferredCredentialStore'
+import {
+  type DeferredCredential,
+  getDeferredCredentialNextCheckAt,
+  useDeferredCredentials,
+} from '../storage/deferredCredentialStore'
 import { useParadym } from './useParadym'
 
-export const useRefreshedDeferredCredentials = () => {
+/**
+ * Fetches the deferred credentials that are due, and again each time the next one is due, for as long as the
+ * component is mounted. So a card that becomes ready while the wallet is open is added without the user
+ * having to look for it in the inbox.
+ *
+ * @param onIssued Called with the names of the cards that were issued in the meantime.
+ */
+export const useRefreshedDeferredCredentials = (onIssued?: (cardNames: string[]) => void) => {
   const { paradym } = useParadym('unlocked')
-
   const { deferredCredentials, isLoading: isLoadingDeferredCredentials } = useDeferredCredentials()
-  const [refreshedDeferredCredentials, setRefreshedDeferredCredentials] = useState(false)
+  // The `lastCheckedAt` each credential was last fetched at. A fetch that fails or still returns pending
+  // updates the record and so re-runs this effect, which must not fetch the same credential right away.
+  const attempted = useRef(new Map<string, string>())
+  // Bumped when the next credential is due, to run the effect again
+  const [dueAt, setDueAt] = useState(0)
 
   useEffect(() => {
-    if (isLoadingDeferredCredentials || refreshedDeferredCredentials) return
-    paradym.logger.debug('Refreshing deferred credentials')
-    setRefreshedDeferredCredentials(true)
-    fetchAndProcessDeferredCredentials(
-      paradym,
-      deferredCredentials
-        .map((deferredCredential) => ({
-          ...deferredCredential,
-          nextCheckAt: getDeferredCredentialNextCheckAt(deferredCredential),
-        }))
-        .filter(
-          (deferredCredential) =>
-            !deferredCredential.nextCheckAt || deferredCredential.nextCheckAt.getTime() < Date.now()
-        )
-    ).finally(() => {
-      paradym.logger.debug('Finished refreshing deferred credentials')
-    })
-  }, [paradym, refreshedDeferredCredentials, isLoadingDeferredCredentials, deferredCredentials])
+    if (isLoadingDeferredCredentials) return
+
+    const now = Date.now()
+    const nextCheckAt = (deferredCredential: DeferredCredential) =>
+      getDeferredCredentialNextCheckAt(deferredCredential)?.getTime()
+    // Without an interval the issuer said nothing about when to retry, so it is fetched once
+    const isDue = (deferredCredential: DeferredCredential) => {
+      const checkAt = nextCheckAt(deferredCredential)
+      if (checkAt === undefined) return !attempted.current.has(deferredCredential.id)
+      return checkAt <= now && attempted.current.get(deferredCredential.id) !== deferredCredential.lastCheckedAt
+    }
+
+    const due = deferredCredentials.filter(isDue)
+    if (due.length) {
+      for (const deferredCredential of due) {
+        attempted.current.set(deferredCredential.id, deferredCredential.lastCheckedAt)
+      }
+
+      paradym.logger.debug('Refreshing deferred credentials')
+      fetchAndProcessDeferredCredentials(paradym, due)
+        .then((cardNames) => {
+          if (cardNames.length) onIssued?.(cardNames)
+        })
+        .finally(() => {
+          paradym.logger.debug('Finished refreshing deferred credentials')
+        })
+    }
+
+    const upcoming = deferredCredentials
+      .map(nextCheckAt)
+      .filter((checkAt): checkAt is number => checkAt !== undefined && checkAt > now)
+    if (!upcoming.length) return
+
+    const timeout = setTimeout(() => setDueAt(Date.now()), Math.min(...upcoming) - now)
+    return () => clearTimeout(timeout)
+  }, [paradym, isLoadingDeferredCredentials, deferredCredentials, onIssued, dueAt])
 }

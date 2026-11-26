@@ -39,6 +39,10 @@ export function CredentialDetail({
     router.push(`/credentials/${credential.id}/attributes`)
   })
 
+  const onActivityPress = withHaptics(() => {
+    router.push(`/activity?credentialId=${encodeURIComponent(credential.id)}`)
+  })
+
   return (
     <>
       {showDeleteAction && <HeaderDeleteAction onPress={openDeleteSheet} renderCondition={canDelete} />}
@@ -101,6 +105,16 @@ export function CredentialDetail({
                 onPress={onCardAttributesPress}
               />
             )}
+            <InfoButton
+              variant="activity"
+              title={t(commonMessages.activity)}
+              description={t({
+                id: 'credentials.cardActivityDescription',
+                message: 'View activity of the card',
+                comment: 'Description text for the button that shows what was done with the card',
+              })}
+              onPress={onActivityPress}
+            />
           </YStack>
         </YStack>
       </ScrollView>

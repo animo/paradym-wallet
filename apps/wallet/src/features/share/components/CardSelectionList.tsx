@@ -71,7 +71,11 @@ export function CardSelectionList({
               borderWidth={1}
               accessible
               accessibilityRole="radio"
-              aria-label={[card.credential.display.name ?? t(commonMessages.unknown), cardDetail(card)]
+              aria-label={[
+                card.credential.display.name ?? t(commonMessages.unknown),
+                cardDetail(card)?.label,
+                cardDetail(card)?.value,
+              ]
                 .filter(Boolean)
                 .join(', ')}
               aria-checked={isSelected}
@@ -83,6 +87,8 @@ export function CardSelectionList({
               <CardRow
                 card={card}
                 compact
+                // The masked IBAN's last digits are what tell two accounts apart, so nothing is cut off
+                wrap
                 artwork={artwork(card.credential.display.svg)}
                 accessory={
                   isSelected ? (

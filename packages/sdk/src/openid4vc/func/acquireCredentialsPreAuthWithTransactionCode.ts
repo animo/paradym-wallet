@@ -9,6 +9,8 @@ export type AcquireCredentialsPreAuthWithTransactionCodeOptions = {
   paradym: ParadymWalletSdk
   resolvedCredentialOffer: OpenId4VciResolvedCredentialOffer
   transactionCode: string
+  /** Called once the transaction code is accepted, before the credential itself is requested. */
+  onAccessToken?: () => void
 }
 
 export const acquireCredentialsPreAuthWithTransactionCode = async (
@@ -40,6 +42,7 @@ export const acquireCredentialsPreAuthWithTransactionCode = async (
     }
     throw error
   }
+  options.onAccessToken?.()
 
   return await retrieveCredentials({
     paradym: options.paradym,

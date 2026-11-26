@@ -6,6 +6,7 @@ import { Paragraph } from '@package/ui/base/Paragraph'
 import { XStack, YStack } from '@package/ui/base/Stacks'
 import { HeroIcons } from '@package/ui/content/Icon'
 import { Image } from '@package/ui/content/Image'
+import { formatAmount } from '@package/utils'
 import type { FormattedTransactionDataPaymentSingle } from '@paradym/wallet-sdk/openid4vc/transaction'
 import type { FormattedTransactionDataPasoPayment } from '@paradym/wallet-sdk/paso/transactionData'
 import type { ReactNode } from 'react'
@@ -147,25 +148,4 @@ export function PaymentTransactionDetails({
       )}
     </YStack>
   )
-}
-
-/**
- * An ISO currency amount such as `"49.99 EUR"` as the locale writes it: `€49.99`, `49,99 €`. Keeps
- * every decimal it was given, so nothing is rounded away. Anything else is shown as it came.
- */
-function formatAmount(value: string, locale: string) {
-  const match = /^(\d+(?:\.(\d+))?) ([A-Z]{3})$/.exec(value.trim())
-  if (!match) return value
-
-  const [, amount, decimals = '', currency] = match
-  try {
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: decimals.length,
-      maximumFractionDigits: decimals.length,
-    }).format(Number(amount))
-  } catch {
-    return value
-  }
 }

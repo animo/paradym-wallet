@@ -13,11 +13,12 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import { formatRelativeDate } from '@package/utils'
+import { formatAmount, formatRelativeDate } from '@package/utils'
 import { type Activity, type ActivityType, getPaymentTransactionStatus } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import { useHaptics } from '../hooks'
+import { getPaymentKind, getPaymentSummary, type PaymentKind } from '../utils/payment'
 
 export type ActivityInteraction = {
   icon: HeroIcon
@@ -107,6 +108,23 @@ export const activityInteractions: ActivityInteractions = {
   },
 }
 
+// A mandate or other PaSO transaction is stored as a payment activity, but is not a payment
+const paymentKindTexts: Record<
+  Exclude<PaymentKind, 'payment'>,
+  Record<(Activity & { type: 'payment' })['status'], MessageDescriptor>
+> = {
+  mandate: {
+    success: commonMessages.mandateAuthorised,
+    stopped: commonMessages.mandateStopped,
+    failed: commonMessages.mandateFailed,
+  },
+  transaction: {
+    success: commonMessages.transactionAuthorised,
+    stopped: commonMessages.transactionStopped,
+    failed: commonMessages.transactionFailed,
+  },
+}
+
 const paymentTransactionStatusInteractions: Record<'PDNG' | 'RJCT', ActivityInteraction> = {
   PDNG: {
     icon: HeroIcons.ClockFilled,
@@ -132,8 +150,14 @@ export const getActivityInteraction = (activity: Activity) => {
   const byType = activityInteractions[activity.type] as {
     [status in (Activity & { type: (typeof activity)['type'] })['status']]: ActivityInteraction
   }
+  const interaction = byType[activity.status]
 
-  return byType[activity.status]
+  if (activity.type === 'payment') {
+    const kind = getPaymentKind(activity.transaction)
+    if (kind !== 'payment') return { ...interaction, text: paymentKindTexts[kind][activity.status] }
+  }
+
+  return interaction
 }
 
 interface ActivityRowItemProps {
@@ -153,6 +177,7 @@ export function ActivityRowItem({ activity, isSelected, onPress }: ActivityRowIt
   const router = useRouter()
   const Icon = getActivityInteraction(activity)
   const Title = t(Icon.text)
+  const paymentSummary = activity.type === 'payment' ? getPaymentSummary(activity.transaction) : undefined
 
   const { pressStyle, handlePressIn, handlePressOut } = useScaleAnimation()
   const { withHaptics } = useHaptics()
@@ -215,9 +240,16 @@ export function ActivityRowItem({ activity, isSelected, onPress }: ActivityRowIt
               {formatRelativeDate(date, i18n.locale)}
             </Paragraph>
           </XStack>
-          <Heading heading="h3" numberOfLines={1} fontWeight="semiBold" color="grey-900">
-            {subtitle}
-          </Heading>
+          <XStack justify="space-between" gap="3">
+            <Heading heading="h3" numberOfLines={1} fontWeight="semiBold" color="grey-900" flexShrink={1}>
+              {subtitle}
+            </Heading>
+            {paymentSummary && (
+              <Heading heading="h3" fontWeight="semiBold" color="grey-900" numberOfLines={1}>
+                {formatAmount(paymentSummary.amount, i18n.locale)}
+              </Heading>
+            )}
+          </XStack>
         </YStack>
       </XStack>
     </Animated.View>

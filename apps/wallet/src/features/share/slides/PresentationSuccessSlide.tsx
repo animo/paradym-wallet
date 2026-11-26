@@ -1,9 +1,24 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { SlidePane, useWizard } from '@package/app'
+import { type PaymentKind, SlidePane, useWizard } from '@package/app'
+import { credentialSvgArtwork } from '@package/app/components/CredentialSvg'
 import { commonMessages } from '@package/translations'
-import { AnimatedStack, Button, Heading, HeroIcons, Paragraph, Stack, TwoPane, useSpringify, YStack } from '@package/ui'
-import type { FormattedSubmission } from '@paradym/wallet-sdk'
+import {
+  AnimatedStack,
+  Button,
+  Heading,
+  HeroIcons,
+  Paragraph,
+  Stack,
+  TwoPane,
+  useSpringify,
+  XStack,
+  YStack,
+} from '@package/ui'
+import { formatAmount } from '@package/utils'
+import type { CredentialForDisplay, FormattedSubmission } from '@paradym/wallet-sdk'
 import { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated'
+import { CardRow } from '../components/CardRow'
+import { PayingAccount } from '../components/PayingAccount'
 import { SharedCardsList } from '../components/RequestedAttributesSection'
 
 interface PresentationSuccessSlideProps {
@@ -12,8 +27,19 @@ interface PresentationSuccessSlideProps {
   showReturnToApp?: boolean
   // Wide windows list these shared cards next to the success message, when the step owns its wide layout
   submission?: FormattedSubmission
-  // Wide windows show what was paid above the shared cards
-  payment?: { amount: string; payee: string }
+  /**
+   * A payment or PaSO transaction the user authorised: the bank that processes it, the card it is paid with, and
+   * the amount and payee when it is or embeds a payment. Wide windows show the amount above the other shared cards.
+   * `canFollowStatus` when the wallet can poll its status, so the user can follow it in Activity.
+   */
+  payment?: {
+    kind: PaymentKind
+    amount?: string
+    payee?: string
+    issuer?: string
+    card?: CredentialForDisplay
+    canFollowStatus?: boolean
+  }
 }
 
 export const PresentationSuccessSlide = ({
@@ -23,7 +49,7 @@ export const PresentationSuccessSlide = ({
   submission,
   payment,
 }: PresentationSuccessSlideProps) => {
-  const { t } = useLingui()
+  const { t, i18n } = useLingui()
   const buttonLabel = t(commonMessages.goToWallet)
   const { ownsWideLayout } = useWizard()
 
@@ -81,22 +107,108 @@ export const PresentationSuccessSlide = ({
         <YStack gap="5" p="5" items="center">
           {/* The same mark as a stored card gets, where the illustration doesn't show */}
           {ownsWideLayout && <HeroIcons.ShieldCheckFilled color="primary-500" size={48} />}
-          <Heading>{t(commonMessages.success)}</Heading>
+          {payment ? (
+            <>
+              <Heading>
+                {payment.kind === 'mandate'
+                  ? t({
+                      id: 'presentationSuccess.mandateAuthorised',
+                      message: 'Mandate authorised',
+                      comment: 'Title after the user authorised a mandate and its first payment',
+                    })
+                  : payment.kind === 'transaction'
+                    ? t({
+                        id: 'presentationSuccess.transactionAuthorised',
+                        message: 'Transaction authorised',
+                        comment:
+                          'Title after the user authorised a bank transaction that is not a plain payment, such as a transfer or standing order',
+                      })
+                    : t({
+                        id: 'presentationSuccess.paymentAuthorised',
+                        message: 'Payment authorised',
+                        comment: 'Title after the user authorised a payment, which the bank still has to carry out',
+                      })}
+              </Heading>
+              {/* Authorised, not paid: the bank still carries the payment out. */}
+              <Paragraph text="center">
+                {!payment.canFollowStatus
+                  ? payment.issuer
+                    ? t({
+                        id: 'presentationSuccess.processingByIssuer',
+                        message: `${payment.issuer} is now processing it.`,
+                        comment:
+                          'Shown after a payment was authorised whose status the wallet cannot follow, naming the bank that processes it',
+                      })
+                    : t({
+                        id: 'presentationSuccess.processing',
+                        message: 'Your bank is now processing it.',
+                        comment: 'Shown after a payment was authorised whose status the wallet cannot follow',
+                      })
+                  : payment.issuer
+                    ? t({
+                        id: 'presentationSuccess.paymentProcessingByIssuer',
+                        message: `${payment.issuer} is now processing it. You can follow it in Activity.`,
+                        comment: 'Shown after a payment was authorised, naming the bank that processes it',
+                      })
+                    : t({
+                        id: 'presentationSuccess.paymentProcessing',
+                        message: 'Your bank is now processing it. You can follow it in Activity.',
+                        comment: 'Shown after a payment was authorised',
+                      })}
+              </Paragraph>
+              {(payment.payee || payment.amount || payment.card) && (
+                <YStack w="100%" rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" p="4" gap="3">
+                  {payment.payee && (
+                    <PaymentSummaryRow
+                      label={t({ id: 'presentationSuccess.paymentTo', message: 'To', comment: 'Payee of a payment' })}
+                      value={payment.payee}
+                    />
+                  )}
+                  {payment.amount && (
+                    <PaymentSummaryRow
+                      label={t({
+                        id: 'presentationSuccess.paymentAmount',
+                        message: 'Amount',
+                        comment: 'Amount of a payment',
+                      })}
+                      value={formatAmount(payment.amount, i18n.locale)}
+                    />
+                  )}
+                  {payment.card && (
+                    <PayingAccount>
+                      <CardRow
+                        card={{ credential: payment.card }}
+                        artwork={credentialSvgArtwork(payment.card.display.svg)}
+                        wrap
+                      />
+                    </PayingAccount>
+                  )}
+                </YStack>
+              )}
+            </>
+          ) : (
+            <>
+              <Heading>{t(commonMessages.success)}</Heading>
 
-          <Paragraph text="center">
-            {verifierName ? (
-              <Trans
-                id="presentationSuccess.messageWithVerifier"
-                comment="Shown after credentials are shared with a specific verifier"
-              >
-                Your information has been shared with <Paragraph fontWeight="semiBold">{verifierName}</Paragraph>.
-              </Trans>
-            ) : (
-              <Trans id="presentationSuccess.message" comment="Shown after credentials are shared (no verifier name)">
-                Your information has been shared.
-              </Trans>
-            )}
-          </Paragraph>
+              <Paragraph text="center">
+                {verifierName ? (
+                  <Trans
+                    id="presentationSuccess.messageWithVerifier"
+                    comment="Shown after credentials are shared with a specific verifier"
+                  >
+                    Your information has been shared with <Paragraph fontWeight="semiBold">{verifierName}</Paragraph>.
+                  </Trans>
+                ) : (
+                  <Trans
+                    id="presentationSuccess.message"
+                    comment="Shown after credentials are shared (no verifier name)"
+                  >
+                    Your information has been shared.
+                  </Trans>
+                )}
+              </Paragraph>
+            </>
+          )}
         </YStack>
       </YStack>
 
@@ -113,6 +225,11 @@ export const PresentationSuccessSlide = ({
     </YStack>
   )
 
+  // The card a payment is paid with is in the summary, not among the shared cards
+  const sharedEntries = submission?.entries.filter(
+    (entry) => !entry.isSatisfied || entry.credentials[0].credential.id !== payment?.card?.id
+  )
+
   if (ownsWideLayout && submission) {
     // Wide windows list the shared cards next to the success message, instead of the illustration
     return (
@@ -120,10 +237,10 @@ export const PresentationSuccessSlide = ({
         start={
           <SlidePane>
             <YStack pt="5" gap="8">
-              {payment && (
+              {payment?.amount && (
                 <YStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="0-5" p="5" items="center">
                   <Heading textTransform="none" color="grey-800">
-                    {payment.amount}
+                    {formatAmount(payment.amount, i18n.locale)}
                   </Heading>
                   <Paragraph variant="sub">
                     <Trans id="presentationSuccess.paidTo" comment="Shown below the amount of a completed payment">
@@ -132,7 +249,9 @@ export const PresentationSuccessSlide = ({
                   </Paragraph>
                 </YStack>
               )}
-              <SharedCardsList submission={submission} />
+              {sharedEntries?.some((entry) => entry.isSatisfied) && (
+                <SharedCardsList submission={{ ...submission, entries: sharedEntries }} />
+              )}
             </YStack>
           </SlidePane>
         }
@@ -142,4 +261,15 @@ export const PresentationSuccessSlide = ({
   }
 
   return content
+}
+
+function PaymentSummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <XStack justify="space-between" gap="4" items="flex-start">
+      <Paragraph variant="sub">{label}</Paragraph>
+      <Paragraph flex={1} text="right" color="grey-900" fontWeight="semiBold">
+        {value}
+      </Paragraph>
+    </XStack>
+  )
 }

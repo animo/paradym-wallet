@@ -1,12 +1,13 @@
 import {
   activityStorage,
+  type CredentialForDisplay,
   fetchPaymentTransactionStatus,
   getTransactionStatusMetadata,
-  pasoPaymentTransactionDataType,
+  isPasoTransaction,
   useCredentials,
   useParadym,
 } from '@paradym/wallet-sdk'
-import type { PaymentActivity } from '@paradym/wallet-sdk/storage/activityStore'
+import type { PaymentActivity, PresentationActivityCredential } from '@paradym/wallet-sdk/storage/activityStore'
 import { useEffect } from 'react'
 
 export function usePaymentTransactionStatus(activity: PaymentActivity | undefined) {
@@ -17,9 +18,9 @@ export function usePaymentTransactionStatus(activity: PaymentActivity | undefine
     if (!activity || !paradym) return
     if (activity.transactionStatus === 'ACSC' || activity.transactionStatus === 'RJCT') return
     // TS 12 defines the status backchannel; a PaSO payment has nothing to poll.
-    if (activity.transaction.type === pasoPaymentTransactionDataType) return
+    if (isPasoTransaction(activity.transaction)) return
 
-    const credentialRecord = credentials.find((c) => getTransactionStatusMetadata(c.record) !== null)?.record
+    const credentialRecord = getPaymentStatusCard(activity, credentials)
     if (!credentialRecord) return
 
     let cancelled = false
@@ -34,4 +35,19 @@ export function usePaymentTransactionStatus(activity: PaymentActivity | undefine
       cancelled = true
     }
   }, [activity, credentials, paradym])
+}
+
+/**
+ * The record of the card that paid, when it says where to poll the payment's status. Activities stored before
+ * the paying card was marked fall back to the shared card that has a status URL.
+ */
+export function getPaymentStatusCard(activity: PaymentActivity, credentials: CredentialForDisplay[]) {
+  const shared = activity.request.credentials.filter(
+    (activityCredential): activityCredential is PresentationActivityCredential => 'id' in activityCredential
+  )
+  const paidWith = shared.find((activityCredential) => activityCredential.authorizesTransaction)
+
+  return (paidWith ? [paidWith] : shared)
+    .map((activityCredential) => credentials.find((credential) => credential.id === activityCredential.id)?.record)
+    .find((record) => record && getTransactionStatusMetadata(record) !== null)
 }
