@@ -226,8 +226,8 @@ catalogs:
       specifier: ^1.62.0
       version: 1.62.0
     query-string:
-      specifier: ^9.4.0
-      version: 9.4.0
+      specifier: ^9.5.1
+      version: 9.5.1
     react-native-edge-to-edge:
       specifier: ^1.8.2
       version: 1.8.2
@@ -676,7 +676,7 @@ importers:
         version: 58.0.2(expo@58.0.23)
       query-string:
         specifier: 'catalog:'
-        version: 9.4.0
+        version: 9.5.1
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -4117,8 +4117,8 @@ packages:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
 
-  decode-uri-component@0.4.1:
-    resolution: {integrity: sha512-+8VxcR21HhTy8nOt6jf20w0c9CADrw1O8d+VZ/YzzCt4bJ3uBjw+D1q2osAB8RnpwwaeYBxy0HyKQxD5JBMuuQ==}
+  decode-uri-component@0.5.1:
+    resolution: {integrity: sha512-vWHQkXgg2cE3BB4rR0c+PYw9BCQzLoNIRMI7AunIkZst74tw/vpPp7VLoYtsR/cy1f55g3XDWUslfeCZjiZJyA==}
     engines: {node: '>=14.16'}
 
   deep-is@0.1.4:
@@ -5840,8 +5840,8 @@ packages:
   quansync@1.0.0:
     resolution: {integrity: sha512-5xZacEEufv3HSTPQuchrvV6soaiACMFnq1H8wkVioctoH3TRha9Sz66lOxRwPK/qZj7HPiSveih9yAyh98gvqA==}
 
-  query-string@9.4.0:
-    resolution: {integrity: sha512-ivvWyHqU9K1Log4hJFhqVIIMoEi0nzmlRhvk2pPcTuQH/Y0K5iTTMxEx7R0PRHD2Z1hMVbWnjfsEWbIKIK+3IA==}
+  query-string@9.5.1:
+    resolution: {integrity: sha512-/zO3RwuRCMTIcEgq6YMv4OrtEE1XzBG7w5N6zc6ydYnkWYOWsnLI/5894hYEzfESfMOT4cHCsRTIdxsSl1KjGg==}
     engines: {node: '>=18'}
 
   queue-microtask@1.2.3:
@@ -7880,7 +7880,7 @@ snapshots:
       class-transformer: 0.5.1
       class-validator: 0.14.4
       luxon: 3.7.2
-      query-string: 9.4.0
+      query-string: 9.5.1
       rxjs: 7.8.2
     transitivePeerDependencies:
       - supports-color
@@ -12063,7 +12063,7 @@ snapshots:
       '@credo-ts/anoncreds': 0.8.0-alpha-20261030133527(@hyperledger/anoncreds-shared@0.5.0-alpha-20261027094647)(typescript@6.0.3)
       '@credo-ts/core': 0.8.0-alpha-20261030133527(typescript@6.0.3)
       canonicalize: 2.1.0
-      query-string: 9.4.0
+      query-string: 9.5.1
 
   cross-fetch@3.2.0:
     dependencies:
@@ -12124,7 +12124,7 @@ snapshots:
 
   decamelize@1.2.0: {}
 
-  decode-uri-component@0.4.1: {}
+  decode-uri-component@0.5.1: {}
 
   deep-is@0.1.4: {}
 
@@ -14001,9 +14001,9 @@ snapshots:
 
   quansync@1.0.0: {}
 
-  query-string@9.4.0:
+  query-string@9.5.1:
     dependencies:
-      decode-uri-component: 0.4.1
+      decode-uri-component: 0.5.1
       filter-obj: 5.1.0
       split-on-first: 3.0.0
 
