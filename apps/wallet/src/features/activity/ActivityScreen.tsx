@@ -17,6 +17,7 @@ import {
   YStack,
 } from '@package/ui'
 import { useActivities, useActivityById } from '@paradym/wallet-sdk'
+import { useRouter } from 'expo-router'
 import React, { useCallback, useMemo, useState } from 'react'
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { FadeInDown } from 'react-native-reanimated'
@@ -53,6 +54,7 @@ export function ActivityScreen({
   const { t, i18n } = useLingui()
   const media = useMedia()
   const [selectedId, setSelectedId] = useState(initialSelectedId)
+  const router = useRouter()
 
   // Wide windows show the selected activity next to the list, or the latest one when none is selected
   const isSplit = media.wide && activities.length > 0
@@ -137,7 +139,17 @@ export function ActivityScreen({
                       activity={activity}
                       key={activity.id}
                       isSelected={activity.id === selectedActivityId}
-                      onPress={isSplit ? () => setSelectedId(activity.id) : undefined}
+                      onPress={
+                        isSplit
+                          ? () => setSelectedId(activity.id)
+                          : credentialId
+                            ? () =>
+                                router.push({
+                                  pathname: '/activity/[id]',
+                                  params: { id: activity.id, openedFromCredentialId: credentialId },
+                                })
+                            : undefined
+                      }
                     />
                   ))}
                 </React.Fragment>
@@ -152,7 +164,16 @@ export function ActivityScreen({
   return (
     <FlexPage gap="0" paddingHorizontal="0" {...(isSplit && { maxWidth: '100%' })}>
       {selectedActivityId ? (
-        <TwoPane start={list} end={<SelectedActivityDetail key={selectedActivityId} id={selectedActivityId} />} />
+        <TwoPane
+          start={list}
+          end={
+            <SelectedActivityDetail
+              key={selectedActivityId}
+              id={selectedActivityId}
+              openedFromCredentialId={credentialId}
+            />
+          }
+        />
       ) : (
         list
       )}
@@ -162,8 +183,8 @@ export function ActivityScreen({
 }
 
 // Read by id, so an activity that isn't in the loaded pages of the list can still be shown
-function SelectedActivityDetail({ id }: { id: string }) {
+function SelectedActivityDetail({ id, openedFromCredentialId }: { id: string; openedFromCredentialId?: string }) {
   const { activity } = useActivityById(id)
 
-  return activity ? <ActivityDetail activity={activity} /> : null
+  return activity ? <ActivityDetail activity={activity} openedFromCredentialId={openedFromCredentialId} /> : null
 }

@@ -4,9 +4,13 @@ import { useMedia } from '@package/ui'
 import { useLocalSearchParams } from 'expo-router'
 
 export default function Screen() {
-  const { id } = useLocalSearchParams<{ id: string }>()
+  const { id, openedFromCredentialId } = useLocalSearchParams<{ id: string; openedFromCredentialId?: string }>()
   const media = useMedia()
 
   // Wide windows show the activity next to the list of activities
-  return media.wide ? <ActivityScreen initialSelectedId={id} /> : <ActivityDetailScreen />
+  return media.wide ? (
+    <ActivityScreen initialSelectedId={id} credentialId={openedFromCredentialId} />
+  ) : (
+    <ActivityDetailScreen />
+  )
 }
