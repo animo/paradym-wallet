@@ -169,7 +169,6 @@ export { type DeferredCredentialBefore, getDeferredCredentialEntityId } from './
 export { getHostNameFromUrl} from './utils/url'
 export { reset } from './utils/reset'
 export { revalidateImage, useRevalidateImages } from './utils/imageStore'
-export { backfillImageReferences } from './storage/backfillImageReferences'
 export { getFormattedTransactionData, resolveTransactionData } from './openid4vc/transaction'
 export {deferredCredentialStorage, getDeferredCredentialNextCheckAt, useDeferredCredentials, deleteDeferredCredential } from './storage/deferredCredentialStore'
 export { fetchAndProcessDeferredCredentials } from './openid4vc/deferredCredentialRecord'

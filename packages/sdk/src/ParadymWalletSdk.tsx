@@ -72,6 +72,7 @@ import {
 import { getIsBiometricsEnabled, secureWalletKey, setIsBiometricsEnabled } from './secure'
 import { KeychainError } from './secure/error/KeychainError'
 import { migrateActivities } from './storage/activityStore'
+import { BackfillImageReferences } from './storage/backfillImageReferences'
 import { type CredentialRecord, deleteCredential } from './storage/credentials'
 import { getWalletStoreId, moveLegacyStore, setupAppGroupStore } from './storage/walletStore'
 import { loadTrustedLists } from './trust/trustedLists'
@@ -240,6 +241,7 @@ export class ParadymWalletSdk<T extends AgentType = AgentType> {
 
     return (
       <RecordProvider agent={paradym.agent} recordIds={recordIds}>
+        <BackfillImageReferences />
         {children}
       </RecordProvider>
     )
