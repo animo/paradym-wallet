@@ -69,7 +69,7 @@ function getDisclosedLabels(
 }
 
 export function ActivityDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>()
+  const { id, openedFromCredentialId } = useLocalSearchParams<{ id: string; openedFromCredentialId?: string }>()
   const router = useRouter()
 
   const { activity, isLoading: isLoadingActivity } = useActivityById(id)
@@ -83,13 +83,22 @@ export function ActivityDetailScreen() {
 
   return (
     <FlexPage p={0} gap={0}>
-      <ActivityDetail activity={activity} />
+      <ActivityDetail activity={activity} openedFromCredentialId={openedFromCredentialId} />
       <BackFooter />
     </FlexPage>
   )
 }
 
-export function ActivityDetail({ activity }: { activity: Activity }) {
+/**
+ * @param openedFromCredentialId The card the activities were opened from, which is not opened again from here
+ */
+export function ActivityDetail({
+  activity,
+  openedFromCredentialId,
+}: {
+  activity: Activity
+  openedFromCredentialId?: string
+}) {
   const { bottom } = useSafeAreaInsets()
   const { t, i18n } = useLingui()
 
@@ -122,7 +131,7 @@ export function ActivityDetail({ activity }: { activity: Activity }) {
             {activity.type === 'shared' || activity.type === 'signed' || activity.type === 'payment' ? (
               <SharedActivityDetailSection activity={activity} />
             ) : (
-              <ReceivedActivityDetailSection activity={activity} />
+              <ReceivedActivityDetailSection activity={activity} openedFromCredentialId={openedFromCredentialId} />
             )}
           </YStack>
         </YStack>
@@ -159,7 +168,13 @@ const activityMessages = {
   }),
 }
 
-export function ReceivedActivityDetailSection({ activity }: { activity: IssuanceActivity }) {
+export function ReceivedActivityDetailSection({
+  activity,
+  openedFromCredentialId,
+}: {
+  activity: IssuanceActivity
+  openedFromCredentialId?: string
+}) {
   const { credentials } = useCredentials()
   const { withHaptics } = useHaptics()
   const { push } = useRouter()
@@ -239,9 +254,13 @@ export function ReceivedActivityDetailSection({ activity }: { activity: Issuance
               issuer={credential.display.issuer.name ?? t(commonMessages.unknown)}
               logo={credential.display.issuer.logo}
               issuedAt={credential.metadata.issuedAt ? new Date(credential.metadata.issuedAt) : undefined}
-              onPress={() => {
-                pushToCredential(credential.id)
-              }}
+              onPress={
+                credential.id === openedFromCredentialId
+                  ? undefined
+                  : () => {
+                      pushToCredential(credential.id)
+                    }
+              }
             />
           )
         })}
