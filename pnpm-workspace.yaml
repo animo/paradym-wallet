@@ -20,6 +20,9 @@ overrides:
   # shared packages for all of them.
   '@openwallet-foundation/askar-shared': 'catalog:'
   '@hyperledger/anoncreds-shared': 'catalog:'
+  # Security fix (valibot ReDoS, Dependabot alerts 71 and 182): @sphereon/ssi-types (via @credo-ts/core) pins dcql 1.0.1,
+  # which pins valibot 1.0.0-beta.8. No newer ssi-types release changes this, and ssi-types never imports dcql.
+  'dcql@1.0.1>valibot': ^1.4.2
 
 patchedDependencies:
   # Patches required for DC API
