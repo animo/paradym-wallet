@@ -3,7 +3,7 @@ import { defaultWalletId, type ParadymWalletSdkLegacyIdsOptions, type ParadymWal
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { secureWalletKey } from '../secure'
 import { getWalletStoreDirectories, getWalletStoreId } from '../storage/walletStore'
-import { clearImageCache } from './imageCacheKey'
+import { clearImageCache } from './imageStore'
 
 /**
  * Without `paradym`, the store ids come from `configuration`. Pass the wallet's configuration then, so a

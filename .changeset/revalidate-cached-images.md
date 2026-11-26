@@ -2,4 +2,4 @@
 '@paradym/wallet-sdk': patch
 ---
 
-Cached images can be revalidated, so a logo an issuer or verifier replaced at the same url is picked up. `useRevalidateImages` and `revalidateImage` download a cached image again and cache a changed one under a new key. The icons registered for the Digital Credentials API follow that key. A wallet reset clears the image cache.
+The wallet keeps its own copies of the images its credentials, deferred credentials and activities use, such as the logos of issuers and verifiers. A copy is scaled down when stored, doesn't expire, and is shared with the credential request UI on iOS. It is removed with the last record that uses it. `useRevalidateImages` and `revalidateImage` replace a copy when the image behind the url changed, and `backfillImageReferences` stores the images of records from before. A wallet reset removes the copies, along with the images expo-image cached.

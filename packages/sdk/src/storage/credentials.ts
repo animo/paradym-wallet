@@ -13,6 +13,11 @@ import { Platform } from 'react-native'
 import type { DcApiRegisterCredentialsOptions } from '../dcApi/registerCredentials'
 import type { CredentialForDisplayId } from '../display/credential'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
+import {
+  referenceCredentialImages,
+  unreferenceCredentialImages,
+  updateCredentialImageReferences,
+} from './imageReferences'
 
 export type { MdocRecord, SdJwtVcRecord, W3cCredentialRecord, W3cV2CredentialRecord }
 export type CredentialRecord = W3cCredentialRecord | W3cV2CredentialRecord | SdJwtVcRecord | MdocRecord
@@ -62,6 +67,8 @@ export async function updateCredentialRecord(
   } else {
     await agent.dependencyManager.resolve(SdJwtVcRepository).update(agent.context, credentialRecord)
   }
+
+  updateCredentialImageReferences(credentialRecord)
 }
 
 export async function updateCredential(
@@ -97,6 +104,8 @@ export async function storeCredential(
       .save(options.paradym.agent.context, options.credentialRecord)
   }
 
+  referenceCredentialImages(options.credentialRecord)
+
   // Add just this one where the platform allows it, rather than rebuilding the whole registered set.
   //
   // Deliberately not awaited: the credential is already saved, and the OS picker is not part of
@@ -122,6 +131,8 @@ export async function deleteCredential(
     const mdocId = options.credentialId.replace('mdoc-', '')
     await options.paradym.agent.mdoc.deleteById(mdocId)
   }
+
+  unreferenceCredentialImages(options.credentialId)
 
   // Remove just this one where the platform allows it, rather than rebuilding the whole registered
   // set. Not awaited, for the reason spelled out in `storeCredential`.

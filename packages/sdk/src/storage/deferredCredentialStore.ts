@@ -8,6 +8,7 @@ import { useMemo } from 'react'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { useWalletJsonRecord } from '../providers/WalletJsonStoreProvider'
 import { noneEntityId } from '../trust/entityId'
+import { referenceDeferredCredentialImages, unreferenceDeferredCredentialImages } from './imageReferences'
 import { getWalletJsonStore } from './walletJsonStore'
 
 export type DeferredCredential = {
@@ -105,8 +106,11 @@ export const useDeferredCredentials = () => {
   }
 }
 
+export const getDeferredCredentials = async (paradym: ParadymWalletSdk) =>
+  (await _deferredCredentialStorage.get(paradym.agent))?.deferredCredentials ?? []
+
 export const storeDeferredCredential = async (paradym: ParadymWalletSdk, input: DeferredCredentialBefore) => {
-  return await deferredCredentialStorage.addDeferredCredential(paradym, {
+  const deferredCredential = await deferredCredentialStorage.addDeferredCredential(paradym, {
     id: utils.uuid(),
     createdAt: new Date().toISOString(),
     lastCheckedAt: new Date().toISOString(),
@@ -116,6 +120,9 @@ export const storeDeferredCredential = async (paradym: ParadymWalletSdk, input: 
     clientId: input.clientId,
     entityId: input.entityId,
   })
+  referenceDeferredCredentialImages(deferredCredential)
+
+  return deferredCredential
 }
 
 export const updateDeferredCredential = async (
@@ -127,6 +134,7 @@ export const updateDeferredCredential = async (
 
 export const deleteDeferredCredential = async (paradym: ParadymWalletSdk, id: string) => {
   await deferredCredentialStorage.deleteDeferredCredential(paradym, id)
+  unreferenceDeferredCredentialImages(id)
 }
 
 export const getDeferredCredentialNextCheckAt = (deferredCredential: DeferredCredential) => {

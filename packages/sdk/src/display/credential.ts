@@ -163,7 +163,8 @@ export function getCredentialForDisplay(credentialRecord: CredentialRecord): Cre
   return display
 }
 
-function deriveCredentialForDisplay(credentialRecord: CredentialRecord): CredentialForDisplay {
+/** The display without the cache, for a record that was changed in place since it was last read. */
+export function deriveCredentialForDisplay(credentialRecord: CredentialRecord): CredentialForDisplay {
   const credentialCategoryMetadata = getCredentialCategoryMetadata(credentialRecord)
   const credentialForDisplayId = getCredentialForDisplayId(credentialRecord)
   const hasRefreshToken = getRefreshCredentialMetadata(credentialRecord) !== null

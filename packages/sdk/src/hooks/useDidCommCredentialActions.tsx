@@ -1,4 +1,3 @@
-import { W3cCredentialRepository } from '@credo-ts/core'
 import type { DidCommCredentialStateChangedEvent } from '@credo-ts/didcomm'
 import { DidCommCredentialEventTypes, DidCommCredentialState } from '@credo-ts/didcomm'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -10,6 +9,7 @@ import {
   setOpenId4VcCredentialMetadata,
 } from '../metadata/credentials'
 import { useCredentialById } from '../providers/CredentialExchangeProvider'
+import { updateCredentialRecord } from '../storage/credentials'
 import { useParadym } from './useParadym'
 
 function useOfferAttributes(credentialExchangeId: string) {
@@ -107,8 +107,7 @@ export function useDidCommCredentialActions(credentialExchangeId: string) {
           )
         )
 
-        const w3cCredentialRepository = paradym.agent.dependencyManager.resolve(W3cCredentialRepository)
-        await w3cCredentialRepository.update(paradym.agent.context, w3cRecord)
+        await updateCredentialRecord(paradym.agent, w3cRecord)
 
         return w3cRecord
       }

@@ -8,9 +8,15 @@ import { TypedArrayEncoder } from '@credo-ts/core'
 import { type CredentialDataHandlerOptions, useHaptics } from '@package/app'
 import { HeroIcons, IconContainer } from '@package/ui'
 import type { InvitationType } from '@paradym/wallet-sdk'
-import { activityIndexStore, deferredCredentialStorage, ParadymWalletSdk, useParadym } from '@paradym/wallet-sdk'
+import {
+  activityIndexStore,
+  backfillImageReferences,
+  deferredCredentialStorage,
+  ParadymWalletSdk,
+  useParadym,
+} from '@paradym/wallet-sdk'
 import { Redirect, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pressable } from 'react-native-gesture-handler'
 import { useTheme } from 'tamagui'
 
@@ -34,6 +40,15 @@ export default function AppLayout() {
   useLogDeviceInformation()
 
   const paradym = useParadym()
+  const unlockedParadym = paradym.state === 'unlocked' ? paradym.paradym : undefined
+
+  useEffect(() => {
+    if (!unlockedParadym) return
+
+    backfillImageReferences(unlockedParadym).catch((error) =>
+      unlockedParadym.logger.error('Failed to store the images of the wallet', { error })
+    )
+  }, [unlockedParadym])
 
   const theme = useTheme()
   const router = useRouter()

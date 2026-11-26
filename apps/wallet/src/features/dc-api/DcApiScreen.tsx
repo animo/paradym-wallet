@@ -31,7 +31,7 @@ import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/form
 import { ParadymWalletPasoError } from '@paradym/wallet-sdk/paso/error'
 import { pasoPaymentTransactionDataType } from '@paradym/wallet-sdk/paso/paymentRulebook'
 import { getIsBiometricsEnabled } from '@paradym/wallet-sdk/storage/sharedMmkv'
-import { useRevalidateImages } from '@paradym/wallet-sdk/utils/revalidateImages'
+import { useRevalidateImages } from '@paradym/wallet-sdk/utils/imageStore'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Linking, type NativeSyntheticEvent, Platform, type TextLayoutEventData, useColorScheme } from 'react-native'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
