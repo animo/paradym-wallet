@@ -3,6 +3,7 @@ import { defaultWalletId, type ParadymWalletSdkLegacyIdsOptions, type ParadymWal
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { secureWalletKey } from '../secure'
 import { getWalletStoreDirectories, getWalletStoreId } from '../storage/walletStore'
+import { clearImageCache } from './imageStore'
 
 /**
  * Without `paradym`, the store ids come from `configuration`. Pass the wallet's configuration then, so a
@@ -21,6 +22,9 @@ export const reset = async (
   // Clear cach and temp path
   if (await fs.exists(fs.cachePath)) await fs.delete(fs.cachePath)
   if (await fs.exists(fs.tempPath)) await fs.delete(fs.tempPath)
+
+  // The logos and card images of the wallet that is removed
+  await clearImageCache()
 
   // `walletId` is the composed store id, so this covers both the shared container on iOS builds
   // with the digital credentials API config plugin and the app's own data path. Legacy stores go

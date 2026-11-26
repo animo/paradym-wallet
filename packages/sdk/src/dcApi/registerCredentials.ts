@@ -41,6 +41,7 @@ import type { ParadymWalletSdk } from '../ParadymWalletSdk'
 import { pasoPaymentTransactionDataType } from '../paso/paymentRulebook'
 import type { CredentialRecord } from '../storage/credentials'
 import { getSharedMmkv } from '../storage/sharedMmkv'
+import { getStoredImageUri, isRemoteImage } from '../utils/imageStore'
 
 type CredentialItem = RegisterCredentialsOptions['credentials'][number]
 type CredentialDisplayClaim = NonNullable<CredentialItem['display']['claims']>[number]
@@ -221,8 +222,12 @@ async function resolveImageUri(url: string): Promise<string | undefined> {
   // Already inline: there is nothing to fetch, and nothing caches it either.
   if (url.startsWith('data:')) return url
 
-  // Remote, so only usable once the wallet has already displayed it and expo-image cached it.
-  if (url.startsWith('http://') || url.startsWith('https://')) {
+  // Remote, so only usable once the wallet stored a copy of it, or displayed it and expo-image
+  // cached it.
+  if (isRemoteImage(url)) {
+    const storedUri = getStoredImageUri(url)
+    if (storedUri) return storedUri
+
     const cachePath = await Image.getCachePathAsync(url)
     return cachePath ? `file://${cachePath}` : undefined
   }
@@ -243,12 +248,14 @@ async function resolveImageUri(url: string): Promise<string | undefined> {
 const iconDataUrlCache = new Map<string, CredentialItem['display']['iconDataUrl']>()
 
 async function loadCachedImageAsBase64DataUrl(logger: Logger, url: string) {
-  if (iconDataUrlCache.has(url)) return iconDataUrlCache.get(url)
+  // A remote image that changed is stored in a new file, and so gets a new icon.
+  const key = (isRemoteImage(url) && getStoredImageUri(url)) || url
+  if (iconDataUrlCache.has(key)) return iconDataUrlCache.get(key)
 
   const iconDataUrl = await buildCachedImageAsBase64DataUrl(logger, url)
   // Also cached when it could not be built: a remote image expo-image has not cached yet stays
   // unresolvable until it is displayed, and retrying it on every registration never helped.
-  iconDataUrlCache.set(url, iconDataUrl)
+  iconDataUrlCache.set(key, iconDataUrl)
 
   return iconDataUrl
 }

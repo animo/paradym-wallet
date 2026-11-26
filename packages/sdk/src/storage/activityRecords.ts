@@ -2,6 +2,7 @@ import type { Agent } from '@credo-ts/core'
 import { GenericRecord } from '@credo-ts/core'
 import type { Activity, ActivityType } from './activityStore'
 import { isLegacyActivity, upgradeLegacyActivity } from './activityUpgrade'
+import { unreferenceActivityImages, updateActivityImageReferences } from './imageReferences'
 import { getWalletJsonStore } from './walletJsonStore'
 
 /**
@@ -87,6 +88,8 @@ async function upsertActivityRecord(agent: Agent, activity: Activity) {
   const existing = await agent.genericRecords.findById(id)
   if (existing) await agent.genericRecords.update(record)
   else await agent.genericRecords.save(record)
+
+  updateActivityImageReferences(activity)
 }
 
 export async function saveActivityRecord(agent: Agent, activity: Activity) {
@@ -129,6 +132,7 @@ export async function deleteActivityRecord(agent: Agent, activityId: string) {
 
   const record = await agent.genericRecords.findById(getActivityRecordId(activityId))
   if (record) await agent.genericRecords.deleteById(record.id)
+  unreferenceActivityImages(activityId)
 }
 
 export async function getActivityRecordById(agent: Agent, activityId: string): Promise<Activity | undefined> {

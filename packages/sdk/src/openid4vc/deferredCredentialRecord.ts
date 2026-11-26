@@ -2,7 +2,7 @@ import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../agent'
 import { getCredentialDisplayWithDefaults } from '../display/common'
-import { getCredentialForDisplayId } from '../display/credential'
+import { getCredentialForDisplay, getCredentialForDisplayId } from '../display/credential'
 import { getOpenId4VcCredentialDisplay } from '../display/openid4vc'
 import { extractOpenId4VcCredentialMetadata } from '../metadata/credentials'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
@@ -14,6 +14,7 @@ import {
   getDeferredCredentialEntityId,
   updateDeferredCredential,
 } from '../storage/deferredCredentialStore'
+import { revalidateImages } from '../utils/imageStore'
 
 /** Returns how many cards were issued, so the app can tell the user they arrived. */
 export async function fetchAndProcessDeferredCredentials(
@@ -78,6 +79,9 @@ export async function fetchAndProcessDeferredCredential(
     if (credentials.length) {
       for (const { credential: credentialRecord } of credentials) {
         await storeCredential({ paradym, credentialRecord })
+
+        const { display } = getCredentialForDisplay(credentialRecord)
+        revalidateImages([display.issuer.logo?.url, display.backgroundImage?.url])
       }
 
       const { issuer: issuerDisplay } = getCredentialDisplayWithDefaults(

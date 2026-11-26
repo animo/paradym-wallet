@@ -31,6 +31,7 @@ import type { FormattedSubmissionEntrySatisfied } from '@paradym/wallet-sdk/form
 import { ParadymWalletPasoError } from '@paradym/wallet-sdk/paso/error'
 import { pasoPaymentTransactionDataType } from '@paradym/wallet-sdk/paso/paymentRulebook'
 import { getIsBiometricsEnabled } from '@paradym/wallet-sdk/storage/sharedMmkv'
+import { useRevalidateImages } from '@paradym/wallet-sdk/utils/imageStore'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Linking, type NativeSyntheticEvent, Platform, type TextLayoutEventData, useColorScheme } from 'react-native'
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -125,6 +126,7 @@ function DcApiScreenContent({ request }: { request: DcApiRequest }) {
   const insets = useSafeAreaInsets()
   const pinRef = useRef<PinDotsInputRef>(null)
   const [phase, setPhase] = useState<Phase>({ name: 'unlock' })
+  useRevalidateImages(['review' in phase ? phase.review.verifier.logo?.url : undefined])
   const [error, setError] = useState<string>()
   // The requested card whose matching cards are listed in place of the review, to pick another one.
   const [switchingEntry, setSwitchingEntry] = useState<FormattedSubmissionEntrySatisfied>()
