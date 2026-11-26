@@ -1,13 +1,15 @@
+import { getPayingActivityCredential } from '@package/app'
 import {
   activityStorage,
   type CredentialForDisplay,
+  type CredentialRecord,
   fetchPaymentTransactionStatus,
   getTransactionStatusMetadata,
   isPasoTransaction,
   useCredentials,
   useParadym,
 } from '@paradym/wallet-sdk'
-import type { PaymentActivity, PresentationActivityCredential } from '@paradym/wallet-sdk/storage/activityStore'
+import type { PaymentActivity } from '@paradym/wallet-sdk/storage/activityStore'
 import { useEffect } from 'react'
 
 export function usePaymentTransactionStatus(activity: PaymentActivity | undefined) {
@@ -42,12 +44,12 @@ export function usePaymentTransactionStatus(activity: PaymentActivity | undefine
  * the paying card was marked fall back to the shared card that has a status URL.
  */
 export function getPaymentStatusCard(activity: PaymentActivity, credentials: CredentialForDisplay[]) {
-  const shared = activity.request.credentials.filter(
-    (activityCredential): activityCredential is PresentationActivityCredential => 'id' in activityCredential
-  )
-  const paidWith = shared.find((activityCredential) => activityCredential.authorizesTransaction)
+  const recordOf = (id: string) => credentials.find((credential) => credential.id === id)?.record
+  const hasStatus = (record?: CredentialRecord) => !!record && getTransactionStatusMetadata(record) !== null
 
-  return (paidWith ? [paidWith] : shared)
-    .map((activityCredential) => credentials.find((credential) => credential.id === activityCredential.id)?.record)
-    .find((record) => record && getTransactionStatusMetadata(record) !== null)
+  const paidWith = getPayingActivityCredential(activity, (activityCredential) =>
+    hasStatus(recordOf(activityCredential.id))
+  )
+  const record = paidWith && recordOf(paidWith.id)
+  return hasStatus(record) ? record : undefined
 }

@@ -51,8 +51,8 @@ export function WalletScreen() {
   const toast = useToastController()
   useRefreshedDeferredCredentials(
     useCallback(
-      (cardNames: string[]) =>
-        toast.show(t(commonMessages.deferredCardsIssued(cardNames.length)), { customData: { preset: 'success' } }),
+      (count: number) =>
+        toast.show(t(commonMessages.deferredCardsIssued(count)), { customData: { preset: 'success' } }),
       [toast, t]
     )
   )

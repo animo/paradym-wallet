@@ -1,6 +1,13 @@
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { BackFooter, CardWithAttributes, getActivityInteraction, getPaymentSummary, MiniDocument } from '@package/app'
+import {
+  BackFooter,
+  CardWithAttributes,
+  getActivityInteraction,
+  getPayingActivityCredential,
+  getPaymentSummary,
+  MiniDocument,
+} from '@package/app'
 import { credentialSvgArtwork } from '@package/app/components/CredentialSvg'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
@@ -452,17 +459,12 @@ export function SharedActivityDetailSection({
  * IBAN, which only works while the card is still in the wallet.
  */
 function getPaymentCard(activity: PaymentActivity, credentials: CredentialForDisplay[]) {
-  const shared = activity.request.credentials.filter(
-    (activityCredential): activityCredential is PresentationActivityCredential => 'id' in activityCredential
-  )
   const findCredential = (id: string) => credentials.find((credential) => credential.id === id)
 
-  const activityCredential =
-    shared.find((activityCredential) => activityCredential.authorizesTransaction) ??
-    shared.find((activityCredential) => {
-      const credential = findCredential(activityCredential.id)
-      return credential && isPaymentCard(credential)
-    })
+  const activityCredential = getPayingActivityCredential(activity, (activityCredential) => {
+    const credential = findCredential(activityCredential.id)
+    return !!credential && isPaymentCard(credential)
+  })
 
   return activityCredential && { activityCredential, credential: findCredential(activityCredential.id) }
 }

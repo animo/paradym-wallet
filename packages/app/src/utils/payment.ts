@@ -3,6 +3,8 @@ import {
   type FormattedTransactionDataPaymentSingle,
   isPasoMandateType,
   isPasoTransaction,
+  type PaymentActivity,
+  type PresentationActivityCredential,
 } from '@paradym/wallet-sdk'
 
 export type PaymentTransaction = FormattedTransactionDataPaymentSingle | FormattedTransactionDataPaso
@@ -35,4 +37,18 @@ export function getPaymentSummary(transaction: PaymentTransaction): { amount: st
 
   const embedded = transaction.items.find((item) => item.kind === 'payment')
   return embedded && { amount: embedded.payment.amount.value, payee: embedded.payment.payee.value }
+}
+
+/**
+ * The shared card a payment activity was paid with. Activities stored before the paying card was marked fall back to
+ * the first shared card `isFallback` accepts.
+ */
+export function getPayingActivityCredential(
+  activity: PaymentActivity,
+  isFallback: (activityCredential: PresentationActivityCredential) => boolean
+) {
+  const shared = activity.request.credentials.filter(
+    (activityCredential): activityCredential is PresentationActivityCredential => 'id' in activityCredential
+  )
+  return shared.find((activityCredential) => activityCredential.authorizesTransaction) ?? shared.find(isFallback)
 }

@@ -34,10 +34,8 @@ export function InboxScreen() {
       .map((n) => n.deferredCredentialRecord)
 
     fetchAndProcessDeferredCredentials(paradym, deferredCredentialRecords)
-      .then((cardNames) => {
-        if (cardNames.length) {
-          toast.show(t(commonMessages.deferredCardsIssued(cardNames.length)), { customData: { preset: 'success' } })
-        }
+      .then((count) => {
+        if (count) toast.show(t(commonMessages.deferredCardsIssued(count)), { customData: { preset: 'success' } })
       })
       .finally(() => setRefreshing(false))
   }, [inboxNotifications, paradym, toast, t])

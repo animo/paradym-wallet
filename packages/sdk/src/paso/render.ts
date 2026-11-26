@@ -29,6 +29,7 @@ export type PasoDisplayValue =
   /** [PaSO View] Section 3 `template:` — literal text with formatted claim values in between. */
   | { type: 'template'; markdown: boolean; parts: PasoDisplayPart[] }
 
+/** A string is the template's own text, an object a claim value inserted into it. */
 export type PasoDisplayPart = string | Exclude<PasoDisplayValue, { type: 'template' | 'image' }>
 
 /** A claim label, which a `template:mini_markdown` display type turns into parts like a value. */
@@ -102,8 +103,9 @@ function readPath(payload: unknown, path: Array<string | null>): { present: bool
 
 const pathKey = (path: Array<string | null | number>) => path.join(' ')
 
-function toPart(value: unknown, valueType: string | undefined): PasoDisplayPart | undefined {
-  if (valueType === undefined) return typeof value === 'string' ? value : undefined
+// A plain-text value is a `text` part rather than a string, so it can't be mistaken for the template's own text
+function toPart(value: unknown, valueType: string | undefined): Exclude<PasoDisplayPart, string> | undefined {
+  if (valueType === undefined) return typeof value === 'string' ? { type: 'text', value } : undefined
   if (valueType === 'boolean') return typeof value === 'boolean' ? { type: 'boolean', value } : undefined
   if (typeof value !== 'string') return undefined
   if (valueType === 'mini_markdown') return { type: 'mini_markdown', value }
@@ -268,7 +270,7 @@ async function resolveValue(
       'unsupportedValueType'
     )
   }
-  return typeof part === 'string' ? { type: 'text', value: part } : part
+  return part
 }
 
 /** The value of a claim without a display array, as the details view shows it. */

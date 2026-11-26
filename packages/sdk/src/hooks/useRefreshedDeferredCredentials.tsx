@@ -12,9 +12,9 @@ import { useParadym } from './useParadym'
  * component is mounted. So a card that becomes ready while the wallet is open is added without the user
  * having to look for it in the inbox.
  *
- * @param onIssued Called with the names of the cards that were issued in the meantime.
+ * @param onIssued Called with the number of cards that were issued in the meantime.
  */
-export const useRefreshedDeferredCredentials = (onIssued?: (cardNames: string[]) => void) => {
+export const useRefreshedDeferredCredentials = (onIssued?: (count: number) => void) => {
   const { paradym } = useParadym('unlocked')
   const { deferredCredentials, isLoading: isLoadingDeferredCredentials } = useDeferredCredentials()
   // The `lastCheckedAt` each credential was last fetched at. A fetch that fails or still returns pending
@@ -44,8 +44,8 @@ export const useRefreshedDeferredCredentials = (onIssued?: (cardNames: string[])
 
       paradym.logger.debug('Refreshing deferred credentials')
       fetchAndProcessDeferredCredentials(paradym, due)
-        .then((cardNames) => {
-          if (cardNames.length) onIssued?.(cardNames)
+        .then((count) => {
+          if (count) onIssued?.(count)
         })
         .finally(() => {
           paradym.logger.debug('Finished refreshing deferred credentials')

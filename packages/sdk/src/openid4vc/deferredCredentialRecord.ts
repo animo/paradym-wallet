@@ -2,7 +2,7 @@ import { Kms } from '@credo-ts/core'
 import type { OpenId4VciRequestTokenResponse } from '@credo-ts/openid4vc'
 import { assertAgentType } from '../agent'
 import { getCredentialDisplayWithDefaults } from '../display/common'
-import { getCredentialForDisplay, getCredentialForDisplayId } from '../display/credential'
+import { getCredentialForDisplayId } from '../display/credential'
 import { getOpenId4VcCredentialDisplay } from '../display/openid4vc'
 import { extractOpenId4VcCredentialMetadata } from '../metadata/credentials'
 import type { ParadymWalletSdk } from '../ParadymWalletSdk'
@@ -15,22 +15,22 @@ import {
   updateDeferredCredential,
 } from '../storage/deferredCredentialStore'
 
-/** Returns the names of the cards that were issued, so the app can tell the user they arrived. */
+/** Returns how many cards were issued, so the app can tell the user they arrived. */
 export async function fetchAndProcessDeferredCredentials(
   paradym: ParadymWalletSdk,
   deferredCredentials: DeferredCredential[]
-): Promise<string[]> {
+): Promise<number> {
   const results = await Promise.allSettled(
     deferredCredentials.map((deferredCredential) => fetchAndProcessDeferredCredential(paradym, deferredCredential))
   )
 
-  return results.flatMap((result) => (result.status === 'fulfilled' ? result.value : []))
+  return results.reduce((count, result) => count + (result.status === 'fulfilled' ? result.value : 0), 0)
 }
 
 export async function fetchAndProcessDeferredCredential(
   paradym: ParadymWalletSdk,
   deferredCredential: DeferredCredential
-): Promise<string[]> {
+): Promise<number> {
   assertAgentType(paradym.agent, 'openid4vc')
   const { issuerMetadata, clientId, response: deferredCredentialResponse } = deferredCredential
 
@@ -100,7 +100,7 @@ export async function fetchAndProcessDeferredCredential(
       })
 
       await deleteDeferredCredential(paradym, deferredCredential.id)
-      return credentials.map(({ credential }) => getCredentialForDisplay(credential).display.name)
+      return credentials.length
     } else {
       await updateDeferredCredential(paradym, {
         id: deferredCredential.id,
@@ -134,5 +134,5 @@ export async function fetchAndProcessDeferredCredential(
     }
   }
 
-  return []
+  return 0
 }

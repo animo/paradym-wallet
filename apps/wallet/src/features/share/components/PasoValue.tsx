@@ -93,41 +93,63 @@ type ParagraphProps = ComponentProps<typeof Paragraph>
 
 /**
  * [PaSO View] Section 3 `mini_markdown`: emphasis, strong emphasis and `<u>` underline are rendered,
- * every other construct stays literal text.
+ * every other construct stays literal text. Like Markdown, an underscore inside a word is not emphasis.
+ *
+ * `fill` puts the inserted values of a template back into the text once it is parsed.
  */
-function MiniMarkdownSpans({ text }: { text: string }) {
-  const pattern = /(\*\*[^*]+\*\*|__[^_]+__|<u>[^<]+<\/u>|\*[^*]+\*|_[^_]+_)/g
+function MiniMarkdownSpans({
+  text,
+  fill = (segment) => segment,
+}: {
+  text: string
+  fill?: (segment: string) => string
+}) {
+  const pattern =
+    /(\*\*[^*]+\*\*|(?<![A-Za-z0-9])__[^_]+__(?![A-Za-z0-9])|<u>[^<]+<\/u>|\*[^*]+\*|(?<![A-Za-z0-9])_[^_]+_(?![A-Za-z0-9]))/g
+  // With one capture group, split puts the matches at the odd indices
   return text.split(pattern).map((segment, index) => {
     const key = `${index}-${segment}`
-    if (/^(\*\*|__).+\1$/.test(segment)) {
+    if (index % 2 === 0) return fill(segment)
+    if (/^(\*\*|__)/.test(segment)) {
       return (
         <Text key={key} fontWeight="semiBold">
-          {segment.slice(2, -2)}
+          {fill(segment.slice(2, -2))}
         </Text>
       )
     }
-    if (/^<u>.+<\/u>$/.test(segment)) {
+    if (segment.startsWith('<u>')) {
       return (
         <Text key={key} textDecorationLine="underline">
-          {segment.slice(3, -4)}
+          {fill(segment.slice(3, -4))}
         </Text>
       )
     }
-    if (/^(\*|_).+\1$/.test(segment)) {
-      return (
-        <Text key={key} fontStyle="italic">
-          {segment.slice(1, -1)}
-        </Text>
-      )
-    }
-    return segment
+    return (
+      <Text key={key} fontStyle="italic">
+        {fill(segment.slice(1, -1))}
+      </Text>
+    )
   })
 }
 
+const valuePlaceholder = /(\d+)/g
+
 function PartsText({ parts, markdown }: { parts: PasoDisplayPart[]; markdown: boolean }) {
   const format = usePasoValueFormatter()
-  const text = parts.map((part) => (typeof part === 'string' ? part : format(part))).join('')
-  return markdown ? <MiniMarkdownSpans text={text} /> : text
+  if (!markdown) return parts.map((part) => (typeof part === 'string' ? part : format(part))).join('')
+
+  // Inserted values are payload data, not markup ([PaSO View] Section 6.1): they stand in as placeholders while the
+  // template's own text is parsed, and go in unparsed afterwards
+  const values = parts.flatMap((part) => (typeof part === 'string' ? [] : [format(part)]))
+  let valueIndex = 0
+  const template = parts.map((part) => (typeof part === 'string' ? part : `${valueIndex++}`)).join('')
+
+  return (
+    <MiniMarkdownSpans
+      text={template}
+      fill={(segment) => segment.replace(valuePlaceholder, (_, index) => values[Number(index)])}
+    />
+  )
 }
 
 export function PasoLabelText({ label, ...props }: { label: PasoDisplayLabel } & ParagraphProps) {
