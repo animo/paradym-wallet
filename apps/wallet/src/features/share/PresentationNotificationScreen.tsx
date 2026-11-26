@@ -1,10 +1,21 @@
+import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { type SlideStep, SlideWizard } from '@package/app'
+import {
+  getPaymentKind,
+  getPaymentSummary,
+  isPaymentTransaction,
+  type PaymentTransaction,
+  type SlideStep,
+  SlideWizard,
+} from '@package/app'
 import { commonMessages } from '@package/translations'
 import {
   type DisplayImage,
   type FormattedSubmission,
+  type FormattedSubmissionEntrySatisfied,
   type FormattedTransactionData,
+  getTransactionStatusMetadata,
+  isPasoTransaction,
   type PartyRegistration,
   pasoPaymentTransactionDataType,
   type TrustedEntity,
@@ -12,7 +23,8 @@ import {
 import { InteractionErrorSlide } from '../receive/slides/InteractionErrorSlide'
 import { LoadingRequestSlide } from '../receive/slides/LoadingRequestSlide'
 import { VerifyPartySlide } from '../receive/slides/VerifyPartySlide'
-import { PasoPaymentSlide } from './slides/PasoPaymentSlide'
+import { PasoConsentSlide } from './slides/PasoConsentSlide'
+import { type PasoRefusal, PasoRefusalSlide } from './slides/PasoRefusalSlide'
 import { PayAndShareSlide } from './slides/PayAndShareSlide'
 import { PaymentSlide } from './slides/PaymentSlide'
 import { PinSlide } from './slides/PinSlide'
@@ -40,6 +52,8 @@ interface PresentationNotificationScreenProps {
   onCancel: () => void
   onComplete: () => void
   errorReason?: string
+  /** A PaSO refusal, which gets its own screen instead of the generic error. */
+  pasoRefusal?: PasoRefusal
 }
 
 export function PresentationNotificationScreen({
@@ -60,6 +74,7 @@ export function PresentationNotificationScreen({
   isResolvingTransaction,
   onSelectCredential,
   errorReason,
+  pasoRefusal,
 }: PresentationNotificationScreenProps) {
   const { t } = useLingui()
   return (
@@ -80,7 +95,14 @@ export function PresentationNotificationScreen({
             screen: (
               <VerifyPartySlide
                 key="verify-issuer"
-                type={transaction?.type === 'qes_authorization' ? 'signing' : 'request'}
+                type={
+                  transaction?.type === 'qes_authorization'
+                    ? 'signing'
+                    : isPaymentTransaction(transaction)
+                      ? getPaymentKind(transaction)
+                      : 'request'
+                }
+                payee={transaction?.type === pasoPaymentTransactionDataType ? transaction.payee.value : undefined}
                 entityId={entityId}
                 name={verifierName}
                 logo={logo}
@@ -116,16 +138,16 @@ export function PresentationNotificationScreen({
                     ),
                   },
                 ]
-              : transaction?.type === pasoPaymentTransactionDataType
+              : isPasoTransaction(transaction)
                 ? [
                     {
                       step: 'share-credentials',
                       progress: 66,
                       screen: (
-                        <PasoPaymentSlide
-                          key="paso-payment"
+                        <PasoConsentSlide
+                          key="paso-consent"
                           transaction={transaction}
-                          verifier={{ name: verifierName ?? t(commonMessages.unknownOrganization), logo }}
+                          verifierName={verifierName ?? t(commonMessages.unknownOrganization)}
                           submission={submission}
                           onAccept={usePin ? undefined : onAccept}
                           onDecline={onDecline}
@@ -185,8 +207,16 @@ export function PresentationNotificationScreen({
             : []),
           usePin && {
             step: 'pin-enter',
+            scrollsOwnContent: true,
             progress: 82.5,
-            screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinSubmit={onAccept} />,
+            screen: (
+              <PinSlide
+                key="pin-enter"
+                isLoading={isAccepting}
+                onPinSubmit={onAccept}
+                isTransaction={isPaymentTransaction(transaction)}
+              />
+            ),
           },
           {
             step: 'success',
@@ -200,27 +230,76 @@ export function PresentationNotificationScreen({
                 verifierName={verifierName}
                 onComplete={onComplete}
                 submission={submission}
-                payment={
-                  transaction?.type === pasoPaymentTransactionDataType
-                    ? { amount: transaction.amount.value, payee: transaction.payee.value }
-                    : undefined
-                }
+                payment={isPaymentTransaction(transaction) ? paymentSummary(transaction, submission) : undefined}
               />
             ),
           },
         ].filter(Boolean) as SlideStep[]
       }
-      errorScreen={() => (
-        <InteractionErrorSlide
-          key="presentation-error"
-          flowType={transaction?.type === 'qes_authorization' ? 'sign' : 'verify'}
-          reason={errorReason}
-          onCancel={onCancel}
-          showReturnToApp
-        />
-      )}
+      errorScreen={() =>
+        pasoRefusal ? (
+          <PasoRefusalSlide key="paso-refusal" refusal={pasoRefusal} verifierName={verifierName} onClose={onCancel} />
+        ) : (
+          <InteractionErrorSlide
+            key="presentation-error"
+            flowType={transaction?.type === 'qes_authorization' ? 'sign' : 'verify'}
+            reason={errorReason}
+            onCancel={onCancel}
+            showReturnToApp
+          />
+        )
+      }
       isError={!!errorReason}
       onCancel={onDecline}
+      confirmation={
+        isPaymentTransaction(transaction)
+          ? {
+              title: t(stopPaymentTitles[getPaymentKind(transaction)]),
+              description: t({
+                id: 'presentation.stopPaymentDescription',
+                message: 'If you stop, nothing will be authorised.',
+                comment:
+                  'Description in the confirmation dialog shown when the user stops a payment, mandate or transaction',
+              }),
+            }
+          : undefined
+      }
     />
   )
+}
+
+const stopPaymentTitles = {
+  payment: defineMessage({
+    id: 'presentation.stopPaymentTitle',
+    message: 'Stop payment?',
+    comment: 'Title of the confirmation dialog shown when the user stops a payment',
+  }),
+  mandate: defineMessage({
+    id: 'presentation.stopMandateTitle',
+    message: 'Stop mandate?',
+    comment: 'Title of the confirmation dialog shown when the user stops setting up a mandate',
+  }),
+  transaction: defineMessage({
+    id: 'presentation.stopTransactionTitle',
+    message: 'Stop transaction?',
+    comment:
+      'Title of the confirmation dialog shown when the user stops a bank transaction that is not a plain payment',
+  }),
+}
+
+/** What the success screen says about an authorised payment or PaSO transaction, and the card it was authorised with. */
+function paymentSummary(transaction: PaymentTransaction, submission?: FormattedSubmission) {
+  const card = submission?.entries.find(
+    (entry): entry is FormattedSubmissionEntrySatisfied =>
+      entry.inputDescriptorId === transaction.cardForTransactionId && entry.isSatisfied
+  )?.credentials[0]?.credential
+
+  return {
+    ...getPaymentSummary(transaction),
+    kind: getPaymentKind(transaction),
+    issuer: card?.display.issuer.name,
+    card,
+    // Only a TS 12 payment has a status backchannel, and only when its card says where to poll it
+    canFollowStatus: !isPasoTransaction(transaction) && !!card && getTransactionStatusMetadata(card.record) !== null,
+  }
 }

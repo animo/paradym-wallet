@@ -30,6 +30,8 @@ const maxUiLabelLengths: Record<string, number> = {
   affirmative_action_label: 40,
   denial_action_label: 40,
   security_hint: 160,
+  // WPA Rulebook v1.1 Section 4.7.3.
+  payment_account_label: 40,
 }
 
 /**

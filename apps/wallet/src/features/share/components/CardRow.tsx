@@ -6,7 +6,7 @@ import { commonMessages } from '@package/translations'
 import { Paragraph } from '@package/ui/base/Paragraph'
 import { XStack, YStack } from '@package/ui/base/Stacks'
 import { MiniCardRowItem } from '@package/ui/components/MiniCardRowItem'
-import type { FormattedSubmissionEntrySatisfiedCredential } from '@paradym/wallet-sdk'
+import type { CredentialForDisplay } from '@paradym/wallet-sdk'
 import type { ReactNode } from 'react'
 
 /**
@@ -19,11 +19,14 @@ export function CardRow({
   accessory,
   artwork,
   compact,
+  wrap,
 }: {
-  card: FormattedSubmissionEntrySatisfiedCredential
+  card: { credential: CredentialForDisplay }
   accessory?: ReactNode
   artwork?: ReactNode
   compact?: boolean
+  /** Shows everything in full, wrapped, as a payment consent screen has to ([PaSO View] Section 2). */
+  wrap?: boolean
 }) {
   const { t } = useLingui()
   const detail = useCardDetail()(card)
@@ -38,11 +41,17 @@ export function CardRow({
         subtitle={card.credential.display.issuer.name ?? t(commonMessages.unknown)}
         artwork={artwork}
         compact={compact}
+        wrap={wrap}
       />
       {(detail || accessory) && (
         <XStack items="center" justify="space-between" gap="2">
-          <Paragraph variant="sub" color="grey-700" flexShrink={1} numberOfLines={1}>
-            {detail ?? ''}
+          <Paragraph variant="sub" color="grey-700" flexShrink={1} numberOfLines={wrap ? undefined : 1}>
+            {detail?.label && (
+              <Paragraph variant="sub" color="grey-600" fontWeight="semiBold">
+                {`${detail.label}  `}
+              </Paragraph>
+            )}
+            {detail?.value ?? ''}
           </Paragraph>
           {accessory}
         </XStack>
@@ -59,13 +68,17 @@ export function CardRow({
 export function useCardDetail() {
   const { t, i18n } = useLingui()
 
-  return (card: FormattedSubmissionEntrySatisfiedCredential) => {
+  return (card: { credential: CredentialForDisplay }): { label?: string; value: string } | undefined => {
     const maskedIban = card.credential.rawAttributes.masked_iban
-    if (typeof maskedIban === 'string') return maskedIban
+    // WPA Rulebook v1.1 Section 4.7.2 level 5: the masked IBAN is shown with its label.
+    if (typeof maskedIban === 'string') {
+      const label = card.credential.attributes.find((attribute) => attribute.path[0] === 'masked_iban')?.label
+      return { label, value: maskedIban }
+    }
 
     const { issuedAt } = card.credential.metadata
     const issued = issuedAt ? issuedMessage(new Date(issuedAt), i18n.locale) : undefined
-    return issued ? t(issued) : undefined
+    return issued ? { value: t(issued) } : undefined
   }
 }
 

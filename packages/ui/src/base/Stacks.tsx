@@ -24,7 +24,7 @@ export const Stack = styled(TStack, {
       // A card on a `surface` background: a soft drop, for layers rather than a floating card. A box shadow
       // rather than elevation, which Android draws far darker, so both platforms get the same drop.
       card: {
-        boxShadow: '0px 1px 6px rgba(0, 0, 0, 0.06)',
+        boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.035)',
       },
     },
     bordered: {

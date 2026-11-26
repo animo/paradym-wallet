@@ -70,11 +70,11 @@ export function MdocOfflineSharingScreen({ sessionTranscript, deviceRequest }: M
     [toast, pushToWallet]
   )
 
-  const onProofAccept = async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+  const onProofAccept = async ({ pin, confirmedWithBiometrics, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
     // Already checked for submission in the useEffect
     if (!submission) return
 
-    if (shouldUsePin) {
+    if (shouldUsePin && !confirmedWithBiometrics) {
       if (!pin) {
         onPinError?.()
         return

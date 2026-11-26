@@ -173,7 +173,11 @@ export const CredentialRetrievalSlide = ({
           exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
         >
           <AnimatedStack style={animatedTextStyle}>
-            {isCompleteAndAllowed ? (
+            {isCompleteAndAllowed && deferred ? (
+              <Heading text="center">
+                <Trans id="receiveCredential.deferredCredentialRequestedHeader">Card requested</Trans>
+              </Heading>
+            ) : isCompleteAndAllowed ? (
               <Heading text="center">{t(commonMessages.success)}</Heading>
             ) : isStoring ? (
               <Heading></Heading>
@@ -196,14 +200,20 @@ export const CredentialRetrievalSlide = ({
           exiting={!isCompleteAndAllowed && !isStoring ? FadeOut.duration(100) : undefined}
         >
           <AnimatedStack style={animatedTextStyle}>
-            {isCompleteAndAllowed ? (
+            {isCompleteAndAllowed && deferred ? (
+              <Paragraph text="center" mt="-2" mb="8">
+                <Trans id="retrieveCredential.deferredCardRequested">
+                  The card is added to your wallet as soon as it's ready. You'll find it in your inbox until then.
+                </Trans>
+              </Paragraph>
+            ) : isCompleteAndAllowed ? (
               <Paragraph text="center" mt="-2" mb="8">
                 <Trans id="retrieveCredential.cardSuccessfully added">Card successfully added to your wallet!</Trans>
               </Paragraph>
             ) : isStoring ? (
               <Paragraph text="center" mt="-2" mb="8"></Paragraph>
             ) : deferred ? (
-              <Paragraph text="center" mt="-2" mb="8">
+              <Paragraph mt="-2" mb="8">
                 <Trans id="retrieveCredential.cardPending">The card will be fetched once available.</Trans>
               </Paragraph>
             ) : null}
@@ -255,7 +265,7 @@ export const CredentialRetrievalSlide = ({
         >
           {scrollViewHeight && isAllowedToAccept ? (
             <AnimatedStack key="credential-attributes" entering={FadeIn.duration(200)}>
-              {credential && hasCustomCredentialDisplay(credential.metadata.type) ? (
+              {credential && hasCustomCredentialDisplay(credential) ? (
                 <CustomCredentialAttributes credential={credential} scrollRef={scrollViewRef} />
               ) : attributes ? (
                 <CredentialAttributes attributes={attributes} scrollRef={scrollViewRef} />

@@ -4,7 +4,7 @@ import { getPaymentsMetadata } from '../metadata/credentials'
 import { pasoLocalePriorityList } from '../paso/locale'
 import {
   assertPasoCredentialsOnlyForPasoTransactions,
-  type FormattedTransactionDataPasoPayment,
+  type FormattedTransactionDataPaso,
   hasPasoTransactionData,
   resolvePasoTransactionData,
 } from '../paso/transactionData'
@@ -38,7 +38,7 @@ export type FormattedTransactionDataQesAuthorization = {
 export type FormattedTransactionData =
   | FormattedTransactionDataPaymentSingle
   | FormattedTransactionDataQesAuthorization
-  | FormattedTransactionDataPasoPayment
+  | FormattedTransactionDataPaso
 
 /**
  * The transaction a request asks the user to authorize, whichever specification defines it.

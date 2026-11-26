@@ -50,6 +50,7 @@ import QrCodeIcon from 'react-native-heroicons/outline/QrCodeIcon'
 import QuestionMarkCircleIcon from 'react-native-heroicons/outline/QuestionMarkCircleIcon'
 import QueueListIcon from 'react-native-heroicons/outline/QueueListIcon'
 import ShieldCheckIcon from 'react-native-heroicons/outline/ShieldCheckIcon'
+import ShieldExclamationIcon from 'react-native-heroicons/outline/ShieldExclamationIcon'
 import StarIcon from 'react-native-heroicons/outline/StarIcon'
 import TrashIcon from 'react-native-heroicons/outline/TrashIcon'
 import UserIcon from 'react-native-heroicons/outline/UserIcon'
@@ -166,6 +167,7 @@ export const HeroIcons = {
   Star: wrapIcon(StarIcon),
   Bolt: wrapIcon(BoltFilledIcon),
   ShieldCheck: wrapIcon(ShieldCheckIcon),
+  ShieldExclamation: wrapIcon(ShieldExclamationIcon),
   ArrowPath: wrapIcon(ArrowPathIcon),
   LockClosed: wrapIcon(LockClosedIcon),
   ArrowRight: wrapIcon(ArrowRightIcon),

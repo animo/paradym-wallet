@@ -1,7 +1,16 @@
 import { useLingui } from '@lingui/react/macro'
 import { BackFooter, InboxNotificationRowCard, useScrollViewPosition } from '@package/app'
 import { commonMessages } from '@package/translations'
-import { AnimatedStack, FlexPage, HeaderContainer, Heading, Paragraph, ScrollView, YStack } from '@package/ui'
+import {
+  AnimatedStack,
+  FlexPage,
+  HeaderContainer,
+  Heading,
+  Paragraph,
+  ScrollView,
+  useToastController,
+  YStack,
+} from '@package/ui'
 import { fetchAndProcessDeferredCredentials, useInboxNotifications, useParadym } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
 import { useCallback, useState } from 'react'
@@ -15,6 +24,7 @@ export function InboxScreen() {
   const { handleScroll, isScrolledByOffset, scrollEventThrottle } = useScrollViewPosition(0)
   const { push } = useRouter()
   const { t } = useLingui()
+  const toast = useToastController()
 
   const onRefresh = useCallback(() => {
     setRefreshing(true)
@@ -23,10 +33,12 @@ export function InboxScreen() {
       .filter((n) => n.type === 'DeferredCredentialRecord')
       .map((n) => n.deferredCredentialRecord)
 
-    fetchAndProcessDeferredCredentials(paradym, deferredCredentialRecords).finally(() => {
-      setRefreshing(false)
-    })
-  }, [inboxNotifications, paradym])
+    fetchAndProcessDeferredCredentials(paradym, deferredCredentialRecords)
+      .then((count) => {
+        if (count) toast.show(t(commonMessages.deferredCardsIssued(count)), { customData: { preset: 'success' } })
+      })
+      .finally(() => setRefreshing(false))
+  }, [inboxNotifications, paradym, toast, t])
 
   return (
     <FlexPage gap="0" paddingHorizontal="0">
@@ -92,9 +104,8 @@ export function InboxScreen() {
                 <InboxNotificationRowCard
                   key={notification.id}
                   title={
-                    (notification.notificationTitle ?? notification.type === 'ProofRecord')
-                      ? t(commonMessages.dataRequest)
-                      : t(commonMessages.credential)
+                    notification.notificationTitle ??
+                    (notification.type === 'ProofRecord' ? t(commonMessages.dataRequest) : t(commonMessages.credential))
                   }
                   description={description}
                   backgroundColor={notification.backgroundColor}

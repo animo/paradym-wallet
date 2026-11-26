@@ -20,6 +20,8 @@ export type ActivityIndexEntry = {
   date: string
   type: ActivityType
   entityId?: string
+  /** The cards the activity received or shared. Not on entries written before the index had it. */
+  credentialIds?: string[]
 }
 
 export type ActivityIndex = {
@@ -54,6 +56,10 @@ function toIndexEntry(activity: Activity): ActivityIndexEntry {
     date: activity.date,
     type: activity.type,
     entityId: activity.entity.id,
+    credentialIds:
+      activity.type === 'received'
+        ? activity.credentialIds
+        : activity.request.credentials.flatMap((credential) => ('id' in credential ? [credential.id] : [])),
   }
 }
 
@@ -141,4 +147,23 @@ export async function getActivityRecordById(agent: Agent, activityId: string): P
 export async function getActivityRecordsByIds(agent: Agent, activityIds: string[]): Promise<Activity[]> {
   const activities = await Promise.all(activityIds.map((activityId) => getActivityRecordById(agent, activityId)))
   return activities.filter((activity): activity is Activity => activity !== undefined)
+}
+
+/** Adds the cards to the index entries written before the index had them, so those can be filtered by card too. */
+export async function backfillActivityIndexCredentialIds(agent: Agent) {
+  const outdatedIds = (await getActivityIndex(agent)).filter((entry) => !entry.credentialIds).map((entry) => entry.id)
+  if (outdatedIds.length === 0) return
+
+  const activities = await getActivityRecordsByIds(agent, outdatedIds)
+  const credentialIds = new Map(activities.map((activity) => [activity.id, toIndexEntry(activity).credentialIds]))
+
+  // Read again, to not drop an activity that was added while the records were read
+  const entries = await getActivityIndex(agent)
+  await writeActivityIndex(
+    agent,
+    // An entry without a record gets an empty list, so it is not read again on every unlock
+    entries.map((entry) =>
+      entry.credentialIds ? entry : { ...entry, credentialIds: credentialIds.get(entry.id) ?? [] }
+    )
+  )
 }

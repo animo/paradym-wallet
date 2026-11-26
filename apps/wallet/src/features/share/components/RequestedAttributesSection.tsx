@@ -23,9 +23,15 @@ export type RequestedAttributesSectionProps = {
   submission: FormattedSubmission
   /** Lets the user pick another of the cards that answer an entry. */
   onSelectCredential?: (inputDescriptorId: string, credentialRecordId: string) => void
+  /** Replaces the heading and description shown while every card is available. */
+  satisfiedIntro?: { heading: string; description: string }
 }
 
-export function RequestedAttributesSection({ submission, onSelectCredential }: RequestedAttributesSectionProps) {
+export function RequestedAttributesSection({
+  submission,
+  onSelectCredential,
+  satisfiedIntro,
+}: RequestedAttributesSectionProps) {
   const { t } = useLingui()
 
   const satisfiedEntries = submission.entries.filter((e): e is FormattedSubmissionEntrySatisfied => e.isSatisfied)
@@ -54,17 +60,21 @@ export function RequestedAttributesSection({ submission, onSelectCredential }: R
   return (
     <YStack gap="5">
       <YStack gap="2">
-        <Heading heading="sub2">{firstHeading}</Heading>
+        <Heading heading="sub2">
+          {satisfiedIntro && unsatisfiedEntries.length === 0 ? satisfiedIntro.heading : firstHeading}
+        </Heading>
         <Paragraph>
-          {t(
-            unsatisfiedEntries.length === 0
-              ? commonMessages.allRequestedCardsDescription(satisfiedEntries.length)
-              : unavailableEntries.length === 0
-                ? unmetAttributeMessages.description
-                : satisfiedEntries.length === 0 && partiallySatisfiedEntries.length === 0
-                  ? commonMessages.noRequestedCardsDescription
-                  : commonMessages.someRequestedCardsMissingDescription
-          )}
+          {satisfiedIntro && unsatisfiedEntries.length === 0
+            ? satisfiedIntro.description
+            : t(
+                unsatisfiedEntries.length === 0
+                  ? commonMessages.allRequestedCardsDescription(satisfiedEntries.length)
+                  : unavailableEntries.length === 0
+                    ? unmetAttributeMessages.description
+                    : satisfiedEntries.length === 0 && partiallySatisfiedEntries.length === 0
+                      ? commonMessages.noRequestedCardsDescription
+                      : commonMessages.someRequestedCardsMissingDescription
+              )}
         </Paragraph>
       </YStack>
 

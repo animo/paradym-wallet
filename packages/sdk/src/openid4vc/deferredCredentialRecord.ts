@@ -15,19 +15,22 @@ import {
   updateDeferredCredential,
 } from '../storage/deferredCredentialStore'
 
+/** Returns how many cards were issued, so the app can tell the user they arrived. */
 export async function fetchAndProcessDeferredCredentials(
   paradym: ParadymWalletSdk,
   deferredCredentials: DeferredCredential[]
-) {
-  await Promise.allSettled(
+): Promise<number> {
+  const results = await Promise.allSettled(
     deferredCredentials.map((deferredCredential) => fetchAndProcessDeferredCredential(paradym, deferredCredential))
   )
+
+  return results.reduce((count, result) => count + (result.status === 'fulfilled' ? result.value : 0), 0)
 }
 
 export async function fetchAndProcessDeferredCredential(
   paradym: ParadymWalletSdk,
   deferredCredential: DeferredCredential
-) {
+): Promise<number> {
   assertAgentType(paradym.agent, 'openid4vc')
   const { issuerMetadata, clientId, response: deferredCredentialResponse } = deferredCredential
 
@@ -97,6 +100,7 @@ export async function fetchAndProcessDeferredCredential(
       })
 
       await deleteDeferredCredential(paradym, deferredCredential.id)
+      return credentials.length
     } else {
       await updateDeferredCredential(paradym, {
         id: deferredCredential.id,
@@ -129,4 +133,6 @@ export async function fetchAndProcessDeferredCredential(
       paradym.logger.error('Failed to update deferred credential', { error })
     }
   }
+
+  return 0
 }

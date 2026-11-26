@@ -51,6 +51,7 @@ export function OfflineSharingScreen({
           },
           usePin && {
             step: 'pin-enter',
+            scrollsOwnContent: true,
             progress: 80,
             screen: <PinSlide key="pin-enter" isLoading={isAccepting} onPinSubmit={onAccept} />,
           },

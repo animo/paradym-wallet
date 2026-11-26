@@ -3,16 +3,10 @@ import { validatePasoDataUrlImage } from './image'
 /**
  * Value types, per [PaSO View] Section 3.
  *
- * This wallet does not implement [PaSO View] — it renders the Payment rulebook with a dedicated UI,
- * which View Section 1.1 allows and which is what keeps us off the hook for the advanced profile.
- * What we do need from View is the *validation* half: [PaSO Core] Section 7 makes a
- * `transaction_data` entry incompatible when a displayed claim declares a `value_type` the Wallet
- * does not support, or when a payload value does not conform to its declared type. Getting that
- * wrong means showing the user an amount the Authorizing Party will read differently.
- *
- * So every type below is *validated*; only the ones the Payment rulebook uses are *rendered*.
- * `template:${value_type}` is deliberately unsupported: it interpolates other claims into a string,
- * which only a generic renderer can do.
+ * [PaSO Core] Section 7 makes a `transaction_data` entry incompatible when a displayed claim declares
+ * a `value_type` the Wallet does not support, or when a payload value does not conform to its
+ * declared type. Getting that wrong means showing the user an amount the Authorizing Party will read
+ * differently. Rendering the validated values is {@link ./render.ts}.
  */
 
 /** [PaSO View] Section 3 — the twelve frequency codes. */
@@ -139,6 +133,10 @@ function isHttpsUrl(value: string): boolean {
  * A displayed claim declaring anything else makes the entry incompatible ([PaSO View] Section 3).
  */
 export function isSupportedPasoValueType(valueType: string | undefined): boolean {
+  if (valueType?.startsWith('template:')) {
+    const inner = valueType.slice('template:'.length)
+    return !inner.startsWith('template:') && isSupportedPasoValueType(inner)
+  }
   return valueType === undefined || valueTypes.includes(valueType)
 }
 
@@ -148,16 +146,11 @@ export function isPermittedPasoLabelValueType(valueType: string | undefined): bo
 }
 
 /**
- * Whether this wallet can render a label carrying `valueType`.
- *
- * `mini_markdown` is rendered as plain text, which [PaSO View] Section 3 explicitly allows ("or MAY
- * render the value as plain text without formatting"). `template:mini_markdown` is permitted by the
- * spec but needs the interpolation of Section 3, so it is unsupported here — and Section 3 says what
- * to do about that: such an entry "SHALL be excluded from the locale selection matching procedure",
- * not that the whole entry becomes incompatible.
+ * Whether this wallet can render a label carrying `valueType`. An entry it can't render "SHALL be
+ * excluded from the locale selection matching procedure" ([PaSO View] Section 3).
  */
 export function canRenderPasoLabelValueType(valueType: string | undefined): boolean {
-  return valueType === undefined || valueType === 'mini_markdown'
+  return valueType === undefined || labelValueTypes.includes(valueType)
 }
 
 /**

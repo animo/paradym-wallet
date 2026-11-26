@@ -8,6 +8,7 @@
 		"upgrade:tamagui:canary": "pnpm up '*tamagui*'@canary '@tamagui/*'@canary",
 		"deps:fix": "pnpm deps:check --fix",
 		"types:check": "tsc --noEmit",
+		"test": "node --experimental-transform-types --no-warnings --import ./scripts/test-resolve.mjs --test 'packages/sdk/src/**/*.test.ts'",
 		"bundle:size": "node scripts/measure-bundle-size.mjs",
 		"style:check": "biome check --unsafe",
 		"style:fix": "biome check --write --unsafe",

@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro'
 import { commonMessages } from '@package/translations'
-import { Button } from '@package/ui/base/Button'
+import { Button, largeTextFontScale } from '@package/ui/base/Button'
 import { YStack } from '@package/ui/base/Stacks'
 import { Spinner } from '@package/ui/content/Spinner'
 import { useEffect, useState } from 'react'
@@ -49,13 +49,14 @@ export function DualResponseButtons({
 
   // Give accept button more space to avoid truncation when OS font is scaled
   const giveAcceptButtonMoreSpace = PixelRatio.getFontScale() > 1.2 && accept.length > 6
+  const isLargeText = PixelRatio.getFontScale() >= largeTextFontScale
 
   const wrapProps = wrapLabels
     ? ({
         ellipsis: false,
         height: 'auto',
         minHeight: 'size.buttonHeight',
-        py: '2',
+        py: isLargeText ? '3' : '2',
         // `flex={1}` implies a zero basis, which in a column would hold a wrapped label to the minimum height.
         ...(isHorizontal ? {} : { flexBasis: 'auto' }),
         textProps: {
@@ -68,7 +69,7 @@ export function DualResponseButtons({
     : {}
 
   return (
-    <YStack gap={isHorizontal ? '5' : '2'} flexDirection={isHorizontal ? 'row-reverse' : 'column'}>
+    <YStack gap={isHorizontal ? '5' : isLargeText ? '3' : '2'} flexDirection={isHorizontal ? 'row-reverse' : 'column'}>
       <Button.Solid
         flex={1}
         grow={giveAcceptButtonMoreSpace ? 2 : 1}

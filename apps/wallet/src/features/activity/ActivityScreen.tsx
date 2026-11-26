@@ -35,9 +35,21 @@ const activityMessages = {
 /** How many more activities are read each time the list reaches its end. */
 const activityPageSize = 50
 
-export function ActivityScreen({ entityId, initialSelectedId }: { entityId?: string; initialSelectedId?: string }) {
+export function ActivityScreen({
+  entityId,
+  credentialId,
+  initialSelectedId,
+}: {
+  entityId?: string
+  credentialId?: string
+  initialSelectedId?: string
+}) {
   const [limit, setLimit] = useState(activityPageSize)
-  const { activities, isLoading: isLoadingActivities, hasMore } = useActivities({ filters: { entityId }, limit })
+  const {
+    activities,
+    isLoading: isLoadingActivities,
+    hasMore,
+  } = useActivities({ filters: { entityId, credentialId }, limit })
   const { t, i18n } = useLingui()
   const media = useMedia()
   const [selectedId, setSelectedId] = useState(initialSelectedId)

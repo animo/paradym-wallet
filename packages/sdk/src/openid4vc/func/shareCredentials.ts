@@ -6,7 +6,7 @@ import { type FormattedSubmission, selectSubmissionCredentials } from '../../for
 import type { ParadymWalletSdk } from '../../ParadymWalletSdk'
 import { pasoPaymentTransactionDataType } from '../../paso/paymentRulebook'
 import { createPasoScaResponseClaims } from '../../paso/responseClaims'
-import { assertPasoCredentialsOnlyForPasoTransactions } from '../../paso/transactionData'
+import { assertPasoCredentialsOnlyForPasoTransactions, isPasoTransaction } from '../../paso/transactionData'
 import type { PasoAuthenticationMethod, PasoWallet } from '../../paso/types'
 import { activityStorage, storeSharedActivityForCredentialsForRequest } from '../../storage/activityStore'
 import type { CredentialsForProofRequest } from '../func/resolveCredentialRequest'
@@ -212,10 +212,9 @@ export async function getDcqlCredentialsToShare(
   // [PaSO Core] Section 6.2 — the SCA response claims are top-level claims of the KB-JWT, so they go
   // in as the presentation's additional payload. Credo merges this with the `transaction_data_hashes`
   // it adds itself, which is why `transaction_data_hash` below agrees with it by construction.
-  if (transactionData?.type === pasoPaymentTransactionDataType && dcqlCredentials) {
-    // Resolved without a card that can authorize it, so it was only ever shown to explain why. The
-    // consent screen keeps its confirmation action out of reach in that state; reaching here anyway
-    // would mean signing a transaction against metadata that was never verified.
+  if (isPasoTransaction(transactionData) && dcqlCredentials) {
+    // Only an activity stored by an earlier version lacks it; signing without it would mean signing
+    // against metadata that was never verified.
     if (!transactionData.proof) {
       throw new Error('The PaSO transaction was resolved without a credential that can authorize it')
     }

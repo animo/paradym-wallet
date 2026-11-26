@@ -1,8 +1,11 @@
+import { getPayingActivityCredential } from '@package/app'
 import {
   activityStorage,
+  type CredentialForDisplay,
+  type CredentialRecord,
   fetchPaymentTransactionStatus,
   getTransactionStatusMetadata,
-  pasoPaymentTransactionDataType,
+  isPasoTransaction,
   useCredentials,
   useParadym,
 } from '@paradym/wallet-sdk'
@@ -17,9 +20,9 @@ export function usePaymentTransactionStatus(activity: PaymentActivity | undefine
     if (!activity || !paradym) return
     if (activity.transactionStatus === 'ACSC' || activity.transactionStatus === 'RJCT') return
     // TS 12 defines the status backchannel; a PaSO payment has nothing to poll.
-    if (activity.transaction.type === pasoPaymentTransactionDataType) return
+    if (isPasoTransaction(activity.transaction)) return
 
-    const credentialRecord = credentials.find((c) => getTransactionStatusMetadata(c.record) !== null)?.record
+    const credentialRecord = getPaymentStatusCard(activity, credentials)
     if (!credentialRecord) return
 
     let cancelled = false
@@ -34,4 +37,19 @@ export function usePaymentTransactionStatus(activity: PaymentActivity | undefine
       cancelled = true
     }
   }, [activity, credentials, paradym])
+}
+
+/**
+ * The record of the card that paid, when it says where to poll the payment's status. Activities stored before
+ * the paying card was marked fall back to the shared card that has a status URL.
+ */
+export function getPaymentStatusCard(activity: PaymentActivity, credentials: CredentialForDisplay[]) {
+  const recordOf = (id: string) => credentials.find((credential) => credential.id === id)?.record
+  const hasStatus = (record?: CredentialRecord) => !!record && getTransactionStatusMetadata(record) !== null
+
+  const paidWith = getPayingActivityCredential(activity, (activityCredential) =>
+    hasStatus(recordOf(activityCredential.id))
+  )
+  const record = paidWith && recordOf(paidWith.id)
+  return hasStatus(record) ? record : undefined
 }

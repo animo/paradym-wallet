@@ -59,6 +59,16 @@ export function getDaysUntil(date?: Date): number | undefined {
 export function formatDaysString(days?: number): string | undefined {
   if (days === undefined) return undefined
 
+  // Rounded to one unit: days up to two months, months up to two years, years after that
+  if (days >= 2 * 365) {
+    const years = Math.round(days / 365.25)
+    return t({ id: 'dateFormatting.multipleYears', message: `${years} years` })
+  }
+  if (days > 60) {
+    const months = Math.round(days / (365.25 / 12))
+    return t({ id: 'dateFormatting.multipleMonths', message: `${months} months` })
+  }
+
   return days === 1
     ? t({
         id: 'dateFormatting.oneDay',
@@ -68,4 +78,25 @@ export function formatDaysString(days?: number): string | undefined {
         id: 'dateFormatting.mulitpleDays',
         message: `${days} days`,
       })
+}
+
+/**
+ * An ISO currency amount such as `"49.99 EUR"` as the locale writes it: `€49.99`, `49,99 €`. Keeps
+ * every decimal it was given, so nothing is rounded away. Anything else is shown as it came.
+ */
+export function formatAmount(value: string, locale: string) {
+  const match = /^(\d+(?:\.(\d+))?) ([A-Z]{3})$/.exec(value.trim())
+  if (!match) return value
+
+  const [, amount, decimals = '', currency] = match
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: decimals.length,
+      maximumFractionDigits: decimals.length,
+    }).format(Number(amount))
+  } catch {
+    return value
+  }
 }

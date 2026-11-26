@@ -234,12 +234,10 @@ function getCardInfoLimitedByDateVariant(
       title: hasMoreThanTwoWeeksUntilExpiry
         ? cardInfoLifecycleVariant.active.title
         : defineMessage({ id: 'cardLifecycle.limitedByDate.willExpire.title', message: 'Card will expire' }),
-      description: hasMoreThanTwoWeeksUntilExpiry
-        ? cardInfoLifecycleVariant.active.description
-        : defineMessage({
-            id: 'cardLifecycle.limitedByDate.willExpire.description',
-            message: `Expires in ${expiryDaysString}`,
-          }),
+      description: defineMessage({
+        id: 'cardLifecycle.limitedByDate.willExpire.description',
+        message: `Expires in ${expiryDaysString}`,
+      }),
       sheetDescription: (validityPeriod ?? expiryString) as MessageDescriptor,
     },
   }

@@ -1,5 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useHaptics } from '@package/app'
+import { commonMessages } from '@package/translations'
 import {
   AnimatedStack,
   Blob,
@@ -15,11 +16,13 @@ import {
   TwoPane,
   useMedia,
   useSpringify,
+  useToastController,
   XStack,
   YStack,
 } from '@package/ui'
 import { type CredentialId, useCredentials, useRefreshedDeferredCredentials } from '@paradym/wallet-sdk'
 import { useRouter } from 'expo-router'
+import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { FadeIn } from 'react-native-reanimated'
 import { usePasoRenewCredentialMetadata } from '../../hooks/usePasoRenewCredentialMetadata'
@@ -45,7 +48,14 @@ export function WalletScreen() {
   const media = useMedia()
   const { width } = useWindowDimensions()
 
-  useRefreshedDeferredCredentials()
+  const toast = useToastController()
+  useRefreshedDeferredCredentials(
+    useCallback(
+      (count: number) =>
+        toast.show(t(commonMessages.deferredCardsIssued(count)), { customData: { preset: 'success' } }),
+      [toast, t]
+    )
+  )
   useRefreshPaymentTransactionStatuses()
   usePasoRenewCredentialMetadata()
   useUpdateSdJwtVcSvgTemplates()

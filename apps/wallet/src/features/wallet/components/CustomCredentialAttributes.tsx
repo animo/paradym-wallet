@@ -21,18 +21,25 @@ import {
   XStack,
   YStack,
 } from '@package/ui'
-import type { CredentialForDisplay } from '@paradym/wallet-sdk'
+import { formatDate } from '@package/utils'
+import { type CredentialForDisplay, getAttributesWithDisplay } from '@paradym/wallet-sdk'
 
 type CustomCredentialAttributesProps = {
   credential: CredentialForDisplay
   scrollRef?: React.RefObject<ScrollViewRefType | null>
 }
 
-export const hasCustomCredentialDisplay = (credentialType: string) => {
-  return [...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes, ...mdlSchemes.mdlMdocDoctypes].includes(
-    credentialType
-  )
-}
+// A payment card is told apart from other cards by its masked IBAN, see `useCardDetail`
+export const isPaymentCard = (credential: CredentialForDisplay) =>
+  typeof credential.rawAttributes.masked_iban === 'string'
+
+/** Whether the card's main view leaves attributes out, so the full list is offered separately. */
+export const hasCustomCredentialDisplay = (credential: CredentialForDisplay) =>
+  [...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes, ...mdlSchemes.mdlMdocDoctypes].includes(
+    credential.metadata.type
+  ) ||
+  isPaymentCard(credential) ||
+  getAttributesWithDisplay(credential.attributes, credential.record).length < credential.attributes.length
 
 function CustomCredentialAttributesInner({ credential, scrollRef }: CustomCredentialAttributesProps) {
   if ([...pidSchemes.sdJwtVcVcts, ...pidSchemes.msoMdocDoctypes].includes(credential.metadata.type)) {
@@ -52,7 +59,16 @@ function CustomCredentialAttributesInner({ credential, scrollRef }: CustomCreden
     return <MdlCredentialAttributes credential={credential} />
   }
 
-  return <CredentialAttributes attributes={credential.attributes} scrollRef={scrollRef} />
+  if (isPaymentCard(credential)) {
+    return <PaymentCredentialAttributes credential={credential} />
+  }
+
+  return (
+    <CredentialAttributes
+      attributes={getAttributesWithDisplay(credential.attributes, credential.record)}
+      scrollRef={scrollRef}
+    />
+  )
 }
 
 export function CustomCredentialAttributes({ credential, scrollRef }: CustomCredentialAttributesProps) {
@@ -375,6 +391,53 @@ export function MdlCredentialAttributes({ credential }: CustomCredentialAttribut
           />
         </TableContainer>
       </YStack>
+    </Stack>
+  )
+}
+
+export function PaymentCredentialAttributes({ credential }: CustomCredentialAttributesProps) {
+  const { t } = useLingui()
+  const { issuedAt, validUntil } = credential.metadata
+  const maskedIbanLabel = credential.attributes.find((attribute) => attribute.path[0] === 'masked_iban')?.label
+
+  return (
+    <Stack gap="8">
+      <TableContainer>
+        <YStack
+          bg="tableBackgroundColor"
+          gap="2"
+          px="2-5"
+          py="3"
+          borderBottomWidth={2}
+          borderBottomColor="tableBorderColor"
+          items="center"
+        >
+          <Heading text="center" heading="h3">
+            {credential.display.name}
+          </Heading>
+          <Paragraph text="center">{credential.display.issuer.name}</Paragraph>
+        </YStack>
+        <TableRow centred attributes={maskedIbanLabel} values={[credential.rawAttributes.masked_iban as string]} />
+      </TableContainer>
+      {(issuedAt || validUntil) && (
+        <YStack gap="2">
+          <Heading heading="sub2" secondary>
+            <Trans id="cardAttributes.aboutTheCard">About the card</Trans>
+          </Heading>
+          <TableContainer>
+            <TableRow
+              attributes={[
+                ...(issuedAt ? [t(commonMessages.fields.issued_at)] : []),
+                ...(validUntil ? [t(commonMessages.fields.expires_at)] : []),
+              ]}
+              values={[
+                ...(issuedAt ? [formatDate(issuedAt, { includeTime: false })] : []),
+                ...(validUntil ? [formatDate(validUntil, { includeTime: false })] : []),
+              ]}
+            />
+          </TableContainer>
+        </YStack>
+      )}
     </Stack>
   )
 }

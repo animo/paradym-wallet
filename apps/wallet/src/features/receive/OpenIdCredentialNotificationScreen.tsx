@@ -210,7 +210,7 @@ export function CredentialNotificationScreen() {
   )
 
   const onPresentationAccept = useCallback(
-    async ({ pin, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
+    async ({ pin, confirmedWithBiometrics, onPinComplete, onPinError }: OnPinSubmitProps = {}) => {
       if (!resolvedCredentialOffer || !presentationRequest) {
         setErrorReason(t(commonMessages.presentationInformationCouldNotBeExtracted))
         return
@@ -218,7 +218,7 @@ export function CredentialNotificationScreen() {
 
       setIsSharingPresentation(true)
 
-      if (shouldUsePinForPresentation) {
+      if (shouldUsePinForPresentation && !confirmedWithBiometrics) {
         if (!pin) {
           setErrorReason('PIN is required to accept the presentation.')
           return
@@ -321,15 +321,27 @@ export function CredentialNotificationScreen() {
       // Credentials will be acquired when the txCode is entered on the next screen
       if (resolvedCredentialOffer.flow === 'pre-auth-with-tx-code' && !txCode) return true
 
-      try {
-        const acquiredCredentials = await paradym.openid4vc.acquireCredentials({
-          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
-          transactionCode: txCode,
-        })
+      // A correct code moves on to the loading card as soon as the token is in, rather than once the
+      // credential arrives. Only a wrong code keeps the code screen open.
+      let resolveAccepted: (accepted: boolean) => void = () => {}
+      const accepted = new Promise<boolean>((resolve) => {
+        resolveAccepted = resolve
+      })
 
-        updateCredentials(acquiredCredentials)
-        return true
-      } catch (error) {
+      paradym.openid4vc
+        .acquireCredentials({
+          resolvedCredentialOffer: resolvedCredentialOffer.resolvedCredentialOffer,
+          ...(txCode ? { transactionCode: txCode, onAccessToken: () => resolveAccepted(true) } : {}),
+        })
+        .then((acquiredCredentials) => {
+          updateCredentials(acquiredCredentials)
+          resolveAccepted(true)
+        })
+        .catch((error) => resolveAccepted(handleAcquireError(error)))
+
+      return accepted
+
+      function handleAcquireError(error: unknown) {
         paradym.logger.error(`Couldn't receive credential from OpenID4VCI offer`, {
           error,
         })
@@ -554,6 +566,7 @@ export function CredentialNotificationScreen() {
         resolvedCredentialOffer.flow === 'auth' && authorizationPresentationRequest && shouldUsePinForPresentation
           ? {
               step: 'authorization-presentation-pin-enter',
+              scrollsOwnContent: true,
               progress: 66,
               screen: (
                 <PinSlide
@@ -591,9 +604,7 @@ export function CredentialNotificationScreen() {
               ),
             }
           : undefined,
-        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' &&
-        shouldUsePinForPresentation &&
-        presentationRequest
+        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' && presentationRequest
           ? {
               step: 'presentation-during-issuance',
               progress: 66,
@@ -612,9 +623,10 @@ export function CredentialNotificationScreen() {
               ),
             }
           : undefined,
-        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance'
+        resolvedCredentialOffer.flow === 'auth-presentation-during-issuance' && shouldUsePinForPresentation
           ? {
               step: 'pin-enter',
+              scrollsOwnContent: true,
               progress: 82.5,
               screen: <PinSlide key="pin-enter" isLoading={isSharingPresentation} onPinSubmit={onPresentationAccept} />,
             }

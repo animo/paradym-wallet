@@ -1,10 +1,29 @@
 import { defineMessage } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { BackFooter, CardWithAttributes, getActivityInteraction, MiniDocument } from '@package/app'
+import {
+  BackFooter,
+  CardWithAttributes,
+  getActivityInteraction,
+  getPayingActivityCredential,
+  getPaymentSummary,
+  MiniDocument,
+} from '@package/app'
+import { credentialSvgArtwork } from '@package/app/components/CredentialSvg'
 import { useHaptics, useScrollViewPosition } from '@package/app/hooks'
 import { commonMessages } from '@package/translations'
-import { Circle, FlexPage, Heading, Paragraph, ScrollView, Stack, XStack, YStack } from '@package/ui'
-import { formatRelativeDate } from '@package/utils'
+import {
+  Circle,
+  FlexPage,
+  Heading,
+  HeroIcons,
+  MiniCardRowItem,
+  Paragraph,
+  ScrollView,
+  Stack,
+  XStack,
+  YStack,
+} from '@package/ui'
+import { formatAmount, formatRelativeDate } from '@package/utils'
 import type {
   Activity,
   CredentialForDisplay,
@@ -18,15 +37,17 @@ import {
   formatAttributesAtPaths,
   getLabelsForAttributes,
   getPaymentTransactionStatus,
-  pasoPaymentTransactionDataType,
   useActivityById,
   useCredentials,
 } from '@paradym/wallet-sdk'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { usePaymentTransactionStatus } from '../../hooks/usePaymentTransactionStatus'
+import { CardRow } from '../share/components/CardRow'
+import { PayingAccount } from '../share/components/PayingAccount'
 import { RequestPurposeSection } from '../share/components/RequestPurposeSection'
 import { CredentialRowCard } from '../wallet/CredentialsScreen'
+import { isPaymentCard } from '../wallet/components/CustomCredentialAttributes'
 import { FailedReasonContainer } from './components/FailedReasonContainer'
 
 /**
@@ -235,10 +256,21 @@ export function SharedActivityDetailSection({
   activity: PresentationActivity | SignedActivity | PaymentActivity
 }) {
   const { credentials } = useCredentials()
+  const { withHaptics } = useHaptics()
+  const { push } = useRouter()
+  const pushToCredential = withHaptics((id: string) => push(`/credentials/${id}`))
 
-  const amountShared = activity.request.credentials?.length ?? 0
-  const { t } = useLingui()
+  // The card a payment is paid with is shown with the payment, as the card, not among the shared attributes
+  const paymentCard = activity.type === 'payment' ? getPaymentCard(activity, credentials) : undefined
+  const sharedCredentials =
+    activity.request.credentials?.filter(
+      (activityCredential) => activityCredential !== paymentCard?.activityCredential
+    ) ?? []
+  const amountShared = sharedCredentials.length
+  const { t, i18n } = useLingui()
   const paymentTransactionStatus = getPaymentTransactionStatus(activity)
+  // A PaSO transaction that isn't a payment and doesn't embed one has no amount or payee to show.
+  const paymentSummary = activity.type === 'payment' ? getPaymentSummary(activity.transaction) : undefined
 
   const description =
     activity.status === 'success'
@@ -292,113 +324,147 @@ export function SharedActivityDetailSection({
           </XStack>
         </YStack>
       ) : (
-        activity.type === 'payment' && (
+        (paymentSummary || paymentCard) && (
           <YStack gap="5">
             <YStack gap="2">
               <Heading heading="sub2">{t(commonMessages.paymentHeading)}</Heading>
             </YStack>
-            <XStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5">
-              <YStack flex={1} gap="2" items="center">
-                <Heading textTransform="none" color="grey-800">
-                  {activity.transaction.type === pasoPaymentTransactionDataType
-                    ? activity.transaction.amount.value
-                    : activity.transaction.amount}
-                </Heading>
-                <Paragraph variant="sub" size="2">
-                  <Trans>
-                    To{' '}
-                    {activity.transaction.type === pasoPaymentTransactionDataType
-                      ? activity.transaction.payee.value
-                      : activity.transaction.payee.name}
-                  </Trans>
-                </Paragraph>
-                {/*
-                 * The same answer the activity list renders. Leaving it out is what let this screen
-                 * report a payment as successful while the list reported it as pending: the two were
-                 * describing different things, and only one of them said so.
-                 */}
-                {paymentTransactionStatus && paymentTransactionStatus !== 'ACSC' && (
-                  <Paragraph
-                    variant="sub"
-                    size="2"
-                    fontWeight="medium"
-                    color={paymentTransactionStatus === 'RJCT' ? 'danger-500' : 'warning-600'}
-                  >
-                    {t(
-                      paymentTransactionStatus === 'RJCT'
-                        ? commonMessages.paymentRejected
-                        : commonMessages.paymentPending
-                    )}
+            {paymentSummary && (
+              <XStack rounded="6" bg="grey-50" borderWidth={1} borderColor="grey-200" gap="5" p="5">
+                <YStack flex={1} gap="2" items="center">
+                  <Heading textTransform="none" color="grey-800">
+                    {formatAmount(paymentSummary.amount, i18n.locale)}
+                  </Heading>
+                  <Paragraph variant="sub" size="2">
+                    <Trans>To {paymentSummary.payee}</Trans>
                   </Paragraph>
+                  {/*
+                   * The same answer the activity list renders. Leaving it out is what let this screen
+                   * report a payment as successful while the list reported it as pending: the two were
+                   * describing different things, and only one of them said so.
+                   */}
+                  {paymentTransactionStatus && paymentTransactionStatus !== 'ACSC' && (
+                    <Paragraph
+                      variant="sub"
+                      size="2"
+                      fontWeight="medium"
+                      color={paymentTransactionStatus === 'RJCT' ? 'danger-500' : 'warning-600'}
+                    >
+                      {t(
+                        paymentTransactionStatus === 'RJCT'
+                          ? commonMessages.paymentRejected
+                          : commonMessages.paymentPending
+                      )}
+                    </Paragraph>
+                  )}
+                </YStack>
+              </XStack>
+            )}
+            {paymentCard && (
+              <PayingAccount
+                onPress={paymentCard.credential ? () => pushToCredential(paymentCard.activityCredential.id) : undefined}
+              >
+                {paymentCard.credential ? (
+                  <CardRow
+                    card={{ credential: paymentCard.credential }}
+                    artwork={credentialSvgArtwork(paymentCard.credential.display.svg)}
+                    wrap
+                    accessory={<HeroIcons.ChevronRight color="grey-500" size={20} />}
+                  />
+                ) : (
+                  // The card is gone from the wallet, so its name is all the activity has
+                  <MiniCardRowItem
+                    name={paymentCard.activityCredential.name ?? t(commonMessages.unknown)}
+                    subtitle={t(activityMessages.deletedCredential)}
+                    backgroundColor="grey-900"
+                    wrap
+                  />
                 )}
-              </YStack>
-            </XStack>
+              </PayingAccount>
+            )}
           </YStack>
         )
       )}
-      <Stack gap="3">
-        <Stack gap="2">
-          <Heading heading="sub2">
-            {activity.status === 'success'
-              ? t(activityMessages.sharedAttributes)
-              : t(activityMessages.requestedInformation)}
-          </Heading>
-          <Paragraph>{description}</Paragraph>
-        </Stack>
+      {(sharedCredentials.length > 0 || !paymentCard) && (
+        <Stack gap="3">
+          <Stack gap="2">
+            <Heading heading="sub2">
+              {activity.status === 'success'
+                ? t(activityMessages.sharedAttributes)
+                : t(activityMessages.requestedInformation)}
+            </Heading>
+            <Paragraph>{description}</Paragraph>
+          </Stack>
 
-        {activity.request.credentials && activity.request.credentials.length > 0 ? (
-          activity.request.credentials
-            .map((activityCredential) => {
-              if ('id' in activityCredential) {
-                const credential = credentials.find((credential) => credential.id === activityCredential.id)
+          {sharedCredentials.length > 0 ? (
+            sharedCredentials
+              .map((activityCredential) => {
+                if ('id' in activityCredential) {
+                  const credential = credentials.find((credential) => credential.id === activityCredential.id)
 
-                // Credential has been deleted
-                if (!credential) {
+                  // Credential has been deleted
+                  if (!credential) {
+                    return (
+                      // The activity records which fields were disclosed, not what they held, and the
+                      // credential they came from is gone, so the names are all there is.
+                      <CardWithAttributes
+                        name={activityCredential.name ?? t(activityMessages.deletedCredential)}
+                        textColor="grey-100"
+                        backgroundColor="primary-500"
+                        formattedDisclosedAttributes={getDisclosedLabels(activityCredential)}
+                      />
+                    )
+                  }
+
+                  const isExpired = credential.metadata.validUntil
+                    ? new Date(credential.metadata.validUntil) < new Date()
+                    : false
+
+                  const isNotYetActive = credential.metadata.validFrom
+                    ? new Date(credential.metadata.validFrom) > new Date()
+                    : false
+
                   return (
-                    // The activity records which fields were disclosed, not what they held, and the
-                    // credential they came from is gone, so the names are all there is.
                     <CardWithAttributes
-                      name={activityCredential.name ?? t(activityMessages.deletedCredential)}
-                      textColor="grey-100"
-                      backgroundColor="primary-500"
-                      formattedDisclosedAttributes={getDisclosedLabels(activityCredential)}
+                      key={credential.id}
+                      id={credential.id}
+                      name={credential.display.name ?? t(commonMessages.unknown)}
+                      issuerImage={credential.display.issuer.logo}
+                      textColor={credential.display.textColor}
+                      backgroundColor={credential.display.backgroundColor}
+                      formattedDisclosedAttributes={getDisclosedLabels(activityCredential, credential)}
+                      // The values come from the credential as it is now, which is the whole point of
+                      // linking to it rather than copying it into the activity.
+                      disclosedPaths={activityCredential.paths}
+                      isExpired={isExpired}
+                      isNotYetActive={isNotYetActive}
                     />
                   )
                 }
 
-                const isExpired = credential.metadata.validUntil
-                  ? new Date(credential.metadata.validUntil) < new Date()
-                  : false
-
-                const isNotYetActive = credential.metadata.validFrom
-                  ? new Date(credential.metadata.validFrom) > new Date()
-                  : false
-
-                return (
-                  <CardWithAttributes
-                    key={credential.id}
-                    id={credential.id}
-                    name={credential.display.name ?? t(commonMessages.unknown)}
-                    issuerImage={credential.display.issuer.logo}
-                    textColor={credential.display.textColor}
-                    backgroundColor={credential.display.backgroundColor}
-                    formattedDisclosedAttributes={getDisclosedLabels(activityCredential, credential)}
-                    // The values come from the credential as it is now, which is the whole point of
-                    // linking to it rather than copying it into the activity.
-                    disclosedPaths={activityCredential.paths}
-                    isExpired={isExpired}
-                    isNotYetActive={isNotYetActive}
-                  />
-                )
-              }
-
-              return undefined
-            })
-            .filter((v) => v !== undefined)
-        ) : (
-          <FailedReasonContainer reason={activity.request.failureReason ?? 'unknown'} />
-        )}
-      </Stack>
+                return undefined
+              })
+              .filter((v) => v !== undefined)
+          ) : (
+            <FailedReasonContainer reason={activity.request.failureReason ?? 'unknown'} />
+          )}
+        </Stack>
+      )}
     </Stack>
   )
+}
+
+/**
+ * The card a payment was paid with. Activities stored before the card was marked tell it apart by its masked
+ * IBAN, which only works while the card is still in the wallet.
+ */
+function getPaymentCard(activity: PaymentActivity, credentials: CredentialForDisplay[]) {
+  const findCredential = (id: string) => credentials.find((credential) => credential.id === id)
+
+  const activityCredential = getPayingActivityCredential(activity, (activityCredential) => {
+    const credential = findCredential(activityCredential.id)
+    return !!credential && isPaymentCard(credential)
+  })
+
+  return activityCredential && { activityCredential, credential: findCredential(activityCredential.id) }
 }

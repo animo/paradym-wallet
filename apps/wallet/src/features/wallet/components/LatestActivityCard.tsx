@@ -1,6 +1,6 @@
 import { defineMessage } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
-import { useHaptics } from '@package/app'
+import { getActivityInteraction, getPaymentKind, useHaptics } from '@package/app'
 import { commonMessages } from '@package/translations'
 import { InfoButton } from '@package/ui'
 import { formatRelativeDate } from '@package/utils'
@@ -41,8 +41,6 @@ const signedDocument = defineMessage({
   message: 'Signed document',
   comment: 'Shown if a document was signed successfully',
 })
-
-const paymentFailed = commonMessages.paymentFailed
 
 const paymentSuccessful = defineMessage({
   id: 'activity.latest.paymentMade',
@@ -90,17 +88,26 @@ export function LatestActivityCard() {
 
     if (latestActivity.type === 'shared') {
       const isPlural = latestActivity.request.credentials.length > 1
-      const description = ['failed', 'stopped'].includes(latestActivity.status)
-        ? t(sharingFailed)
-        : isPlural
-          ? t(sharedCards)
-          : t(sharedCard)
+      // The same words as the activity list, which tells a stop by the user apart from a failure
+      const description =
+        latestActivity.status === 'stopped'
+          ? t(commonMessages.sharingStopped)
+          : latestActivity.status === 'failed'
+            ? t(sharingFailed)
+            : isPlural
+              ? t(sharedCards)
+              : t(sharedCard)
 
       return { title: date, description }
     }
 
     if (latestActivity.type === 'signed') {
-      const description = ['failed', 'stopped'].includes(latestActivity.status) ? t(signingFailed) : t(signedDocument)
+      const description =
+        latestActivity.status === 'stopped'
+          ? t(commonMessages.signingStopped)
+          : latestActivity.status === 'failed'
+            ? t(signingFailed)
+            : t(signedDocument)
 
       return { title: date, description }
     }
@@ -114,8 +121,9 @@ export function LatestActivityCard() {
       const transactionStatus = getPaymentTransactionStatus(latestActivity)
 
       let description: string
-      if (['failed', 'stopped'].includes(latestActivity.status)) {
-        description = t(paymentFailed)
+      if (latestActivity.status !== 'success' || getPaymentKind(latestActivity.transaction) !== 'payment') {
+        // Stopped, failed, or a mandate or other transaction: as the activity list words it
+        description = t(getActivityInteraction(latestActivity).text)
       } else if (transactionStatus === 'RJCT') {
         description = t(paymentRejected)
       } else if (transactionStatus === 'PDNG') {
@@ -129,8 +137,9 @@ export function LatestActivityCard() {
 
     if (latestActivity.type === 'received') {
       switch (latestActivity.status) {
-        case 'failed':
-        case 'stopped': {
+        case 'stopped':
+          return { title: date, description: t(commonMessages.cardRejected) }
+        case 'failed': {
           const name = latestActivity.deferredCredentials?.[0]?.name ?? fallbackCardName.message
           return {
             title: date,
