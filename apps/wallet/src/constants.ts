@@ -19,6 +19,10 @@ export const walletClient = {
   redirectUri: allowedRedirectBaseUrls?.[0] ?? `${appScheme}:///wallet/redirect`,
 }
 
+// Bundled, since activity records store the logo uri and outlive the app build
+const bydoLogoUri =
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii00MSAtMzYgMjQwIDI0MCI+PHBhdGggZD0ibTgxLjQ4NCw5OS42NzJjMjkuMDg5LTM0Ljc4Miw5MC40NjcuNTI3LDY4LjI1MSw0Ni4wMjgtMjUuMzQzLDUxLjkwOC0xMDYuNDU3Ljg2Ny02OC4yNTEtNDYuMDI4IiBmaWxsPSIjZDRjMmE2Ii8+PHBhdGggZD0ibTc1LjEyNywxMzAuNDYxYy0uNDcxLTE0LjM4OCwzLjc5OS00MC41OTgtNy4zOTMtNDYuOTM0QzQxLjY0OCw2OC43Ni0xLjAwMiw3Ny4yNTEuMDE4LDEyMC4wMThjMS44NDQsNDcuNTYxLDMzLjk0MSw0NS4xOTcsNjkuNDI4LDQ2Ljk0NiwzLjI0Ny4xNiw2LjIyNy00LjI1NSw2LjEyNC05Ljg2LS4xOTctMTAuODAyLS4wNjktMTUuODQ2LS40NDMtMjYuNjQzIiBmaWxsPSIjMjQzM2Q5Ii8+PHBhdGggZD0ibTgzLjU4LDM4LjYyNEM3OC44OCwyLjM2Myw0NC41MTUsMS4xOTYsMTUuMzY1LjAwOCwxMC4zMi0uMTk3LDUuMjcxLDMuNTk5LDUuMjY4LDguOTE0Yy0uMDExLDIxLjM5Mi44NCw0MS44NDUsMS4zMDUsNjMuNTM5LjExNyw1LjQ2Myw0LjI2MSw5Ljg2OSw5LjQ0OSwxMC4wNjIsMjkuNTE4LDEuMTAxLDcwLjgxMy00LjQ2MSw2Ny41NTgtNDMuODkxIiBmaWxsPSIjNWNkMWVkIi8+PHBhdGggZD0ibTc5LjIxNiwxMy42NTVjMS42NzYsMjAuMzQ2LjA4OCw0OS44OSwxMy45MDcsNjMuOTg5LDkuOTE2LDEwLjExNywyOC40MDQsMTMuMTgyLDM5LjgyLDEwLjM4NiwyMi4wMDctNS4zOTEsMjAuMjA4LTMxLjAxOSwyMy4zNjYtNTMuNC40Mi0yLjk3My43MzktMTMuMDEsMS4yNC0xNy42NDQuMzcyLTMuNDM5LTEuNjgtNi41OTMtNC45Ny02LjU2OGwtMzcuMDU0LTEuNDUxLTMxLjkzNy0xLjI4OWMtMi45NTguMDIzLTQuNjI3LDIuODc2LTQuMzcyLDUuOTc3IiBmaWxsPSIjZTU1NDFjIi8+PC9zdmc+'
+
 export const trustedX509Entities = [
   {
     entityId: 'playground.animo.id',
@@ -204,6 +208,14 @@ export const trustedDidEntities = [
     demo: true,
     display: 'entity',
   },
+  {
+    did: 'did:web:metadata.paradym.id:b102153b-9c5a-4b10-9aed-2eca6cce261a',
+    logoUri: bydoLogoUri,
+    name: 'bydo',
+    url: 'https://bydo.swiss',
+    demo: false,
+    display: 'entity',
+  },
 ] satisfies Array<TrustedDidEntity>
 
 export const trustedOpenId4VciIssuerEntities = [
@@ -255,6 +267,13 @@ export const trustedOpenId4VciIssuerEntities = [
     name: 'Digital Meitheal 2026',
     url: 'https://meitheal.paradym.id',
     demo: true,
+  },
+  {
+    issuer: 'https://agent.paradym.id/oid4vci/f913c0fd-6cb7-4271-ab62-d0e2f6afe5b5',
+    logoUri: bydoLogoUri,
+    name: 'bydo',
+    url: 'https://bydo.swiss',
+    demo: false,
   },
 ] satisfies Array<TrustedOpenId4VciEntity>
 
