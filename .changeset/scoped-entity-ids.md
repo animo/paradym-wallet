@@ -1,5 +1,0 @@
----
-'@paradym/wallet-sdk': patch
----
-
-The `entityId` of the party in an offer or request now links its interactions, and is scoped by what established who it is. It's `eudi:<semantic identifier>` for a party trusted through `accessCertificateTrustedLists`, from its verified registration certificate or else its access certificate. It's `x509:<trusted entity>:<…>` for a party trusted through `trustedX509Entities`. For a request, that's the issuer and subject name of the certificate it is signed with, which a renewed certificate keeps (RFC 5280 clause 4.1.2.6), or just the trusted entity when the certificate has no subject name. For mdoc reader authentication it's the origin, and for an offer the `credential_issuer`. It's the DID for a DID, and `none:<client_id, origin or credential_issuer>` otherwise. Pass the `entityId` of the issuer to `completeCredentialRetrieval`, so the activity gets the same id. `trustedDidEntities` and the `trustedEntities` of the `none` trust mechanism no longer take an `entityId`. Activities stored before keep their old id and no longer match.
